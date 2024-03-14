@@ -1,3 +1,3 @@
 rootProject.name = "cidade-virtual"
-include("commons")
+include("common")
 include("plugin")

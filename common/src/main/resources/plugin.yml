@@ -1,0 +1,5 @@
+name: Common
+main: com.eul4.common.Common
+version: 1.1
+api-version: '1.20'
+loadbefore: [Plugin]

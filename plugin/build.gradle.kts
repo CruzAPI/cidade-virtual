@@ -11,5 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":commons"))
+    implementation(project(":common"))
+    compileOnly("org.projectlombok:lombok:1.18.30")
+    annotationProcessor("org.projectlombok:lombok:1.18.30")
 }

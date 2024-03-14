@@ -1,6 +1,3 @@
-import java.io.BufferedReader
-import java.io.InputStreamReader
-
 plugins {
     id("java")
 }
@@ -23,33 +20,35 @@ java {
 
 task("deploy")
 {
-    dependsOn("build")
+    dependsOn("common:build")
+    dependsOn("plugin:build")
 
-    val user = "cruzapi"
-    val host = "192.168.1.35"
-    val containerName = "cidade-virtual-server"
+    doLast {
+        val user = "cruzapi"
+        val host = "192.168.1.35"
 
-    println("Deploying in remote...")
-    val commonDeployProcess = Runtime.getRuntime().exec("scp ./commons/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
-    val pluginDeployProcess = Runtime.getRuntime().exec("scp ./plugin/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
+        val containerName = "cidade-virtual-server"
 
-    if(commonDeployProcess.waitFor() != 0)
-    {
-        throw StopExecutionException("Failed to deploy: Commons (exit code: ${commonDeployProcess.exitValue()})")
+        println("Deploying in remote...")
+        val commonDeployProcess = Runtime.getRuntime().exec("scp ./common/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
+        val pluginDeployProcess = Runtime.getRuntime().exec("scp ./plugin/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
+
+        if(commonDeployProcess.waitFor() != 0)
+        {
+            throw StopExecutionException("Failed to deploy: Common (exit code: ${commonDeployProcess.exitValue()})")
+        }
+
+        if(pluginDeployProcess.waitFor() != 0)
+        {
+            throw StopExecutionException("Failed to deploy: Plugin (exit code: ${pluginDeployProcess.exitValue()})")
+        }
+
+        println("Stopping server...")
+        val stopServerProcess = Runtime.getRuntime().exec("ssh -t $user@$host /bin/bash -ic \"stop\\ $containerName\"")
+
+        if(stopServerProcess.waitFor() != 0)
+        {
+            throw StopExecutionException("Failed to stop server! (exit code: ${stopServerProcess.exitValue()})")
+        }
     }
-
-    if(pluginDeployProcess.waitFor() != 0)
-    {
-        throw StopExecutionException("Failed to deploy: Plugin (exit code: ${pluginDeployProcess.exitValue()})")
-    }
-
-    println("Stopping server...")
-    val stopServerProcess = Runtime.getRuntime().exec("ssh -t $user@$host /bin/bash -ic \"stop\\ $containerName\"")
-
-    if(stopServerProcess.waitFor() != 0)
-    {
-        throw StopExecutionException("Failed to stop server! (exit code: ${stopServerProcess.exitValue()})")
-    }
-
-    dependsOn("clean")
 }

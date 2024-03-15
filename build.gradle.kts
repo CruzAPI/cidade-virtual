@@ -20,12 +20,11 @@ java {
 
 task("deploy")
 {
-    dependsOn("common:build")
-    dependsOn("plugin:build")
+    dependsOn("plugin:shadowJar")
 
     doLast {
         val user = "cruzapi"
-        val host = "192.168.1.35"
+        val host = "45.233.112.53"
 
         val containerName = "cidade-virtual-server"
 

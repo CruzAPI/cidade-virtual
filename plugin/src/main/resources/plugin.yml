@@ -1,9 +1,8 @@
 name: Plugin
 main: com.eul4.Main
-version: 1.0
+version: 1.2
 author: CruzAPI
 api-version: '1.20'
-depend: [Common]
 commands:
   town:
     aliases: [cidade, home, casa]

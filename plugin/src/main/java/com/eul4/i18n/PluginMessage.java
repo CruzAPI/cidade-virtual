@@ -1,12 +1,13 @@
 package com.eul4.i18n;
 
+import com.eul4.common.i18n.BundleBaseName;
+import com.eul4.common.i18n.Message;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 
-import static com.eul4.i18n.CommonMessage.USAGE;
+import static com.eul4.common.i18n.CommonMessage.USAGE;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;

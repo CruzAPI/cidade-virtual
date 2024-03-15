@@ -1,7 +1,9 @@
-package com.eul4.command;
+package com.eul4.common.command;
 
 import com.eul4.Main;
-import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.Common;
+import com.eul4.common.model.player.CommonAdmin;
+import com.eul4.model.player.AdminPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,18 +15,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-import static com.eul4.i18n.PluginMessage.COMMAND_TOWN_USAGE;
-
 @RequiredArgsConstructor
-public class TownCommand implements TabExecutor
+public class BuildCommand implements TabExecutor
 {
-	private final Main plugin;
+	private final Common plugin;
 	
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender,
 			@NotNull Command command,
-			@NotNull String alias,
-			@NotNull String[] args)
+			@NotNull String s,
+			@NotNull String[] strings)
 	{
 		return Collections.emptyList();
 	}
@@ -32,25 +32,21 @@ public class TownCommand implements TabExecutor
 	@Override
 	public boolean onCommand(@NotNull CommandSender commandSender,
 			@NotNull Command command,
-			@NotNull String alias,
-			@NotNull String[] args)
+			@NotNull String s,
+			@NotNull String[] strings)
 	{
 		if(!(commandSender instanceof Player player))
 		{
 			return true;
 		}
 		
-		CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
-		
-		if(args.length == 0)
+		if(!(plugin.getPlayerManager().get(player) instanceof CommonAdmin commonAdmin))
 		{
-			plugin.getTownManager().createNewTown(player);
-		}
-		else
-		{
-			commonPlayer.sendMessage(COMMAND_TOWN_USAGE, alias);
+			return true;
 		}
 		
-		return false;
+		commonAdmin.toggleBuild();
+		
+		return true;
 	}
 }

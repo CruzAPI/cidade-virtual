@@ -3,6 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -16,7 +17,7 @@ import java.util.List;
 import static com.eul4.i18n.PluginMessage.COMMAND_TOWN_USAGE;
 
 @RequiredArgsConstructor
-public class TownCommand implements TabExecutor
+public class TestCommand implements TabExecutor
 {
 	private final Main plugin;
 	
@@ -40,16 +41,7 @@ public class TownCommand implements TabExecutor
 			return true;
 		}
 		
-		CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
-		
-		if(args.length == 0)
-		{
-			plugin.getTownManager().createNewTown(player);
-		}
-		else
-		{
-			commonPlayer.sendMessage(COMMAND_TOWN_USAGE, alias);
-		}
+		player.teleport(new Location(plugin.getCidadeVirtualWorld(), 0.0D, 60.0D, 0.0D));
 		
 		return false;
 	}

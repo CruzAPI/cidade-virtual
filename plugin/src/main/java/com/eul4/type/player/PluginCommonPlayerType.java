@@ -1,7 +1,8 @@
 package com.eul4.type.player;
 
+import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.model.craft.player.CraftTownPlayer;
-import com.eul4.model.player.CommonPlayer;
 import com.eul4.model.player.TownPlayer;
 import lombok.AccessLevel;
 import lombok.Getter;

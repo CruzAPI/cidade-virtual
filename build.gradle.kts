@@ -30,13 +30,7 @@ task("deploy")
         val containerName = "cidade-virtual-server"
 
         println("Deploying in remote...")
-        val commonDeployProcess = Runtime.getRuntime().exec("scp ./common/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
         val pluginDeployProcess = Runtime.getRuntime().exec("scp ./plugin/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
-
-        if(commonDeployProcess.waitFor() != 0)
-        {
-            throw StopExecutionException("Failed to deploy: Common (exit code: ${commonDeployProcess.exitValue()})")
-        }
 
         if(pluginDeployProcess.waitFor() != 0)
         {

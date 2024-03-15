@@ -3,7 +3,10 @@ main: com.eul4.Main
 version: 1.0
 author: CruzAPI
 api-version: '1.20'
-depend: [Commons]
+depend: [Common]
 commands:
   town:
     aliases: [cidade, home, casa]
+  test:
+  admin:
+  build:

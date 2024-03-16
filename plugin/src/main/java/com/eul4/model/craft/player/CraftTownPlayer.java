@@ -8,7 +8,7 @@ import com.eul4.model.town.Town;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
-public class CraftTownPlayer extends CraftCommonPlayer implements TownPlayer
+public class CraftTownPlayer extends CraftPluginPlayer implements TownPlayer
 {
 	public CraftTownPlayer(Player player, Common plugin)
 	{
@@ -29,6 +29,12 @@ public class CraftTownPlayer extends CraftCommonPlayer implements TownPlayer
 	@Override
 	public Town getTown()
 	{
-		return null;
+		return plugin.getTownManager().getTown(player.getUniqueId());
+	}
+	
+	@Override
+	public boolean hasTown()
+	{
+		return getTown() != null;
 	}
 }

@@ -1,7 +1,10 @@
 package com.eul4.service;
 
 import com.eul4.Main;
+import com.eul4.model.craft.town.CraftTown;
+import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.TownBlock;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -25,19 +28,28 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class TownManager
 {
 	private final Main plugin;
 	
-	public void createNewTown(Player player)
+	private final Map<UUID, Town> towns = new HashMap<>();
+	
+	public Town getOrCreateNewTown(UUID uuid)
+	{
+		return towns.computeIfAbsent(uuid, this::createNewTown);
+	}
+	
+	public Town createNewTown(UUID uuid)
 	{
 		Location location = findNextEmptyTown();
-		BlockVector3 to = BlockVector3.at(location.getX(), location.getY(), location.getZ());
+		BlockVector3 to = BlockVector3.at(location.getX(), location.getY() + 1, location.getZ());
 
 		try {
-			Bukkit.broadcastMessage("message");
 			File file = new File("plugins/FastAsyncWorldEdit/schematics", "basis.schem");
 
 			var world = FaweAPI.getWorld(plugin.getTownWorld().getName());
@@ -63,12 +75,11 @@ public class TownManager
 						.build();
 				Operations.complete(operation);
 			}
-
-			player.sendMessage("Esquemática carregada com sucesso!");
 		} catch (WorldEditException e) {
             throw new RuntimeException(e);
         }
-        player.teleport(location.add(0.0D, 1.0D, 0.0D));
+		
+		return new CraftTown(plugin.getServer().getOfflinePlayer(uuid), location);
 	}
 	
 	public Location findNextEmptyTown()
@@ -80,7 +91,7 @@ public class TownManager
 		
 		for(;;)
 		{
-			Block block = plugin.getTownWorld().getBlockAt(x * Town.TOWN_FULL_DIAMATER, 49, z * Town.TOWN_FULL_DIAMATER);
+			Block block = plugin.getTownWorld().getBlockAt(x * Town.TOWN_FULL_DIAMATER, Town.Y, z * Town.TOWN_FULL_DIAMATER);
 			
 			if(block.getType().isAir())
 			{
@@ -97,5 +108,10 @@ public class TownManager
 			x += dx;
 			z += dz;
 		}
+	}
+	
+	public Town getTown(UUID uuid)
+	{
+		return this.towns.get(uuid);
 	}
 }

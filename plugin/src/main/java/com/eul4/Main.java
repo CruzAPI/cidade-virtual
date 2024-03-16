@@ -12,6 +12,7 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginBundleBaseName;
+import com.eul4.listener.TownListener;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.service.TownManager;
 import com.eul4.type.player.PluginCommonPlayerType;
@@ -45,6 +46,7 @@ public class Main extends Common
 		
 		registerResourceBundles();
 		registerCommands();
+		registerListeners();
 		
 		getLogger().info("Plugin enabled.");
 	}
@@ -55,6 +57,11 @@ public class Main extends Common
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("admin").setExecutor(new AdminCommand(this));
 		getCommand("build").setExecutor(new BuildCommand(this));
+	}
+	
+	private void registerListeners()
+	{
+		getServer().getPluginManager().registerEvents(new TownListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)

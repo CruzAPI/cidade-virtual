@@ -6,4 +6,5 @@ import com.eul4.model.town.Town;
 public interface TownPlayer extends CommonPlayer
 {
 	Town getTown();
+	boolean hasTown();
 }

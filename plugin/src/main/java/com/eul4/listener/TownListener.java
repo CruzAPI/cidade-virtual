@@ -5,6 +5,7 @@ import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +36,6 @@ public class TownListener implements Listener
 		{
 			return;
 		}
-		
 		town.findTownBlock(block)
 				.ifPresent(townBlock -> event.setCancelled(!townBlock.canBuild()));
 	}

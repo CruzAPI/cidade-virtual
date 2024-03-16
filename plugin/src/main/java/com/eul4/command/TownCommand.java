@@ -2,6 +2,7 @@ package com.eul4.command;
 
 import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.model.town.Town;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -35,7 +36,8 @@ public class TownCommand implements TabExecutor
 			@NotNull String alias,
 			@NotNull String[] args)
 	{
-		if(!(commandSender instanceof Player player))
+		if(!(commandSender instanceof Player player)
+			)
 		{
 			return true;
 		}
@@ -44,7 +46,8 @@ public class TownCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			plugin.getTownManager().createNewTown(player);
+			Town town = plugin.getTownManager().getOrCreateNewTown(player.getUniqueId());
+			player.teleport(town.getLocation().add(0.0D, 1.0D, 0.0D));
 		}
 		else
 		{

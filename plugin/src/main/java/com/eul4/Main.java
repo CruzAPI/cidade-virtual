@@ -1,13 +1,12 @@
 package com.eul4;
 
-import com.eul4.common.command.AdminCommand;
-import com.eul4.common.command.BuildCommand;
 import com.eul4.command.TestCommand;
 import com.eul4.command.TownCommand;
 import com.eul4.common.Common;
+import com.eul4.common.command.AdminCommand;
+import com.eul4.common.command.BuildCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
-import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.common.type.player.PlayerType;

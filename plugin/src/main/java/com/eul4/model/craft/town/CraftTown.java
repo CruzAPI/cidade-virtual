@@ -37,4 +37,6 @@ public class CraftTown implements Town
 	{
 		return Optional.ofNullable(getTownBlock(block));
 	}
+
+
 }

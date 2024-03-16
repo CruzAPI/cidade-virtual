@@ -2,13 +2,29 @@ package com.eul4.service;
 
 import com.eul4.Main;
 import com.eul4.model.town.Town;
+import com.fastasyncworldedit.core.FaweAPI;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.command.SchematicCommands;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 public class TownManager
@@ -18,20 +34,41 @@ public class TownManager
 	public void createNewTown(Player player)
 	{
 		Location location = findNextEmptyTown();
-		
-		for(int x = -Town.TOWN_FULL_RADIUS; x <= Town.TOWN_FULL_RADIUS; x++)
-		{
-			for(int z = -Town.TOWN_FULL_RADIUS; z <= Town.TOWN_FULL_RADIUS; z++)
-			{
-				Material type = Math.abs(x) <= Town.TOWN_RADIUS && Math.abs(z) <= Town.TOWN_RADIUS
-						? Material.WHITE_WOOL
-						: Material.BLACK_WOOL;
-				
-				location.getBlock().getRelative(x, 0, z).setType(type);
+		BlockVector3 to = BlockVector3.at(location.getX(), location.getY(), location.getZ());
+
+		try {
+			Bukkit.broadcastMessage("message");
+			File file = new File("plugins/FastAsyncWorldEdit/schematics", "basis.schem");
+
+			var world = FaweAPI.getWorld(plugin.getTownWorld().getName());
+
+			ClipboardFormat format = ClipboardFormats.findByFile(file);
+			ClipboardReader reader = null;
+			try {
+				reader = format.getReader(new FileInputStream(file));
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		}
-		
-		player.teleport(location.add(0.0D, 1.0D, 0.0D));
+			Clipboard clipboard = null;
+			try {
+				clipboard = reader.read();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1)) {
+				Operation operation = new ClipboardHolder(clipboard)
+						.createPaste(editSession)
+						.to(to)
+						.ignoreAirBlocks(false)
+						.build();
+				Operations.complete(operation);
+			}
+
+			player.sendMessage("Esquemática carregada com sucesso!");
+		} catch (WorldEditException e) {
+            throw new RuntimeException(e);
+        }
+        player.teleport(location.add(0.0D, 1.0D, 0.0D));
 	}
 	
 	public Location findNextEmptyTown()
@@ -43,7 +80,7 @@ public class TownManager
 		
 		for(;;)
 		{
-			Block block = plugin.getTownWorld().getBlockAt(x * Town.TOWN_FULL_DIAMATER, 50, z * Town.TOWN_FULL_DIAMATER);
+			Block block = plugin.getTownWorld().getBlockAt(x * Town.TOWN_FULL_DIAMATER, 49, z * Town.TOWN_FULL_DIAMATER);
 			
 			if(block.getType().isAir())
 			{

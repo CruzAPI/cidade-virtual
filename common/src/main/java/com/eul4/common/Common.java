@@ -11,6 +11,7 @@ import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.common.type.player.CraftCommonPlayerType;
 import com.eul4.common.type.player.PlayerType;
 import lombok.Getter;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Locale;
@@ -45,7 +46,10 @@ public abstract class Common extends JavaPlugin
 	
 	private void registerListeners()
 	{
-		getServer().getPluginManager().registerEvents(new PlayerManagerListener(this), this);
+		final PluginManager pluginManager = getServer().getPluginManager();
+		
+		pluginManager.registerEvents(new PlayerManagerListener(this), this);
+		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 	}
 	
 	@Override

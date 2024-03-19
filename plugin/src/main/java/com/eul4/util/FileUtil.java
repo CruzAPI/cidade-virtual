@@ -1,9 +1,6 @@
 package com.eul4.util;
 
-import org.codehaus.plexus.util.FileUtils;
-
 import java.io.File;
-import java.io.IOException;
 
 public class FileUtil
 {

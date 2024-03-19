@@ -42,7 +42,7 @@ public class TownManager
 	{
 		Location location = findNextEmptyTown();
 		BlockVector3 to = BlockVector3.at(location.getX(), location.getY() + 1, location.getZ());
-
+		
 		try {
 			File file = new File("plugins/FastAsyncWorldEdit/schematics", "basis.schem");
 
@@ -73,7 +73,7 @@ public class TownManager
             throw new RuntimeException(e);
         }
 		
-		return new CraftTown(plugin.getServer().getOfflinePlayer(uuid), location);
+		return new CraftTown(plugin.getServer().getOfflinePlayer(uuid), location, plugin);
 	}
 	
 	public Location findNextEmptyTown()

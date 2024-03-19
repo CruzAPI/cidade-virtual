@@ -13,4 +13,5 @@ public interface CommonPlayer extends Messageable
 	Common getPlugin();
 	UUID getUniqueId();
 	void reset();
+//	void sendPacket(Pakcet)
 }

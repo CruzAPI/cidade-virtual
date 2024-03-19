@@ -38,7 +38,7 @@ public class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public void sendMessage(Message message, Object... args)
 	{
-		player.sendMessage(message.translate(locale, args));
+		player.spigot().sendMessage(message.translate(locale, args));
 	}
 	
 	@Override

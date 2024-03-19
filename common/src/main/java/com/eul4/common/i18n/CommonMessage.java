@@ -1,7 +1,9 @@
 package com.eul4.common.i18n;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
@@ -10,21 +12,21 @@ public class CommonMessage extends Message
 {
 	public static final CommonMessage
 	
-	USAGE = new CommonMessage("usage", Component.empty().color(NamedTextColor.RED));
+	USAGE = new CommonMessage("usage", new ComponentBuilder().color(ChatColor.RED).build());
 	
 	private CommonMessage(String key)
 	{
 		super(CommonBundleBaseName.COMMON, key);
 	}
 	
-	private CommonMessage(String key, Component baseComponent)
+	private CommonMessage(String key, BaseComponent baseComponent)
 	{
 		super(CommonBundleBaseName.COMMON, key, baseComponent);
 	}
 	
 	private CommonMessage(String key,
-			Component baseComponent,
-			BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
+			BaseComponent baseComponent,
+			BiFunction<ResourceBundle, Object[], BaseComponent[]> componentBiFunction)
 	{
 		super(CommonBundleBaseName.COMMON, key, baseComponent, componentBiFunction);
 	}
@@ -34,15 +36,15 @@ public class CommonMessage extends Message
 		super(bundleBaseName, key);
 	}
 	
-	private CommonMessage(BundleBaseName bundleBaseName, String key, Component baseComponent)
+	private CommonMessage(BundleBaseName bundleBaseName, String key, BaseComponent baseComponent)
 	{
 		super(bundleBaseName, key, baseComponent);
 	}
 	
 	private CommonMessage(BundleBaseName bundleBaseName,
 			String key,
-			Component baseComponent,
-			BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
+			BaseComponent baseComponent,
+			BiFunction<ResourceBundle, Object[], BaseComponent[]> componentBiFunction)
 	{
 		super(bundleBaseName, key, baseComponent, componentBiFunction);
 	}

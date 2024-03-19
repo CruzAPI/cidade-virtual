@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
 @Getter
@@ -22,7 +21,7 @@ public class CommonPlayerReregisterEvent extends Event
 	}
 	
 	@Override
-	public @NotNull HandlerList getHandlers()
+	public HandlerList getHandlers()
 	{
 		return HANDLER;
 	}

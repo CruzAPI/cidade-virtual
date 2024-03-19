@@ -1,6 +1,7 @@
 package com.eul4.common.i18n;
 
-import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -14,26 +15,26 @@ public abstract class Message
 	
 	private final BundleBaseName bundleBaseName;
 	private final String key;
-	private final Component baseComponent;
-	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;
+	private final BaseComponent baseComponent;
+	private final BiFunction<ResourceBundle, Object[], BaseComponent[]> componentBiFunction;
 	
 	protected Message(BundleBaseName bundleBaseName,
 			String key)
 	{
-		this(bundleBaseName, key, Component.empty());
+		this(bundleBaseName, key, new TextComponent());
 	}
 	
 	protected Message(BundleBaseName bundleBaseName,
 			String key,
-			Component baseComponent)
+			BaseComponent baseComponent)
 	{
-		this(bundleBaseName, key, baseComponent, (bundle, args) -> new Component[0]);
+		this(bundleBaseName, key, baseComponent, (bundle, args) -> new BaseComponent[0]);
 	}
 	
 	protected Message(BundleBaseName bundleBaseName,
 			String key,
-			Component baseComponent,
-			BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
+			BaseComponent baseComponent,
+			BiFunction<ResourceBundle, Object[], BaseComponent[]> componentBiFunction)
 	{
 		this.bundleBaseName = bundleBaseName;
 		this.key = key;
@@ -47,26 +48,24 @@ public abstract class Message
 		return bundle.getString(key);
 	}
 	
-	public Component translate(Locale locale, Object... args)
+	public BaseComponent translate(Locale locale, Object... args)
 	{
 		final ResourceBundle bundle = ResourceBundleHandler.getBundle(bundleBaseName, locale);
 		final String template = getTemplate(locale);
 		final Matcher matcher = PATTERN.matcher(template);
-		final Component[] extra = componentBiFunction.apply(bundle, args);
-		
-		Component component = baseComponent;
+		final BaseComponent component = baseComponent.duplicate();
+		final BaseComponent[] extra = componentBiFunction.apply(bundle, args);
 		
 		while(matcher.find())
 		{
-			String baseText = matcher.group(1);
-			component = component.append(Component.text(baseText));
+			final String baseText = matcher.group(1);
+			final String index = matcher.group(2);
 			
-			String index = matcher.group(2);
+			component.addExtra(baseText);
 			
 			if(index != null)
 			{
-				int i = Integer.parseInt(index);
-				component = component.append(extra[i]);
+				component.addExtra(extra[Integer.parseInt(index)]);
 			}
 		}
 		

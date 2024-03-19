@@ -1,6 +1,8 @@
 package com.eul4.listener;
 
+//import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.eul4.Main;
+import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -13,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 @RequiredArgsConstructor
@@ -23,6 +26,11 @@ public class TownListener implements Listener
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event)
 	{
+		if(true)
+		{
+			return;
+		}
+		
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		
@@ -79,4 +87,18 @@ public class TownListener implements Listener
 		
 		tile.buy();
 	}
+	
+	@EventHandler
+	public void onEntitySpawn(EntitySpawnEvent event)
+	{
+		int id = event.getEntity().getEntityId();
+		
+		Bukkit.broadcastMessage("event entity id: " + id + " cancelled: " + event.isCancelled());
+	}
+	
+//	@EventHandler
+//	public void onEntityRemove(EntityRemoveFromWorldEvent event)
+//	{
+//		CraftTown.HOLOGRAMS.remove(event.getEntity());
+//	}
 }

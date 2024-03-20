@@ -1,20 +1,9 @@
 plugins {
     id("java")
-    id("io.github.patrick.remapper") version "1.4.0"
 }
 
 group = "com.eul4"
 version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven("https://repo.papermc.io/repository/maven-public/")
-}
-
-dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-}
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
@@ -28,10 +17,10 @@ task("deploy")
         val user = "cruzapi"
         val host = "45.233.112.53"
 
-        val containerName = "cidade-virtual-server"
+        val containerName = "town"
 
         println("Deploying in remote...")
-        val pluginDeployProcess = Runtime.getRuntime().exec("scp ./plugin/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
+        val pluginDeployProcess = Runtime.getRuntime().exec("scp ./plugin/build/libs/*.jar $user@$host:~/cidade-virtual/town/plugins")
 
         if(pluginDeployProcess.waitFor() != 0)
         {

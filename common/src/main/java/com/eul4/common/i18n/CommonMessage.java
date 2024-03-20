@@ -12,7 +12,7 @@ public class CommonMessage extends Message
 {
 	public static final CommonMessage
 	
-	USAGE = new CommonMessage("usage", new ComponentBuilder().color(ChatColor.RED).build());
+	USAGE = new CommonMessage("usage", new ComponentBuilder("").color(ChatColor.RED).create()[0]);
 	
 	private CommonMessage(String key)
 	{

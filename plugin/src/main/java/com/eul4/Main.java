@@ -1,10 +1,7 @@
 package com.eul4;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
 import com.eul4.command.TestCommand;
 import com.eul4.command.TownCommand;
 import com.eul4.common.Common;
@@ -16,7 +13,7 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginBundleBaseName;
-import com.eul4.intercepter.SpawnEntityIntercepter;
+import com.eul4.intercepter.SpawnEntityInterceptor;
 import com.eul4.listener.EntityRegisterListener;
 import com.eul4.listener.TownListener;
 import com.eul4.model.player.TownPlayer;
@@ -25,7 +22,6 @@ import com.eul4.type.player.PluginCommonPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import com.eul4.util.FileUtil;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -45,6 +41,8 @@ public class Main extends Common
 	
 	private EntityRegisterListener entityRegisterListener;
 	
+	private SpawnEntityInterceptor spawnEntityInterceptor;
+	
 	@Override
 	public void onEnable()
 	{
@@ -57,15 +55,15 @@ public class Main extends Common
 		registerResourceBundles();
 		registerCommands();
 		registerListeners();
-		registerPacketIntercepters();
+		registerPacketInterceptors();
 		
 		getLogger().info("Plugin enabled.");
 	}
 	
-	private void registerPacketIntercepters()
+	private void registerPacketInterceptors()
 	{
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-		protocolManager.addPacketListener(new SpawnEntityIntercepter(this));
+		protocolManager.addPacketListener(spawnEntityInterceptor = new SpawnEntityInterceptor(this));
 	}
 	
 	private void registerCommands()
@@ -81,7 +79,7 @@ public class Main extends Common
 		final PluginManager pluginManager = getServer().getPluginManager();
 		
 		pluginManager.registerEvents(new TownListener(this), this);
-		pluginManager.registerEvents(entityRegisterListener = new EntityRegisterListener(), this);
+		pluginManager.registerEvents(entityRegisterListener = new EntityRegisterListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)

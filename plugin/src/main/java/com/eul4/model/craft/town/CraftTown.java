@@ -14,8 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.awt.*;
 import java.util.List;
@@ -26,8 +25,6 @@ import static org.bukkit.block.BlockFace.*;
 @RequiredArgsConstructor
 public class CraftTown implements Town
 {
-	public static final Set<Entity> HOLOGRAMS = new HashSet<>();
-	
 	private final Main plugin;
 	private final OfflinePlayer owner;
 	private final Location location;
@@ -45,7 +42,6 @@ public class CraftTown implements Town
 		this.townBlocks = getInitialTownBlocks();
 		this.townTiles = getInitialTownTiles();
 	}
-	
 	
 	private Map<Block, TownBlock> getInitialTownBlocks()
 	{
@@ -105,8 +101,6 @@ public class CraftTown implements Town
 			z += dz;
 		}
 		
-		Bukkit.broadcastMessage(townTiles.size() + " tiles size");
-		
 		return townTiles;
 	}
 	
@@ -160,12 +154,6 @@ public class CraftTown implements Town
 	{
 		return townTiles.get(location.getBlock()
 				.getRelative(point.x * TownTile.DIAMETER, 0, point.y * TownTile.DIAMETER));
-	}
-	
-	@Override
-	public Set<ArmorStand> getTileHolograms()
-	{
-		return tileHolograms.keySet();
 	}
 	
 	@RequiredArgsConstructor
@@ -274,13 +262,17 @@ public class CraftTown implements Town
 			Location location = block.getLocation().add(0.5D, 1.0D, 0.5D);
 			Location veryAwayLocation = location.clone().add(0.0D, 10_000.0D, 0.0D);
 			
-			ServerLevel serverLevel = ((CraftWorld) location.getWorld()).getHandle();
-			net.minecraft.world.entity.decoration.ArmorStand nmsArmorStand = new net.minecraft.world.entity.decoration.ArmorStand(
-					net.minecraft.world.entity.EntityType.ARMOR_STAND, serverLevel);
+			ServerLevel worldServer = ((CraftWorld) location.getWorld()).getHandle();
+			var nmsArmorStand = new net.minecraft.world.entity.decoration.ArmorStand(worldServer,
+					veryAwayLocation.getX(),
+					veryAwayLocation.getY(),
+					veryAwayLocation.getZ());
+
 			hologram = (ArmorStand) nmsArmorStand.getBukkitEntity();
-			Bukkit.broadcastMessage("nms hologram id: " + hologram.getEntityId());
-			boolean freshEntity = serverLevel.addFreshEntity(nmsArmorStand);
-			Bukkit.broadcastMessage("fresh entity " + freshEntity);
+			
+			plugin.getSpawnEntityInterceptor().register(hologram.getEntityId(), owner.getUniqueId());
+			
+			worldServer.addFreshEntity(nmsArmorStand, CreatureSpawnEvent.SpawnReason.COMMAND);
 			
 			hologram.setMarker(true);
 			hologram.setInvisible(true);
@@ -290,7 +282,6 @@ public class CraftTown implements Town
 			hologram.teleport(location);
 			
 			tileHolograms.put(hologram, this);
-			HOLOGRAMS.add(hologram);
 		}
 		
 		private void removeHologram()

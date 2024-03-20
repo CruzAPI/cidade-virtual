@@ -1,6 +1,6 @@
 name: Plugin
 main: com.eul4.Main
-version: 1.3
+version: 1.6
 author: CruzAPI
 api-version: '1.20'
 depend: [ProtocolLib]

@@ -2,12 +2,10 @@ package com.eul4.model.town;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ArmorStand;
 
 import java.awt.*;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 public interface Town
 {
@@ -22,5 +20,4 @@ public interface Town
 	Optional<TownBlock> findTownBlock(Block block);
 	Location getLocation();
 	TownTile getTile(Point point);
-	Set<ArmorStand> getTileHolograms();
 }

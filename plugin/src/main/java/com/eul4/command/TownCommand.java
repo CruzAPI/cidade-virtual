@@ -36,8 +36,7 @@ public class TownCommand implements TabExecutor
 			@NotNull String alias,
 			@NotNull String[] args)
 	{
-		if(!(commandSender instanceof Player player)
-			)
+		if(!(commandSender instanceof Player player))
 		{
 			return true;
 		}

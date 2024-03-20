@@ -22,7 +22,9 @@ java {
 
 task("deploy")
 {
+    dependsOn("plugin:clean")
     dependsOn("plugin:shadowJar")
+    dependsOn("plugin:remap")
 
     doLast {
         val user = "cruzapi"

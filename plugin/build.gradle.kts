@@ -24,22 +24,30 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 }
 
-tasks.build {
-    dependsOn(tasks.remap)
-}
-
 tasks.remap {
+    shouldRunAfter(tasks.shadowJar)
     version.set("1.20.4")
 }
 
-tasks {
-    named<ShadowJar>("shadowJar") {
-        mergeServiceFiles()
+tasks.shadowJar {
+    shouldRunAfter(tasks.clean)
+    mergeServiceFiles()
 
-        archiveClassifier = null
+    archiveClassifier = null
 
-        dependencies {
-            include(project(":common"))
-        }
+    dependencies {
+        include(project(":common"))
     }
 }
+
+//tasks {
+//    named<ShadowJar>("shadowJar") {
+//        mergeServiceFiles()
+//
+//        archiveClassifier = null
+//
+//        dependencies {
+//            include(project(":common"))
+//        }
+//    }
+//}

@@ -125,6 +125,12 @@ public class Main extends Common
 		getLogger().info("Plugin disabled.");
 	}
 	
+	public File getSchematicsFolder()
+	{
+		return new File("plugins/FastAsyncWorldEdit/schematics");
+	}
+	
+	
 	@Override
 	public PlayerType<TownPlayer> getDefaultPlayerType()
 	{

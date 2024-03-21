@@ -1,5 +1,6 @@
 package com.eul4.model.town;
 
+import com.eul4.Main;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -20,4 +21,5 @@ public interface Town
 	Optional<TownBlock> findTownBlock(Block block);
 	Location getLocation();
 	TownTile getTile(Point point);
+	Main getPlugin();
 }

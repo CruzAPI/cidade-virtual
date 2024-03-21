@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
+import com.eul4.model.town.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
@@ -156,6 +157,12 @@ public class CraftTown implements Town
 				.getRelative(point.x * TownTile.DIAMETER, 0, point.y * TownTile.DIAMETER));
 	}
 	
+	@Override
+	public Main getPlugin()
+	{
+		return plugin;
+	}
+	
 	@RequiredArgsConstructor
 	public class CraftTownTile implements TownTile
 	{
@@ -298,7 +305,7 @@ public class CraftTown implements Town
 	{
 		private final Block block;
 		private boolean available;
-		private boolean hasStructure;
+		private Structure structure;
 		
 		public CraftTownBlock(Block block, boolean available)
 		{
@@ -309,13 +316,13 @@ public class CraftTown implements Town
 		@Override
 		public boolean canBuild()
 		{
-			return available && !hasStructure;
+			return available && !hasStructure();
 		}
 		
 		@Override
 		public boolean hasStructure()
 		{
-			return hasStructure;
+			return structure != null;
 		}
 		
 		@Override
@@ -355,6 +362,18 @@ public class CraftTown implements Town
 			Block tileBlock = centerBlock.getRelative(tileBlockX, 0, tileBlockZ);
 			
 			return townTiles.get(tileBlock);
+		}
+		
+		@Override
+		public Structure getStructure()
+		{
+			return structure;
+		}
+		
+		@Override
+		public void setStructure(Structure structure)
+		{
+			this.structure = structure;
 		}
 	}
 }

@@ -1,6 +1,138 @@
 package com.eul4.model.craft.town.structure;
 
-public class CraftStructure
-{
+import com.eul4.exception.CannotConstructException;
+import com.eul4.model.town.Town;
+import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.Structure;
+import com.fastasyncworldedit.core.FaweAPI;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
+import com.sk89q.worldedit.math.transform.AffineTransform;
+import com.sk89q.worldedit.session.ClipboardHolder;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
+public abstract class CraftStructure implements Structure
+{
+	private final Town town;
+	private final Location location;
+	
+	protected int level = 1;
+	
+	
+	
+	public CraftStructure(Town town, Location location) throws CannotConstructException
+	{
+		this.town = town;
+		this.location = location.getBlock().getLocation();
+		this.location.setY(Town.Y);
+		
+		pasteSchematic();
+	}
+	
+	public void pasteSchematic() throws CannotConstructException
+	{
+		File schematicFile = getSchematicFile();
+		BlockVector3 to = BlockVector3.at(location.getX(), location.getY() + 1, location.getZ());
+		
+		try(FileInputStream fileInputStream = new FileInputStream(schematicFile))
+		{
+			var world = FaweAPI.getWorld(location.getWorld().getName());
+			
+			ClipboardFormat format = ClipboardFormats.findByFile(schematicFile);
+			ClipboardReader reader = format.getReader(fileInputStream);
+			Clipboard clipboard = reader.read();
+			
+			ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard);
+			
+			clipboardHolder.setTransform(new AffineTransform().rotateY(90));
+			
+			final Vector3 rotatedMin = clipboardHolder.getTransform().apply(clipboard.getMinimumPoint().toVector3());
+			final Vector3 rotatedMax = clipboardHolder.getTransform().apply(clipboard.getMaximumPoint().toVector3());
+			final Vector3 origin = clipboardHolder.getTransform().apply(clipboard.getOrigin().toVector3());
+			
+			final int minX = Math.min(rotatedMin.getBlockX(), rotatedMax.getBlockX());
+			final int minZ = Math.min(rotatedMin.getBlockZ(), rotatedMax.getBlockZ());
+			final int maxX = Math.max(rotatedMin.getBlockX(), rotatedMax.getBlockX());
+			final int maxZ = Math.max(rotatedMin.getBlockZ(), rotatedMax.getBlockZ());
+			final int originX = origin.getBlockX();
+			final int originZ = origin.getBlockZ();
+			final int relativeMinX = minX - originX;
+			final int relativeMaxX = maxX - originX;
+			final int relativeMinZ = minZ - originZ;
+			final int relativeMaxZ = maxZ - originZ;
+			
+			Set<TownBlock> townBlocks = new HashSet<>();
+			
+			Bukkit.broadcastMessage(String.format("ABS %s %s %s %s", minX, maxX, minZ, maxZ));
+			Bukkit.broadcastMessage(String.format("ORG %s %s", originX, originZ));
+			Bukkit.broadcastMessage(String.format("REL %s %s %s %s", relativeMinX, relativeMaxX,
+					relativeMinZ, relativeMaxZ));
+			
+			for(int x = relativeMinX; x <= relativeMaxX; x++)
+			{
+				for(int z = relativeMinZ; z <= relativeMaxZ; z++)
+				{
+					TownBlock townBlock = town.getTownBlock(location.getBlock().getRelative(x, 0, z));
+					
+					townBlocks.add(townBlock);
+					
+					if(townBlock == null || !townBlock.canBuild())
+					{
+						throw new CannotConstructException();
+					}
+				}
+			}
+			
+			townBlocks.forEach(townBlock -> townBlock.setStructure(this));
+			
+			try(EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1))
+			{
+				Operations.complete(clipboardHolder
+						.createPaste(editSession)
+						.to(to)
+						.ignoreAirBlocks(false)
+						.build());
+			}
+		}
+		catch(IOException | WorldEditException e)
+		{
+			e.printStackTrace();
+			throw new CannotConstructException();
+		}
+	}
+	
+	@Override
+	public int getLevel()
+	{
+		return level;
+	}
+	
+	@Override
+	public File getSchematicFile()
+	{
+		return new File(town.getPlugin().getSchematicsFolder(), getName() + "_" + level + ".schem");
+	}
+	
+	@Override
+	public String getName()
+	{
+		return getStructureType().getName();
+	}
 }

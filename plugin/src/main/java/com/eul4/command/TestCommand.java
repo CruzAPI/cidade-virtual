@@ -1,6 +1,11 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.StructureType;
+import com.eul4.exception.CannotConstructException;
+import com.eul4.model.player.TownPlayer;
+import com.eul4.model.town.Town;
+import com.eul4.model.town.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -49,8 +54,22 @@ public class TestCommand implements TabExecutor
 		}
 		else if(args.length == 1)
 		{
-			player.sendMessage(plugin.getSpawnEntityInterceptor().entities.size() + " entities.size()");
+			if(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
+			{
+				StructureType structureType = StructureType.valueOf(args[0]);
+				
+				try
+				{
+					Structure structure = structureType.getInstantiation()
+							.newInstance(townPlayer.getTown(), player.getLocation());
+				}
+				catch(CannotConstructException e)
+				{
+					player.sendMessage("cannot construct here!");
+				}
+			}
 		}
+		
 //		Location loc = player.getLocation();
 //		ServerLevel serverLevel = ((CraftWorld) player.getWorld()).getHandle();
 //

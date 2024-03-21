@@ -16,6 +16,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -43,35 +44,50 @@ public class TownManager
 		Location location = findNextEmptyTown();
 		BlockVector3 to = BlockVector3.at(location.getX(), location.getY() + 1, location.getZ());
 		
-		try {
+		try
+		{
 			File file = new File("plugins/FastAsyncWorldEdit/schematics", "basis.schem");
-
+			
 			var world = FaweAPI.getWorld(plugin.getTownWorld().getName());
-
+			
 			ClipboardFormat format = ClipboardFormats.findByFile(file);
 			ClipboardReader reader = null;
-			try {
+			try
+			{
 				reader = format.getReader(new FileInputStream(file));
-			} catch (IOException e) {
+			}
+			catch(IOException e)
+			{
 				e.printStackTrace();
 			}
 			Clipboard clipboard = null;
-			try {
+			try
+			{
 				clipboard = reader.read();
-			} catch (IOException e) {
+				
+				Bukkit.broadcastMessage("widht: " + clipboard.getWidth());
+				Bukkit.broadcastMessage("length: " + clipboard.getLength());
+				Bukkit.broadcastMessage("max X: " + clipboard.getMaximumPoint().getBlockX());
+				Bukkit.broadcastMessage("min X: " + clipboard.getMinimumPoint().getBlockX());
+				Bukkit.broadcastMessage("max Z: " + clipboard.getMaximumPoint().getBlockZ());
+				Bukkit.broadcastMessage("min Z: " + clipboard.getMinimumPoint().getBlockZ());
+				Bukkit.broadcastMessage("origin: " + clipboard.getOrigin());
+			}
+			catch(IOException e)
+			{
 				e.printStackTrace();
 			}
-			try (EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1)) {
-				Operation operation = new ClipboardHolder(clipboard)
-						.createPaste(editSession)
-						.to(to)
-						.ignoreAirBlocks(false)
-						.build();
+			try(EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1))
+			{
+				Operation operation = new ClipboardHolder(clipboard).createPaste(editSession).to(to)
+						.ignoreAirBlocks(false).build();
 				Operations.complete(operation);
 			}
-		} catch (WorldEditException e) {
-            throw new RuntimeException(e);
-        }
+		}
+		catch(WorldEditException e)
+		{
+			throw new RuntimeException(e);
+		}
 		
 		return new CraftTown(plugin.getServer().getOfflinePlayer(uuid), location, plugin);
 	}
@@ -83,9 +99,10 @@ public class TownManager
 		int dx = 0;
 		int dz = -1;
 		
-		for(;;)
+		for(; ; )
 		{
-			Block block = plugin.getTownWorld().getBlockAt(x * Town.TOWN_FULL_DIAMATER, Town.Y, z * Town.TOWN_FULL_DIAMATER);
+			Block block = plugin.getTownWorld()
+					.getBlockAt(x * Town.TOWN_FULL_DIAMATER, Town.Y, z * Town.TOWN_FULL_DIAMATER);
 			
 			if(block.getType().isAir())
 			{

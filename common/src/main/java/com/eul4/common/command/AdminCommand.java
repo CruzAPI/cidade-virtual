@@ -5,6 +5,8 @@ import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,6 +15,9 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
+
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 
 @RequiredArgsConstructor
 public class AdminCommand implements TabExecutor
@@ -45,12 +50,12 @@ public class AdminCommand implements TabExecutor
 		if(commonPlayer instanceof CommonAdmin)
 		{
 			newCommonPlayer = plugin.getPlayerManager().reregister(commonPlayer, plugin.getDefaultCommonPlayerType());
-			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, ChatColor.YELLOW, CommonMessage.PLAYER);
+			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, YELLOW, CommonMessage.PLAYER);
 		}
 		else
 		{
 			newCommonPlayer = plugin.getPlayerManager().reregister(commonPlayer, plugin.getDefaultCommonAdminPlayerType());
-			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, ChatColor.RED, CommonMessage.ADMINISTRATOR);
+			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, RED, CommonMessage.ADMINISTRATOR);
 		}
 		
 		newCommonPlayer.reset();

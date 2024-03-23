@@ -1,12 +1,12 @@
 package com.eul4.common.i18n;
 
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
+import lombok.Getter;
+import net.kyori.adventure.text.Component;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,27 +15,28 @@ public abstract class Message
 	private static final Pattern PATTERN = Pattern.compile("(?=.+)((?:[^{]|(?<=\\\\).)*)(?:\\{([0-9]*)[^}]*\\})?");
 	
 	private final BundleBaseName bundleBaseName;
+	@Getter
 	private final String key;
-	private final BaseComponent baseComponent;
-	private final BiFunction<ResourceBundle, Object[], BaseComponent[]> componentBiFunction;
+	private final Component baseComponent;
+	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;
 	
 	protected Message(BundleBaseName bundleBaseName,
 			String key)
 	{
-		this(bundleBaseName, key, new TextComponent());
+		this(bundleBaseName, key, Component.empty());
 	}
 	
 	protected Message(BundleBaseName bundleBaseName,
 			String key,
-			BaseComponent baseComponent)
+			Component baseComponent)
 	{
-		this(bundleBaseName, key, baseComponent, (bundle, args) -> new BaseComponent[0]);
+		this(bundleBaseName, key, baseComponent, (bundle, args) -> new Component[0]);
 	}
 	
 	protected Message(BundleBaseName bundleBaseName,
 			String key,
-			BaseComponent baseComponent,
-			BiFunction<ResourceBundle, Object[], BaseComponent[]> componentBiFunction)
+			Component baseComponent,
+			BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
 	{
 		this.bundleBaseName = bundleBaseName;
 		this.key = key;
@@ -43,31 +44,47 @@ public abstract class Message
 		this.componentBiFunction = componentBiFunction;
 	}
 	
-	public String getTemplate(Locale locale)
+	public String getTemplate(ResourceBundle bundle)
 	{
-		final ResourceBundle bundle = ResourceBundleHandler.getBundle(bundleBaseName, locale);
 		return bundle.getString(key);
 	}
 	
-	public BaseComponent translate(Locale locale, Object... args)
+	public String getTemplate(Locale locale)
+	{
+		return getTemplate(ResourceBundleHandler.getBundle(bundleBaseName, locale));
+	}
+	
+	public Component translateWord(Locale locale)
+	{
+		return translateWord(locale, UnaryOperator.identity());
+	}
+	
+	public Component translateWord(Locale locale, UnaryOperator<String> operator)
 	{
 		final ResourceBundle bundle = ResourceBundleHandler.getBundle(bundleBaseName, locale);
-		final String template = getTemplate(locale);
+		String translatedWord = bundle.getString(key);
+		return Component.text(operator.apply(translatedWord));
+	}
+	
+	public Component translate(Locale locale, Object... args)
+	{
+		final ResourceBundle bundle = ResourceBundleHandler.getBundle(bundleBaseName, locale);
+		final String template = bundle.getString(key);
 		final Matcher matcher = PATTERN.matcher(template);
-		final BaseComponent component = baseComponent.duplicate();
-		Bukkit.broadcastMessage(baseComponent.getColor().getName());
-		final BaseComponent[] extra = componentBiFunction.apply(bundle, args);
+		final Component[] extra = componentBiFunction.apply(bundle, args);
+		
+		Component component = baseComponent;
 		
 		while(matcher.find())
 		{
 			final String baseText = matcher.group(1);
 			final String index = matcher.group(2);
 			
-			component.addExtra(baseText);
+			component = component.append(Component.text(baseText));
 			
 			if(index != null)
 			{
-				component.addExtra(extra[Integer.parseInt(index)]);
+				component = component.append(extra[Integer.parseInt(index)]);
 			}
 		}
 		

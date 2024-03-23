@@ -8,9 +8,12 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.type.player.CommonPlayerType;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.UUID;
 
 @Getter
@@ -44,7 +47,19 @@ public class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public void sendMessage(Message message, Object... args)
 	{
-		player.spigot().sendMessage(message.translate(locale, args));
+		try
+		{
+			player.sendMessage(message.translate(locale, args));
+		}
+		catch(MissingResourceException e)
+		{
+			player.sendMessage(Component.text("Message not found: " + e.getKey()).color(NamedTextColor.RED));
+		}
+		catch(Exception e)
+		{
+			player.sendMessage(Component.text("Error while sending message: " + message.getKey()).color(NamedTextColor.RED));
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

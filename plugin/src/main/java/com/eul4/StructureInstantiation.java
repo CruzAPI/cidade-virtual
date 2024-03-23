@@ -2,11 +2,13 @@ package com.eul4;
 
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
-import org.bukkit.Location;
+
+import java.io.IOException;
 
 @FunctionalInterface
 public interface StructureInstantiation
 {
-	Structure newInstance(Town town, Location location) throws CannotConstructException;
+	Structure newInstance(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException;
 }

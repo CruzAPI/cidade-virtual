@@ -3,6 +3,7 @@ package com.eul4.model.town;
 import com.eul4.Main;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.Structure;
 
 import java.awt.*;
 import java.util.Map;

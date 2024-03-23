@@ -2,6 +2,7 @@ package com.eul4;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.eul4.command.MoveCommand;
 import com.eul4.command.TestCommand;
 import com.eul4.command.TownCommand;
 import com.eul4.common.Common;
@@ -14,8 +15,7 @@ import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.intercepter.SpawnEntityInterceptor;
-import com.eul4.listener.EntityRegisterListener;
-import com.eul4.listener.TownListener;
+import com.eul4.listener.*;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.service.TownManager;
 import com.eul4.type.player.PluginCommonPlayerType;
@@ -72,6 +72,7 @@ public class Main extends Common
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("admin").setExecutor(new AdminCommand(this));
 		getCommand("build").setExecutor(new BuildCommand(this));
+		getCommand("move").setExecutor(new MoveCommand(this));
 	}
 	
 	private void registerListeners()
@@ -80,6 +81,9 @@ public class Main extends Common
 		
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(entityRegisterListener = new EntityRegisterListener(this), this);
+		pluginManager.registerEvents(new StructureListener(this), this);
+		pluginManager.registerEvents(new StructureGuiListener(this), this);
+		pluginManager.registerEvents(new StructureMoveListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)

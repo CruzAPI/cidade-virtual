@@ -20,6 +20,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -61,11 +62,16 @@ public class TestCommand implements TabExecutor
 				try
 				{
 					Structure structure = structureType.getInstantiation()
-							.newInstance(townPlayer.getTown(), player.getLocation());
+							.newInstance(townPlayer.getTown(),
+									townPlayer.getTown().getTownBlock(player.getLocation().getBlock()));
 				}
 				catch(CannotConstructException e)
 				{
 					player.sendMessage("cannot construct here!");
+				}
+				catch(IOException e)
+				{
+					player.sendMessage("failed to load schematic!!!");
 				}
 			}
 		}

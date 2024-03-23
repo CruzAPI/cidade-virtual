@@ -2,6 +2,7 @@ package com.eul4.common.i18n;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -54,6 +55,7 @@ public abstract class Message
 		final String template = getTemplate(locale);
 		final Matcher matcher = PATTERN.matcher(template);
 		final BaseComponent component = baseComponent.duplicate();
+		Bukkit.broadcastMessage(baseComponent.getColor().getName());
 		final BaseComponent[] extra = componentBiFunction.apply(bundle, args);
 		
 		while(matcher.find())

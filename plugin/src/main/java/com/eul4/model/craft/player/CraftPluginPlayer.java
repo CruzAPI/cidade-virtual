@@ -2,7 +2,7 @@ package com.eul4.model.craft.player;
 
 import com.eul4.Main;
 import com.eul4.common.Common;
-import com.eul4.common.model.craft.player.CraftCommonPlayer;
+import com.eul4.common.model.player.craft.CraftCommonPlayer;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.model.player.PluginPlayer;
 import org.bukkit.entity.Player;

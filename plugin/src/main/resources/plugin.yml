@@ -10,3 +10,4 @@ commands:
   test:
   admin:
   build:
+  move:

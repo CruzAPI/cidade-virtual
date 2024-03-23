@@ -1,6 +1,6 @@
 package com.eul4.common.type.player;
 
-import com.eul4.common.model.craft.player.CraftCommonAdmin;
+import com.eul4.common.model.player.craft.CraftCommonAdmin;
 import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
 import lombok.AccessLevel;

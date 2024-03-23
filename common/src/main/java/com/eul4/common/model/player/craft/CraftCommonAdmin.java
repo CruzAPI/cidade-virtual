@@ -1,7 +1,8 @@
-package com.eul4.common.model.craft.player;
+package com.eul4.common.model.player.craft;
 
 import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
+import org.bukkit.GameMode;
 
 public class CraftCommonAdmin extends CraftCommonPlayer implements CommonAdmin
 {
@@ -10,6 +11,14 @@ public class CraftCommonAdmin extends CraftCommonPlayer implements CommonAdmin
 	public CraftCommonAdmin(CommonPlayer oldCommonPlayer)
 	{
 		super(oldCommonPlayer);
+	}
+	
+	@Override
+	public void reset()
+	{
+		super.reset();
+		
+		player.setGameMode(GameMode.CREATIVE);
 	}
 	
 	@Override

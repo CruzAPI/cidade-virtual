@@ -1,8 +1,9 @@
 package com.eul4.common.model.player;
 
 import com.eul4.common.Common;
+import com.eul4.common.factory.GuiEnum;
 import com.eul4.common.i18n.Messageable;
-import com.eul4.common.type.player.CommonPlayerType;
+import com.eul4.common.model.inventory.Gui;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -13,5 +14,8 @@ public interface CommonPlayer extends Messageable
 	Common getPlugin();
 	UUID getUniqueId();
 	void reset();
-//	void sendPacket(Pakcet)
+	Gui getGui();
+	void openGui(GuiEnum guiEnum);
+	void openGui(Gui gui);
+	void nullifyGui();
 }

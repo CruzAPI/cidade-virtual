@@ -1,6 +1,10 @@
 package com.eul4.model.craft.town;
 
 import com.eul4.Main;
+import com.eul4.exception.CannotConstructException;
+import com.eul4.model.craft.town.structure.CraftDislikeFarm;
+import com.eul4.model.craft.town.structure.CraftLikeFarm;
+import com.eul4.model.craft.town.structure.CraftTownHall;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
@@ -18,6 +22,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.*;
 
@@ -34,7 +39,7 @@ public class CraftTown implements Town
 	private final Map<Block, TownTile> townTiles;
 	private final Map<ArmorStand, TownTile> tileHolograms = new HashMap<>();
 	
-	public CraftTown(OfflinePlayer owner, Location location, Main plugin)
+	public CraftTown(OfflinePlayer owner, Location location, Main plugin) throws CannotConstructException, IOException
 	{
 		this.owner = owner;
 		this.location = location;
@@ -42,6 +47,16 @@ public class CraftTown implements Town
 		
 		this.townBlocks = getInitialTownBlocks();
 		this.townTiles = getInitialTownTiles();
+		
+		TownBlock centerTownBlock = getTownBlock(location.getBlock());
+		Block centerBlock = centerTownBlock.getBlock();
+		
+		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, -3));
+		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, 3));
+		
+		new CraftTownHall(this, centerTownBlock);
+		new CraftLikeFarm(this, likeFarmTownBlock);
+		new CraftDislikeFarm(this, dislikeFarmTownBlock);
 	}
 	
 	private Map<Block, TownBlock> getInitialTownBlocks()
@@ -374,6 +389,12 @@ public class CraftTown implements Town
 		public void setStructure(Structure structure)
 		{
 			this.structure = structure;
+		}
+		
+		@Override
+		public Optional<Structure> findStructure()
+		{
+			return Optional.ofNullable(structure);
 		}
 	}
 }

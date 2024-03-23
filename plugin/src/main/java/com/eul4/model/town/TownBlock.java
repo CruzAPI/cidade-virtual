@@ -1,8 +1,9 @@
 package com.eul4.model.town;
 
-import com.eul4.model.craft.town.structure.CraftStructure;
 import com.eul4.model.town.structure.Structure;
 import org.bukkit.block.Block;
+
+import java.util.Optional;
 
 public interface TownBlock
 {
@@ -17,4 +18,5 @@ public interface TownBlock
 	Structure getStructure();
 	
 	void setStructure(Structure structure);
+	Optional<Structure> findStructure();
 }

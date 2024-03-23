@@ -1,6 +1,7 @@
 package com.eul4.service;
 
 import com.eul4.Main;
+import com.eul4.exception.CannotConstructException;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.town.Town;
 import com.fastasyncworldedit.core.FaweAPI;
@@ -34,12 +35,19 @@ public class TownManager
 	
 	private final Map<UUID, Town> towns = new HashMap<>();
 	
-	public Town getOrCreateNewTown(UUID uuid)
+	public Town getOrCreateNewTown(UUID uuid) throws CannotConstructException, IOException
 	{
-		return towns.computeIfAbsent(uuid, this::createNewTown);
+		if(towns.containsKey(uuid))
+		{
+			return towns.get(uuid);
+		}
+		
+		Town town = createNewTown(uuid);
+		towns.put(uuid, town);
+		return town;
 	}
 	
-	public Town createNewTown(UUID uuid)
+	public Town createNewTown(UUID uuid) throws CannotConstructException, IOException
 	{
 		Location location = findNextEmptyTown();
 		BlockVector3 to = BlockVector3.at(location.getX(), location.getY() + 1, location.getZ());

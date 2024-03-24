@@ -8,7 +8,7 @@ import org.bukkit.Location;
 
 import java.io.IOException;
 
-public class CraftLikeFarm extends CraftStructure
+public class CraftLikeFarm extends CraftFarmStructure
 {
 	public CraftLikeFarm(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{

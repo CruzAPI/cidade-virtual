@@ -3,6 +3,8 @@ package com.eul4.common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.listener.CommonAdminListener;
+import com.eul4.common.listener.CommonPlayerListener;
 import com.eul4.common.listener.GuiListener;
 import com.eul4.common.listener.PlayerManagerListener;
 import com.eul4.common.model.player.CommonAdmin;
@@ -49,6 +51,8 @@ public abstract class Common extends JavaPlugin
 	{
 		final PluginManager pluginManager = getServer().getPluginManager();
 		
+		pluginManager.registerEvents(new CommonAdminListener(this), this);
+		pluginManager.registerEvents(new CommonPlayerListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new GuiListener(this), this);
 	}

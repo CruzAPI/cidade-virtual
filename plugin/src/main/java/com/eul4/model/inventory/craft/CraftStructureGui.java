@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 @Getter
 public class CraftStructureGui extends CraftGui implements StructureGui
 {
-	private final Structure structure;
+	protected final Structure structure;
 	
 	public CraftStructureGui(CommonPlayer commonPlayer, Structure structure)
 	{

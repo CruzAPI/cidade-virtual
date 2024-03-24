@@ -33,7 +33,7 @@ import java.util.UUID;
 
 public abstract class CraftStructure implements Structure
 {
-	private final Town town;
+	protected final Town town;
 	private TownBlock centerTownBlock;
 	
 	protected int level = 1;

@@ -25,19 +25,13 @@ public class AdminCommand implements TabExecutor
 	private final Common plugin;
 	
 	@Override
-	public List<String> onTabComplete(CommandSender commandSender,
-			Command command,
-			String s,
-			String[] strings)
+	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
 	{
 		return Collections.emptyList();
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender commandSender,
-			Command command,
-			String s,
-			String[] strings)
+	public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings)
 	{
 		if(!(commandSender instanceof Player player))
 		{
@@ -45,6 +39,13 @@ public class AdminCommand implements TabExecutor
 		}
 		
 		final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
+		
+		if(!player.isOp())
+		{
+			commonPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
+			return true;
+		}
+		
 		final CommonPlayer newCommonPlayer;
 		
 		if(commonPlayer instanceof CommonAdmin)

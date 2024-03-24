@@ -16,12 +16,16 @@ public class CommonMessage extends Message
 	
 	ADMINISTRATOR = new CommonMessage("administrator"),
 	PLAYER = new CommonMessage("player"),
+	USAGE = new CommonMessage("usage", empty().color(RED)),
 	GAME_MODE_CHANGED = new CommonMessage("player-mode-changed", empty().color(GREEN),
 	(bundle, args) -> new Component[]
 	{
 		((CommonMessage) args[1]).translateWord(bundle.getLocale(), String::toUpperCase).color((TextColor) args[0]),
 	}),
-	USAGE = new CommonMessage("usage", empty().color(RED));
+	COMMAND_BUILD_ENABLED = new CommonMessage("command.build.enabled", empty().color(GREEN)),
+	COMMAND_BUILD_DISABLED = new CommonMessage("command.build.disabled", empty().color(GREEN)),
+	COMMAND_BUILD_NEED_ADMIN = new CommonMessage("command.build.need-admin", empty().color(RED)),
+	YOU_DO_NOT_HAVE_PERMISSION = new CommonMessage("you-do-not-have-permission", empty().color(RED));
 	
 	private CommonMessage(String key)
 	{

@@ -64,6 +64,16 @@ public class Hologram
 		return armorStand;
 	}
 	
+	public void teleport(Location location)
+	{
+		this.location = location;
+		
+		for(int i = 0; i < hologramLines.size(); i++)
+		{
+			hologramLines.get(i).armorStand.teleport(location.clone()
+					.subtract(0.0D, 0.28D * i, 0.0D));
+		}
+	}
 	public class TranslatedHologramLine
 	{
 		private final ArmorStand armorStand;

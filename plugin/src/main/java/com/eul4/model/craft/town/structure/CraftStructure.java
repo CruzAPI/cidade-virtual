@@ -1,8 +1,10 @@
 package com.eul4.model.craft.town.structure;
 
+import com.eul4.common.hologram.Hologram;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.HologramStructure;
 import com.eul4.model.town.structure.Structure;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
@@ -17,6 +19,7 @@ import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -44,6 +47,7 @@ public abstract class CraftStructure implements Structure
 	private Set<TownBlock> townBlocks = new HashSet<>();
 	
 	private final ItemStack item;
+	protected Hologram hologram;
 	
 	public CraftStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
@@ -94,6 +98,12 @@ public abstract class CraftStructure implements Structure
 		}
 		
 		construct(clipboardHolder, centerTownBlock, rotation);
+		
+		if(this instanceof HologramStructure hologramStructure)
+		{
+			hologramStructure.teleportHologram();
+		}
+		
 		isMoving = false;
 	}
 	
@@ -163,11 +173,6 @@ public abstract class CraftStructure implements Structure
 		
 		Set<TownBlock> townBlocks = new HashSet<>();
 		
-		Bukkit.broadcastMessage(String.format("ABS %s %s %s %s", minX, maxX, minZ, maxZ));
-		Bukkit.broadcastMessage(String.format("ORG %s %s", originX, originZ));
-		Bukkit.broadcastMessage(String.format("REL %s %s %s %s", relativeMinX, relativeMaxX,
-				relativeMinZ, relativeMaxZ));
-		
 		for(int x = relativeMinX; x <= relativeMaxX; x++)
 		{
 			for(int z = relativeMinZ; z <= relativeMaxZ; z++)
@@ -204,8 +209,6 @@ public abstract class CraftStructure implements Structure
 					.ignoreAirBlocks(false)
 					.build());
 		}
-		
-		Bukkit.broadcastMessage("successfull construc.");
 		
 		this.centerTownBlock = centerTownBlock;
 		this.rotation = rotation;
@@ -245,5 +248,11 @@ public abstract class CraftStructure implements Structure
 	public ItemStack getItem()
 	{
 		return item;
+	}
+	
+	@Override
+	public Location getLocation()
+	{
+		return centerTownBlock.getBlock().getLocation();
 	}
 }

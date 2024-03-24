@@ -6,6 +6,7 @@ import com.eul4.common.i18n.Messageable;
 import com.eul4.common.model.inventory.Gui;
 import org.bukkit.entity.Player;
 
+import java.util.Locale;
 import java.util.UUID;
 
 public interface CommonPlayer extends Messageable
@@ -18,4 +19,5 @@ public interface CommonPlayer extends Messageable
 	void openGui(GuiEnum guiEnum);
 	void openGui(Gui gui);
 	void nullifyGui();
+	Locale getLocale();
 }

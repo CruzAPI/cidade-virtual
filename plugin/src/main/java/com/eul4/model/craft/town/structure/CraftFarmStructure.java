@@ -1,6 +1,8 @@
 package com.eul4.model.craft.town.structure;
 
+import com.eul4.common.hologram.Hologram;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import org.bukkit.Location;
@@ -12,34 +14,31 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.IOException;
 
 import static org.bukkit.entity.EntityType.ARMOR_STAND;
+import static org.bukkit.entity.EntityType.BAT;
 
 public abstract class CraftFarmStructure extends CraftStructure
 {
 	protected long delayInTicks = 40L;
-	protected long income = 1L;
-	protected long balance;
-	protected long maxBalance = 40L;
+	protected int income = 1;
+	protected int balance;
+	protected int maxBalance = 40;
 	
 //	private long sleepTickTime;
 	
 	private BukkitRunnable generationTask;
-	private ArmorStand hologram;
+	private Hologram hologram;
 	
 	public CraftFarmStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock);
 		
-		scheduleGenerationTaskIfNotScheduledYet();
 		final Block block = centerTownBlock.getBlock();
 		final Location hologramLocation = block.getLocation().add(0.5, 5.0D, 0.5);
+		hologram = new Hologram(town.getPlugin(), hologramLocation);
+		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE1, level);
+		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
 		
-		hologram = (ArmorStand) block.getWorld().spawnEntity(hologramLocation, ARMOR_STAND);
-		hologram.setGravity(false);
-		hologram.setVisible(false);
-		hologram.setMarker(true);
-		hologram.setInvulnerable(true);
-		hologram.setCustomNameVisible(true);
-		hologram.setCustomName(balance + "/" + maxBalance);
+		scheduleGenerationTaskIfNotScheduledYet();
 	}
 	
 	private void scheduleGenerationTaskIfNotScheduledYet()
@@ -70,6 +69,6 @@ public abstract class CraftFarmStructure extends CraftStructure
 	private void generateIncome()
 	{
 		balance = Math.min(maxBalance, balance + income);
-		hologram.setCustomName(balance + "/" + maxBalance);
+		hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
 	}
 }

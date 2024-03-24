@@ -6,6 +6,7 @@ public class ResourceBundleHandler
 {
 	public static final Map<String, ResourceBundle> RESOURCE_BUNDLES = new HashMap<>();
 	public static final Locale[] SUPPORTED_LOCALES = new Locale[] { new Locale("pt", "BR") };
+	public static final Locale DEFAULT_LOCALE = SUPPORTED_LOCALES[0];
 	
 	public static void registerBundle(ResourceBundle bundle)
 	{

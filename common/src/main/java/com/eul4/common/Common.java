@@ -1,8 +1,11 @@
 package com.eul4.common;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.interceptor.HologramTranslatorAdapter;
 import com.eul4.common.listener.CommonAdminListener;
 import com.eul4.common.listener.CommonPlayerListener;
 import com.eul4.common.listener.GuiListener;
@@ -24,6 +27,7 @@ import java.util.ResourceBundle;
 public abstract class Common extends JavaPlugin
 {
 	private PlayerManager playerManager;
+	private HologramTranslatorAdapter hologramTranslatorAdapter;
 	
 	@Override
 	public void onEnable()
@@ -32,8 +36,15 @@ public abstract class Common extends JavaPlugin
 		
 		registerCommonResourceBundles();
 		registerListeners();
+		registerPacketAdapters();
 		
 		getLogger().info("Commons enabled!");
+	}
+	
+	private void registerPacketAdapters()
+	{
+		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+		protocolManager.addPacketListener(hologramTranslatorAdapter = new HologramTranslatorAdapter(this));
 	}
 	
 	private void registerCommonResourceBundles()

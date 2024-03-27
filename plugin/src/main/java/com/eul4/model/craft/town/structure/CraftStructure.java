@@ -1,10 +1,8 @@
 package com.eul4.model.craft.town.structure;
 
-import com.eul4.common.hologram.Hologram;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
-import com.eul4.model.town.structure.HologramStructure;
 import com.eul4.model.town.structure.Structure;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
@@ -18,10 +16,13 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import net.kyori.adventure.text.Component;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -41,13 +42,10 @@ public abstract class CraftStructure implements Structure
 	
 	protected int level = 1;
 	private int rotation;
-	private boolean isMoving;
-	private ClipboardHolder clipboardHolder;
 	
 	private Set<TownBlock> townBlocks = new HashSet<>();
 	
 	private final ItemStack item;
-	protected Hologram hologram;
 	
 	public CraftStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
@@ -56,55 +54,39 @@ public abstract class CraftStructure implements Structure
 		
 		this.item = new ItemStack(Material.STONE);
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(UUID.randomUUID().toString());
+		meta.displayName(Component.text("ttext"));
 		meta.addEnchant(Enchantment.DURABILITY, 1, true);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		
+		var nmsItem = CraftItemStack.asNMSCopy(item);
+		
+		Bukkit.broadcastMessage("before hasTag? " + nmsItem.hasTag());
+		
+		CompoundTag compoundTag = new CompoundTag();
+		compoundTag.putUUID("id", UUID.randomUUID());
+		Bukkit.broadcastMessage("before hasID? " + compoundTag.hasUUID("id"));
+		nmsItem.setTag(compoundTag);
+		Bukkit.broadcastMessage("after create hasTag? " + nmsItem.hasTag());
+		
+		if(nmsItem.hasTag())
+		{
+			Bukkit.broadcastMessage("after create hasId? " + nmsItem.getTag().hasUUID("id"));
+		}
 		item.setItemMeta(meta);
 		
 		construct(loadSchematic(), centerTownBlock, 0);
 	}
 	
 	@Override
-	public void startMove() throws IOException
+	public void startMove() throws IOException, CannotConstructException
 	{
-		if(isMoving)
-		{
-			return;
-		}
-		
-		clipboardHolder = loadSchematic();
-		demolishStructureConstruction(clipboardHolder);
-		isMoving = true;
-	}
-	
-	@Override
-	public void cancelMove() throws CannotConstructException
-	{
-		if(!isMoving)
-		{
-			return;
-		}
-		
-		isMoving = false;
-		construct(clipboardHolder, centerTownBlock, rotation);
+		town.startMovingStructure(this);
 	}
 	
 	@Override
 	public void finishMove(TownBlock centerTownBlock, int rotation) throws CannotConstructException
 	{
-		if(!isMoving)
-		{
-			return;
-		}
-		
-		construct(clipboardHolder, centerTownBlock, rotation);
-		
-		if(this instanceof HologramStructure hologramStructure)
-		{
-			hologramStructure.teleportHologram();
-		}
-		
-		isMoving = false;
+		town.finishMovingStructure(centerTownBlock, rotation);
 	}
 	
 	@Override
@@ -113,7 +95,14 @@ public abstract class CraftStructure implements Structure
 		finishMove(centerTownBlock, rotation);
 	}
 	
-	private void demolishStructureConstruction(ClipboardHolder clipboardHolder)
+	@Override
+	public void cancelMove() throws CannotConstructException
+	{
+		town.cancelMovingStructure();
+	}
+	
+	@Override
+	public void demolishStructureConstruction(ClipboardHolder clipboardHolder)
 	{
 		clipboardHolder.setTransform(new AffineTransform().rotateY(rotation));
 		Clipboard clipboard = clipboardHolder.getClipboard();
@@ -147,7 +136,14 @@ public abstract class CraftStructure implements Structure
 		}
 	}
 	
-	private void construct(ClipboardHolder clipboardHolder, TownBlock centerTownBlock, int rotation)
+	@Override
+	public void construct(ClipboardHolder clipboardHolder) throws CannotConstructException
+	{
+		construct(clipboardHolder, centerTownBlock, rotation);
+	}
+	
+	@Override
+	public void construct(ClipboardHolder clipboardHolder, TownBlock centerTownBlock, int rotation)
 			throws CannotConstructException
 	{
 		Block center = centerTownBlock.getBlock();
@@ -214,7 +210,8 @@ public abstract class CraftStructure implements Structure
 		this.rotation = rotation;
 	}
 	
-	private ClipboardHolder loadSchematic() throws IOException
+	@Override
+	public ClipboardHolder loadSchematic() throws IOException
 	{
 		File schematicFile = getSchematicFile();
 		

@@ -1,6 +1,7 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.exception.CannotConstructException;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,10 @@ public class StructureGuiListener implements Listener
 				Bukkit.broadcastMessage("map size: " + map.size());
 				structureGui.getStructure().startMove();
 				townPlayer.setMovingStructure(structureGui.getStructure());
+			}
+			catch(CannotConstructException e)
+			{
+				player.sendMessage("failed to cancel move");
 			}
 			catch(IOException e)
 			{

@@ -22,12 +22,11 @@ public class StructureMoveListener implements Listener
 	private final Main plugin;
 	
 	@EventHandler
-	public void onBlockPlace(BlockCanBuildEvent e)
+	public void onBlockCanBuild(BlockCanBuildEvent e)
 	{
 		final Player player = e.getPlayer();
 		
-		if(player == null
-				|| !(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer))
+		if(player == null || !(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer))
 		{
 			return;
 		}
@@ -79,7 +78,7 @@ public class StructureMoveListener implements Listener
 			return;
 		}
 		
-		e.setCancelled(true);
+		e.getItemDrop().remove();
 		
 		player.getInventory().removeItemAnySlot(movingStructure.getItem());
 		player.sendMessage("cancel move");

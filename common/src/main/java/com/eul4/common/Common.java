@@ -2,14 +2,13 @@ package com.eul4.common;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.eul4.common.command.AdminCommand;
+import com.eul4.common.command.BuildCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.interceptor.HologramTranslatorAdapter;
-import com.eul4.common.listener.CommonAdminListener;
-import com.eul4.common.listener.CommonPlayerListener;
-import com.eul4.common.listener.GuiListener;
-import com.eul4.common.listener.PlayerManagerListener;
+import com.eul4.common.listener.*;
 import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.service.PlayerManager;
@@ -37,8 +36,15 @@ public abstract class Common extends JavaPlugin
 		registerCommonResourceBundles();
 		registerListeners();
 		registerPacketAdapters();
+		registerCommand();
 		
 		getLogger().info("Commons enabled!");
+	}
+	
+	private void registerCommand()
+	{
+		getCommand("admin").setExecutor(new AdminCommand(this));
+		getCommand("build").setExecutor(new BuildCommand(this));
 	}
 	
 	private void registerPacketAdapters()
@@ -66,6 +72,9 @@ public abstract class Common extends JavaPlugin
 		pluginManager.registerEvents(new CommonPlayerListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new GuiListener(this), this);
+		pluginManager.registerEvents(new FixInventoryVisualBugListener(this), this);
+		pluginManager.registerEvents(new CancelItemDropListener(this), this);
+		pluginManager.registerEvents(new CancelItemMoveListener(this), this);
 	}
 	
 	@Override

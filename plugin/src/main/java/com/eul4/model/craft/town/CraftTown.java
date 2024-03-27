@@ -8,7 +8,9 @@ import com.eul4.model.craft.town.structure.CraftTownHall;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
+import com.eul4.model.town.structure.HologramStructure;
 import com.eul4.model.town.structure.Structure;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
@@ -38,6 +40,8 @@ public class CraftTown implements Town
 	private final Map<Block, TownBlock> townBlocks;
 	private final Map<Block, TownTile> townTiles;
 	private final Map<ArmorStand, TownTile> tileHolograms = new HashMap<>();
+	private Structure movingStructure;
+	private ClipboardHolder movingStructureClipboardHolder;
 	
 	public CraftTown(OfflinePlayer owner, Location location, Main plugin) throws CannotConstructException, IOException
 	{
@@ -118,6 +122,83 @@ public class CraftTown implements Town
 		}
 		
 		return townTiles;
+	}
+	
+	@Override
+	public Structure getMovingStructure()
+	{
+		return movingStructure;
+	}
+	
+	@Override
+	public void setMovingStructure(Structure structure)
+	{
+		this.movingStructure = structure;
+	}
+	
+	@Override
+	public void startMovingStructure(Structure structure) throws IOException, CannotConstructException
+	{
+		if(isMovingStructure())
+		{
+			cancelMovingStructure();
+		}
+		
+		movingStructureClipboardHolder = structure.loadSchematic();
+		structure.demolishStructureConstruction(movingStructureClipboardHolder);
+		movingStructure = structure;
+	}
+	
+	@Override
+	public void cancelMovingStructure() throws CannotConstructException
+	{
+		if(!isMovingStructure())
+		{
+			return;
+		}
+		
+		Structure movingStructure = this.movingStructure;
+		ClipboardHolder movingStructureClipboardHolder = this.movingStructureClipboardHolder;
+		
+		this.movingStructure = null;
+		this.movingStructureClipboardHolder = null;
+		
+		movingStructure.construct(movingStructureClipboardHolder);
+		
+		if(owner.isOnline())
+		{
+			owner.getPlayer().getInventory().removeItemAnySlot(movingStructure.getItem());
+		}
+	}
+	
+	@Override
+	public void finishMovingStructure(TownBlock centerTownBlock, int rotation) throws CannotConstructException
+	{
+		if(!isMovingStructure())
+		{
+			return;
+		}
+		
+		movingStructure.construct(movingStructureClipboardHolder, centerTownBlock, rotation);
+		
+		if(movingStructure instanceof HologramStructure hologramStructure)
+		{
+			hologramStructure.teleportHologram();
+		}
+		
+		if(owner.isOnline())
+		{
+			owner.getPlayer().getInventory().removeItemAnySlot(movingStructure.getItem());
+		}
+		
+		this.movingStructure = null;
+		this.movingStructureClipboardHolder = null;
+	}
+	
+	@Override
+	public boolean isMovingStructure()
+	{
+		return movingStructure != null;
 	}
 	
 	private boolean isInTownBorder(int spiralCount, int x, int z)

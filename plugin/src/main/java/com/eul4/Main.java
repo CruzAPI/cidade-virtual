@@ -70,8 +70,6 @@ public class Main extends Common
 	{
 		getCommand("town").setExecutor(new TownCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
-		getCommand("admin").setExecutor(new AdminCommand(this));
-		getCommand("build").setExecutor(new BuildCommand(this));
 		getCommand("move").setExecutor(new MoveCommand(this));
 	}
 	

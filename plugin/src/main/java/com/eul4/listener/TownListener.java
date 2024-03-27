@@ -1,7 +1,5 @@
 package com.eul4.listener;
 
-//import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
-
 import com.eul4.Main;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
@@ -24,11 +22,6 @@ public class TownListener implements Listener
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-		if(true)
-		{
-			return;
-		}
-		
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		
@@ -45,6 +38,7 @@ public class TownListener implements Listener
 		{
 			return;
 		}
+		
 		town.findTownBlock(block)
 				.ifPresent(townBlock -> event.setCancelled(!townBlock.canBuild()));
 	}
@@ -85,10 +79,4 @@ public class TownListener implements Listener
 		
 		tile.buy();
 	}
-	
-//	@EventHandler
-//	public void onEntityRemove(EntityRemoveFromWorldEvent event)
-//	{
-//		CraftTown.HOLOGRAMS.remove(event.getEntity());
-//	}
 }

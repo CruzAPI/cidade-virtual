@@ -74,6 +74,10 @@ public class MoveCommand implements TabExecutor
 				structure.startMove();
 				townPlayer.setMovingStructure(structure);
 			}
+			catch(CannotConstructException e)
+			{
+				player.sendMessage("failed to cancel move");
+			}
 			catch(IOException e)
 			{
 				player.sendMessage("schem not found");

@@ -33,12 +33,19 @@ public abstract class Common extends JavaPlugin
 	{
 		playerManager = new PlayerManager(this);
 		
+		loadServices();
+		
 		registerCommonResourceBundles();
 		registerListeners();
 		registerPacketAdapters();
 		registerCommand();
 		
 		getLogger().info("Commons enabled!");
+	}
+	
+	private void loadServices()
+	{
+	
 	}
 	
 	private void registerCommand()

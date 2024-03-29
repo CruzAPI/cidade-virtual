@@ -6,18 +6,16 @@ import com.eul4.command.MoveCommand;
 import com.eul4.command.TestCommand;
 import com.eul4.command.TownCommand;
 import com.eul4.common.Common;
-import com.eul4.common.command.AdminCommand;
-import com.eul4.common.command.BuildCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.service.*;
 import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.intercepter.SpawnEntityInterceptor;
 import com.eul4.listener.*;
 import com.eul4.model.player.TownPlayer;
-import com.eul4.service.TownManager;
 import com.eul4.type.player.PluginCommonPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import com.eul4.util.FileUtil;
@@ -43,6 +41,12 @@ public class Main extends Common
 	
 	private SpawnEntityInterceptor spawnEntityInterceptor;
 	
+	private BlockDataSerializer blockDataSerializer;
+	private BlockChunkToShortCoordinateSerializer blockChunkToShortCoordinateSerializer;
+	private BlockDataMapSerializer blockDataMapSerializer;
+	private BlockDataLoader blockDataLoader;
+	private DataFileManager dataFileManager;
+	
 	@Override
 	public void onEnable()
 	{
@@ -51,6 +55,7 @@ public class Main extends Common
 		townManager = new TownManager(this);
 		
 		loadWorlds();
+		loadServices();
 		
 		registerResourceBundles();
 		registerCommands();
@@ -58,6 +63,15 @@ public class Main extends Common
 		registerPacketInterceptors();
 		
 		getLogger().info("Plugin enabled.");
+	}
+	
+	private void loadServices()
+	{
+		blockDataSerializer = new BlockDataSerializer();
+		blockChunkToShortCoordinateSerializer = new BlockChunkToShortCoordinateSerializer();
+		blockDataMapSerializer = new BlockDataMapSerializer(this);
+		dataFileManager = new DataFileManager(this);
+		blockDataLoader = new BlockDataLoader(this);
 	}
 	
 	private void registerPacketInterceptors()
@@ -77,11 +91,12 @@ public class Main extends Common
 	{
 		final PluginManager pluginManager = getServer().getPluginManager();
 		
-		pluginManager.registerEvents(new TownListener(this), this);
+		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(entityRegisterListener = new EntityRegisterListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);
 		pluginManager.registerEvents(new StructureMoveListener(this), this);
+		pluginManager.registerEvents(new TownListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)

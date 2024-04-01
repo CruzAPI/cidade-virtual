@@ -2,6 +2,7 @@ package com.eul4;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.eul4.command.BalanceCommand;
 import com.eul4.command.MoveCommand;
 import com.eul4.command.TestCommand;
 import com.eul4.command.TownCommand;
@@ -79,6 +80,7 @@ public class Main extends Common
 	
 	private void registerCommands()
 	{
+		getCommand("balance").setExecutor(new BalanceCommand(this));
 		getCommand("town").setExecutor(new TownCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("move").setExecutor(new MoveCommand(this));

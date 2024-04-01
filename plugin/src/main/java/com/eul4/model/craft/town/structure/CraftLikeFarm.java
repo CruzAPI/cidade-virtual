@@ -21,6 +21,24 @@ public class CraftLikeFarm extends CraftFarmStructure
 	}
 	
 	@Override
+	public int getTownBalanceLimit()
+	{
+		return town.getLikeLimit();
+	}
+	
+	@Override
+	public int getTownBalance()
+	{
+		return town.getLikes();
+	}
+	
+	@Override
+	public void setTownBalance(int balance)
+	{
+		town.setCappedLikes(balance);
+	}
+	
+	@Override
 	public StructureType getStructureType()
 	{
 		return StructureType.LIKE_FARM;

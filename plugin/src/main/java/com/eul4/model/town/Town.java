@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface Town extends Externalizable
 {
@@ -48,4 +49,15 @@ public interface Town extends Externalizable
 	Map<Block, TownTile> getTownTiles();
 	
 	void load();
+	
+	Map<UUID, Structure> getStructures();
+	
+	int getLikes();
+	int getLikeLimit();
+	int getDislikes();
+	int getDislikeLimit();
+	
+	void setCappedLikes(int likes);
+	
+	void setCappedDislikes(int dislikes);
 }

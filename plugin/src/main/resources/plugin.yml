@@ -5,6 +5,7 @@ author: CruzAPI
 api-version: '1.20'
 depend: [ProtocolLib]
 commands:
+  balance:
   town:
     aliases: [cidade, home, casa]
   test:

@@ -87,30 +87,36 @@ public class TownSerializer
 		}
 	}
 	
-	public Set<Structure> readStructures(Town town, ObjectInput in) throws IOException, ClassNotFoundException
+	public Map<UUID, Structure> readStructures(Town town, ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		int size = in.readInt();
 		
-		Set<Structure> structures = new HashSet<>();
+		Map<UUID, Structure> structures = new HashMap<>();
 		
 		for(int i = 0; i < size; i++)
 		{
-			structures.add(readStructure(town, in));
+			structures.put((UUID) in.readObject(), readStructure(town, in));
 		}
 		
 		return structures;
 	}
 	
+	public Structure readStructureReference(Town town, ObjectInput in) throws IOException, ClassNotFoundException
+	{
+		UUID uuid = (UUID) in.readObject();
+		plugin.getServer().getLogger().warning("UUID read: " + uuid);
+		return town.getStructures().get(uuid);
+	}
+	
+	public void writeStructureReference(Structure structure, ObjectOutput out) throws IOException
+	{
+		plugin.getServer().getLogger().warning("UUID write: " + (structure == null ? null : structure.getUUID()));
+		out.writeObject(structure == null ? null : structure.getUUID());
+	}
+	
 	private Structure readStructure(Town town, ObjectInput in) throws IOException, ClassNotFoundException
 	{
-		String structureTypeName = in.readUTF();
-		
-		if(structureTypeName.isEmpty())
-		{
-			return null;
-		}
-		
-		StructureType structureType = StructureType.valueOf(structureTypeName);
+		StructureType structureType = StructureType.valueOf(in.readUTF());
 		Structure structure = structureType.getNewStructureTown().apply(town);
 		
 		structure.readExternal(in);
@@ -118,24 +124,19 @@ public class TownSerializer
 		return structure;
 	}
 	
-	public void writeStructures(Set<Structure> structures, ObjectOutput out) throws IOException
+	public void writeStructures(Map<UUID, Structure> structures, ObjectOutput out) throws IOException
 	{
 		out.writeInt(structures.size());
 		
-		for(Structure structure : structures)
+		for(Map.Entry<UUID, Structure> entry : structures.entrySet())
 		{
-			writeStructure(structure, out);
+			out.writeObject(entry.getKey());
+			writeStructure(entry.getValue(), out);
 		}
 	}
 	
 	private void writeStructure(Structure structure, ObjectOutput out) throws IOException
 	{
-		if(structure == null)
-		{
-			out.writeUTF("");
-			return;
-		}
-		
 		out.writeUTF(structure.getStructureType().name());
 		structure.writeExternal(out);
 	}

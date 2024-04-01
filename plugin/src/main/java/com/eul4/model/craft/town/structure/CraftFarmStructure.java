@@ -23,7 +23,6 @@ public abstract class CraftFarmStructure extends CraftStructure implements FarmS
 	private static final long serialVersionUID = 1L;
 	
 	protected long delayInTicks = 40L;
-	protected int income = 1;
 	protected int balance;
 	protected int maxBalance = 40;
 	
@@ -61,7 +60,6 @@ public abstract class CraftFarmStructure extends CraftStructure implements FarmS
 		if(version == 1L)
 		{
 			delayInTicks = in.readLong();
-			income = in.readInt();
 			balance = in.readInt();
 			maxBalance = in.readInt();
 			hologram = (Hologram) in.readObject();
@@ -81,7 +79,6 @@ public abstract class CraftFarmStructure extends CraftStructure implements FarmS
 		out.writeLong(serialVersionUID);
 		
 		out.writeLong(delayInTicks);
-		out.writeInt(income);
 		out.writeInt(balance);
 		out.writeInt(maxBalance);
 		out.writeObject(hologram);
@@ -115,9 +112,40 @@ public abstract class CraftFarmStructure extends CraftStructure implements FarmS
 	
 	private void generateIncome()
 	{
-		balance = Math.min(maxBalance, balance + income);
+		balance = Math.min(maxBalance, balance + getIncome());
+		updateHologram();
+	}
+	
+	private int getIncome()
+	{
+		return town.getOwner().isOnline() ? 2 : 1;
+	}
+	
+	private void updateHologram()
+	{
 		hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
 	}
+	
+	public void collect()
+	{
+		int balanceLimit = getTownBalanceLimit();
+		int balance = getTownBalance();
+		
+		int canReceive = balanceLimit - balance;
+		
+		int toCollect = Math.min(this.balance, canReceive);
+		
+		this.balance -= toCollect;
+		
+		setTownBalance(balance + toCollect);
+		updateHologram();
+	}
+	
+	public abstract int getTownBalanceLimit();
+	
+	public abstract int getTownBalance();
+	
+	public abstract void setTownBalance(int balance);
 	
 	@Override
 	public Hologram getHologram()

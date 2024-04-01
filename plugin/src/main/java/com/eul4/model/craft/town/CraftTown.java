@@ -27,27 +27,31 @@ import java.io.Serial;
 import java.util.*;
 import java.util.function.Consumer;
 
+@Getter
 public class CraftTown implements Town
 {
 	@Serial
 	private static final long serialVersionUID = 1L;
-
+	
 	private UUID ownerUUID;
 	private Location location;
 	
-	@Getter
 	private final Main plugin;
 	
-	@Getter
 	private Map<Block, TownBlock> townBlocks;
 	
-	@Getter
 	private Map<Block, TownTile> townTiles;
-	private Set<Structure> structures;
+	
+	private Map<UUID, Structure> structures;
 	private transient Structure movingStructure;
 	private transient ClipboardHolder movingStructureClipboardHolder;
 	
 	private final transient Consumer<Player> removeMovingStructureItem;
+	
+	private int likes;
+	private int likeLimit;
+	private int dislikes;
+	private int dislikeLimit;
 	
 	public CraftTown(Main plugin)
 	{
@@ -65,17 +69,10 @@ public class CraftTown implements Town
 		
 		this.townBlocks = getInitialTownBlocks();
 		this.townTiles = getInitialTownTiles();
-		this.structures = new HashSet<>();
+		this.structures = getInitialStructures();
 		
-		TownBlock centerTownBlock = getTownBlock(location.getBlock());
-		Block centerBlock = centerTownBlock.getBlock();
-		
-		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, -3));
-		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, 3));
-		
-		structures.add(new CraftTownHall(this, centerTownBlock));
-		structures.add(new CraftLikeFarm(this, likeFarmTownBlock));
-		structures.add(new CraftDislikeFarm(this, dislikeFarmTownBlock));
+		this.likeLimit = 100;
+		this.dislikeLimit = 100;
 	}
 	
 	@Override
@@ -92,7 +89,11 @@ public class CraftTown implements Town
 			townBlocks = townSerializer.readTownBlocks(this, in);
 			townTiles = townSerializer.readTownTiles(this, in);
 			structures = townSerializer.readStructures(this, in);
-//			movingStructure = townSerializer.readStructure(this, in);
+			movingStructure = townSerializer.readStructureReference(this, in);
+			likes = in.readInt();
+			likeLimit = in.readInt();
+			dislikes = in.readInt();
+			dislikeLimit = in.readInt();
 		}
 		else
 		{
@@ -114,7 +115,16 @@ public class CraftTown implements Town
 		townSerializer.writeTownBlocks(townBlocks, out);
 		townSerializer.writeTownTiles(this, out);
 		townSerializer.writeStructures(structures, out);
-//		townSerializer.writeStructure(movingStructure, out);
+		townSerializer.writeStructureReference(movingStructure, out);
+		
+		out.writeInt(likes);
+		plugin.getServer().getLogger().warning("likes: " + likes);
+		out.writeInt(likeLimit);
+		plugin.getServer().getLogger().warning("likeLimit: " + likeLimit);
+		out.writeInt(dislikes);
+		plugin.getServer().getLogger().warning("dislikes: " + dislikes);
+		out.writeInt(dislikeLimit);
+		plugin.getServer().getLogger().warning("dislikeLimit: " + dislikeLimit);
 	}
 	
 	private Map<Block, TownBlock> getInitialTownBlocks()
@@ -176,6 +186,27 @@ public class CraftTown implements Town
 		}
 		
 		return townTiles;
+	}
+	
+	public Map<UUID, Structure> getInitialStructures() throws CannotConstructException, IOException
+	{
+		Map<UUID, Structure> map = new HashMap<>();
+		
+		TownBlock centerTownBlock = getTownBlock(location.getBlock());
+		Block centerBlock = centerTownBlock.getBlock();
+		
+		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, -3));
+		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, 3));
+		
+		CraftTownHall craftTownHall = new CraftTownHall(this, centerTownBlock);
+		CraftLikeFarm craftLikeFarm = new CraftLikeFarm(this, likeFarmTownBlock);
+		CraftDislikeFarm craftDislikeFarm = new CraftDislikeFarm(this, dislikeFarmTownBlock);
+		
+		map.put(craftTownHall.getUUID(), craftTownHall);
+		map.put(craftLikeFarm.getUUID(), craftLikeFarm);
+		map.put(craftDislikeFarm.getUUID(), craftDislikeFarm);
+		
+		return map;
 	}
 	
 	@Override
@@ -310,7 +341,19 @@ public class CraftTown implements Town
 	@Override
 	public void load()
 	{
-		structures.forEach(Structure::load);
+		structures.values().forEach(Structure::load);
 		townTiles.values().forEach(TownTile::load);
+	}
+	
+	@Override
+	public void setCappedLikes(int likes)
+	{
+		this.likes = Math.min(likeLimit, likes);
+	}
+	
+	@Override
+	public void setCappedDislikes(int dislikes)
+	{
+		this.dislikes = Math.min(dislikeLimit, dislikes);
 	}
 }

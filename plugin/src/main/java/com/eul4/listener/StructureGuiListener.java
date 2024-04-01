@@ -5,7 +5,6 @@ import com.eul4.exception.CannotConstructException;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,7 +51,6 @@ public class StructureGuiListener implements Listener
 			{
 				var map = player.getInventory().addItem(structureGui.getStructure().getItem());
 				
-				Bukkit.broadcastMessage("map size: " + map.size());
 				structureGui.getStructure().startMove();
 				townPlayer.setMovingStructure(structureGui.getStructure());
 			}

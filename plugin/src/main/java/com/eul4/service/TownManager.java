@@ -19,7 +19,6 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -123,17 +122,10 @@ public class TownManager
 				e.printStackTrace();
 			}
 			Clipboard clipboard = null;
+			
 			try
 			{
 				clipboard = reader.read();
-				
-				Bukkit.broadcastMessage("widht: " + clipboard.getWidth());
-				Bukkit.broadcastMessage("length: " + clipboard.getLength());
-				Bukkit.broadcastMessage("max X: " + clipboard.getMaximumPoint().getBlockX());
-				Bukkit.broadcastMessage("min X: " + clipboard.getMinimumPoint().getBlockX());
-				Bukkit.broadcastMessage("max Z: " + clipboard.getMaximumPoint().getBlockZ());
-				Bukkit.broadcastMessage("min Z: " + clipboard.getMinimumPoint().getBlockZ());
-				Bukkit.broadcastMessage("origin: " + clipboard.getOrigin());
 			}
 			catch(IOException e)
 			{

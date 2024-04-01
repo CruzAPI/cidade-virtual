@@ -67,6 +67,7 @@ public class TownManager
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
 				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
 		{
+			plugin.getLogger().warning("read size: " + byteArrayInputStream.available());
 			towns = plugin.getTownSerializer().readTowns(in);
 			plugin.getServer().getLogger().warning("Towns loaded: " + towns.size());
 		}
@@ -93,6 +94,7 @@ public class TownManager
 		{
 			plugin.getTownSerializer().writeTowns(out);
 			fileOutputStream.write(byteArrayOutputStream.toByteArray());
+			plugin.getLogger().warning("write size: " + byteArrayOutputStream.toByteArray().length);
 		}
 		catch(IOException e)
 		{

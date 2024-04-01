@@ -20,6 +20,24 @@ public class CraftDislikeFarm extends CraftFarmStructure
 	}
 	
 	@Override
+	public int getTownBalanceLimit()
+	{
+		return town.getDislikeLimit();
+	}
+	
+	@Override
+	public int getTownBalance()
+	{
+		return town.getDislikes();
+	}
+	
+	@Override
+	public void setTownBalance(int balance)
+	{
+		town.setCappedDislikes(balance);
+	}
+	
+	@Override
 	public StructureType getStructureType()
 	{
 		return StructureType.DISLIKE_FARM;

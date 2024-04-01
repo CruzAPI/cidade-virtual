@@ -12,9 +12,11 @@ import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.UUID;
 
 public interface Structure extends Externalizable
 {
+	UUID getUUID();
 	String getName();
 	
 	void demolishStructureConstruction(ClipboardHolder clipboardHolder);

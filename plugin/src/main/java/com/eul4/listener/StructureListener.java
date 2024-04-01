@@ -1,6 +1,7 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.model.craft.town.structure.CraftFarmStructure;
 import com.eul4.model.inventory.craft.CraftStructureGui;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
@@ -31,6 +32,12 @@ public class StructureListener implements Listener
 		{
 			return;
 		}
+		
+		town.findTownBlock(event.getClickedBlock())
+				.flatMap(TownBlock::findStructure)
+				.filter(CraftFarmStructure.class::isInstance)
+				.map(CraftFarmStructure.class::cast)
+				.ifPresent(CraftFarmStructure::collect);
 		
 		town.findTownBlock(event.getClickedBlock())
 				.flatMap(TownBlock::findStructure)

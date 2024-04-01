@@ -33,6 +33,7 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 public abstract class CraftStructure implements Structure
 {
@@ -41,6 +42,9 @@ public abstract class CraftStructure implements Structure
 	
 	@Getter
 	protected final Town town;
+	
+	private UUID uuid;
+	
 	private TownBlock centerTownBlock;
 	
 	protected int level = 1;
@@ -56,6 +60,8 @@ public abstract class CraftStructure implements Structure
 	public CraftStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
 		this(town);
+		
+		this.uuid = UUID.randomUUID();
 		this.centerTownBlock = centerTownBlock;
 		
 		construct(loadSchematic(), centerTownBlock, 0);
@@ -276,6 +282,12 @@ public abstract class CraftStructure implements Structure
 	public Location getLocation()
 	{
 		return centerTownBlock.getBlock().getLocation();
+	}
+	
+	@Override
+	public UUID getUUID()
+	{
+		return uuid;
 	}
 	
 	@Override

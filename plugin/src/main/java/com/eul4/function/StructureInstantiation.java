@@ -1,4 +1,4 @@
-package com.eul4;
+package com.eul4.function;
 
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;

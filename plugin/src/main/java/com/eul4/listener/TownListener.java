@@ -61,7 +61,7 @@ public class TownListener implements Listener
 		{
 			return;
 		}
-
+		
 		final Town town = townPlayer.getTown();
 		final TownBlock townBlock = town.getTownBlock(block);
 		

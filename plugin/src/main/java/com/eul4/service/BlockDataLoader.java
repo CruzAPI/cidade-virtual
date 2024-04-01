@@ -2,7 +2,6 @@ package com.eul4.service;
 
 import com.eul4.Main;
 import com.google.common.io.ByteStreams;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -114,7 +113,6 @@ public class BlockDataLoader
 				if(!isChunkLoaded)
 				{
 					iterator.remove();
-					Bukkit.broadcastMessage("chunk removed! x: " + chunk.getX() + " z: " + chunk.getZ());
 				}
 			}
 			catch(Exception ex)

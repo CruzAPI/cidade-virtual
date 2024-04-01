@@ -2,15 +2,18 @@ package com.eul4.model.town.structure;
 
 import com.eul4.StructureType;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
-public interface Structure
+public interface Structure extends Externalizable
 {
 	String getName();
 	
@@ -37,4 +40,8 @@ public interface Structure
 	Location getLocation();
 	
 	void construct(ClipboardHolder movingStructureClipboardHolder) throws CannotConstructException;
+	
+	void load();
+	
+	Town getTown();
 }

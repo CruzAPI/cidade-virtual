@@ -1,17 +1,23 @@
 package com.eul4.model.town;
 
 import com.eul4.Main;
+import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.structure.Structure;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 import java.awt.*;
+import java.io.Externalizable;
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface Town
+public interface Town extends Externalizable
 {
 	int TOWN_RADIUS = 49;
 	int TOWN_FULL_RADIUS = 55;
@@ -36,4 +42,10 @@ public interface Town
 	
 	boolean isMovingStructure();
 	Structure getMovingStructure();
+	OfflinePlayer getOwner();
+	Optional<Player> getPlayer();
+	
+	Map<Block, TownTile> getTownTiles();
+	
+	void load();
 }

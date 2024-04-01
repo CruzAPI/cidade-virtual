@@ -2,6 +2,7 @@ package com.eul4.common.i18n;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
@@ -9,6 +10,7 @@ import java.util.function.BiFunction;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public class CommonMessage extends Message
 {

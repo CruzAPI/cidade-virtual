@@ -9,13 +9,12 @@ import com.eul4.common.Common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.service.*;
 import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginBundleBaseName;
-import com.eul4.intercepter.SpawnEntityInterceptor;
 import com.eul4.listener.*;
 import com.eul4.model.player.TownPlayer;
+import com.eul4.service.*;
 import com.eul4.type.player.PluginCommonPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import com.eul4.util.FileUtil;
@@ -37,25 +36,22 @@ public class Main extends Common
 	private World cidadeVirtualWorld;
 	private TownManager townManager;
 	
-	private EntityRegisterListener entityRegisterListener;
-	
-	private SpawnEntityInterceptor spawnEntityInterceptor;
-	
 	private BlockDataSerializer blockDataSerializer;
 	private BlockChunkToShortCoordinateSerializer blockChunkToShortCoordinateSerializer;
 	private BlockDataMapSerializer blockDataMapSerializer;
 	private BlockDataLoader blockDataLoader;
 	private DataFileManager dataFileManager;
+	private TownSerializer townSerializer;
 	
 	@Override
 	public void onEnable()
 	{
-		super.onEnable();
-		
-		townManager = new TownManager(this);
-		
 		loadWorlds();
 		loadServices();
+		
+		super.onEnable();
+		
+		townManager.loadTownsOrElse(getServer()::shutdown);
 		
 		registerResourceBundles();
 		registerCommands();
@@ -72,12 +68,13 @@ public class Main extends Common
 		blockDataMapSerializer = new BlockDataMapSerializer(this);
 		dataFileManager = new DataFileManager(this);
 		blockDataLoader = new BlockDataLoader(this);
+		townManager = new TownManager(this);
+		townSerializer = new TownSerializer(this);
 	}
 	
 	private void registerPacketInterceptors()
 	{
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-		protocolManager.addPacketListener(spawnEntityInterceptor = new SpawnEntityInterceptor(this));
 	}
 	
 	private void registerCommands()
@@ -92,11 +89,11 @@ public class Main extends Common
 		final PluginManager pluginManager = getServer().getPluginManager();
 		
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
-		pluginManager.registerEvents(entityRegisterListener = new EntityRegisterListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);
 		pluginManager.registerEvents(new StructureMoveListener(this), this);
 		pluginManager.registerEvents(new TownListener(this), this);
+		pluginManager.registerEvents(new TownSaveListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)
@@ -106,8 +103,6 @@ public class Main extends Common
 	
 	private void loadWorlds()
 	{
-		deleteWorld("town_world");
-
 		WorldCreator wc;
 		
 		wc = new WorldCreator("town_world");

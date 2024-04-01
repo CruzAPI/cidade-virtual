@@ -1,20 +1,20 @@
-package com.eul4.intercepter;
+package com.eul4.common.interceptor;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
-import com.eul4.Main;
+import com.eul4.common.Common;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public class SpawnEntityInterceptor extends PacketAdapter
 {
-	private final Main plugin;
+	private final Common plugin;
 	
 	public final Map<Integer, Set<UUID>> entities = new HashMap<>();
 	
-	public SpawnEntityInterceptor(Main plugin)
+	public SpawnEntityInterceptor(Common plugin)
 	{
 		super(plugin, PacketType.Play.Server.SPAWN_ENTITY);
 		

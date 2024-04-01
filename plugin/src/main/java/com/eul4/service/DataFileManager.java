@@ -20,8 +20,21 @@ public class DataFileManager
 	
 	public File createBlockDataFileIfNotExists(Chunk chunk) throws IOException
 	{
-		final File file = getBlockDataFile(chunk);
-		
+		return createFileIfNotExists(getBlockDataFile(chunk));
+	}
+	
+	public File getTownsFile()
+	{
+		return new File(plugin.getDataFolder(), "towns.dat");
+	}
+	
+	public File createTownsFileIfNotExists() throws IOException
+	{
+		return createFileIfNotExists(getTownsFile());
+	}
+	
+	private File createFileIfNotExists(File file) throws IOException
+	{
 		if(!file.exists())
 		{
 			file.toPath().getParent().toFile().mkdirs();

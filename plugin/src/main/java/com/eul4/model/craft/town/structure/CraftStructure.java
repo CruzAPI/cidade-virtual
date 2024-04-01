@@ -1,9 +1,12 @@
 package com.eul4.model.craft.town.structure;
 
+import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.HologramStructure;
 import com.eul4.model.town.structure.Structure;
+import com.eul4.service.TownSerializer;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -16,27 +19,27 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.minecraft.nbt.CompoundTag;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 public abstract class CraftStructure implements Structure
 {
+	@Serial
+	private static final long serialVersionUID = 1L;
+	
+	@Getter
 	protected final Town town;
 	private TownBlock centerTownBlock;
 	
@@ -45,36 +48,51 @@ public abstract class CraftStructure implements Structure
 	
 	private Set<TownBlock> townBlocks = new HashSet<>();
 	
-	private final ItemStack item;
+	public CraftStructure(Town town)
+	{
+		this.town = town;
+	}
 	
 	public CraftStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		this.town = town;
+		this(town);
 		this.centerTownBlock = centerTownBlock;
 		
-		this.item = new ItemStack(Material.STONE);
-		ItemMeta meta = item.getItemMeta();
-		meta.displayName(Component.text("ttext"));
-		meta.addEnchant(Enchantment.DURABILITY, 1, true);
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		
-		var nmsItem = CraftItemStack.asNMSCopy(item);
-		
-		Bukkit.broadcastMessage("before hasTag? " + nmsItem.hasTag());
-		
-		CompoundTag compoundTag = new CompoundTag();
-		compoundTag.putUUID("id", UUID.randomUUID());
-		Bukkit.broadcastMessage("before hasID? " + compoundTag.hasUUID("id"));
-		nmsItem.setTag(compoundTag);
-		Bukkit.broadcastMessage("after create hasTag? " + nmsItem.hasTag());
-		
-		if(nmsItem.hasTag())
-		{
-			Bukkit.broadcastMessage("after create hasId? " + nmsItem.getTag().hasUUID("id"));
-		}
-		item.setItemMeta(meta);
-		
 		construct(loadSchematic(), centerTownBlock, 0);
+	}
+	
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	{
+		final TownSerializer townSerializer = town.getPlugin().getTownSerializer();
+		
+		final long version = in.readLong();
+		
+		if(version == 1L)
+		{
+			centerTownBlock = Objects.requireNonNull(town.getTownBlock(((BlockSerializable) in.readObject())
+					.getBukkitBlock(town.getPlugin().getServer())));
+			level = in.readInt();
+			rotation = in.readInt();
+			townBlocks = townSerializer.readStructureTownBlocks(this, in);
+		}
+		else
+		{
+			throw new RuntimeException("CraftStructure serial version not found: " + version);
+		}
+	}
+	
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException
+	{
+		final TownSerializer townSerializer = town.getPlugin().getTownSerializer();
+		
+		out.writeLong(serialVersionUID);
+		
+		out.writeObject(new BlockSerializable(centerTownBlock.getBlock()));
+		out.writeInt(level);
+		out.writeInt(rotation);
+		townSerializer.writeStructureTownBlocks(townBlocks, out);
 	}
 	
 	@Override
@@ -244,6 +262,13 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public ItemStack getItem()
 	{
+		ItemStack item = new ItemStack(Material.STONE);
+		ItemMeta meta = item.getItemMeta();
+		meta.displayName(Component.text("ttext"));
+		meta.addEnchant(Enchantment.DURABILITY, 1, true);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		item.setItemMeta(meta);
+		
 		return item;
 	}
 	
@@ -251,5 +276,14 @@ public abstract class CraftStructure implements Structure
 	public Location getLocation()
 	{
 		return centerTownBlock.getBlock().getLocation();
+	}
+	
+	@Override
+	public void load()
+	{
+		if(this instanceof HologramStructure hologramStructure)
+		{
+			hologramStructure.getHologram().load(town.getPlugin());
+		}
 	}
 }

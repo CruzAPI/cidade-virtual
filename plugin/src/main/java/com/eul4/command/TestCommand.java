@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,6 +21,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -86,6 +86,16 @@ public class TestCommand implements TabExecutor
 					+ " br: " + type.getBlastResistance()
 					+ " isBlock: " + type.isBlock()
 					+ " solid: " + type.isSolid());
+		}
+		else if(args.length == 3)
+		{
+			long count = plugin.getEntityRegisterListener().getPersistentEntities().values().stream()
+					.filter(entity -> entity.getWorld() == plugin.getTownWorld())
+					.filter(entity -> entity instanceof ArmorStand)
+					.count();
+			
+			player.sendMessage("count: " + count);
+			player.sendMessage(plugin.getTownManager().getTowns().size() + " towns");
 		}
 		
 		return false;

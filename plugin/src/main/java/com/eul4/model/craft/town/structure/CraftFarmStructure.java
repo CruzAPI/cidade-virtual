@@ -1,6 +1,7 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.common.hologram.Hologram;
+import com.eul4.common.wrapper.VectorSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
@@ -12,33 +13,79 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serial;
 
 public abstract class CraftFarmStructure extends CraftStructure implements FarmStructure
 {
+	@Serial
+	private static final long serialVersionUID = 1L;
+	
 	protected long delayInTicks = 40L;
 	protected int income = 1;
 	protected int balance;
 	protected int maxBalance = 40;
 	
-//	private long sleepTickTime;
+	private transient BukkitRunnable generationTask;
+	private Hologram hologram;
+	private VectorSerializable hologramRelativeVector;
 	
-	private BukkitRunnable generationTask;
-	private final Hologram hologram;
-	private final Vector hologramRelativeLocation;
+	public CraftFarmStructure(Town town)
+	{
+		super(town);
+	}
 	
 	public CraftFarmStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock);
 		
-		hologramRelativeLocation = new Vector(0.5D, 5.0D, 0.5D);
+		hologramRelativeVector = new VectorSerializable(new Vector(0.5D, 5.0D, 0.5D));
 		
 		final Block block = centerTownBlock.getBlock();
-		final Location hologramLocation = block.getLocation().add(hologramRelativeLocation);
+		final Location hologramLocation = block.getLocation().add(hologramRelativeVector.getBukkitVector());
 		hologram = new Hologram(town.getPlugin(), hologramLocation);
 		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE1, level);
 		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
 		
 		scheduleGenerationTaskIfNotScheduledYet();
+	}
+	
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
+	{
+		super.readExternal(in);
+		
+		final long version = in.readLong();
+		
+		if(version == 1L)
+		{
+			delayInTicks = in.readLong();
+			income = in.readInt();
+			balance = in.readInt();
+			maxBalance = in.readInt();
+			hologram = (Hologram) in.readObject();
+			hologramRelativeVector = (VectorSerializable) in.readObject();
+		}
+		else
+		{
+			throw new RuntimeException("CraftFarmStructure serial version not found: " + version);
+		}
+	}
+	
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException
+	{
+		super.writeExternal(out);
+		
+		out.writeLong(serialVersionUID);
+		
+		out.writeLong(delayInTicks);
+		out.writeInt(income);
+		out.writeInt(balance);
+		out.writeInt(maxBalance);
+		out.writeObject(hologram);
+		out.writeObject(hologramRelativeVector);
 	}
 	
 	private void scheduleGenerationTaskIfNotScheduledYet()
@@ -81,6 +128,13 @@ public abstract class CraftFarmStructure extends CraftStructure implements FarmS
 	@Override
 	public Vector getHologramRelativeLocation()
 	{
-		return hologramRelativeLocation;
+		return hologramRelativeVector.getBukkitVector();
+	}
+	
+	@Override
+	public void load()
+	{
+		super.load();
+		scheduleGenerationTaskIfNotScheduledYet();
 	}
 }

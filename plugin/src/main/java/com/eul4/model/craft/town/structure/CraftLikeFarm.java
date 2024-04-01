@@ -10,6 +10,11 @@ import java.io.IOException;
 
 public class CraftLikeFarm extends CraftFarmStructure
 {
+	public CraftLikeFarm(Town town)
+	{
+		super(town);
+	}
+	
 	public CraftLikeFarm(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock);

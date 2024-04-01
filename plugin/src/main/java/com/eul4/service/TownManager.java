@@ -5,6 +5,7 @@ import com.eul4.exception.CannotConstructException;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.town.Town;
 import com.fastasyncworldedit.core.FaweAPI;
+import com.google.common.io.ByteStreams;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
@@ -16,14 +17,13 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -33,7 +33,8 @@ public class TownManager
 {
 	private final Main plugin;
 	
-	private final Map<UUID, Town> towns = new HashMap<>();
+	@Getter
+	private Map<UUID, Town> towns;
 	
 	public Town getOrCreateNewTown(UUID uuid) throws CannotConstructException, IOException
 	{
@@ -45,6 +46,59 @@ public class TownManager
 		Town town = createNewTown(uuid);
 		towns.put(uuid, town);
 		return town;
+	}
+	
+	private void loadTowns() throws IOException, ClassNotFoundException
+	{
+		if(towns != null)
+		{
+			return;
+		}
+		
+		final File file = plugin.getDataFileManager().getTownsFile();
+		
+		if(!file.exists() || file.length() == 0L)
+		{
+			plugin.getServer().getLogger().warning("No towns found to load!");
+			towns = new HashMap<>();
+			return;
+		}
+		
+		try(FileInputStream fileInputStream = new FileInputStream(file);
+				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
+				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
+		{
+			towns = plugin.getTownSerializer().readTowns(in);
+			plugin.getServer().getLogger().warning("Towns loaded: " + towns.size());
+		}
+	}
+	
+	public void loadTownsOrElse(Runnable runnable)
+	{
+		try
+		{
+			loadTowns();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			runnable.run();
+		}
+	}
+	
+	public void saveTowns()
+	{
+		try(FileOutputStream fileOutputStream = new FileOutputStream(plugin.getDataFileManager().createTownsFileIfNotExists());
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
+		{
+			plugin.getTownSerializer().writeTowns(out);
+			fileOutputStream.write(byteArrayOutputStream.toByteArray());
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public Town createNewTown(UUID uuid) throws CannotConstructException, IOException

@@ -14,6 +14,11 @@ public class CraftTownHall extends CraftStructure
 		super(town, centerTownBlock);
 	}
 	
+	public CraftTownHall(Town town)
+	{
+		super(town);
+	}
+	
 	@Override
 	public StructureType getStructureType()
 	{

@@ -8,6 +8,7 @@ import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.interceptor.HologramTranslatorAdapter;
+import com.eul4.common.interceptor.SpawnEntityInterceptor;
 import com.eul4.common.listener.*;
 import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
@@ -28,6 +29,9 @@ public abstract class Common extends JavaPlugin
 	private PlayerManager playerManager;
 	private HologramTranslatorAdapter hologramTranslatorAdapter;
 	
+	private EntityRegisterListener entityRegisterListener;
+	private SpawnEntityInterceptor spawnEntityInterceptor;
+	
 	@Override
 	public void onEnable()
 	{
@@ -39,6 +43,8 @@ public abstract class Common extends JavaPlugin
 		registerListeners();
 		registerPacketAdapters();
 		registerCommand();
+		
+		entityRegisterListener.loadEntities();
 		
 		getLogger().info("Commons enabled!");
 	}
@@ -58,6 +64,7 @@ public abstract class Common extends JavaPlugin
 	{
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 		protocolManager.addPacketListener(hologramTranslatorAdapter = new HologramTranslatorAdapter(this));
+		protocolManager.addPacketListener(spawnEntityInterceptor = new SpawnEntityInterceptor(this));
 	}
 	
 	private void registerCommonResourceBundles()
@@ -75,6 +82,7 @@ public abstract class Common extends JavaPlugin
 	{
 		final PluginManager pluginManager = getServer().getPluginManager();
 		
+		pluginManager.registerEvents(entityRegisterListener = new EntityRegisterListener(this), this);
 		pluginManager.registerEvents(new CommonAdminListener(this), this);
 		pluginManager.registerEvents(new CommonPlayerListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);

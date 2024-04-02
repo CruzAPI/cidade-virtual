@@ -14,8 +14,8 @@ import java.util.function.Supplier;
 @Getter
 public abstract class CraftGui implements Gui
 {
-	private final CommonPlayer commonPlayer;
-	private final Inventory inventory;
+	protected final CommonPlayer commonPlayer;
+	protected final Inventory inventory;
 	
 	protected CraftGui(CommonPlayer commonPlayer, Supplier<Inventory> inventorySupplier)
 	{

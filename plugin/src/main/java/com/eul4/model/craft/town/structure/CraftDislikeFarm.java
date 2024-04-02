@@ -4,10 +4,11 @@ import com.eul4.StructureType;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.DislikeGenerator;
 
 import java.io.IOException;
 
-public class CraftDislikeFarm extends CraftFarmStructure
+public class CraftDislikeFarm extends CraftFarmStructure implements DislikeGenerator
 {
 	public CraftDislikeFarm(Town town)
 	{

@@ -1,7 +1,9 @@
 package com.eul4.model.craft.town.structure;
 
+import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.HologramStructure;
@@ -297,5 +299,11 @@ public abstract class CraftStructure implements Structure
 		{
 			hologramStructure.getHologram().load(town.getPlugin());
 		}
+	}
+	
+	@Override
+	public StructureGui newGui(CommonPlayer commonPlayer)
+	{
+		return getStructureType().getNewStructureGui().apply(commonPlayer, this);
 	}
 }

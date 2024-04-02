@@ -9,4 +9,5 @@ public interface Gui
 	CommonPlayer getCommonPlayer();
 	Inventory getInventory();
 	Common getPlugin();
+	void updateTitle();
 }

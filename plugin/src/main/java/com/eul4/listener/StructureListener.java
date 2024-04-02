@@ -6,6 +6,7 @@ import com.eul4.model.inventory.craft.CraftStructureGui;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,12 +36,7 @@ public class StructureListener implements Listener
 		
 		town.findTownBlock(event.getClickedBlock())
 				.flatMap(TownBlock::findStructure)
-				.filter(CraftFarmStructure.class::isInstance)
-				.map(CraftFarmStructure.class::cast)
-				.ifPresent(CraftFarmStructure::collect);
-		
-		town.findTownBlock(event.getClickedBlock())
-				.flatMap(TownBlock::findStructure)
-				.ifPresent(structure -> townPlayer.openGui(new CraftStructureGui(townPlayer, structure)));
+				.map(structure -> structure.newGui(townPlayer))
+				.ifPresent(townPlayer::openGui);
 	}
 }

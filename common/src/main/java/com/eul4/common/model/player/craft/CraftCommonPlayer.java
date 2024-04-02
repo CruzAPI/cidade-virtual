@@ -11,6 +11,8 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -79,6 +81,7 @@ public class CraftCommonPlayer implements CommonPlayer
 	public void openGui(Gui gui)
 	{
 		player.openInventory(gui.getInventory());
+		gui.updateTitle();
 		this.gui = gui;
 	}
 	
@@ -86,5 +89,23 @@ public class CraftCommonPlayer implements CommonPlayer
 	public void nullifyGui()
 	{
 		this.gui = null;
+	}
+	
+	@Override
+	public Inventory createInventory(InventoryType inventoryType, Message message, Object... args)
+	{
+		return createInventory(inventoryType, message.translate(locale, args));
+	}
+	
+	@Override
+	public Inventory createInventory(InventoryType inventoryType)
+	{
+		return plugin.getServer().createInventory(player, inventoryType);
+	}
+	
+	@Override
+	public Inventory createInventory(InventoryType inventoryType, Component component)
+	{
+		return plugin.getServer().createInventory(player, inventoryType, component);
 	}
 }

@@ -93,6 +93,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);
+		pluginManager.registerEvents(new GeneratorGuiListener(this), this);
 		pluginManager.registerEvents(new StructureMoveListener(this), this);
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);

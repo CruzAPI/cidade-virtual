@@ -4,9 +4,12 @@ import com.eul4.common.hologram.Hologram;
 import com.eul4.common.wrapper.VectorSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
+import com.eul4.model.inventory.StructureGui;
+import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
-import com.eul4.model.town.structure.FarmStructure;
+import com.eul4.model.town.structure.Generator;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,13 +20,16 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serial;
 
-public abstract class CraftFarmStructure extends CraftStructure implements FarmStructure
+public abstract class CraftFarmStructure extends CraftStructure implements Generator
 {
 	@Serial
 	private static final long serialVersionUID = 1L;
 	
 	protected long delayInTicks = 40L;
+	
+	@Getter
 	protected int balance;
+	@Getter
 	protected int maxBalance = 40;
 	
 	private transient BukkitRunnable generationTask;
@@ -114,6 +120,23 @@ public abstract class CraftFarmStructure extends CraftStructure implements FarmS
 	{
 		balance = Math.min(maxBalance, balance + getIncome());
 		updateHologram();
+		updateInventoryView();
+	}
+	
+	private void updateInventoryView()
+	{
+		if(!(town.getPlugin().getPlayerManager().get(town.getOwner().getUniqueId()) instanceof TownPlayer townPlayer))
+		{
+			return;
+		}
+		
+		if(!(townPlayer.getGui() instanceof StructureGui structureGui)
+				|| structureGui.getStructure() != this)
+		{
+			return;
+		}
+		
+		structureGui.updateTitle();
 	}
 	
 	private int getIncome()
@@ -126,6 +149,7 @@ public abstract class CraftFarmStructure extends CraftStructure implements FarmS
 		hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
 	}
 	
+	@Override
 	public void collect()
 	{
 		int balanceLimit = getTownBalanceLimit();

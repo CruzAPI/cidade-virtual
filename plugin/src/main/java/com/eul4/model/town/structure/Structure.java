@@ -1,7 +1,10 @@
 package com.eul4.model.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.model.inventory.StructureGui;
+import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.sk89q.worldedit.session.ClipboardHolder;
@@ -46,4 +49,6 @@ public interface Structure extends Externalizable
 	void load();
 	
 	Town getTown();
+	
+	StructureGui newGui(CommonPlayer commonPlayer);
 }

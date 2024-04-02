@@ -1,6 +1,5 @@
 package com.eul4.common.i18n;
 
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 import java.util.Locale;
@@ -10,81 +9,56 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class Message
+public interface Message
 {
-	private static final Pattern PATTERN = Pattern.compile("(?=.+)((?:[^{]|(?<=\\\\).)*)(?:\\{([0-9]*)[^}]*\\})?");
+	Pattern PATTERN = Pattern.compile("(?=.+)((?:[^{]|(?<=\\\\).)*)(?:\\{([0-9]*)[^}]*\\})?");
 	
-	private final BundleBaseName bundleBaseName;
-	@Getter
-	private final String key;
-	private final Component baseComponent;
-	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;
+	BundleBaseName getBundleBaseName();
+	String getKey();
+	BiFunction<ResourceBundle, Object[], Component[]> getComponentBiFunction();
 	
-	protected Message(BundleBaseName bundleBaseName,
-			String key)
+	default String getTemplate(ResourceBundle bundle)
 	{
-		this(bundleBaseName, key, Component.empty());
+		return bundle.getString(getKey());
 	}
 	
-	protected Message(BundleBaseName bundleBaseName,
-			String key,
-			Component baseComponent)
+	default String getTemplate(Locale locale)
 	{
-		this(bundleBaseName, key, baseComponent, (bundle, args) -> new Component[0]);
+		return getTemplate(ResourceBundleHandler.getBundle(getBundleBaseName(), locale));
 	}
 	
-	protected Message(BundleBaseName bundleBaseName,
-			String key,
-			Component baseComponent,
-			BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
-	{
-		this.bundleBaseName = bundleBaseName;
-		this.key = key;
-		this.baseComponent = baseComponent;
-		this.componentBiFunction = componentBiFunction;
-	}
-	
-	public String getTemplate(ResourceBundle bundle)
-	{
-		return bundle.getString(key);
-	}
-	
-	public String getTemplate(Locale locale)
-	{
-		return getTemplate(ResourceBundleHandler.getBundle(bundleBaseName, locale));
-	}
-	
-	public Component translateWord(Locale locale)
+	default Component translateWord(Locale locale)
 	{
 		return translateWord(locale, UnaryOperator.identity());
 	}
 	
-	public Component translateWord(Locale locale, UnaryOperator<String> operator)
+	default Component translateWord(Locale locale, UnaryOperator<String> operator)
 	{
-		final ResourceBundle bundle = ResourceBundleHandler.getBundle(bundleBaseName, locale);
-		String translatedWord = bundle.getString(key);
+		final ResourceBundle bundle = ResourceBundleHandler.getBundle(getBundleBaseName(), locale);
+		String translatedWord = bundle.getString(getKey());
 		return Component.text(operator.apply(translatedWord));
 	}
 	
-	public Component translate(Locale locale, Object... args)
+	default Component translate(Locale locale, Object... args)
 	{
-		final ResourceBundle bundle = ResourceBundleHandler.getBundle(bundleBaseName, locale);
-		final String template = bundle.getString(key);
+		final ResourceBundle bundle = ResourceBundleHandler.getBundle(getBundleBaseName(), locale);
+		final String template = getTemplate(bundle);
 		final Matcher matcher = PATTERN.matcher(template);
-		final Component[] extra = componentBiFunction.apply(bundle, args);
+		final Component[] components = getComponentBiFunction().apply(bundle, args);
 		
-		Component component = baseComponent;
+		Component component = components[0];
 		
 		while(matcher.find())
 		{
-			final String baseText = matcher.group(1);
-			final String index = matcher.group(2);
-			
+			String baseText = matcher.group(1);
 			component = component.append(Component.text(baseText));
+			
+			String index = matcher.group(2);
 			
 			if(index != null)
 			{
-				component = component.append(extra[Integer.parseInt(index)]);
+				int i = Integer.parseInt(index);
+				component = component.append(components[i + 1]);
 			}
 		}
 		

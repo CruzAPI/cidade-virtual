@@ -28,6 +28,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,22 +63,18 @@ public class TestCommand implements TabExecutor
 			return true;
 		}
 		
+		
+		
 		if(args.length == 0)
 		{
 			player.teleport(plugin.getCidadeVirtualWorld().getSpawnLocation());
 		}
-		else if(args.length == 1)
-		{
-			ItemStack item = new ItemStack(Material.STONE);
-			ItemMeta meta = item.getItemMeta();
-			meta.getPersistentDataContainer().set(CommonNamespacedKey.CANCEL_MOVE,
-					PersistentDataType.BOOLEAN, true);
-			meta.getPersistentDataContainer().set(CommonNamespacedKey.CANCEL_DROP,
-					PersistentDataType.BOOLEAN, true);
-			item.setItemMeta(meta);
-			
-			player.getInventory().addItem(item);
-		}
+//		else if(args.length == 1)
+//		{
+//			PermissionAttachment permissionAttachment = player.addAttachment(plugin, args[0], true);
+//
+//			permissionAttachment.set
+//		}
 		else if(args.length == 2)
 		{
 			Material type = player.getInventory().getItemInMainHand().getType();

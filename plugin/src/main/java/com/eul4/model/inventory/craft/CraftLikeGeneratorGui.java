@@ -6,6 +6,7 @@ import com.eul4.model.town.structure.Generator;
 import com.eul4.model.town.structure.LikeGenerator;
 import com.eul4.model.town.structure.Structure;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.inventory.InventoryType;
 
 public class CraftLikeGeneratorGui extends CraftGeneratorGui
@@ -18,6 +19,7 @@ public class CraftLikeGeneratorGui extends CraftGeneratorGui
 	public CraftLikeGeneratorGui(CommonPlayer commonPlayer, LikeGenerator generator)
 	{
 		super(commonPlayer, generator, commonPlayer.createInventory(InventoryType.HOPPER, PluginMessage.STRUCTURE_GENERATOR_TITLE,
+				NamedTextColor.DARK_GREEN,
 				PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
 				generator.getLevel(),
 				generator.getBalance(),
@@ -30,6 +32,7 @@ public class CraftLikeGeneratorGui extends CraftGeneratorGui
 		Generator generator = (Generator) structure;
 		
 		return PluginMessage.STRUCTURE_GENERATOR_TITLE.translate(commonPlayer.getLocale(),
+				NamedTextColor.DARK_GREEN,
 				PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
 				generator.getLevel(),
 				generator.getBalance(),

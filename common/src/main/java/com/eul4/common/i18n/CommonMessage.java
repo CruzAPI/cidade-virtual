@@ -1,8 +1,8 @@
 package com.eul4.common.i18n;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
@@ -10,57 +10,52 @@ import java.util.function.BiFunction;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
-import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
-public class CommonMessage extends Message
+@Getter
+public enum CommonMessage implements Message
 {
-	public static final CommonMessage
+	ADMINISTRATOR("administrator"),
+	PLAYER("player"),
+	USAGE("usage", empty().color(RED)),
 	
-	ADMINISTRATOR = new CommonMessage("administrator"),
-	PLAYER = new CommonMessage("player"),
-	USAGE = new CommonMessage("usage", empty().color(RED)),
-	GAME_MODE_CHANGED = new CommonMessage("player-mode-changed", empty().color(GREEN),
+	GAME_MODE_CHANGED("player-mode-changed",
 	(bundle, args) -> new Component[]
 	{
+		empty().color(GREEN),
 		((CommonMessage) args[1]).translateWord(bundle.getLocale(), String::toUpperCase).color((TextColor) args[0]),
 	}),
-	COMMAND_BUILD_ENABLED = new CommonMessage("command.build.enabled", empty().color(GREEN)),
-	COMMAND_BUILD_DISABLED = new CommonMessage("command.build.disabled", empty().color(GREEN)),
-	COMMAND_BUILD_NEED_ADMIN = new CommonMessage("command.build.need-admin", empty().color(RED)),
-	YOU_DO_NOT_HAVE_PERMISSION = new CommonMessage("you-do-not-have-permission", empty().color(RED));
 	
-	private CommonMessage(String key)
+	COMMAND_BUILD_ENABLED("command.build.enabled", empty().color(GREEN)),
+	COMMAND_BUILD_DISABLED("command.build.disabled", empty().color(GREEN)),
+	COMMAND_BUILD_NEED_ADMIN("command.build.need-admin", empty().color(RED)),
+	YOU_DO_NOT_HAVE_PERMISSION("you-do-not-have-permission", empty().color(RED)),
+	;
+	
+	private final BundleBaseName bundleBaseName;
+	private final String key;
+	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;
+	
+	CommonMessage(String key)
 	{
-		super(CommonBundleBaseName.COMMON, key);
+		this(key, empty());
 	}
 	
-	private CommonMessage(String key, Component baseComponent)
+	CommonMessage(String key, Component baseComponent)
 	{
-		super(CommonBundleBaseName.COMMON, key, baseComponent);
+		this(key, (bundle, args) -> new Component[] { baseComponent });
 	}
 	
-	private CommonMessage(String key,
-			Component baseComponent,
-			BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
+	CommonMessage(String key, BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
 	{
-		super(CommonBundleBaseName.COMMON, key, baseComponent, componentBiFunction);
+		this(CommonBundleBaseName.COMMON, key, componentBiFunction);
 	}
 	
-	private CommonMessage(BundleBaseName bundleBaseName, String key)
-	{
-		super(bundleBaseName, key);
-	}
-	
-	private CommonMessage(BundleBaseName bundleBaseName, String key, Component baseComponent)
-	{
-		super(bundleBaseName, key, baseComponent);
-	}
-	
-	private CommonMessage(BundleBaseName bundleBaseName,
+	CommonMessage(BundleBaseName bundleBaseName,
 			String key,
-			Component baseComponent,
 			BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
 	{
-		super(bundleBaseName, key, baseComponent, componentBiFunction);
+		this.bundleBaseName = bundleBaseName;
+		this.key = key;
+		this.componentBiFunction = componentBiFunction;
 	}
 }

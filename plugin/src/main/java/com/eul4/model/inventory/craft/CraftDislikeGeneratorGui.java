@@ -19,12 +19,11 @@ public class CraftDislikeGeneratorGui extends CraftGeneratorGui
 	
 	public CraftDislikeGeneratorGui(CommonPlayer commonPlayer, DislikeGenerator generator)
 	{
-		super(commonPlayer, generator, commonPlayer.createInventory(InventoryType.HOPPER, PluginMessage.STRUCTURE_GENERATOR_TITLE,
+		super(commonPlayer, generator, commonPlayer.createInventory(InventoryType.HOPPER,
+				PluginMessage.STRUCTURE_GENERATOR_TITLE,
 				NamedTextColor.DARK_RED,
 				PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME,
-				generator.getLevel(),
-				generator.getBalance(),
-				generator.getMaxBalance()));
+				generator.getLevel()));
 	}
 	
 	@Override
@@ -35,8 +34,6 @@ public class CraftDislikeGeneratorGui extends CraftGeneratorGui
 		return PluginMessage.STRUCTURE_GENERATOR_TITLE.translate(commonPlayer.getLocale(),
 				NamedTextColor.DARK_RED,
 				PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME,
-				generator.getLevel(),
-				generator.getBalance(),
-				generator.getMaxBalance());
+				generator.getLevel());
 	}
 }

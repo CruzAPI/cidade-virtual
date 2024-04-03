@@ -5,6 +5,7 @@ import com.eul4.common.i18n.Message;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.apache.commons.lang.WordUtils;
 
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
@@ -20,6 +21,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 public enum PluginMessage implements Message
 {
 	LEVEL("level"),
+	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_TOWN_HALL_NAME ("structure.town-hall.name"),
 	STRUCTURE_LIKE_GENERATOR_NAME("structure.like-generator.name"),
 	STRUCTURE_DISLIKE_GENERATOR_NAME("structure.dislike-generator.name"),
@@ -30,19 +32,17 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().color((TextColor) args[0]),
-		((Message) args[1]).translateWord(bundle.getLocale(), String::toUpperCase),
-		LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
+		((Message) args[1]).translateWord(bundle.getLocale(), WordUtils::capitalizeFully),
+		ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
 		text((int) args[2]),
-		text((int) args[3]),
-		text((int) args[4]),
 	}),
 	
 	STRUCTURE_TITLE("structure.title",
 	(bundle, args) -> new Component[]
 	{
 		empty(),
-		((Message) args[0]).translateWord(bundle.getLocale(), String::toUpperCase),
-		LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
+		((Message) args[0]).translateWord(bundle.getLocale(), WordUtils::capitalizeFully),
+		ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
 		text((int) args[1]),
 	}),
 	

@@ -21,9 +21,7 @@ public class CraftLikeGeneratorGui extends CraftGeneratorGui
 		super(commonPlayer, generator, commonPlayer.createInventory(InventoryType.HOPPER, PluginMessage.STRUCTURE_GENERATOR_TITLE,
 				NamedTextColor.DARK_GREEN,
 				PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
-				generator.getLevel(),
-				generator.getBalance(),
-				generator.getMaxBalance()));
+				generator.getLevel()));
 	}
 	
 	@Override
@@ -34,8 +32,6 @@ public class CraftLikeGeneratorGui extends CraftGeneratorGui
 		return PluginMessage.STRUCTURE_GENERATOR_TITLE.translate(commonPlayer.getLocale(),
 				NamedTextColor.DARK_GREEN,
 				PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
-				generator.getLevel(),
-				generator.getBalance(),
-				generator.getMaxBalance());
+				generator.getLevel());
 	}
 }

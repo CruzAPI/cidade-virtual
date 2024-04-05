@@ -12,7 +12,6 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
-import com.eul4.model.town.structure.HologramStructure;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.service.TownSerializer;
 import com.fastasyncworldedit.core.FaweAPI;
@@ -348,11 +347,7 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public void load()
 	{
-		if(this instanceof HologramStructure hologramStructure)
-		{
-			hologramStructure.getHologram().load(town.getPlugin());
-		}
-		
+		hologram.load(town.getPlugin());
 		scheduleBuildTaskIfPossible();
 	}
 	

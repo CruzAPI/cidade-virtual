@@ -9,7 +9,6 @@ import com.eul4.model.craft.town.structure.CraftTownHall;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
-import com.eul4.model.town.structure.HologramStructure;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.service.TownSerializer;
 import com.sk89q.worldedit.session.ClipboardHolder;
@@ -270,11 +269,7 @@ public class CraftTown implements Town
 		}
 		
 		movingStructure.construct(movingStructureClipboardHolder, centerTownBlock, rotation);
-		
-		if(movingStructure instanceof HologramStructure hologramStructure)
-		{
-			hologramStructure.teleportHologram();
-		}
+		movingStructure.teleportHologram();
 		
 		getPlayer().ifPresent(removeMovingStructureItem);
 		

@@ -18,7 +18,6 @@ public class CraftTownHallGui extends CraftStructureGui
 				PluginMessage.STRUCTURE_TOWN_HALL_NAME,
 				structure.getLevel()));
 		
-		inventory.setItem(0, info);
 		inventory.setItem(1, move);
 	}
 	

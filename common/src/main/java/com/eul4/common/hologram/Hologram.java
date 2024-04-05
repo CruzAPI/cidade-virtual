@@ -4,7 +4,7 @@ import com.eul4.common.Common;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.wrapper.LocationSerializable;
-import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Location;
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Hologram implements Serializable
 {
@@ -40,14 +41,29 @@ public class Hologram implements Serializable
 		return hologramLines.get(line);
 	}
 	
+	public void newLine()
+	{
+		newLine(Component.empty());
+	}
+	
 	public void newLine(Message message, Object... args)
+	{
+		newLine(line -> line.setMessageAndArgs(message, args));
+	}
+	
+	public void newLine(Component component)
+	{
+		newLine(line -> line.setCustomName(component));
+	}
+	
+	private void newLine(Consumer<TranslatedHologramLine> setTextFunction)
 	{
 		ArmorStand armorStand = newArmorStandNotSpawned();
 		TranslatedHologramLine line = new TranslatedHologramLine(armorStand);
 		
 		hologramLines.add(line);
 		plugin.getHologramTranslatorAdapter().getHolograms().put(armorStand, line);
-		line.setMessageAndArgs(message, args);
+		setTextFunction.accept(line);
 		
 		armorStand.spawnAt(armorStand.getLocation());
 	}
@@ -94,6 +110,26 @@ public class Hologram implements Serializable
 		hologramLines.forEach(TranslatedHologramLine::load);
 	}
 	
+	public int size()
+	{
+		return hologramLines.size();
+	}
+	
+	public void setSize(int size)
+	{
+		if(size == hologramLines.size())
+		{
+			return;
+		}
+		
+		remove();
+		
+		for(int i = 0; i < size; i++)
+		{
+			newLine();
+		}
+	}
+	
 	public class TranslatedHologramLine implements Serializable
 	{
 		private final UUID armorStandUuid;
@@ -115,9 +151,18 @@ public class Hologram implements Serializable
 			this.armorStand.customName(message.translate(ResourceBundleHandler.DEFAULT_LOCALE, args));
 		}
 		
+		public void setCustomName(Component component)
+		{
+			this.message = null;
+			this.args = null;
+			this.armorStand.customName(component);
+		}
+		
 		public String translate(Locale locale)
 		{
-			return LegacyComponentSerializer.legacySection().serialize(message.translate(locale, args));
+			return LegacyComponentSerializer.legacySection().serialize(message == null
+					? this.armorStand.customName()
+					: message.translate(locale, args));
 		}
 		
 		public void load()

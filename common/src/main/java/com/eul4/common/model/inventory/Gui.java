@@ -10,4 +10,6 @@ public interface Gui
 	Inventory getInventory();
 	Common getPlugin();
 	void updateTitle();
+	
+	void close();
 }

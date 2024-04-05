@@ -250,6 +250,8 @@ public class CraftTown implements Town
 			return;
 		}
 		
+		getPlayer().ifPresent(removeMovingStructureItem);
+		
 		Structure movingStructure = this.movingStructure;
 		ClipboardHolder movingStructureClipboardHolder = this.movingStructureClipboardHolder;
 		
@@ -257,8 +259,6 @@ public class CraftTown implements Town
 		this.movingStructureClipboardHolder = null;
 		
 		movingStructure.construct(movingStructureClipboardHolder);
-		
-		getPlayer().ifPresent(removeMovingStructureItem);
 	}
 	
 	@Override

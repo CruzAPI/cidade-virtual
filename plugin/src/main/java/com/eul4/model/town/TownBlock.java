@@ -21,4 +21,5 @@ public interface TownBlock extends Externalizable
 	
 	void setStructure(Structure structure);
 	Optional<Structure> findStructure();
+	void reset();
 }

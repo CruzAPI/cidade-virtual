@@ -2,6 +2,7 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.wrapper.VectorSerializable;
+import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serial;
+import java.util.Optional;
 
 public abstract class CraftFarmStructure extends CraftStructure implements Generator
 {
@@ -33,27 +35,20 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 	protected int maxBalance = 40;
 	
 	private transient BukkitRunnable generationTask;
-	private Hologram hologram;
-	private VectorSerializable hologramRelativeVector;
 	
 	public CraftFarmStructure(Town town)
 	{
 		super(town);
 	}
 	
-	public CraftFarmStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftFarmStructure(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
 	{
-		super(town, centerTownBlock);
+		super(town, centerTownBlock, new Vector(0.5D, 5.0D, 0.5D), isBuilt);
 		
-		hologramRelativeVector = new VectorSerializable(new Vector(0.5D, 5.0D, 0.5D));
-		
-		final Block block = centerTownBlock.getBlock();
-		final Location hologramLocation = block.getLocation().add(hologramRelativeVector.getBukkitVector());
-		hologram = new Hologram(town.getPlugin(), hologramLocation);
 		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE1, level);
 		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
 		
-		scheduleGenerationTaskIfNotScheduledYet();
+		scheduleGenerationTaskIfPossible();
 	}
 	
 	@Override
@@ -68,8 +63,6 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 			delayInTicks = in.readLong();
 			balance = in.readInt();
 			maxBalance = in.readInt();
-			hologram = (Hologram) in.readObject();
-			hologramRelativeVector = (VectorSerializable) in.readObject();
 		}
 		else
 		{
@@ -87,14 +80,11 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 		out.writeLong(delayInTicks);
 		out.writeInt(balance);
 		out.writeInt(maxBalance);
-		out.writeObject(hologram);
-		out.writeObject(hologramRelativeVector);
 	}
 	
-	private void scheduleGenerationTaskIfNotScheduledYet()
+	private void scheduleGenerationTaskIfPossible()
 	{
-		if(generationTask != null &&
-				town.getPlugin().getServer().getScheduler().isQueued(generationTask.getTaskId()))
+		if(town.getPlugin().isQueued(generationTask) || status != StructureStatus.BUILT)
 		{
 			return;
 		}
@@ -144,9 +134,18 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 		return town.getOwner().isOnline() ? 2 : 1;
 	}
 	
-	private void updateHologram()
+	public void updateHologram()
 	{
-		hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
+		if(status != StructureStatus.BUILT)
+		{
+			super.updateHologram();
+		}
+		else
+		{
+			hologram.setSize(2);
+			hologram.getLine(0).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE1, level);
+			hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
+		}
 	}
 	
 	@Override
@@ -172,21 +171,23 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 	public abstract void setTownBalance(int balance);
 	
 	@Override
-	public Hologram getHologram()
-	{
-		return hologram;
-	}
-	
-	@Override
-	public Vector getHologramRelativeLocation()
-	{
-		return hologramRelativeVector.getBukkitVector();
-	}
-	
-	@Override
 	public void load()
 	{
 		super.load();
-		scheduleGenerationTaskIfNotScheduledYet();
+		scheduleGenerationTaskIfPossible();
+	}
+	
+	@Override
+	protected void onBuildFinish()
+	{
+		super.onBuildFinish();
+		scheduleGenerationTaskIfPossible();
+	}
+	
+	@Override
+	protected void onBuildStart()
+	{
+		super.onBuildStart();
+		Optional.ofNullable(generationTask).ifPresent(BukkitRunnable::cancel);
 	}
 }

@@ -27,4 +27,14 @@ public abstract class CraftGui implements Gui
 	{
 		return commonPlayer.getPlugin();
 	}
+	
+	@Override
+	public void close()
+	{
+		if(commonPlayer.getGui() == this
+				&& commonPlayer.getPlayer().getOpenInventory().getTopInventory() == inventory)
+		{
+			commonPlayer.getPlayer().closeInventory();
+		}
+	}
 }

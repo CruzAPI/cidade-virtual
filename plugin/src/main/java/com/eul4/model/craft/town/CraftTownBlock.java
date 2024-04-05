@@ -6,7 +6,9 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
 import com.eul4.model.town.structure.Structure;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -125,5 +127,23 @@ public class CraftTownBlock implements TownBlock
 	public Optional<Structure> findStructure()
 	{
 		return Optional.ofNullable(structure);
+	}
+	
+	@Override
+	public void reset()
+	{
+		structure = null;
+		
+		for(Block block = this.block; block.getY() < block.getWorld().getMaxHeight(); block = block.getRelative(BlockFace.UP))
+		{
+			if(block.getY() == Town.Y)
+			{
+				block.setType(Material.GRASS_BLOCK);
+			}
+			else
+			{
+				block.setType(Material.AIR);
+			}
+		}
 	}
 }

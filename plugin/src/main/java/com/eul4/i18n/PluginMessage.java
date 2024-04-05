@@ -2,6 +2,7 @@ package com.eul4.i18n;
 
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
+import com.eul4.common.wrapper.TimerTranslater;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -67,7 +68,24 @@ public enum PluginMessage implements Message
 		empty().color(RED),
 		USAGE.translate(bundle.getLocale()),
 		text(args[0].toString()),
-	});
+	}),
+	
+	STRUCTURE_READY_IN("structure.ready-in",
+	(bundle, args) -> new Component[]
+	{
+		empty(),
+		TimerTranslater.translate((int) args[0], bundle.getLocale()),
+	}),
+	
+	CLICK_TO_FINISH_BUILD("click-to-finish-build"),
+	
+	STRUCTURE_BUILD_FINISHED("structure.build-finished", empty().color(GREEN)),
+	STRUCTURE_SCHEMATIC_NOT_FOUND("structure.schematic-not-found", empty().color(RED)),
+	STRUCTURE_CAN_NOT_CONSTRUCT_HERE("structure.can-not-construct-here", empty().color(RED)),
+	STRUCTURE_ALREADY_BUILT("structure.already-build", empty().color(RED)),
+	STRUCTURE_NOT_READY_YET("structure.not-ready-yet", empty().color(RED)),
+	
+	;
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

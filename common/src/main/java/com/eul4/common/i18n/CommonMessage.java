@@ -4,6 +4,8 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 
@@ -29,6 +31,18 @@ public enum CommonMessage implements Message
 	COMMAND_BUILD_DISABLED("command.build.disabled", empty().color(GREEN)),
 	COMMAND_BUILD_NEED_ADMIN("command.build.need-admin", empty().color(RED)),
 	YOU_DO_NOT_HAVE_PERMISSION("you-do-not-have-permission", empty().color(RED)),
+	PERCENTAGE("percentage", (bundle, args) -> new Component[]
+	{
+		Component.empty(),
+		Component.text(new DecimalFormat(args[0].toString(), new DecimalFormatSymbols(bundle.getLocale()))
+				.format((double) args[1]).concat("%"))
+	}),
+	
+	DAYS_CHAR("days-char"),
+	HOURS_CHAR("hours-char"),
+	MINUTES_CHAR("minutes-char"),
+	SECONDS_CHAR("seconds-char"),
+	
 	;
 	
 	private final BundleBaseName bundleBaseName;

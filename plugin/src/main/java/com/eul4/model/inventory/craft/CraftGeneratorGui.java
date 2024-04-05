@@ -25,10 +25,13 @@ public abstract class CraftGeneratorGui extends CraftStructureGui implements Gen
 		meta = collect.getItemMeta();
 		meta.displayName(PluginMessage.COLLECT_LIKES.translate(commonPlayer.getLocale()));
 		collect.setItemMeta(meta);
-		
-		inventory.setItem(0, info);
-		inventory.setItem(1, move);
+	}
+	
+	@Override
+	public void updateInventory()
+	{
 		inventory.setItem(4, collect);
+		super.updateInventory();
 	}
 	
 	@Override

@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 
@@ -42,6 +43,13 @@ public class StructureGuiListener implements Listener
 		}
 		
 		event.setCancelled(true);
+		
+		final ItemStack currentItem = event.getCurrentItem();
+		
+		if(currentItem == null)
+		{
+			return;
+		}
 		
 		if(event.getSlot() == 1)
 		{

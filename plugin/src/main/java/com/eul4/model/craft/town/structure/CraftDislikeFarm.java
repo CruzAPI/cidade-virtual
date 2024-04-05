@@ -17,7 +17,12 @@ public class CraftDislikeFarm extends CraftFarmStructure implements DislikeGener
 	
 	public CraftDislikeFarm(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		super(town, centerTownBlock);
+		this(town, centerTownBlock, false);
+	}
+	
+	public CraftDislikeFarm(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	{
+		super(town, centerTownBlock, isBuilt);
 	}
 	
 	@Override

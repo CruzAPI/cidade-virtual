@@ -1,6 +1,8 @@
 package com.eul4.common.model.player.craft;
 
 import com.eul4.common.Common;
+import com.eul4.common.event.GuiCloseEvent;
+import com.eul4.common.event.GuiOpenEvent;
 import com.eul4.common.factory.GuiEnum;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.model.inventory.Gui;
@@ -83,11 +85,13 @@ public class CraftCommonPlayer implements CommonPlayer
 		player.openInventory(gui.getInventory());
 		gui.updateTitle();
 		this.gui = gui;
+		plugin.getServer().getPluginManager().callEvent(new GuiOpenEvent(gui));
 	}
 	
 	@Override
 	public void nullifyGui()
 	{
+		plugin.getServer().getPluginManager().callEvent(new GuiCloseEvent(gui));
 		this.gui = null;
 	}
 	

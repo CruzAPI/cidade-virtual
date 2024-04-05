@@ -19,8 +19,10 @@ import com.eul4.common.type.player.PlayerType;
 import lombok.Getter;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Getter
@@ -105,5 +107,13 @@ public abstract class Common extends JavaPlugin
 	public CommonPlayerType<? extends CommonAdmin> getDefaultCommonAdminPlayerType()
 	{
 		return CraftCommonPlayerType.COMMON_ADMIN;
+	}
+	
+	public boolean isQueued(BukkitRunnable bukkitRunnable)
+	{
+		return Optional.ofNullable(bukkitRunnable)
+				.map(BukkitRunnable::getTaskId)
+				.filter(getServer().getScheduler()::isQueued)
+				.isPresent();
 	}
 }

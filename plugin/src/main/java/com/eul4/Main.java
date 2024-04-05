@@ -91,6 +91,7 @@ public class Main extends Common
 		final PluginManager pluginManager = getServer().getPluginManager();
 		
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
+		pluginManager.registerEvents(new InventoryUpdateListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);
 		pluginManager.registerEvents(new GeneratorGuiListener(this), this);

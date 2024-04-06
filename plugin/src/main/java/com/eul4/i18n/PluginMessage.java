@@ -1,8 +1,10 @@
 package com.eul4.i18n;
 
+import com.eul4.StructureType;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.wrapper.TimerTranslater;
+import com.eul4.enums.Currency;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -85,6 +87,48 @@ public enum PluginMessage implements Message
 	STRUCTURE_ALREADY_BUILT("structure.already-build", empty().color(RED)),
 	STRUCTURE_NOT_READY_YET("structure.not-ready-yet", empty().color(RED)),
 	
+	STRUCTURE("structure"),
+	VALUE("value"),
+	CURRENCY("currency"),
+	
+	COMMAND_SETPRICE_USAGE("command.setprice.usage", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text(args[0].toString()),
+		STRUCTURE.translate(bundle.getLocale()),
+		LEVEL.translate(bundle.getLocale()),
+		CURRENCY.translate(bundle.getLocale()),
+		VALUE.translate(bundle.getLocale()),
+	}),
+	
+	COMMAND_SETPRICE_VALUE_SET("command.setprice.value-set", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		text(((StructureType) args[0]).name()),
+		text((int) args[1]),
+		text((double) args[2]),
+		text(((Currency) args[3]).name()),
+	}),
+	
+	STRUCTURE_TYPE_NOT_FOUND("structure-type-not-found", empty().color(RED)),
+	LEVEL_MUST_BE_AN_INT("level-must-be-an-int", empty().color(RED)),
+	CURRENCY_NOT_FOUND("currency-not-found", empty().color(RED)),
+	VALUE_MUST_BE_A_DOUBLE("value-must-be-a-double", empty().color(RED)),
+	FAILED_TO_SAVE_STRUCTURE_PRICES_FILE("failed-to-save-structure-prices-file", empty().color(RED)),
+	
+	MISSING_LIKES("missing-likes", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text((int) args[0]),
+	}),
+	
+	MISSING_DISLIKES("missing-dislikes", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text((int) args[0]),
+	}),
+	
+	STRUCTURE_NOT_FOR_SALE("structure-not-for-sale", empty().color(RED)),
 	;
 	
 	private final String key;

@@ -1,8 +1,13 @@
 package com.eul4.model.town;
 
 import com.eul4.Main;
+import com.eul4.Price;
+import com.eul4.StructureType;
 import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.exception.InsufficientBalanceException;
+import com.eul4.exception.StructureNotForSaleException;
+import com.eul4.model.craft.town.structure.CraftStructure;
 import com.eul4.model.town.structure.Structure;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -60,4 +65,9 @@ public interface Town extends Externalizable
 	void setCappedLikes(int likes);
 	
 	void setCappedDislikes(int dislikes);
+	
+	void addStructure(Structure structure);
+	
+	Price buyNewStructure(StructureType structureType, TownBlock townBlock)
+			throws StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException;
 }

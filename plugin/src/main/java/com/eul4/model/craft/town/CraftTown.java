@@ -1,8 +1,12 @@
 package com.eul4.model.craft.town;
 
 import com.eul4.Main;
+import com.eul4.Price;
+import com.eul4.StructureType;
 import com.eul4.common.wrapper.LocationSerializable;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.exception.InsufficientBalanceException;
+import com.eul4.exception.StructureNotForSaleException;
 import com.eul4.model.craft.town.structure.CraftDislikeFarm;
 import com.eul4.model.craft.town.structure.CraftLikeFarm;
 import com.eul4.model.craft.town.structure.CraftTownHall;
@@ -68,7 +72,9 @@ public class CraftTown implements Town
 		
 		this.townBlocks = getInitialTownBlocks();
 		this.townTiles = getInitialTownTiles();
-		this.structures = getInitialStructures();
+		this.structures = new HashMap<>();
+		
+		createInitialStructures();
 		
 		this.likeLimit = 100;
 		this.dislikeLimit = 100;
@@ -183,7 +189,7 @@ public class CraftTown implements Town
 		return townTiles;
 	}
 	
-	public Map<UUID, Structure> getInitialStructures() throws CannotConstructException, IOException
+	public void createInitialStructures() throws CannotConstructException, IOException
 	{
 		Map<UUID, Structure> map = new HashMap<>();
 		
@@ -193,15 +199,9 @@ public class CraftTown implements Town
 		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, -3));
 		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, 3));
 		
-		CraftTownHall craftTownHall = new CraftTownHall(this, centerTownBlock);
-		CraftLikeFarm craftLikeFarm = new CraftLikeFarm(this, likeFarmTownBlock);
-		CraftDislikeFarm craftDislikeFarm = new CraftDislikeFarm(this, dislikeFarmTownBlock);
-		
-		map.put(craftTownHall.getUUID(), craftTownHall);
-		map.put(craftLikeFarm.getUUID(), craftLikeFarm);
-		map.put(craftDislikeFarm.getUUID(), craftDislikeFarm);
-		
-		return map;
+		new CraftTownHall(this, centerTownBlock);
+		new CraftLikeFarm(this, likeFarmTownBlock);
+		new CraftDislikeFarm(this, dislikeFarmTownBlock);
 	}
 	
 	@Override
@@ -346,5 +346,40 @@ public class CraftTown implements Town
 	public void setCappedDislikes(int dislikes)
 	{
 		this.dislikes = Math.min(dislikeLimit, dislikes);
+	}
+	
+	@Override
+	public void addStructure(Structure structure)
+	{
+		structures.put(structure.getUUID(), structure);
+	}
+	
+	public void subtract(Price price)
+	{
+		this.likes -= price.getLikes();
+		this.dislikes -= price.getDislikes();
+	}
+	
+	public void checkIfAffordable(Price price) throws InsufficientBalanceException
+	{
+		int missingLikes = price.getLikes() - likes;
+		int missingDislikes = price.getDislikes() - dislikes;
+		
+		if(missingLikes > 0 || missingDislikes > 0)
+		{
+			throw new InsufficientBalanceException(missingLikes, missingDislikes);
+		}
+	}
+	
+	@Override
+	public Price buyNewStructure(StructureType structureType, TownBlock townBlock)
+			throws StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException
+	{
+		Price price = plugin.getStructurePriceChart().getPrice(structureType, 1);
+		checkIfAffordable(price);
+		structureType.getInstantiation().newInstance(this, townBlock);
+		subtract(price);
+		
+		return price;
 	}
 }

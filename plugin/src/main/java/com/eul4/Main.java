@@ -2,10 +2,7 @@ package com.eul4;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.eul4.command.BalanceCommand;
-import com.eul4.command.MoveCommand;
-import com.eul4.command.TestCommand;
-import com.eul4.command.TownCommand;
+import com.eul4.command.*;
 import com.eul4.common.Common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
@@ -20,6 +17,7 @@ import com.eul4.type.player.PluginCommonPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import com.eul4.util.FileUtil;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -43,9 +41,29 @@ public class Main extends Common
 	private BlockDataLoader blockDataLoader;
 	private DataFileManager dataFileManager;
 	private TownSerializer townSerializer;
+	private StructurePriceSerializer structurePriceSerializer;
+	private StructurePriceChart structurePriceChart;
 	
 	@Override
 	public void onEnable()
+	{
+		tryEnablePluginOrShutdown();
+	}
+	
+	private void tryEnablePluginOrShutdown()
+	{
+		try
+		{
+			enablePlugin();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			getServer().shutdown();
+		}
+	}
+	
+	private void enablePlugin()
 	{
 		loadWorlds();
 		loadServices();
@@ -62,6 +80,7 @@ public class Main extends Common
 		getLogger().info("Plugin enabled.");
 	}
 	
+	@SneakyThrows
 	private void loadServices()
 	{
 		blockDataSerializer = new BlockDataSerializer();
@@ -71,6 +90,8 @@ public class Main extends Common
 		blockDataLoader = new BlockDataLoader(this);
 		townManager = new TownManager(this);
 		townSerializer = new TownSerializer(this);
+		structurePriceSerializer = new StructurePriceSerializer(this);
+		structurePriceChart = structurePriceSerializer.loadStructurePriceChart();
 	}
 	
 	private void registerPacketInterceptors()
@@ -84,6 +105,7 @@ public class Main extends Common
 		getCommand("town").setExecutor(new TownCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("move").setExecutor(new MoveCommand(this));
+		getCommand("setprice").setExecutor(new SetPriceCommand(this));
 	}
 	
 	private void registerListeners()

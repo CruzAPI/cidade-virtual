@@ -64,7 +64,4 @@ public class TownCommand implements TabExecutor
 		
 		return false;
 	}
-	
-	
-	
 }

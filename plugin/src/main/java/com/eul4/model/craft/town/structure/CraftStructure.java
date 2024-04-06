@@ -43,7 +43,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 public abstract class CraftStructure implements Structure
 {
@@ -104,6 +107,7 @@ public abstract class CraftStructure implements Structure
 				centerTownBlock.getBlock().getLocation().add(hologramRelativeVector));
 		
 		construct(loadSchematic(), centerTownBlock, 0);
+		town.addStructure(this);
 		scheduleBuildTaskIfPossible();
 	}
 	

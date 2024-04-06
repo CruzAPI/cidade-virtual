@@ -33,6 +33,16 @@ public class DataFileManager
 		return createFileIfNotExists(getTownsFile());
 	}
 	
+	public File getStructurePricesFile()
+	{
+		return new File(plugin.getDataFolder(), "structure_prices.dat");
+	}
+	
+	public File createStructurePricesFileIfNotExists() throws IOException
+	{
+		return createFileIfNotExists(getStructurePricesFile());
+	}
+	
 	private File createFileIfNotExists(File file) throws IOException
 	{
 		if(!file.exists())

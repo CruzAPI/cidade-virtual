@@ -1,9 +1,13 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.common.constant.CommonNamespacedKey;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.exception.InsufficientBalanceException;
+import com.eul4.exception.StructureNotForSaleException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
@@ -69,12 +73,52 @@ public class TestCommand implements TabExecutor
 		{
 			player.teleport(plugin.getCidadeVirtualWorld().getSpawnLocation());
 		}
-//		else if(args.length == 1)
-//		{
-//			PermissionAttachment permissionAttachment = player.addAttachment(plugin, args[0], true);
-//
-//			permissionAttachment.set
-//		}
+		else if(args.length == 1)
+		{
+			TownPlayer townPlayer = (TownPlayer) plugin.getPlayerManager().get(player);
+			StructureType structureType = StructureType.valueOf(args[0]);
+			
+			Town town = townPlayer.getTown();
+			
+			try
+			{
+				Price price = town.buyNewStructure(structureType, town.getTownBlock(player.getLocation().getBlock()));
+				
+				if(price.getLikes() > 0)
+				{
+					player.sendMessage("-" + price.getLikes() + " LIKES");
+				}
+				
+				if(price.getDislikes() > 0)
+				{
+					player.sendMessage("-" + price.getDislikes() + " DISLIKES");
+				}
+			}
+			catch(StructureNotForSaleException e)
+			{
+				townPlayer.sendMessage(PluginMessage.STRUCTURE_NOT_FOR_SALE);
+			}
+			catch(CannotConstructException e)
+			{
+				townPlayer.sendMessage(PluginMessage.STRUCTURE_CAN_NOT_CONSTRUCT_HERE);
+			}
+			catch(IOException e)
+			{
+				townPlayer.sendMessage(PluginMessage.STRUCTURE_SCHEMATIC_NOT_FOUND);
+			}
+			catch(InsufficientBalanceException e)
+			{
+				if(e.isMissingLikes())
+				{
+					townPlayer.sendMessage(PluginMessage.MISSING_LIKES, e.getLike());
+				}
+				
+				if(e.isMissingDislikes())
+				{
+					townPlayer.sendMessage(PluginMessage.MISSING_DISLIKES, e.getDislike());
+				}
+			}
+		}
 		else if(args.length == 2)
 		{
 			Material type = player.getInventory().getItemInMainHand().getType();

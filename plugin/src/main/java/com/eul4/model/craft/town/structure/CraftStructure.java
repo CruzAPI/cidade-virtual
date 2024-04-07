@@ -1,13 +1,12 @@
 package com.eul4.model.craft.town.structure;
 
+import com.eul4.Price;
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.common.wrapper.VectorSerializable;
 import com.eul4.enums.StructureStatus;
-import com.eul4.exception.CannotBuildYetException;
-import com.eul4.exception.CannotConstructException;
-import com.eul4.exception.StructureAlreadyBuiltException;
+import com.eul4.exception.*;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
@@ -475,5 +474,30 @@ public abstract class CraftStructure implements Structure
 		Component remaining = Component.text(Strings.repeat('\u258F', remainingPercentage)).color(NamedTextColor.DARK_GRAY);
 		
 		return done.append(remaining).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false);
+	}
+	
+	public void buyUpgrade()
+			throws IOException, StructureNotForSaleException, InsufficientBalanceException, CannotConstructException
+	{
+		if(status != StructureStatus.BUILT)
+		{
+			return;
+		}
+		
+		int nextLevel = level + 1;
+		
+		Price price = town.getPlugin().getStructurePriceChart().getPrice(getStructureType(), nextLevel);
+		town.checkIfAffordable(price);
+		
+		construct(loadSchematic(getSchematicFile(nextLevel, StructureStatus.UNREADY)));
+		
+		town.subtract(price);
+		
+		status = StructureStatus.UNREADY;
+		buildTicks = 30 * 20;
+		totalBuildTicks = buildTicks;
+		level = nextLevel;
+		
+		scheduleBuildTaskIfPossible();
 	}
 }

@@ -43,6 +43,7 @@ public class Main extends Common
 	private TownSerializer townSerializer;
 	private StructurePriceSerializer structurePriceSerializer;
 	private StructurePriceChart structurePriceChart;
+	private StructureUpgradeExecutor structureUpgradeExecutor;
 	
 	private BuyStructureCommand buyStructureCommand;
 	
@@ -94,6 +95,7 @@ public class Main extends Common
 		townSerializer = new TownSerializer(this);
 		structurePriceSerializer = new StructurePriceSerializer(this);
 		structurePriceChart = structurePriceSerializer.loadStructurePriceChart();
+		structureUpgradeExecutor = new StructureUpgradeExecutor(this);
 	}
 	
 	private void registerPacketInterceptors()

@@ -9,4 +9,6 @@ public interface StructureGui extends Gui
 {
 	Structure getStructure();
 	Component getUpdatedTitleComponent();
+	
+	ItemStack getUpgrade();
 }

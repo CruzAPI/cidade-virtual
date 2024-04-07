@@ -68,6 +68,10 @@ public interface Town extends Externalizable
 	
 	void addStructure(Structure structure);
 	
+	void subtract(Price price);
+	
+	void checkIfAffordable(Price price) throws InsufficientBalanceException;
+	
 	Price buyNewStructure(StructureType structureType, TownBlock townBlock)
 			throws StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException;
 }

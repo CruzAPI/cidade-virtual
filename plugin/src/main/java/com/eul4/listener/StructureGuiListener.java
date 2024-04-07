@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
@@ -46,12 +47,17 @@ public class StructureGuiListener implements Listener
 		
 		final ItemStack currentItem = event.getCurrentItem();
 		
-		if(currentItem == null)
+		if(currentItem == null || event.getClick() != ClickType.LEFT)
 		{
 			return;
 		}
 		
-		if(event.getSlot() == 1)
+		if(currentItem.equals(structureGui.getUpgrade()))
+		{
+			plugin.getStructureUpgradeExecutor().executeUpgrade(townPlayer, structureGui.getStructure());
+			player.closeInventory();
+		}
+		else if(event.getSlot() == 1)
 		{
 			player.closeInventory();
 			

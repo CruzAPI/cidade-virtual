@@ -36,6 +36,7 @@ public abstract class CraftStructureGui extends CraftGui implements StructureGui
 {
 	protected final Structure structure;
 	
+	protected final ItemStack upgrade;
 	protected final ItemStack move;
 	protected final ItemStack finishBuild;
 	
@@ -48,6 +49,11 @@ public abstract class CraftStructureGui extends CraftGui implements StructureGui
 		this.structure = structure;
 		
 		ItemMeta meta;
+		
+		upgrade = new ItemStack(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE);
+		meta = upgrade.getItemMeta();
+		meta.setDisplayName("Upgrade");
+		upgrade.setItemMeta(meta);
 		
 		move = new ItemStack(Material.TARGET);
 		meta = move.getItemMeta();
@@ -65,6 +71,7 @@ public abstract class CraftStructureGui extends CraftGui implements StructureGui
 	{
 		ItemMeta meta;
 		
+		inventory.setItem(0, upgrade);
 		inventory.setItem(1, move);
 		
 		if(structure.getStatus() != StructureStatus.BUILT)

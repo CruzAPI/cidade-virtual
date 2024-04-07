@@ -4,9 +4,7 @@ import com.eul4.StructureType;
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.enums.StructureStatus;
-import com.eul4.exception.CannotBuildYetException;
-import com.eul4.exception.CannotConstructException;
-import com.eul4.exception.StructureAlreadyBuiltException;
+import com.eul4.exception.*;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -72,4 +70,6 @@ public interface Structure extends Externalizable
 	void teleportHologram();
 	
 	Component getProgressBarComponent();
+	
+	void buyUpgrade() throws IOException, StructureNotForSaleException, InsufficientBalanceException, CannotConstructException;
 }

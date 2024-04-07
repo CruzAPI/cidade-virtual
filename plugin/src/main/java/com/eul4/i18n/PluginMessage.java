@@ -151,6 +151,12 @@ public enum PluginMessage implements Message
 	
 	STRUCTURE_CONSTRUCTOR_LORE("structure-constructor-lore", empty().color(GRAY)),
 	
+	STRUCTURE_MAX_UPGRADE_REACHED("structure-max-upgrade-reached", empty().color(RED)),
+	STRUCTURE_UPGRADED_TO_LEVEL("structure-upgraded-to-level", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		text((int) args[0]),
+	}),
 	;
 	
 	private final String key;

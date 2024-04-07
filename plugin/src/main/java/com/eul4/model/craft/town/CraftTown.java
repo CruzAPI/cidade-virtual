@@ -354,12 +354,14 @@ public class CraftTown implements Town
 		structures.put(structure.getUUID(), structure);
 	}
 	
+	@Override
 	public void subtract(Price price)
 	{
 		this.likes -= price.getLikes();
 		this.dislikes -= price.getDislikes();
 	}
 	
+	@Override
 	public void checkIfAffordable(Price price) throws InsufficientBalanceException
 	{
 		int missingLikes = price.getLikes() - likes;

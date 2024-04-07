@@ -8,7 +8,6 @@ import com.eul4.enums.Currency;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.apache.commons.lang.WordUtils;
 
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
@@ -16,8 +15,7 @@ import java.util.function.BiFunction;
 import static com.eul4.common.i18n.CommonMessage.USAGE;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 @Getter
@@ -35,7 +33,7 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().color((TextColor) args[0]),
-		((Message) args[1]).translateWord(bundle.getLocale(), WordUtils::capitalizeFully),
+		((Message) args[1]).translateWord(bundle.getLocale()),
 		ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
 		text((int) args[2]),
 	}),
@@ -44,7 +42,7 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty(),
-		((Message) args[0]).translateWord(bundle.getLocale(), WordUtils::capitalizeFully),
+		((Message) args[0]).translateWord(bundle.getLocale()),
 		ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
 		text((int) args[1]),
 	}),
@@ -129,6 +127,30 @@ public enum PluginMessage implements Message
 	}),
 	
 	STRUCTURE_NOT_FOR_SALE("structure-not-for-sale", empty().color(RED)),
+	STRUCTURE_SHOP_TITLE("inventory.structure-shop.title", empty().color(BLACK)),
+	
+	YOU_CAN_NOT_CONSTRUCT_OUTSIDE_YOUR_TOWN("command.buy-structure.can-not-construct-outside", empty().color(RED)),
+	
+	DECORATED_VALUE_CURRENCY("decorated-value-currency", (bundle, args) -> new Component[]
+	{
+		(Component) args[0],
+		text((int) args[1]),
+		((Currency) args[2]).getPluralWord().translateWord(bundle),
+	}),
+	
+	LIKES("likes"),
+	DISLIKES("dislikes"),
+	
+	CONFIRM_OPERATION("confirm-operation"),
+	
+	STRUCTURE_CONSTRUCTOR("structure-constructor", (bundle, args) -> new Component[]
+	{
+		empty(),
+		((Message) args[0]).translateWord(bundle).color(LIGHT_PURPLE),
+	}),
+	
+	STRUCTURE_CONSTRUCTOR_LORE("structure-constructor-lore", empty().color(GRAY)),
+	
 	;
 	
 	private final String key;

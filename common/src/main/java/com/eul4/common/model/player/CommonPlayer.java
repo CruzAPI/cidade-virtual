@@ -26,5 +26,6 @@ public interface CommonPlayer extends Messageable
 	Locale getLocale();
 	Inventory createInventory(InventoryType inventoryType, Message message, Object... args);
 	Inventory createInventory(InventoryType inventoryType);
+	Inventory createInventory(int size, Message message, Object... args);
 	Inventory createInventory(InventoryType inventoryType, Component component);
 }

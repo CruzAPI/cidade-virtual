@@ -10,4 +10,6 @@ public class CommonNamespacedKey
 	
 	public static final NamespacedKey CANCEL_DROP = new NamespacedKey(NAMESPACE, "cancel_drop");
 	public static final NamespacedKey CANCEL_MOVE = new NamespacedKey(NAMESPACE, "cancel_move");
+	public static final NamespacedKey CANCEL_SPAWN = new NamespacedKey(NAMESPACE, "remove_on_drop");
+	public static final NamespacedKey CANCEL_INTERACTION = new NamespacedKey(NAMESPACE, "cancel_interaction");
 }

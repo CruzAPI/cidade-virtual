@@ -43,6 +43,8 @@ public enum CommonMessage implements Message
 	MINUTES_CHAR("minutes-char"),
 	SECONDS_CHAR("seconds-char"),
 	
+	CONFIRM("confirm"),
+	CANCEL("cancel"),
 	;
 	
 	private final BundleBaseName bundleBaseName;

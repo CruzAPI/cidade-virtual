@@ -18,6 +18,11 @@ public class StructurePriceChart implements Externalizable
 		return priceChart.containsKey(structureTypeLevel);
 	}
 	
+	public Price getPrice(StructureType structureType) throws StructureNotForSaleException
+	{
+		return getPrice(structureType, 1);
+	}
+	
 	public Price getPrice(StructureType structureType, int level) throws StructureNotForSaleException
 	{
 		return getPrice(new StructureTypeLevel(structureType, level));

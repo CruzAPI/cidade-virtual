@@ -46,6 +46,6 @@ public class CraftDislikeFarm extends CraftFarmStructure implements DislikeGener
 	@Override
 	public StructureType getStructureType()
 	{
-		return StructureType.DISLIKE_FARM;
+		return StructureType.DISLIKE_GENERATOR;
 	}
 }

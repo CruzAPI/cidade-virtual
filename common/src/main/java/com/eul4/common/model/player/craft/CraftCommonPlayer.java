@@ -108,6 +108,12 @@ public class CraftCommonPlayer implements CommonPlayer
 	}
 	
 	@Override
+	public Inventory createInventory(int size, Message message, Object... args)
+	{
+		return plugin.getServer().createInventory(player, size, message.translate(locale, args));
+	}
+	
+	@Override
 	public Inventory createInventory(InventoryType inventoryType, Component component)
 	{
 		return plugin.getServer().createInventory(player, inventoryType, component);

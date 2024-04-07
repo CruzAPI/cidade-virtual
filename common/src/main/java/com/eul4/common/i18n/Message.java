@@ -1,7 +1,11 @@
 package com.eul4.common.i18n;
 
+import com.eul4.common.model.player.CommonPlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
@@ -27,6 +31,69 @@ public interface Message
 		return getTemplate(ResourceBundleHandler.getBundle(getBundleBaseName(), locale));
 	}
 	
+	private Component translateTemplate(String template, ResourceBundle bundle, Object... args)
+	{
+		final Matcher matcher = PATTERN.matcher(template);
+		final Component[] components = getComponentBiFunction().apply(bundle, args);
+		
+		Component component = components[0];
+		
+		while(matcher.find())
+		{
+			String baseText = matcher.group(1);
+			component = component.append(Component.text(baseText));
+			
+			String index = matcher.group(2);
+			
+			if(index != null)
+			{
+				int i = Integer.parseInt(index);
+				component = component.append(components[i + 1]);
+			}
+		}
+		
+		if(!component.hasDecoration(TextDecoration.ITALIC))
+		{
+			component = component.decoration(TextDecoration.ITALIC, false);
+		}
+		
+		return component;
+	}
+	
+	default List<Component> translateLore(CommonPlayer commonPlayer, Object... args)
+	{
+		return translateLore(commonPlayer.getLocale(), args);
+	}
+	
+	default List<Component> translateLore(Locale locale, Object... args)
+	{
+		final ResourceBundle bundle = ResourceBundleHandler.getBundle(getBundleBaseName(), locale);
+		final String[] templateSplit = getTemplate(bundle).split("\\n");
+		final List<Component> components = new ArrayList<>();
+		
+		for(String template : templateSplit)
+		{
+			components.add(translateTemplate(template, bundle, args));
+		}
+		
+		return components;
+	}
+	
+	default Component translateWord(CommonPlayer commonPlayer, UnaryOperator<String> operator)
+	{
+		return translateWord(commonPlayer.getLocale(), operator);
+	}
+	
+	default Component translateWord(ResourceBundle bundle)
+	{
+		return translateWord(bundle, UnaryOperator.identity());
+	}
+	
+	default Component translateWord(ResourceBundle bundle, UnaryOperator<String> operator)
+	{
+		return translateWord(bundle.getLocale(), operator);
+	}
+	
 	default Component translateWord(Locale locale)
 	{
 		return translateWord(locale, UnaryOperator.identity());
@@ -36,7 +103,17 @@ public interface Message
 	{
 		final ResourceBundle bundle = ResourceBundleHandler.getBundle(getBundleBaseName(), locale);
 		String translatedWord = bundle.getString(getKey());
-		return Component.text(operator.apply(translatedWord));
+		return Component.text(operator.apply(translatedWord)).decoration(TextDecoration.ITALIC, false);
+	}
+	
+	default Component translate(ResourceBundle bundle, Object... args)
+	{
+		return translate(bundle.getLocale(), args);
+	}
+	
+	default Component translate(CommonPlayer commonPlayer, Object... args)
+	{
+		return translate(commonPlayer.getLocale(), args);
 	}
 	
 	default Component translate(Locale locale, Object... args)
@@ -60,6 +137,11 @@ public interface Message
 				int i = Integer.parseInt(index);
 				component = component.append(components[i + 1]);
 			}
+		}
+		
+		if(!component.hasDecoration(TextDecoration.ITALIC))
+		{
+			component = component.decoration(TextDecoration.ITALIC, false);
 		}
 		
 		return component;

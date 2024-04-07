@@ -44,6 +44,8 @@ public class Main extends Common
 	private StructurePriceSerializer structurePriceSerializer;
 	private StructurePriceChart structurePriceChart;
 	
+	private BuyStructureCommand buyStructureCommand;
+	
 	@Override
 	public void onEnable()
 	{
@@ -106,6 +108,7 @@ public class Main extends Common
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("move").setExecutor(new MoveCommand(this));
 		getCommand("setprice").setExecutor(new SetPriceCommand(this));
+		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 	}
 	
 	private void registerListeners()
@@ -116,10 +119,13 @@ public class Main extends Common
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);
+		pluginManager.registerEvents(new StructureShopGuiListener(this), this);
 		pluginManager.registerEvents(new GeneratorGuiListener(this), this);
 		pluginManager.registerEvents(new StructureMoveListener(this), this);
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
+		pluginManager.registerEvents(new ItemBuilderListener(this), this);
+		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)

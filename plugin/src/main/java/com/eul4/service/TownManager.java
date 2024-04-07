@@ -63,6 +63,8 @@ public class TownManager
 			return;
 		}
 		
+		plugin.getLogger().info("towns.dat length: " + file.length());
+		
 		try(FileInputStream fileInputStream = new FileInputStream(file);
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
 				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
@@ -93,6 +95,7 @@ public class TownManager
 				ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
 		{
 			plugin.getTownSerializer().writeTowns(out);
+			out.flush();
 			fileOutputStream.write(byteArrayOutputStream.toByteArray());
 			plugin.getLogger().warning("write size: " + byteArrayOutputStream.toByteArray().length);
 		}

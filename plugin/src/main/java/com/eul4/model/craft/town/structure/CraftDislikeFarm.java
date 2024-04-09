@@ -17,7 +17,7 @@ public class CraftDislikeFarm extends CraftFarmStructure implements DislikeGener
 	
 	public CraftDislikeFarm(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		this(town, centerTownBlock, false);
+		this(town, centerTownBlock, true);
 	}
 	
 	public CraftDislikeFarm(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException

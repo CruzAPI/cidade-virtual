@@ -1,0 +1,18 @@
+package com.eul4.rule;
+
+import com.eul4.Price;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.bukkit.util.Vector;
+
+@Getter
+@Setter
+@ToString
+public abstract class GenericAttribute
+{
+	private Price price;
+	private int requiresTownHallLevel;
+	private long totalBuildTicks;
+	private Vector hologramVector;
+}

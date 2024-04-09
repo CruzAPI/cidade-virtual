@@ -1,7 +1,5 @@
 package com.eul4.model.craft.town.structure;
 
-import com.eul4.common.hologram.Hologram;
-import com.eul4.common.wrapper.VectorSerializable;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
@@ -10,9 +8,9 @@ import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Generator;
+import com.eul4.rule.GeneratorAttribute;
+import com.eul4.rule.Rule;
 import lombok.Getter;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -27,12 +25,8 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 	@Serial
 	private static final long serialVersionUID = 1L;
 	
-	protected long delayInTicks = 40L;
-	
 	@Getter
 	protected int balance;
-	@Getter
-	protected int maxBalance = 40;
 	
 	private transient BukkitRunnable generationTask;
 	
@@ -43,10 +37,10 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 	
 	public CraftFarmStructure(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
 	{
-		super(town, centerTownBlock, new Vector(0.5D, 5.0D, 0.5D), isBuilt);
+		super(town, centerTownBlock, isBuilt);
 		
 		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE1, level);
-		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
+		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, getCapacity());
 		
 		scheduleGenerationTaskIfPossible();
 	}
@@ -60,9 +54,7 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 		
 		if(version == 1L)
 		{
-			delayInTicks = in.readLong();
 			balance = in.readInt();
-			maxBalance = in.readInt();
 		}
 		else
 		{
@@ -77,9 +69,7 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 		
 		out.writeLong(serialVersionUID);
 		
-		out.writeLong(delayInTicks);
 		out.writeInt(balance);
-		out.writeInt(maxBalance);
 	}
 	
 	private void scheduleGenerationTaskIfPossible()
@@ -96,7 +86,7 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 			@Override
 			public void run()
 			{
-				if(++tick % delayInTicks == 0)
+				if(++tick % getDelay() == 0)
 				{
 					generateIncome();
 				}
@@ -108,7 +98,7 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 	
 	private void generateIncome()
 	{
-		balance = Math.min(maxBalance, balance + getIncome());
+		balance = Math.min(getCapacity(), balance + getIncome());
 		updateHologram();
 		updateInventoryView();
 	}
@@ -144,7 +134,7 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 		{
 			hologram.setSize(2);
 			hologram.getLine(0).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE1, level);
-			hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, maxBalance);
+			hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, getCapacity());
 		}
 	}
 	
@@ -189,5 +179,20 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 	{
 		super.onBuildStart();
 		Optional.ofNullable(generationTask).ifPresent(BukkitRunnable::cancel);
+	}
+	
+	public int getCapacity()
+	{
+		return getRule().getAttribute(level).getCapacity();
+	}
+	
+	public int getDelay()
+	{
+		return getRule().getAttribute(level).getDelay();
+	}
+	
+	public Rule<GeneratorAttribute> getRule()
+	{
+		return town.getPlugin().getGeneratorRule();
 	}
 }

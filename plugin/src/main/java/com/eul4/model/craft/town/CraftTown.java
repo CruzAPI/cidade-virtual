@@ -14,6 +14,7 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
 import com.eul4.model.town.structure.Structure;
+import com.eul4.model.town.structure.TownHall;
 import com.eul4.service.TownSerializer;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
@@ -56,6 +57,8 @@ public class CraftTown implements Town
 	private int dislikes;
 	private int dislikeLimit;
 	
+	private TownHall townHall;
+	
 	public CraftTown(Main plugin)
 	{
 		this.plugin = plugin;
@@ -95,6 +98,7 @@ public class CraftTown implements Town
 			townTiles = townSerializer.readTownTiles(this, in);
 			structures = townSerializer.readStructures(this, in);
 			movingStructure = townSerializer.readStructureReference(this, in);
+			townHall = (TownHall) townSerializer.readStructureReference(this, in);
 			likes = in.readInt();
 			likeLimit = in.readInt();
 			dislikes = in.readInt();
@@ -121,6 +125,7 @@ public class CraftTown implements Town
 		townSerializer.writeTownTiles(this, out);
 		townSerializer.writeStructures(structures, out);
 		townSerializer.writeStructureReference(movingStructure, out);
+		townSerializer.writeStructureReference(townHall, out);
 		out.writeInt(likes);
 		out.writeInt(likeLimit);
 		out.writeInt(dislikes);
@@ -199,7 +204,7 @@ public class CraftTown implements Town
 		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, -3));
 		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, 3));
 		
-		new CraftTownHall(this, centerTownBlock);
+		townHall = new CraftTownHall(this, centerTownBlock);
 		new CraftLikeFarm(this, likeFarmTownBlock);
 		new CraftDislikeFarm(this, dislikeFarmTownBlock);
 	}

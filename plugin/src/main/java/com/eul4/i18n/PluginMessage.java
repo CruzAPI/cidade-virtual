@@ -157,6 +157,14 @@ public enum PluginMessage implements Message
 		empty().color(GREEN),
 		text((int) args[0]),
 	}),
+	
+	CAN_ONLY_UPGRADE_WHEN_BUILT("can-only-upgrade-when-built", empty().color(RED)),
+	
+	REQUIRES_TOWN_HALL_LEVEL("requires-town-hall-level", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text((int) args[0]),
+	}),
 	;
 	
 	private final String key;

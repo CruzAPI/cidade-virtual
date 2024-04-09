@@ -1,5 +1,6 @@
 package com.eul4.model.town.structure;
 
+import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
@@ -8,8 +9,9 @@ import com.eul4.exception.*;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.rule.GenericAttribute;
+import com.eul4.rule.Rule;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -71,5 +73,11 @@ public interface Structure extends Externalizable
 	
 	Component getProgressBarComponent();
 	
-	void buyUpgrade() throws IOException, StructureNotForSaleException, InsufficientBalanceException, CannotConstructException;
+	void upgrade()
+			throws IOException, CannotConstructException,
+			StructureIllegalStatusException, UpgradeLockedException, UpgradeNotFoundException;
+	
+	int getLevelStatus();
+	
+	Rule<? extends GenericAttribute> getRule();
 }

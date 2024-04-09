@@ -17,7 +17,7 @@ public class CraftLikeFarm extends CraftFarmStructure implements LikeGenerator
 	
 	public CraftLikeFarm(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		this(town, centerTownBlock, false);
+		this(town, centerTownBlock, true);
 	}
 	
 	public CraftLikeFarm(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException

@@ -9,6 +9,7 @@ import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureNotForSaleException;
 import com.eul4.model.craft.town.structure.CraftStructure;
 import com.eul4.model.town.structure.Structure;
+import com.eul4.model.town.structure.TownHall;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -74,4 +75,6 @@ public interface Town extends Externalizable
 	
 	Price buyNewStructure(StructureType structureType, TownBlock townBlock)
 			throws StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException;
+	
+	TownHall getTownHall();
 }

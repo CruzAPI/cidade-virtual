@@ -1,10 +1,8 @@
 package com.eul4.model.craft.town.structure;
 
-import com.eul4.Price;
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.wrapper.BlockSerializable;
-import com.eul4.common.wrapper.VectorSerializable;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.*;
 import com.eul4.i18n.PluginMessage;
@@ -12,6 +10,8 @@ import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
+import com.eul4.rule.GenericAttribute;
+import com.eul4.rule.Rule;
 import com.eul4.service.TownSerializer;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
@@ -74,8 +74,6 @@ public abstract class CraftStructure implements Structure
 	
 	@Getter
 	protected Hologram hologram;
-	@Getter
-	private Vector hologramRelativePosition;
 	
 	private BukkitRunnable buildTask;
 	
@@ -84,12 +82,12 @@ public abstract class CraftStructure implements Structure
 		this.town = town;
 	}
 	
-	public CraftStructure(Town town, TownBlock centerTownBlock, Vector hologramRelativePosition) throws CannotConstructException, IOException
+	public CraftStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		this(town, centerTownBlock, hologramRelativePosition, false);
+		this(town, centerTownBlock, false);
 	}
 	
-	public CraftStructure(Town town, TownBlock centerTownBlock, Vector hologramRelativeVector, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftStructure(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
 	{
 		this(town);
 		
@@ -100,10 +98,8 @@ public abstract class CraftStructure implements Structure
 		this.buildTicks = isBuilt ? 0 : 30 * 20;
 		this.totalBuildTicks = buildTicks;
 		
-		
-		this.hologramRelativePosition = hologramRelativeVector;
 		this.hologram = new Hologram(town.getPlugin(),
-				centerTownBlock.getBlock().getLocation().add(hologramRelativeVector));
+				centerTownBlock.getBlock().getLocation().add(getHologramRelativePosition()));
 		
 		construct(loadSchematic(), centerTownBlock, 0);
 		town.addStructure(this);
@@ -127,7 +123,6 @@ public abstract class CraftStructure implements Structure
 			status = StructureStatus.values()[in.readInt()];
 			buildTicks = in.readInt();
 			totalBuildTicks = in.readInt();
-			hologramRelativePosition = ((VectorSerializable) in.readObject()).getBukkitVector();
 			hologram = (Hologram) in.readObject();
 		}
 		else
@@ -150,7 +145,6 @@ public abstract class CraftStructure implements Structure
 		out.writeInt(status.ordinal());
 		out.writeInt(buildTicks);
 		out.writeInt(totalBuildTicks);
-		out.writeObject(new VectorSerializable(hologramRelativePosition));
 		out.writeObject(hologram);
 	}
 	
@@ -423,7 +417,7 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public void teleportHologram()
 	{
-		hologram.teleport(getLocation().add(hologramRelativePosition));
+		hologram.teleport(getLocation().add(getHologramRelativePosition()));
 	}
 	
 	protected void onBuildStart()
@@ -476,22 +470,19 @@ public abstract class CraftStructure implements Structure
 		return done.append(remaining).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false);
 	}
 	
-	public void buyUpgrade()
-			throws IOException, StructureNotForSaleException, InsufficientBalanceException, CannotConstructException
+	public void upgrade() throws StructureIllegalStatusException, IOException,
+			CannotConstructException, UpgradeLockedException, UpgradeNotFoundException
 	{
+		checkUpgrade();
+		
 		if(status != StructureStatus.BUILT)
 		{
-			return;
+			throw new StructureIllegalStatusException();
 		}
 		
 		int nextLevel = level + 1;
 		
-		Price price = town.getPlugin().getStructurePriceChart().getPrice(getStructureType(), nextLevel);
-		town.checkIfAffordable(price);
-		
 		construct(loadSchematic(getSchematicFile(nextLevel, StructureStatus.UNREADY)));
-		
-		town.subtract(price);
 		
 		status = StructureStatus.UNREADY;
 		buildTicks = 30 * 20;
@@ -500,4 +491,37 @@ public abstract class CraftStructure implements Structure
 		
 		scheduleBuildTaskIfPossible();
 	}
+	
+	public void checkUpgrade() throws UpgradeLockedException, UpgradeNotFoundException
+	{
+		final var rule = getRule();
+		final int nextLevel = level + 1;
+		
+		if(!rule.hasAttribute(nextLevel))
+		{
+			throw new UpgradeNotFoundException();
+		}
+		
+		int townHallLevel = town.getTownHall().getLevelStatus();
+		int levelRequired = rule.getAttribute(nextLevel).getRequiresTownHallLevel();
+		
+		if(townHallLevel < levelRequired)
+		{
+			throw new UpgradeLockedException(levelRequired);
+		}
+	}
+	
+	@Override
+	public Vector getHologramRelativePosition()
+	{
+		return getRule().getAttribute(level).getHologramVector();
+	}
+	
+	@Override
+	public int getLevelStatus()
+	{
+		return status == StructureStatus.BUILT ? level : level - 1;
+	}
+	
+	public abstract Rule<? extends GenericAttribute> getRule();
 }

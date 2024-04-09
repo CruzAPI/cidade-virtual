@@ -54,7 +54,7 @@ public class StructureGuiListener implements Listener
 		
 		if(currentItem.equals(structureGui.getUpgrade()))
 		{
-			plugin.getStructureUpgradeExecutor().executeUpgrade(townPlayer, structureGui.getStructure());
+			plugin.getStructureUpgradeExecutor().executeUpgradePursache(townPlayer, structureGui.getStructure());
 			player.closeInventory();
 		}
 		else if(event.getSlot() == 1)

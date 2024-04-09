@@ -33,6 +33,16 @@ public class DataFileManager
 		return createFileIfNotExists(getTownsFile());
 	}
 	
+	public File getGeneratorRuleFile()
+	{
+		return new File(plugin.getDataFolder(), "generator_rule.yml");
+	}
+	
+	public File getTownHallRuleFile()
+	{
+		return new File(plugin.getDataFolder(), "town_hall_rule.yml");
+	}
+	
 	public File getStructurePricesFile()
 	{
 		return new File(plugin.getDataFolder(), "structure_prices.dat");

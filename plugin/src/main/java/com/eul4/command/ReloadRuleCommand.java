@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class TestCommand implements TabExecutor
+public class ReloadRuleCommand implements TabExecutor
 {
 	private final Main plugin;
 	
@@ -40,34 +40,27 @@ public class TestCommand implements TabExecutor
 			return true;
 		}
 		
+		if(!player.isOp())
+		{
+			return true;
+		}
 		
-		
-		if(args.length == 0)
+		else if(args.length == 0)
 		{
-			player.teleport(plugin.getCidadeVirtualWorld().getSpawnLocation());
+			try
+			{
+				plugin.reloadRules();
+				player.sendMessage("Rules reloaded successfully!");
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				player.sendMessage("Failed to reload rules, see console for stack trace.");
+			}
 		}
-		else if(args.length == 1)
+		else
 		{
-			player.sendMessage("TownHall rule: " + plugin.getTownHallRule());
-		}
-		else if(args.length == 2)
-		{
-			Material type = player.getInventory().getItemInMainHand().getType();
-			
-			Bukkit.broadcastMessage(type + " hardness: " + type.getHardness()
-					+ " br: " + type.getBlastResistance()
-					+ " isBlock: " + type.isBlock()
-					+ " solid: " + type.isSolid());
-		}
-		else if(args.length == 3)
-		{
-			long count = plugin.getEntityRegisterListener().getPersistentEntities().values().stream()
-					.filter(entity -> entity.getWorld() == plugin.getTownWorld())
-					.filter(entity -> entity instanceof ArmorStand)
-					.count();
-			
-			player.sendMessage("count: " + count);
-			player.sendMessage(plugin.getTownManager().getTowns().size() + " towns");
+			player.sendMessage("Usage: /" + alias);
 		}
 		
 		return false;

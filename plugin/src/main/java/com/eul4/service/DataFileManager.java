@@ -33,9 +33,14 @@ public class DataFileManager
 		return createFileIfNotExists(getTownsFile());
 	}
 	
-	public File getGeneratorRuleFile()
+	public File getLikeGeneratorRuleFile()
 	{
-		return new File(plugin.getDataFolder(), "generator_rule.yml");
+		return new File(plugin.getDataFolder(), "like_generator_rule.yml");
+	}
+	
+	public File getDislikeGeneratorRuleFile()
+	{
+		return new File(plugin.getDataFolder(), "dislike_generator_rule.yml");
 	}
 	
 	public File getTownHallRuleFile()

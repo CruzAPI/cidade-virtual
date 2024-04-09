@@ -7,8 +7,8 @@ import com.eul4.common.wrapper.LocationSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureNotForSaleException;
-import com.eul4.model.craft.town.structure.CraftDislikeFarm;
-import com.eul4.model.craft.town.structure.CraftLikeFarm;
+import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
+import com.eul4.model.craft.town.structure.CraftLikeGenerator;
 import com.eul4.model.craft.town.structure.CraftTownHall;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -98,7 +98,7 @@ public class CraftTown implements Town
 			townTiles = townSerializer.readTownTiles(this, in);
 			structures = townSerializer.readStructures(this, in);
 			movingStructure = townSerializer.readStructureReference(this, in);
-			townHall = (TownHall) townSerializer.readStructureReference(this, in);
+			townHall = (TownHall) Objects.requireNonNull(townSerializer.readStructureReference(this, in));
 			likes = in.readInt();
 			likeLimit = in.readInt();
 			dislikes = in.readInt();
@@ -205,8 +205,8 @@ public class CraftTown implements Town
 		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, 3));
 		
 		townHall = new CraftTownHall(this, centerTownBlock);
-		new CraftLikeFarm(this, likeFarmTownBlock);
-		new CraftDislikeFarm(this, dislikeFarmTownBlock);
+		new CraftLikeGenerator(this, likeFarmTownBlock);
+		new CraftDislikeGenerator(this, dislikeFarmTownBlock);
 	}
 	
 	@Override
@@ -379,10 +379,10 @@ public class CraftTown implements Town
 	}
 	
 	@Override
-	public Price buyNewStructure(StructureType structureType, TownBlock townBlock)
+	public Price buyNewStructure(StructureType<?, ?> structureType, TownBlock townBlock)
 			throws StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException
 	{
-		Price price = plugin.getStructurePriceChart().getPrice(structureType, 1);
+		Price price = structureType.getRule(plugin).getAttribute(1).getPrice();
 		checkIfAffordable(price);
 		structureType.getInstantiation().newInstance(this, townBlock);
 		subtract(price);

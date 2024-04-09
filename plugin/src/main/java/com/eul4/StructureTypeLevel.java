@@ -14,7 +14,7 @@ public class StructureTypeLevel implements Externalizable
 	@Serial
 	private static final long serialVersionUID = 1L;
 	
-	private StructureType structureType;
+	private StructureType<?, ?> structureType;
 	private int level;
 	
 	@Override
@@ -33,7 +33,7 @@ public class StructureTypeLevel implements Externalizable
 		
 		if(version == 1L)
 		{
-			structureType = StructureType.values()[in.readInt()];
+			structureType = StructureType.values().get(in.readInt());
 			level = in.readInt();
 		}
 		else

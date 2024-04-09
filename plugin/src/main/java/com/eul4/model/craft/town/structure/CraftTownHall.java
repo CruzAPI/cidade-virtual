@@ -1,13 +1,13 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.StructureTypeEnum;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.rule.Rule;
 import com.eul4.rule.TownHallAttribute;
-import org.bukkit.util.Vector;
 
 import java.io.IOException;
 
@@ -23,14 +23,14 @@ public class CraftTownHall extends CraftStructure implements TownHall
 		super(town);
 	}
 	
-	public Rule<TownHallAttribute> getRule()
+	@Override
+	public StructureType<TownHall, TownHallAttribute> getStructureType()
 	{
-		return town.getPlugin().getTownHallRule();
+		return StructureTypeEnum.TOWN_HALL;
 	}
 	
-	@Override
-	public StructureType getStructureType()
+	public Rule<TownHallAttribute> getRule()
 	{
-		return StructureType.TOWN_HALL;
+		return getStructureType().getRule(town.getPlugin());
 	}
 }

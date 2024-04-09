@@ -1,15 +1,51 @@
 package com.eul4.serializer;
 
+import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.rule.GenericAttribute;
+import com.eul4.rule.Rule;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Objects;
+import java.util.function.Function;
 
-public class GenericRuleSerializer
+@RequiredArgsConstructor
+public abstract class GenericRuleSerializer
 {
-	public static void setGenericAttributes(GenericAttribute genericAttribute, ConfigurationSection section)
+	protected final Main plugin;
+	
+	public YamlConfiguration loadConfig(File file) throws FileNotFoundException
+	{
+		if(!file.exists() || file.length() == 0L)
+		{
+			throw new FileNotFoundException(file.getName() + " file not found.");
+		}
+		
+		return YamlConfiguration.loadConfiguration(file);
+	}
+	
+	public <A extends GenericAttribute> Rule<A> deserializeRule(YamlConfiguration config,
+			Function<ConfigurationSection, A> function)
+	{
+		Rule<A> rule = new Rule<>();
+		
+		for(String key : config.getKeys(false))
+		{
+			int level = Integer.parseInt(key);
+			ConfigurationSection section = config.getConfigurationSection(String.valueOf(level));
+			
+			rule.setRule(level, function.apply(section));
+		}
+		
+		return rule;
+	}
+	
+	public void readExternal(GenericAttribute genericAttribute, ConfigurationSection section)
 	{
 		final int requiresTownHallLevel = section.getInt("requires_town_hall_level");
 		final int totalBuildTicks = section.getInt("total_build_ticks");

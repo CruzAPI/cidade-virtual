@@ -4,61 +4,50 @@ import com.eul4.Main;
 import com.eul4.StructureType;
 import com.eul4.rule.Rule;
 import com.eul4.rule.TownHallAttribute;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
-@RequiredArgsConstructor
-public class TownHallRuleSerializer
+public class TownHallRuleSerializer extends GenericRuleSerializer
 {
-	private final Main plugin;
-	
-	public Rule<TownHallAttribute> load() throws NullPointerException
+	public TownHallRuleSerializer(Main plugin)
 	{
-		File file = plugin.getDataFileManager().getTownHallRuleFile();
-		
-		if(!file.exists() || file.length() == 0L)
-		{
-			plugin.getLogger().warning("TownHall rule file not found.");
-			plugin.getLogger().warning("Loading empty TownHall rule instead.");
-			return new Rule<>();
-		}
-		
-		Rule<TownHallAttribute> rule = new Rule<>();
-		
-		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-		
-		for(String key : config.getKeys(false))
-		{
-			int level = Integer.parseInt(key);
-			ConfigurationSection section = config.getConfigurationSection(String.valueOf(level));
-			
-			TownHallAttribute attributes = new TownHallAttribute();
-			
-			GenericRuleSerializer.setGenericAttributes(attributes, section);
-			
-			setStructureLimit(attributes, config.getConfigurationSection("structure_limit"));
-			
-			rule.setRule(level, attributes);
-		}
-		
-		return rule;
+		super(plugin);
 	}
 	
-	private void setStructureLimit(TownHallAttribute townHallAttribute, ConfigurationSection section)
+	public Rule<TownHallAttribute> load() throws FileNotFoundException
 	{
+		return deserializeRule(loadConfig(plugin.getDataFileManager()
+				.getTownHallRuleFile()), this::deserializeAttribute);
+	}
+	
+	private TownHallAttribute deserializeAttribute(ConfigurationSection section)
+	{
+		TownHallAttribute townHallAttribute = new TownHallAttribute();
+		readExternal(townHallAttribute, section);
+		return townHallAttribute;
+	}
+	
+	private void readExternal(TownHallAttribute townHallAttribute, ConfigurationSection section)
+	{
+		super.readExternal(townHallAttribute, section);
+		readStructureLimit(townHallAttribute, section);
+	}
+	
+	private void readStructureLimit(TownHallAttribute townHallAttribute, ConfigurationSection section)
+	{
+		ConfigurationSection structureLimitSection = section.getConfigurationSection("structure_limit");
+		
 		Map<StructureType, Integer> structureLimit = new HashMap<>();
 		
-		if(section != null)
+		if(structureLimitSection != null)
 		{
-			for(String key : section.getKeys(false))
+			for(String key : structureLimitSection.getKeys(false))
 			{
 				StructureType structureType = StructureType.valueOf(key);
-				int limit = section.getInt(key);
+				int limit = structureLimitSection.getInt(key);
 				
 				structureLimit.put(structureType, limit);
 			}

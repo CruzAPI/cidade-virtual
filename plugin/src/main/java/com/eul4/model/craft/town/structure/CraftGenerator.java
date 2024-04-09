@@ -12,7 +12,6 @@ import com.eul4.rule.GeneratorAttribute;
 import com.eul4.rule.Rule;
 import lombok.Getter;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -20,7 +19,7 @@ import java.io.ObjectOutput;
 import java.io.Serial;
 import java.util.Optional;
 
-public abstract class CraftFarmStructure extends CraftStructure implements Generator
+public abstract class CraftGenerator extends CraftStructure implements Generator
 {
 	@Serial
 	private static final long serialVersionUID = 1L;
@@ -30,12 +29,13 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 	
 	private transient BukkitRunnable generationTask;
 	
-	public CraftFarmStructure(Town town)
+	public CraftGenerator(Town town)
 	{
 		super(town);
 	}
 	
-	public CraftFarmStructure(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftGenerator(Town town, TownBlock centerTownBlock, boolean isBuilt)
+			throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
 		
@@ -110,8 +110,7 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 			return;
 		}
 		
-		if(!(townPlayer.getGui() instanceof StructureGui structureGui)
-				|| structureGui.getStructure() != this)
+		if(!(townPlayer.getGui() instanceof StructureGui structureGui) || structureGui.getStructure() != this)
 		{
 			return;
 		}
@@ -191,8 +190,5 @@ public abstract class CraftFarmStructure extends CraftStructure implements Gener
 		return getRule().getAttribute(level).getDelay();
 	}
 	
-	public Rule<GeneratorAttribute> getRule()
-	{
-		return town.getPlugin().getGeneratorRule();
-	}
+	public abstract Rule<? extends GeneratorAttribute> getRule();
 }

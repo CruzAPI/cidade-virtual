@@ -6,7 +6,7 @@ import org.bukkit.util.Vector;
 
 @Getter
 @Setter
-public class GeneratorAttribute extends GenericAttribute
+public abstract class GeneratorAttribute extends GenericAttribute
 {
 	private int capacity;
 	private int delay;

@@ -1,6 +1,7 @@
 package com.eul4.enums;
 
 import com.eul4.StructureType;
+import com.eul4.StructureTypeEnum;
 import com.eul4.common.constant.CommonNamespacedKey;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
@@ -14,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -27,14 +27,14 @@ public enum ItemBuilder
 		ItemStack item = new ItemStack(Material.EMERALD);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureType.LIKE_GENERATOR),
+	}, StructureTypeEnum.LIKE_GENERATOR),
 	
 	DISLIKE_GENERATOR((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.REDSTONE);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureType.DISLIKE_GENERATOR),
+	}, StructureTypeEnum.DISLIKE_GENERATOR),
 	;
 	
 	private final BiFunction<ItemBuilder, CommonPlayer, ItemStack> itemStackFunction;

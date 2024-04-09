@@ -12,17 +12,18 @@ import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
 import com.eul4.model.player.TownPlayer;
-import com.eul4.rule.GeneratorAttribute;
+import com.eul4.rule.DislikeGeneratorAttribute;
+import com.eul4.rule.LikeGeneratorAttribute;
 import com.eul4.rule.Rule;
 import com.eul4.rule.TownHallAttribute;
-import com.eul4.serializer.GeneratorRuleSerializer;
+import com.eul4.serializer.DislikeGeneratorRuleSerializer;
+import com.eul4.serializer.LikeGeneratorRuleSerializer;
 import com.eul4.serializer.TownHallRuleSerializer;
 import com.eul4.service.*;
 import com.eul4.type.player.PluginCommonPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import com.eul4.util.FileUtil;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -47,15 +48,16 @@ public class Main extends Common
 	private BlockDataLoader blockDataLoader;
 	private DataFileManager dataFileManager;
 	private TownSerializer townSerializer;
-	private StructurePriceSerializer structurePriceSerializer;
-	private StructurePriceChart structurePriceChart;
 	private StructureUpgradeExecutor structureUpgradeExecutor;
-	private GeneratorRuleSerializer generatorRuleSerializer;
-	private TownHallRuleSerializer townHallRuleSerializer;
 	private PurchaseExecutor purchaseExecutor;
 	
-	private Rule<GeneratorAttribute> generatorRule;
+	private TownHallRuleSerializer townHallRuleSerializer;
+	private LikeGeneratorRuleSerializer likeGeneratorRuleSerializer;
+	private DislikeGeneratorRuleSerializer dislikeGeneratorRuleSerializer;
+	
 	private Rule<TownHallAttribute> townHallRule;
+	private Rule<LikeGeneratorAttribute> likeGeneratorRule;
+	private Rule<DislikeGeneratorAttribute> dislikeGeneratorRule;
 	
 	private BuyStructureCommand buyStructureCommand;
 	
@@ -82,6 +84,7 @@ public class Main extends Common
 	{
 		loadWorlds();
 		loadServices();
+		loadSerializers();
 		reloadRules();
 		
 		super.onEnable();
@@ -96,13 +99,16 @@ public class Main extends Common
 		getLogger().info("Plugin enabled.");
 	}
 	
+	@SneakyThrows
 	public void reloadRules()
 	{
-		var likeGeneratorRule = generatorRuleSerializer.load();
 		var townHallRule = townHallRuleSerializer.load();
+		var likeGeneratorRule = likeGeneratorRuleSerializer.load();
+		var dislikeGeneratorRule = dislikeGeneratorRuleSerializer.load();
 		
-		this.generatorRule = likeGeneratorRule;
 		this.townHallRule = townHallRule;
+		this.likeGeneratorRule = likeGeneratorRule;
+		this.dislikeGeneratorRule = dislikeGeneratorRule;
 	}
 	
 	@SneakyThrows
@@ -115,13 +121,17 @@ public class Main extends Common
 		blockDataLoader = new BlockDataLoader(this);
 		townManager = new TownManager(this);
 		townSerializer = new TownSerializer(this);
-		structurePriceSerializer = new StructurePriceSerializer(this);
-		structurePriceChart = structurePriceSerializer.loadStructurePriceChart();
 		structureUpgradeExecutor = new StructureUpgradeExecutor(this);
-		generatorRuleSerializer = new GeneratorRuleSerializer(this);
-		townHallRuleSerializer = new TownHallRuleSerializer(this);
 		purchaseExecutor = new PurchaseExecutor(this);
 	}
+	
+	private void loadSerializers()
+	{
+		townHallRuleSerializer = new TownHallRuleSerializer(this);
+		likeGeneratorRuleSerializer = new LikeGeneratorRuleSerializer(this);
+		dislikeGeneratorRuleSerializer = new DislikeGeneratorRuleSerializer(this);
+	}
+	
 	
 	private void registerPacketInterceptors()
 	{
@@ -134,7 +144,6 @@ public class Main extends Common
 		getCommand("town").setExecutor(new TownCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("move").setExecutor(new MoveCommand(this));
-		getCommand("setprice").setExecutor(new SetPriceCommand(this));
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
 	}

@@ -2,53 +2,28 @@ package com.eul4.serializer;
 
 import com.eul4.Main;
 import com.eul4.rule.GeneratorAttribute;
-import com.eul4.rule.GenericAttribute;
-import com.eul4.rule.Rule;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.util.Vector;
 
-import java.io.File;
-
-@RequiredArgsConstructor
-public class GeneratorRuleSerializer
+public abstract class GeneratorRuleSerializer extends GenericRuleSerializer
 {
-	private final Main plugin;
-	
-	public Rule<GeneratorAttribute> load() throws NullPointerException
+	public GeneratorRuleSerializer(Main plugin)
 	{
-		File file = plugin.getDataFileManager().getGeneratorRuleFile();
+		super(plugin);
+	}
+	
+	public void readExternal(GeneratorAttribute generatorAttribute, ConfigurationSection section)
+	{
+		super.readExternal(generatorAttribute, section);
 		
-		if(!file.exists() || file.length() == 0L)
+		final int capacity = section.getInt("capacity");
+		final int delay = section.getInt("delay");
+		
+		if(delay <= 0)
 		{
-			plugin.getLogger().warning("Generator rule file not found.");
-			plugin.getLogger().warning("Loading empty generator rule instead.");
-			return new Rule<>();
+			throw new IllegalArgumentException("Generator delay must be greater than 0.");
 		}
 		
-		Rule<GeneratorAttribute> rule = new Rule<>();
-		
-		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-		
-		for(String key : config.getKeys(false))
-		{
-			int level = Integer.parseInt(key);
-			ConfigurationSection section = config.getConfigurationSection(String.valueOf(level));
-			
-			GeneratorAttribute attributes = new GeneratorAttribute();
-			
-			GenericRuleSerializer.setGenericAttributes(attributes, section);
-			
-			final int capacity = section.getInt("capacity");
-			final int delay = section.getInt("delay");
-			
-			attributes.setCapacity(capacity);
-			attributes.setDelay(delay);
-			
-			rule.setRule(level, attributes);
-		}
-		
-		return rule;
+		generatorAttribute.setCapacity(capacity);
+		generatorAttribute.setDelay(delay);
 	}
 }

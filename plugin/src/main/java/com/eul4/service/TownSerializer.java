@@ -104,19 +104,17 @@ public class TownSerializer
 	public Structure readStructureReference(Town town, ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		UUID uuid = (UUID) in.readObject();
-		plugin.getServer().getLogger().warning("UUID read: " + uuid);
 		return town.getStructures().get(uuid);
 	}
 	
 	public void writeStructureReference(Structure structure, ObjectOutput out) throws IOException
 	{
-		plugin.getServer().getLogger().warning("UUID write: " + (structure == null ? null : structure.getUUID()));
 		out.writeObject(structure == null ? null : structure.getUUID());
 	}
 	
 	private Structure readStructure(Town town, ObjectInput in) throws IOException, ClassNotFoundException
 	{
-		StructureType structureType = StructureType.valueOf(in.readUTF());
+		StructureType<?, ?> structureType = StructureType.values().get(in.readInt());
 		Structure structure = structureType.getNewStructureTown().apply(town);
 		
 		structure.readExternal(in);
@@ -137,7 +135,7 @@ public class TownSerializer
 	
 	private void writeStructure(Structure structure, ObjectOutput out) throws IOException
 	{
-		out.writeUTF(structure.getStructureType().name());
+		out.writeInt(structure.getStructureType().ordinal());
 		structure.writeExternal(out);
 	}
 	

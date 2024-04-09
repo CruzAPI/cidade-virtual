@@ -2,12 +2,10 @@ package com.eul4.model.inventory.craft;
 
 import com.eul4.Main;
 import com.eul4.Price;
-import com.eul4.StructurePriceChart;
 import com.eul4.common.model.inventory.craft.CraftGui;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.enums.Currency;
 import com.eul4.enums.ItemBuilder;
-import com.eul4.exception.StructureNotForSaleException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureShopGui;
 import net.kyori.adventure.text.Component;
@@ -50,12 +48,11 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(itemBuilder.getStructureType().getNameMessage().translate(commonPlayer));
 		
-		StructurePriceChart priceChart = ((Main) commonPlayer.getPlugin()).getStructurePriceChart();
+		Price price = itemBuilder.getStructureType().getRule((Main) commonPlayer.getPlugin())
+				.getAttribute(1).getPrice();
 		
-		try
+		if(price != null)
 		{
-			Price price = priceChart.getPrice(itemBuilder.getStructureType());
-			
 			List<Component> components = new ArrayList<>();
 			
 			if(price.getLikes() > 0)
@@ -76,7 +73,7 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 			
 			meta.lore(components);
 		}
-		catch(StructureNotForSaleException e)
+		else
 		{
 			meta.lore(List.of(PluginMessage.STRUCTURE_NOT_FOR_SALE.translate(commonPlayer)));
 		}

@@ -12,6 +12,5 @@ commands:
   admin:
   build:
   move:
-  setprice:
   buystructure:
   rulereload:

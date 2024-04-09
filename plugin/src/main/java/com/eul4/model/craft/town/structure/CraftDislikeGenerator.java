@@ -1,0 +1,60 @@
+package com.eul4.model.craft.town.structure;
+
+import com.eul4.StructureType;
+import com.eul4.StructureTypeEnum;
+import com.eul4.exception.CannotConstructException;
+import com.eul4.model.town.Town;
+import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.DislikeGenerator;
+import com.eul4.rule.DislikeGeneratorAttribute;
+import com.eul4.rule.Rule;
+
+import java.io.IOException;
+
+public class CraftDislikeGenerator extends CraftGenerator implements DislikeGenerator
+{
+	public CraftDislikeGenerator(Town town)
+	{
+		super(town);
+	}
+	
+	public CraftDislikeGenerator(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	{
+		this(town, centerTownBlock, true);
+	}
+	
+	public CraftDislikeGenerator(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	{
+		super(town, centerTownBlock, isBuilt);
+	}
+	
+	@Override
+	public int getTownBalanceLimit()
+	{
+		return town.getDislikeLimit();
+	}
+	
+	@Override
+	public int getTownBalance()
+	{
+		return town.getDislikes();
+	}
+	
+	@Override
+	public void setTownBalance(int balance)
+	{
+		town.setCappedDislikes(balance);
+	}
+	
+	@Override
+	public StructureType<DislikeGenerator, DislikeGeneratorAttribute> getStructureType()
+	{
+		return StructureTypeEnum.DISLIKE_GENERATOR;
+	}
+	
+	@Override
+	public Rule<DislikeGeneratorAttribute> getRule()
+	{
+		return getStructureType().getRule(town.getPlugin());
+	}
+}

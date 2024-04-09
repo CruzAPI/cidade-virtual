@@ -13,4 +13,6 @@ import java.util.Map;
 public class TownHallAttribute extends GenericAttribute
 {
 	private Map<StructureType, Integer> structureLimit;
+	private int likeCapacity;
+	private int dislikeCapacity;
 }

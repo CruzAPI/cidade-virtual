@@ -20,7 +20,7 @@ public class PurchaseExecutor
 		Price price = purchase.getPrice();
 		
 		int missingLikes = price.getLikes() - town.getLikes();
-		int missingDislikes = price.getDislikes() - town.getLikes();
+		int missingDislikes = price.getDislikes() - town.getDislikes();
 		
 		if(missingLikes > 0 || missingDislikes > 0)
 		{

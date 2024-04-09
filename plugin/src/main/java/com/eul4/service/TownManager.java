@@ -184,4 +184,14 @@ public class TownManager
 	{
 		return this.towns.get(uuid);
 	}
+	
+	public void reloadTowns()
+	{
+		if(towns == null)
+		{
+			return;
+		}
+		
+		towns.values().forEach(Town::reloadAttributes);
+	}
 }

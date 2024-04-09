@@ -31,7 +31,7 @@ public class CraftDislikeGenerator extends CraftGenerator implements DislikeGene
 	@Override
 	public int getTownBalanceLimit()
 	{
-		return town.getDislikeLimit();
+		return town.getDislikeCapacity();
 	}
 	
 	@Override

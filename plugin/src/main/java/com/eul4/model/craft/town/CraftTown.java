@@ -18,6 +18,7 @@ import com.eul4.model.town.structure.TownHall;
 import com.eul4.service.TownSerializer;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -53,9 +54,10 @@ public class CraftTown implements Town
 	private final transient Consumer<Player> removeMovingStructureItem;
 	
 	private int likes;
-	private int likeLimit;
 	private int dislikes;
-	private int dislikeLimit;
+	
+	private transient int likeCapacity;
+	private transient int dislikeCapacity;
 	
 	private TownHall townHall;
 	
@@ -78,9 +80,7 @@ public class CraftTown implements Town
 		this.structures = new HashMap<>();
 		
 		createInitialStructures();
-		
-		this.likeLimit = 100;
-		this.dislikeLimit = 100;
+		reloadAttributes();
 	}
 	
 	@Override
@@ -100,9 +100,7 @@ public class CraftTown implements Town
 			movingStructure = townSerializer.readStructureReference(this, in);
 			townHall = (TownHall) Objects.requireNonNull(townSerializer.readStructureReference(this, in));
 			likes = in.readInt();
-			likeLimit = in.readInt();
 			dislikes = in.readInt();
-			dislikeLimit = in.readInt();
 		}
 		else
 		{
@@ -127,9 +125,7 @@ public class CraftTown implements Town
 		townSerializer.writeStructureReference(movingStructure, out);
 		townSerializer.writeStructureReference(townHall, out);
 		out.writeInt(likes);
-		out.writeInt(likeLimit);
 		out.writeInt(dislikes);
-		out.writeInt(dislikeLimit);
 		out.flush();
 	}
 	
@@ -339,18 +335,19 @@ public class CraftTown implements Town
 	{
 		structures.values().forEach(Structure::load);
 		townTiles.values().forEach(TownTile::load);
+		reloadAttributes();
 	}
 	
 	@Override
 	public void setCappedLikes(int likes)
 	{
-		this.likes = Math.min(likeLimit, likes);
+		this.likes = Math.min(likeCapacity, likes);
 	}
 	
 	@Override
 	public void setCappedDislikes(int dislikes)
 	{
-		this.dislikes = Math.min(dislikeLimit, dislikes);
+		this.dislikes = Math.min(dislikeCapacity, dislikes);
 	}
 	
 	@Override
@@ -388,5 +385,13 @@ public class CraftTown implements Town
 		subtract(price);
 		
 		return price;
+	}
+	
+	public void reloadAttributes()
+	{
+		structures.values().forEach(Structure::reloadAttributes);
+		
+		likeCapacity = townHall.getLikeCapacity();
+		dislikeCapacity = townHall.getDislikeCapacity();
 	}
 }

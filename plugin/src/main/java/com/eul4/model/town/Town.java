@@ -59,9 +59,9 @@ public interface Town extends Externalizable
 	Map<UUID, Structure> getStructures();
 	
 	int getLikes();
-	int getLikeLimit();
+	int getLikeCapacity();
 	int getDislikes();
-	int getDislikeLimit();
+	int getDislikeCapacity();
 	
 	void setCappedLikes(int likes);
 	
@@ -77,4 +77,5 @@ public interface Town extends Externalizable
 			throws StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException;
 	
 	TownHall getTownHall();
+	void reloadAttributes();
 }

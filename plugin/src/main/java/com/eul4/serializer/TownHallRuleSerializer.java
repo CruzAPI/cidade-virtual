@@ -34,6 +34,12 @@ public class TownHallRuleSerializer extends GenericRuleSerializer
 	{
 		super.readExternal(townHallAttribute, section);
 		readStructureLimit(townHallAttribute, section);
+		
+		int likeCapacity = section.getInt("like_capacity");
+		int dislikeCapacity = section.getInt("dislike_capacity");
+		
+		townHallAttribute.setLikeCapacity(likeCapacity);
+		townHallAttribute.setDislikeCapacity(dislikeCapacity);
 	}
 	
 	private void readStructureLimit(TownHallAttribute townHallAttribute, ConfigurationSection section)

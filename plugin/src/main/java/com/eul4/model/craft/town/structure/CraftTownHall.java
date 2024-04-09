@@ -8,11 +8,17 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.rule.Rule;
 import com.eul4.rule.TownHallAttribute;
+import lombok.Getter;
+import org.bukkit.Bukkit;
 
 import java.io.IOException;
 
+@Getter
 public class CraftTownHall extends CraftStructure implements TownHall
 {
+	private int likeCapacity;
+	private int dislikeCapacity;
+	
 	public CraftTownHall(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, true);
@@ -32,5 +38,14 @@ public class CraftTownHall extends CraftStructure implements TownHall
 	public Rule<TownHallAttribute> getRule()
 	{
 		return getStructureType().getRule(town.getPlugin());
+	}
+	
+	@Override
+	public void reloadAttributes()
+	{
+		super.reloadAttributes();
+		
+		likeCapacity = getRule().getAttribute(getLevelStatus()).getLikeCapacity();
+		dislikeCapacity = getRule().getAttribute(getLevelStatus()).getDislikeCapacity();
 	}
 }

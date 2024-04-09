@@ -1,17 +1,13 @@
 package com.eul4.command;
 
 import com.eul4.Main;
-import com.eul4.exception.CannotConstructException;
 import com.eul4.model.player.TownPlayer;
-import com.eul4.model.town.TownBlock;
-import com.eul4.model.town.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,9 +38,9 @@ public class BalanceCommand implements TabExecutor
 		}
 		
 		int likes = townPlayer.getTown().getLikes();
-		int likeLimit = townPlayer.getTown().getLikeLimit();
+		int likeLimit = townPlayer.getTown().getLikeCapacity();
 		int dislikes = townPlayer.getTown().getDislikes();
-		int dislikeLimit = townPlayer.getTown().getDislikeLimit();
+		int dislikeLimit = townPlayer.getTown().getDislikeCapacity();
 		
 		player.sendMessage(String.format("likes: %d/%d", likes, likeLimit));
 		player.sendMessage(String.format("dislikes: %d/%d", dislikes, dislikeLimit));

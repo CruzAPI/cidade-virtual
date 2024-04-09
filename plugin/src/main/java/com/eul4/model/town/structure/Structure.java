@@ -80,4 +80,6 @@ public interface Structure extends Externalizable
 	int getLevelStatus();
 	
 	Rule<? extends GenericAttribute> getRule();
+	
+	void reloadAttributes();
 }

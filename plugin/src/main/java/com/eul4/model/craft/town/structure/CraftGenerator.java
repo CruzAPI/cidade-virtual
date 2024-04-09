@@ -19,6 +19,7 @@ import java.io.ObjectOutput;
 import java.io.Serial;
 import java.util.Optional;
 
+@Getter
 public abstract class CraftGenerator extends CraftStructure implements Generator
 {
 	@Serial
@@ -28,6 +29,9 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 	protected int balance;
 	
 	private transient BukkitRunnable generationTask;
+	
+	private transient int capacity;
+	private transient int delay;
 	
 	public CraftGenerator(Town town)
 	{
@@ -180,15 +184,14 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 		Optional.ofNullable(generationTask).ifPresent(BukkitRunnable::cancel);
 	}
 	
-	public int getCapacity()
-	{
-		return getRule().getAttribute(level).getCapacity();
-	}
-	
-	public int getDelay()
-	{
-		return getRule().getAttribute(level).getDelay();
-	}
-	
 	public abstract Rule<? extends GeneratorAttribute> getRule();
+	
+	@Override
+	public void reloadAttributes()
+	{
+		super.reloadAttributes();
+		
+		capacity = getRule().getAttribute(getLevelStatus()).getCapacity();
+		delay = getRule().getAttribute(getLevelStatus()).getDelay();
+	}
 }

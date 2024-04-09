@@ -77,6 +77,9 @@ public abstract class CraftStructure implements Structure
 	
 	private BukkitRunnable buildTask;
 	
+	
+	private transient Vector hologramRelativePosition;
+	
 	public CraftStructure(Town town)
 	{
 		this.town = town;
@@ -98,8 +101,10 @@ public abstract class CraftStructure implements Structure
 		this.buildTicks = isBuilt ? 0 : 30 * 20;
 		this.totalBuildTicks = buildTicks;
 		
+		reloadAttributes();
+		
 		this.hologram = new Hologram(town.getPlugin(),
-				centerTownBlock.getBlock().getLocation().add(getHologramRelativePosition()));
+				centerTownBlock.getBlock().getLocation().add(hologramRelativePosition));
 		
 		construct(loadSchematic(), centerTownBlock, 0);
 		town.addStructure(this);
@@ -344,6 +349,7 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public void load()
 	{
+		reloadAttributes();
 		hologram.load(town.getPlugin());
 		scheduleBuildTaskIfPossible();
 	}
@@ -422,12 +428,13 @@ public abstract class CraftStructure implements Structure
 	
 	protected void onBuildStart()
 	{
-	
+		reloadAttributes();
 	}
 	
 	protected void onBuildFinish()
 	{
 		updateHologram();
+		reloadAttributes();
 	}
 	
 	public double getBuildProgressPercentage()
@@ -514,7 +521,7 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public Vector getHologramRelativePosition()
 	{
-		return getRule().getAttribute(level).getHologramVector();
+		return hologramRelativePosition;
 	}
 	
 	@Override
@@ -524,4 +531,10 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	public abstract Rule<? extends GenericAttribute> getRule();
+	
+	@Override
+	public void reloadAttributes()
+	{
+		hologramRelativePosition = getRule().getAttribute(level).getHologramVector();
+	}
 }

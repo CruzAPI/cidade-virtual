@@ -31,7 +31,7 @@ public class CraftLikeGenerator extends CraftGenerator implements LikeGenerator
 	@Override
 	public int getTownBalanceLimit()
 	{
-		return town.getLikeLimit();
+		return town.getLikeCapacity();
 	}
 	
 	@Override

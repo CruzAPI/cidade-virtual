@@ -109,6 +109,8 @@ public class Main extends Common
 		this.townHallRule = townHallRule;
 		this.likeGeneratorRule = likeGeneratorRule;
 		this.dislikeGeneratorRule = dislikeGeneratorRule;
+		
+		townManager.reloadTowns();
 	}
 	
 	@SneakyThrows

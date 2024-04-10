@@ -99,9 +99,19 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 	
 	private void generateIncome()
 	{
+		if(isFull() || status != StructureStatus.BUILT)
+		{
+			return;
+		}
+		
 		balance = Math.min(getCapacity(), balance + getIncome());
 		updateHologram();
 		updateInventoryView();
+	}
+	
+	private boolean isFull()
+	{
+		return balance >= capacity;
 	}
 	
 	private void updateInventoryView()
@@ -190,5 +200,6 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 		
 		capacity = getRule().getAttribute(getLevelStatus()).getCapacity();
 		delay = getRule().getAttribute(getLevelStatus()).getDelay();
+		updateHologram();
 	}
 }

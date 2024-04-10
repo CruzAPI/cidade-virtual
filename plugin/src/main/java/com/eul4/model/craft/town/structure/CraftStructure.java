@@ -351,8 +351,8 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public void load()
 	{
-		reloadAttributes();
 		hologram.load(town.getPlugin());
+		reloadAttributes();
 		scheduleBuildTaskIfPossible();
 	}
 	
@@ -538,5 +538,12 @@ public abstract class CraftStructure implements Structure
 	public void reloadAttributes()
 	{
 		hologramRelativePosition = getRule().getAttribute(level).getHologramVector();
+	}
+	
+	@Override
+	public void reloadAttributesAndUpdateHologram()
+	{
+		reloadAttributes();
+		updateHologram();
 	}
 }

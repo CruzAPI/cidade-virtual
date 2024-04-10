@@ -200,6 +200,5 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 		
 		capacity = getRule().getAttribute(getLevelStatus()).getCapacity();
 		delay = getRule().getAttribute(getLevelStatus()).getDelay();
-		updateHologram();
 	}
 }

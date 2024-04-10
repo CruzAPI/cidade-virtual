@@ -389,7 +389,7 @@ public class CraftTown implements Town
 	
 	public void reloadAttributes()
 	{
-		structures.values().forEach(Structure::reloadAttributes);
+		structures.values().forEach(Structure::reloadAttributesAndUpdateHologram);
 		
 		likeCapacity = townHall.getLikeCapacity();
 		dislikeCapacity = townHall.getDislikeCapacity();

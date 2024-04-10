@@ -82,6 +82,7 @@ public class Main extends Common
 	
 	private void enablePlugin()
 	{
+		registerResourceBundles();
 		loadWorlds();
 		loadServices();
 		loadSerializers();
@@ -91,7 +92,6 @@ public class Main extends Common
 		
 		townManager.loadTownsOrElse(getServer()::shutdown);
 		
-		registerResourceBundles();
 		registerCommands();
 		registerListeners();
 		registerPacketInterceptors();

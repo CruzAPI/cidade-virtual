@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.eul4.common.command.AdminCommand;
 import com.eul4.common.command.BuildCommand;
+import com.eul4.common.command.StopCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
@@ -60,6 +61,7 @@ public abstract class Common extends JavaPlugin
 	{
 		getCommand("admin").setExecutor(new AdminCommand(this));
 		getCommand("build").setExecutor(new BuildCommand(this));
+		getCommand("stop").setExecutor(new StopCommand(this));
 	}
 	
 	private void registerPacketAdapters()
@@ -94,6 +96,7 @@ public abstract class Common extends JavaPlugin
 		pluginManager.registerEvents(new CancelItemMoveListener(this), this);
 		pluginManager.registerEvents(new RemoveOnDropItemListener(this), this);
 		pluginManager.registerEvents(new CancelInteractionItemListener(this), this);
+		pluginManager.registerEvents(new WorldSaveRecallListener(this), this);
 	}
 	
 	@Override

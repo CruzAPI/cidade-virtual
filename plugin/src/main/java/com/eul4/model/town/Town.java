@@ -6,6 +6,7 @@ import com.eul4.StructureType;
 import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
+import com.eul4.exception.StructureLimitException;
 import com.eul4.exception.StructureNotForSaleException;
 import com.eul4.model.craft.town.structure.CraftStructure;
 import com.eul4.model.town.structure.Structure;
@@ -74,8 +75,11 @@ public interface Town extends Externalizable
 	void checkIfAffordable(Price price) throws InsufficientBalanceException;
 	
 	Price buyNewStructure(StructureType<?, ?> structureType, TownBlock townBlock)
-			throws StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException;
+			throws StructureLimitException, StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException;
 	
 	TownHall getTownHall();
 	void reloadAttributes();
+	
+	int countStructures(StructureType<?, ?> structureType);
+	int getStructureLimit(StructureType<?, ?> structureType);
 }

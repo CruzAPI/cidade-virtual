@@ -205,6 +205,8 @@ public class Main extends Common
 	{
 		super.onDisable();
 		
+		townManager.saveTowns();
+		
 		getLogger().info("Plugin disabled.");
 	}
 	

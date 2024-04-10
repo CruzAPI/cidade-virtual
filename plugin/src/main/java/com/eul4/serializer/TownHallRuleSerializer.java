@@ -46,13 +46,13 @@ public class TownHallRuleSerializer extends GenericRuleSerializer
 	{
 		ConfigurationSection structureLimitSection = section.getConfigurationSection("structure_limit");
 		
-		Map<StructureType, Integer> structureLimit = new HashMap<>();
+		Map<StructureType<?, ?>, Integer> structureLimit = new HashMap<>();
 		
 		if(structureLimitSection != null)
 		{
 			for(String key : structureLimitSection.getKeys(false))
 			{
-				StructureType structureType = StructureType.valueOf(key);
+				StructureType<?, ?> structureType = StructureType.valueOf(key);
 				int limit = structureLimitSection.getInt(key);
 				
 				structureLimit.put(structureType, limit);

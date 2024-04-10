@@ -12,7 +12,7 @@ import java.util.Map;
 @ToString(callSuper = true)
 public class TownHallAttribute extends GenericAttribute
 {
-	private Map<StructureType, Integer> structureLimit;
+	private Map<StructureType<?, ?>, Integer> structureLimit;
 	private int likeCapacity;
 	private int dislikeCapacity;
 }

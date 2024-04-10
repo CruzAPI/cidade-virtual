@@ -97,6 +97,7 @@ public class TownManager
 			plugin.getTownSerializer().writeTowns(out);
 			out.flush();
 			fileOutputStream.write(byteArrayOutputStream.toByteArray());
+			plugin.getLogger().info("Towns saved!");
 			plugin.getLogger().warning("write size: " + byteArrayOutputStream.toByteArray().length);
 		}
 		catch(IOException e)

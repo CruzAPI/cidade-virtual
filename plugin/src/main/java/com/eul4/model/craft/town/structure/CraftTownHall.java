@@ -12,12 +12,14 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Getter
 public class CraftTownHall extends CraftStructure implements TownHall
 {
 	private int likeCapacity;
 	private int dislikeCapacity;
+	private Map<StructureType<?, ?>, Integer> structureLimitMap;
 	
 	public CraftTownHall(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
@@ -47,5 +49,6 @@ public class CraftTownHall extends CraftStructure implements TownHall
 		
 		likeCapacity = getRule().getAttribute(getLevelStatus()).getLikeCapacity();
 		dislikeCapacity = getRule().getAttribute(getLevelStatus()).getDislikeCapacity();
+		structureLimitMap = getRule().getAttribute(getLevelStatus()).getStructureLimit();
 	}
 }

@@ -167,7 +167,14 @@ public enum PluginMessage implements Message
 		empty().color(RED),
 		text((int) args[0]),
 	}),
-	;
+	
+	STRUCTURE_LIMIT_REACHED("structure-limit-reached", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		((StructureType<?, ?>) args[0]).getNameMessage().translate(bundle),
+		text((int) args[1]),
+		text((int) args[2]),
+	});
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

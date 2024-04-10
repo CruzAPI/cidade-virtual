@@ -4,7 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.eul4.common.command.AdminCommand;
 import com.eul4.common.command.BuildCommand;
-import com.eul4.common.command.StopCommand;
+import com.eul4.common.event.WorldSaveOrStopEvent;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
@@ -18,6 +18,7 @@ import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.common.type.player.CraftCommonPlayerType;
 import com.eul4.common.type.player.PlayerType;
 import lombok.Getter;
+import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -61,7 +62,6 @@ public abstract class Common extends JavaPlugin
 	{
 		getCommand("admin").setExecutor(new AdminCommand(this));
 		getCommand("build").setExecutor(new BuildCommand(this));
-		getCommand("stop").setExecutor(new StopCommand(this));
 	}
 	
 	private void registerPacketAdapters()
@@ -102,6 +102,11 @@ public abstract class Common extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
+		for(World world : getServer().getWorlds())
+		{
+			getServer().getPluginManager().callEvent(new WorldSaveOrStopEvent(world));
+		}
+		
 		getLogger().info("Commons disabled!");
 	}
 	

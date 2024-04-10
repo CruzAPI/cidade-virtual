@@ -6,6 +6,7 @@ import com.eul4.StructureType;
 import com.eul4.common.wrapper.LocationSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
+import com.eul4.exception.StructureLimitException;
 import com.eul4.exception.StructureNotForSaleException;
 import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
@@ -192,8 +193,6 @@ public class CraftTown implements Town
 	
 	public void createInitialStructures() throws CannotConstructException, IOException
 	{
-		Map<UUID, Structure> map = new HashMap<>();
-		
 		TownBlock centerTownBlock = getTownBlock(location.getBlock());
 		Block centerBlock = centerTownBlock.getBlock();
 		
@@ -377,8 +376,16 @@ public class CraftTown implements Town
 	
 	@Override
 	public Price buyNewStructure(StructureType<?, ?> structureType, TownBlock townBlock)
-			throws StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException
+			throws StructureLimitException, CannotConstructException, IOException, InsufficientBalanceException
 	{
+		final int count = countStructures(structureType);
+		final int max = getStructureLimit(structureType);
+		
+		if(count >= max)
+		{
+			throw new StructureLimitException(count, max);
+		}
+		
 		Price price = structureType.getRule(plugin).getAttribute(1).getPrice();
 		checkIfAffordable(price);
 		structureType.getInstantiation().newInstance(this, townBlock);
@@ -393,5 +400,27 @@ public class CraftTown implements Town
 		
 		likeCapacity = townHall.getLikeCapacity();
 		dislikeCapacity = townHall.getDislikeCapacity();
+	}
+	
+	@Override
+	public int countStructures(StructureType<?, ?> structureType)
+	{
+		int count = 0;
+		
+		for(Structure structure : structures.values())
+		{
+			if(structure.getStructureType() == structureType)
+			{
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	@Override
+	public int getStructureLimit(StructureType<?, ?> structureType)
+	{
+		return townHall.getStructureLimitMap().getOrDefault(structureType, 0);
 	}
 }

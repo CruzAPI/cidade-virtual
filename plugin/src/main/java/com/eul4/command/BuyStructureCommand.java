@@ -7,6 +7,7 @@ import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
+import com.eul4.exception.StructureLimitException;
 import com.eul4.exception.StructureNotForSaleException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.craft.CraftStructureShopGui;
@@ -14,13 +15,10 @@ import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -134,6 +132,10 @@ public class BuyStructureCommand implements TabExecutor
 			{
 				townPlayer.sendMessage(PluginMessage.MISSING_DISLIKES, e.getDislike());
 			}
+		}
+		catch(StructureLimitException e)
+		{
+			townPlayer.sendMessage(PluginMessage.STRUCTURE_LIMIT_REACHED, structureType, e.getCount(), e.getLimit());
 		}
 		
 		return false;

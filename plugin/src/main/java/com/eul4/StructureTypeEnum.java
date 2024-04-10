@@ -35,7 +35,6 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			CraftTownHall::new,
 			CraftTownHallGui::new,
 			Main::getTownHallRule,
-			"prefeitura",
 			"TOWN_HALL",
 			PluginMessage.STRUCTURE_TOWN_HALL_NAME);
 	
@@ -44,7 +43,6 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			CraftLikeGenerator::new,
 			CraftLikeGeneratorGui::new,
 			Main::getLikeGeneratorRule,
-			"likefarm",
 			"LIKE_GENERATOR",
 			PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME);
 	
@@ -53,7 +51,6 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			CraftDislikeGenerator::new,
 			CraftDislikeGeneratorGui::new,
 			Main::getDislikeGeneratorRule,
-			"dislikefarm",
 			"DISLIKE_GENERATOR",
 			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME);
 	
@@ -62,7 +59,6 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 	private final BiFunction<CommonPlayer, Structure, StructureGui> newStructureGui;
 	private final Function<Main, Rule<A>> ruleFunction;
 	private final String name;
-	private final String newName;
 	private final Message nameMessage;
 	
 	@Accessors(fluent = true)
@@ -73,7 +69,6 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			BiFunction<CommonPlayer, Structure, StructureGui> newStructureGui,
 			Function<Main, Rule<A>> ruleFunction,
 			String name,
-			String newName,
 			Message nameMessage)
 	{
 		this.instantiation = instantiation;
@@ -81,7 +76,6 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 		this.newStructureGui = newStructureGui;
 		this.ruleFunction = ruleFunction;
 		this.name = name;
-		this.newName = newName;
 		this.nameMessage = nameMessage;
 		this.ordinal = VALUES.size();
 		
@@ -114,6 +108,6 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 	
 	public String name()
 	{
-		return newName;
+		return name;
 	}
 }

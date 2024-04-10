@@ -18,7 +18,6 @@ public interface StructureType<S extends Structure, A extends GenericAttribute>
 	StructureInstantiation getInstantiation();
 	Function<Town, S> getNewStructureTown();
 	BiFunction<CommonPlayer, Structure, StructureGui> getNewStructureGui();
-	String getName();
 	String name();
 	Message getNameMessage();
 	Rule<A> getRule(Main plugin);

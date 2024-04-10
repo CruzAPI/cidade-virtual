@@ -312,13 +312,13 @@ public abstract class CraftStructure implements Structure
 	
 	public File getSchematicFile(int level, StructureStatus status)
 	{
-		return new File(town.getPlugin().getSchematicsFolder(), getName() + "_" + level + "_" + status + ".schem");
+		return new File(town.getPlugin().getSchematicsFolder(), getName().toLowerCase() + "_" + level + "_" + status + ".schem");
 	}
 	
 	@Override
 	public String getName()
 	{
-		return getStructureType().getName();
+		return getStructureType().name();
 	}
 	
 	@Override

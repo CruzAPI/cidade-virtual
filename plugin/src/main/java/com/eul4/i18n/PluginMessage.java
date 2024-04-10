@@ -47,11 +47,13 @@ public enum PluginMessage implements Message
 		text((int) args[1]),
 	}),
 	
-	HOLOGRAM_LIKE_FARM_LINE1("hologram.like-farm.line1",
+	STRUCTURE_HOLOGRAM_TITLE("structure.hologram.title",
 	(bundle, args) -> new Component[]
 	{
-		empty().color(GREEN).decorate(BOLD),
-		text((int) args[0]),
+		empty().decorate(BOLD),
+		((StructureType<?, ?>) args[0]).getNameMessage().translateWord(bundle, String::toUpperCase).color(((StructureType<?, ?>) args[0]).getColor()),
+		LEVEL.translateWord(bundle, String::toUpperCase),
+		text((int) args[1]),
 	}),
 	
 	HOLOGRAM_LIKE_FARM_LINE2("hologram.like-farm.line2",

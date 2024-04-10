@@ -107,6 +107,8 @@ public abstract class CraftStructure implements Structure
 				centerTownBlock.getBlock().getLocation().add(hologramRelativePosition));
 		
 		construct(loadSchematic(), centerTownBlock, 0);
+		updateHologram();
+		
 		town.addStructure(this);
 		scheduleBuildTaskIfPossible();
 	}

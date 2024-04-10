@@ -43,9 +43,6 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 	{
 		super(town, centerTownBlock, isBuilt);
 		
-		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE1, level);
-		hologram.newLine(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, getCapacity());
-		
 		scheduleGenerationTaskIfPossible();
 	}
 	
@@ -136,7 +133,7 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 		else
 		{
 			hologram.setSize(2);
-			hologram.getLine(0).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE1, level);
+			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
 			hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, getCapacity());
 		}
 	}

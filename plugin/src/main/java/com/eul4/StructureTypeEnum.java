@@ -19,6 +19,8 @@ import com.eul4.model.town.structure.TownHall;
 import com.eul4.rule.*;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			CraftTownHallGui::new,
 			Main::getTownHallRule,
 			"TOWN_HALL",
+			NamedTextColor.YELLOW,
 			PluginMessage.STRUCTURE_TOWN_HALL_NAME);
 	
 	public static final StructureTypeEnum<LikeGenerator, LikeGeneratorAttribute> LIKE_GENERATOR = new StructureTypeEnum<>(
@@ -44,6 +47,7 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			CraftLikeGeneratorGui::new,
 			Main::getLikeGeneratorRule,
 			"LIKE_GENERATOR",
+			NamedTextColor.GREEN,
 			PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME);
 	
 	public static final StructureTypeEnum<DislikeGenerator, DislikeGeneratorAttribute> DISLIKE_GENERATOR = new StructureTypeEnum<>(
@@ -52,6 +56,7 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			CraftDislikeGeneratorGui::new,
 			Main::getDislikeGeneratorRule,
 			"DISLIKE_GENERATOR",
+			NamedTextColor.RED,
 			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME);
 	
 	private final StructureInstantiation instantiation;
@@ -59,6 +64,7 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 	private final BiFunction<CommonPlayer, Structure, StructureGui> newStructureGui;
 	private final Function<Main, Rule<A>> ruleFunction;
 	private final String name;
+	private final TextColor color;
 	private final Message nameMessage;
 	
 	@Accessors(fluent = true)
@@ -69,6 +75,7 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			BiFunction<CommonPlayer, Structure, StructureGui> newStructureGui,
 			Function<Main, Rule<A>> ruleFunction,
 			String name,
+			TextColor color,
 			Message nameMessage)
 	{
 		this.instantiation = instantiation;
@@ -76,6 +83,7 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 		this.newStructureGui = newStructureGui;
 		this.ruleFunction = ruleFunction;
 		this.name = name;
+		this.color = color;
 		this.nameMessage = nameMessage;
 		this.ordinal = VALUES.size();
 		

@@ -21,6 +21,7 @@ public interface StructureType<S extends Structure, A extends GenericAttribute>
 	BiFunction<CommonPlayer, Structure, StructureGui> getNewStructureGui();
 	String name();
 	Message getNameMessage();
+	Message getUpgradePreviewLoreMessage();
 	Rule<A> getRule(Main plugin);
 	
 	int ordinal();

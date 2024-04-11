@@ -36,20 +36,23 @@ task("deploy")
 
         val containerName = "cidade-virtual-server"
 
-        println("Deploying in remote...")
-        val pluginDeployProcess = Runtime.getRuntime().exec("scp ./plugin/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
-
-        if(pluginDeployProcess.waitFor() != 0)
-        {
-            throw StopExecutionException("Failed to deploy: Plugin (exit code: ${pluginDeployProcess.exitValue()})")
-        }
-
         println("Stopping server...")
         val stopServerProcess = Runtime.getRuntime().exec("ssh -t $user@$host /bin/bash -ic \"stop\\ $containerName\"")
 
         if(stopServerProcess.waitFor() != 0)
         {
             throw StopExecutionException("Failed to stop server! (exit code: ${stopServerProcess.exitValue()})")
+        }
+
+        println("Sleeping 10s...")
+        Thread.sleep(10000L);
+
+        println("Deploying in remote...")
+        val pluginDeployProcess = Runtime.getRuntime().exec("scp ./plugin/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
+
+        if(pluginDeployProcess.waitFor() != 0)
+        {
+            throw StopExecutionException("Failed to deploy: Plugin (exit code: ${pluginDeployProcess.exitValue()})")
         }
     }
 }

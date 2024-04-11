@@ -5,6 +5,9 @@ import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.wrapper.TimerTranslater;
 import com.eul4.enums.Currency;
+import com.eul4.rule.DislikeGeneratorAttribute;
+import com.eul4.rule.LikeGeneratorAttribute;
+import com.eul4.rule.TownHallAttribute;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -22,6 +25,7 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 public enum PluginMessage implements Message
 {
 	LEVEL("level"),
+	UPGRADE("upgrade"),
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_TOWN_HALL_NAME ("structure.town-hall.name"),
 	STRUCTURE_LIKE_GENERATOR_NAME("structure.like-generator.name"),
@@ -174,7 +178,54 @@ public enum PluginMessage implements Message
 		((StructureType<?, ?>) args[0]).getNameMessage().translate(bundle),
 		text((int) args[1]),
 		text((int) args[2]),
-	});
+	}),
+	
+	STRUCTURE_TOWN_HALL_UPGRADE_PREVIEW_LORE("structure.town-hall.upgrade-preview-lore", (bundle, args) ->
+	{
+		TownHallAttribute currentLevelAttributes = (TownHallAttribute) args[0];
+		TownHallAttribute nextLevelAttributes = (TownHallAttribute) args[1];
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(currentLevelAttributes.getLikeCapacity()),
+			text(nextLevelAttributes.getLikeCapacity()),
+			text(currentLevelAttributes.getDislikeCapacity()),
+			text(nextLevelAttributes.getDislikeCapacity()),
+		};
+	}),
+	
+	STRUCTURE_LIKE_GENERATOR_UPGRADE_PREVIEW_LORE("structure.like-generator.upgrade-preview-lore", (bundle, args) ->
+	{
+		LikeGeneratorAttribute currentLevelAttributes = (LikeGeneratorAttribute) args[0];
+		LikeGeneratorAttribute nextLevelAttributes = (LikeGeneratorAttribute) args[1];
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(currentLevelAttributes.getCapacity()),
+			text(nextLevelAttributes.getCapacity()),
+			text(currentLevelAttributes.getDelay()),
+			text(nextLevelAttributes.getDelay()),
+		};
+	}),
+	
+	STRUCTURE_DISLIKE_GENERATOR_UPGRADE_PREVIEW_LORE("structure.dislike-generator.upgrade-preview-lore", (bundle, args) ->
+	{
+		DislikeGeneratorAttribute currentLevelAttributes = (DislikeGeneratorAttribute) args[0];
+		DislikeGeneratorAttribute nextLevelAttributes = (DislikeGeneratorAttribute) args[1];
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(currentLevelAttributes.getCapacity()),
+			text(nextLevelAttributes.getCapacity()),
+			text(currentLevelAttributes.getDelay()),
+			text(nextLevelAttributes.getDelay()),
+		};
+	}),
+	
+	;
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

@@ -39,7 +39,9 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			Main::getTownHallRule,
 			"TOWN_HALL",
 			NamedTextColor.YELLOW,
-			PluginMessage.STRUCTURE_TOWN_HALL_NAME);
+			PluginMessage.STRUCTURE_TOWN_HALL_NAME,
+			PluginMessage.STRUCTURE_TOWN_HALL_UPGRADE_PREVIEW_LORE
+	);
 	
 	public static final StructureTypeEnum<LikeGenerator, LikeGeneratorAttribute> LIKE_GENERATOR = new StructureTypeEnum<>(
 			CraftLikeGenerator::new,
@@ -48,7 +50,9 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			Main::getLikeGeneratorRule,
 			"LIKE_GENERATOR",
 			NamedTextColor.GREEN,
-			PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME);
+			PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
+			PluginMessage.STRUCTURE_LIKE_GENERATOR_UPGRADE_PREVIEW_LORE
+	);
 	
 	public static final StructureTypeEnum<DislikeGenerator, DislikeGeneratorAttribute> DISLIKE_GENERATOR = new StructureTypeEnum<>(
 			CraftDislikeGenerator::new,
@@ -57,7 +61,9 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			Main::getDislikeGeneratorRule,
 			"DISLIKE_GENERATOR",
 			NamedTextColor.RED,
-			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME);
+			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME,
+			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_UPGRADE_PREVIEW_LORE
+	);
 	
 	private final StructureInstantiation instantiation;
 	private final Function<Town, S> newStructureTown;
@@ -66,6 +72,7 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 	private final String name;
 	private final TextColor color;
 	private final Message nameMessage;
+	private final Message upgradePreviewLoreMessage;
 	
 	@Accessors(fluent = true)
 	private final int ordinal;
@@ -76,7 +83,8 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			Function<Main, Rule<A>> ruleFunction,
 			String name,
 			TextColor color,
-			Message nameMessage)
+			Message nameMessage,
+			Message upgradePreviewLoreMessage)
 	{
 		this.instantiation = instantiation;
 		this.newStructureTown = newStructureTown;
@@ -85,6 +93,7 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 		this.name = name;
 		this.color = color;
 		this.nameMessage = nameMessage;
+		this.upgradePreviewLoreMessage = upgradePreviewLoreMessage;
 		this.ordinal = VALUES.size();
 		
 		VALUES.add(this);

@@ -1,6 +1,7 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -48,7 +49,8 @@ public class TestCommand implements TabExecutor
 		}
 		else if(args.length == 1)
 		{
-			player.sendMessage("TownHall rule: " + plugin.getTownHallRule());
+			TownPlayer townPlayer = (TownPlayer) plugin.getPlayerManager().get(player);
+			Bukkit.broadcastMessage("? " + townPlayer.getTown().getTownHall().getUUID());
 		}
 		else if(args.length == 2)
 		{

@@ -122,6 +122,7 @@ public abstract class CraftStructure implements Structure
 		
 		if(version == 1L)
 		{
+			uuid = (UUID) in.readObject();
 			centerTownBlock = Objects.requireNonNull(town.getTownBlock(((BlockSerializable) in.readObject())
 					.getBukkitBlock(town.getPlugin().getServer())));
 			level = in.readInt();
@@ -145,6 +146,7 @@ public abstract class CraftStructure implements Structure
 		
 		out.writeLong(serialVersionUID);
 		
+		out.writeObject(uuid);
 		out.writeObject(new BlockSerializable(centerTownBlock.getBlock()));
 		out.writeInt(level);
 		out.writeInt(rotation);

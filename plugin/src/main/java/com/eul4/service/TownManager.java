@@ -90,20 +90,7 @@ public class TownManager
 	
 	public void saveTowns()
 	{
-		try(FileOutputStream fileOutputStream = new FileOutputStream(plugin.getDataFileManager().createTownsFileIfNotExists());
-				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
-		{
-			plugin.getTownSerializer().writeTowns(out);
-			out.flush();
-			fileOutputStream.write(byteArrayOutputStream.toByteArray());
-			plugin.getLogger().info("Towns saved!");
-			plugin.getLogger().warning("write size: " + byteArrayOutputStream.toByteArray().length);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+		plugin.getTownSerializer().saveTowns();
 	}
 	
 	public Town createNewTown(UUID uuid) throws CannotConstructException, IOException

@@ -13,9 +13,7 @@ import com.eul4.model.town.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.block.Block;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -194,5 +192,54 @@ public class TownSerializer
 		}
 		
 		return townBlocks;
+	}
+	
+	public void saveTowns()
+	{
+		File fileTowns = null;
+		File tempTowns = null;
+		
+		try
+		{
+			fileTowns = plugin.getDataFileManager().createTownsFileIfNotExists();
+			tempTowns = new File(fileTowns.getParent(), ".towns.tmp");
+			
+			try(FileOutputStream fileOutputStream = new FileOutputStream(tempTowns);
+					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+					ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
+			{
+				plugin.getTownSerializer().writeTowns(out);
+				out.flush();
+				fileOutputStream.write(byteArrayOutputStream.toByteArray());
+			}
+			
+			if(tempTowns.renameTo(fileTowns))
+			{
+				plugin.getLogger().info("Towns saved! File length: " + fileTowns.length());
+			}
+			else
+			{
+				throw new IOException("Failed to replace the old towns file with the new one.");
+			}
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().severe("Failed to save towns.");
+			e.printStackTrace();
+		}
+		finally
+		{
+			if(tempTowns != null && tempTowns.exists())
+			{
+				if(tempTowns.delete())
+				{
+					plugin.getLogger().info("Temp file " + tempTowns.getName() + " deleted.");
+				}
+				else
+				{
+					plugin.getLogger().warning("Failed to delete temp file: " + tempTowns.getName());
+				}
+			}
+		}
 	}
 }

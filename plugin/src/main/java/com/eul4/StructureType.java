@@ -6,7 +6,7 @@ import com.eul4.function.StructureInstantiation;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
-import com.eul4.rule.GenericAttribute;
+import com.eul4.rule.attribute.GenericAttribute;
 import com.eul4.rule.Rule;
 import net.kyori.adventure.text.format.TextColor;
 

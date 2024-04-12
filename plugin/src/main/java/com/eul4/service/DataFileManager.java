@@ -1,5 +1,6 @@
 package com.eul4.service;
 
+import com.eul4.StructureType;
 import com.eul4.common.Common;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Chunk;
@@ -67,5 +68,11 @@ public class DataFileManager
 		}
 		
 		return file;
+	}
+	
+	public File getRuleFile(StructureType<?, ?> structureType)
+	{
+		String fileName = structureType.name().toLowerCase() + "_rule.yml";
+		return new File(plugin.getDataFolder(), fileName);
 	}
 }

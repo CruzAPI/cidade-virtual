@@ -1,5 +1,6 @@
 package com.eul4.rule;
 
+import com.eul4.rule.attribute.GenericAttribute;
 import lombok.ToString;
 
 import java.util.HashMap;

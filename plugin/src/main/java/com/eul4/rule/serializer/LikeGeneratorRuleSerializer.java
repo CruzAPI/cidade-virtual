@@ -1,7 +1,7 @@
-package com.eul4.serializer;
+package com.eul4.rule.serializer;
 
 import com.eul4.Main;
-import com.eul4.rule.LikeGeneratorAttribute;
+import com.eul4.rule.attribute.LikeGeneratorAttribute;
 import com.eul4.rule.Rule;
 import org.bukkit.configuration.ConfigurationSection;
 

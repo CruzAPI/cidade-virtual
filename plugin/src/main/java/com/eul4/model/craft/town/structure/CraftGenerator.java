@@ -8,7 +8,7 @@ import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Generator;
-import com.eul4.rule.GeneratorAttribute;
+import com.eul4.rule.attribute.GeneratorAttribute;
 import com.eul4.rule.Rule;
 import lombok.Getter;
 import org.bukkit.scheduler.BukkitRunnable;

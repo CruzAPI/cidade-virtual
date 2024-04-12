@@ -7,7 +7,7 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.rule.Rule;
-import com.eul4.rule.TownHallAttribute;
+import com.eul4.rule.attribute.TownHallAttribute;
 import lombok.Getter;
 
 import java.io.IOException;

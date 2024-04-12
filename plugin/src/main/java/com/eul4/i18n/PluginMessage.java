@@ -5,9 +5,10 @@ import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.wrapper.TimerTranslater;
 import com.eul4.enums.Currency;
-import com.eul4.rule.DislikeGeneratorAttribute;
-import com.eul4.rule.LikeGeneratorAttribute;
-import com.eul4.rule.TownHallAttribute;
+import com.eul4.rule.attribute.DislikeDepositAttribute;
+import com.eul4.rule.attribute.DislikeGeneratorAttribute;
+import com.eul4.rule.attribute.LikeGeneratorAttribute;
+import com.eul4.rule.attribute.TownHallAttribute;
 import com.eul4.util.TickConverter;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -31,6 +32,8 @@ public enum PluginMessage implements Message
 	STRUCTURE_TOWN_HALL_NAME ("structure.town-hall.name"),
 	STRUCTURE_LIKE_GENERATOR_NAME("structure.like-generator.name"),
 	STRUCTURE_DISLIKE_GENERATOR_NAME("structure.dislike-generator.name"),
+	STRUCTURE_LIKE_DEPOSIT_NAME("structure.dislike-deposit.name"),
+	STRUCTURE_DISLIKE_DEPOSIT_NAME("structure.like-deposit.name"),
 	COLLECT_LIKES("collect-likes", empty().color(GREEN)),
 	CLICK_TO_BUY_THIS_TILE("click-to-buy-this-tile", empty().decorate(BOLD)),
 	
@@ -50,6 +53,15 @@ public enum PluginMessage implements Message
 		((Message) args[0]).translateWord(bundle.getLocale()),
 		ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
 		text((int) args[1]),
+	}),
+	
+	COMPONENT_STRUCTURE_TITLE("structure.title",
+	(bundle, args) -> new Component[]
+	{
+		(Component) args[0],
+		((Message) args[1]).translateWord(bundle.getLocale()),
+		ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
+		text((int) args[2]),
 	}),
 	
 	STRUCTURE_HOLOGRAM_TITLE("structure.hologram.title",
@@ -235,11 +247,59 @@ public enum PluginMessage implements Message
 		};
 	}),
 	
+	STRUCTURE_LIKE_DEPOSIT_UPGRADE_PREVIEW_LORE("structure.like-deposit.upgrade-preview-lore", (bundle, args) ->
+	{
+		DislikeDepositAttribute currentLevelAttributes = (DislikeDepositAttribute) args[0];
+		DislikeDepositAttribute nextLevelAttributes = (DislikeDepositAttribute) args[1];
+		
+		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(currentLevelAttributes.getCapacity()),
+			text(nextLevelAttributes.getCapacity()),
+			TimerTranslater.translate(buildTicks, bundle),
+		};
+	}),
+	
+	STRUCTURE_DISLIKE_DEPOSIT_UPGRADE_PREVIEW_LORE("structure.dislike-deposit.upgrade-preview-lore", (bundle, args) ->
+	{
+		DislikeDepositAttribute currentLevelAttributes = (DislikeDepositAttribute) args[0];
+		DislikeDepositAttribute nextLevelAttributes = (DislikeDepositAttribute) args[1];
+		
+		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(currentLevelAttributes.getCapacity()),
+			text(nextLevelAttributes.getCapacity()),
+			TimerTranslater.translate(buildTicks, bundle),
+		};
+	}),
+	
 	UPGRADE_LOCKED("upgrade-locked.requires-town-hall-level", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
 		text((int) args[0]),
-	});
+	}),
+	
+	STRUCTURE_DEPOSIT_CAPACITY_HOLOGRAM("structure.deposit-capacity-hologram", (bundle, args) ->
+	{
+		Currency currency = ((Currency) args[1]);
+		
+		Component baseComponent = currency.getBaseComponent();
+		
+		return new Component[]
+		{
+			empty().color(WHITE).decorate(BOLD),
+			baseComponent.append(text((int) args[0])),
+			baseComponent.append(currency.getPluralWord().translateWord(bundle, String::toUpperCase))
+		};
+	}),
+	
+	;
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

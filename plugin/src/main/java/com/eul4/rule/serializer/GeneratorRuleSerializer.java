@@ -1,7 +1,7 @@
-package com.eul4.serializer;
+package com.eul4.rule.serializer;
 
 import com.eul4.Main;
-import com.eul4.rule.GeneratorAttribute;
+import com.eul4.rule.attribute.GeneratorAttribute;
 import org.bukkit.configuration.ConfigurationSection;
 
 public abstract class GeneratorRuleSerializer extends GenericRuleSerializer

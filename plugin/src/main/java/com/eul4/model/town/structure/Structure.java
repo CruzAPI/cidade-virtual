@@ -8,7 +8,7 @@ import com.eul4.exception.*;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
-import com.eul4.rule.GenericAttribute;
+import com.eul4.rule.attribute.GenericAttribute;
 import com.eul4.rule.Rule;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import net.kyori.adventure.text.Component;

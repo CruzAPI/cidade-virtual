@@ -1,9 +1,9 @@
-package com.eul4.serializer;
+package com.eul4.rule.serializer;
 
 import com.eul4.Main;
 import com.eul4.StructureType;
 import com.eul4.rule.Rule;
-import com.eul4.rule.TownHallAttribute;
+import com.eul4.rule.attribute.TownHallAttribute;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.FileNotFoundException;

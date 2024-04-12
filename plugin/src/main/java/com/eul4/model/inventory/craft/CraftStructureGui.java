@@ -8,7 +8,7 @@ import com.eul4.enums.StructureStatus;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.structure.Structure;
-import com.eul4.rule.GenericAttribute;
+import com.eul4.rule.attribute.GenericAttribute;
 import com.eul4.util.MessageUtil;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;

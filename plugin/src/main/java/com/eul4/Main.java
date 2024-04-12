@@ -12,13 +12,9 @@ import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
 import com.eul4.model.player.TownPlayer;
-import com.eul4.rule.DislikeGeneratorAttribute;
-import com.eul4.rule.LikeGeneratorAttribute;
 import com.eul4.rule.Rule;
-import com.eul4.rule.TownHallAttribute;
-import com.eul4.serializer.DislikeGeneratorRuleSerializer;
-import com.eul4.serializer.LikeGeneratorRuleSerializer;
-import com.eul4.serializer.TownHallRuleSerializer;
+import com.eul4.rule.attribute.*;
+import com.eul4.rule.serializer.*;
 import com.eul4.service.*;
 import com.eul4.type.player.PluginCommonPlayerType;
 import com.eul4.type.player.PluginPlayerType;
@@ -54,10 +50,14 @@ public class Main extends Common
 	private TownHallRuleSerializer townHallRuleSerializer;
 	private LikeGeneratorRuleSerializer likeGeneratorRuleSerializer;
 	private DislikeGeneratorRuleSerializer dislikeGeneratorRuleSerializer;
+	private LikeDepositRuleSerializer likeDepositRuleSerializer;
+	private DislikeDepositRuleSerializer dislikeDepositRuleSerializer;
 	
 	private Rule<TownHallAttribute> townHallRule;
 	private Rule<LikeGeneratorAttribute> likeGeneratorRule;
 	private Rule<DislikeGeneratorAttribute> dislikeGeneratorRule;
+	private Rule<LikeDepositAttribute> likeDepositRule;
+	private Rule<DislikeDepositAttribute> dislikeDepositRule;
 	
 	private BuyStructureCommand buyStructureCommand;
 	
@@ -105,10 +105,14 @@ public class Main extends Common
 		var townHallRule = townHallRuleSerializer.load();
 		var likeGeneratorRule = likeGeneratorRuleSerializer.load();
 		var dislikeGeneratorRule = dislikeGeneratorRuleSerializer.load();
+		var likeDepositRule = likeDepositRuleSerializer.load();
+		var dislikeDepositRule = dislikeDepositRuleSerializer.load();
 		
 		this.townHallRule = townHallRule;
 		this.likeGeneratorRule = likeGeneratorRule;
 		this.dislikeGeneratorRule = dislikeGeneratorRule;
+		this.likeDepositRule = likeDepositRule;
+		this.dislikeDepositRule = dislikeDepositRule;
 		
 		townManager.reloadTowns();
 	}
@@ -132,6 +136,8 @@ public class Main extends Common
 		townHallRuleSerializer = new TownHallRuleSerializer(this);
 		likeGeneratorRuleSerializer = new LikeGeneratorRuleSerializer(this);
 		dislikeGeneratorRuleSerializer = new DislikeGeneratorRuleSerializer(this);
+		likeDepositRuleSerializer = new LikeDepositRuleSerializer(this);
+		dislikeDepositRuleSerializer = new DislikeDepositRuleSerializer(this);
 	}
 	
 	

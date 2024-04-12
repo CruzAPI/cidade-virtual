@@ -10,7 +10,7 @@ import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
-import com.eul4.rule.GenericAttribute;
+import com.eul4.rule.attribute.GenericAttribute;
 import com.eul4.rule.Rule;
 import com.eul4.service.TownSerializer;
 import com.fastasyncworldedit.core.FaweAPI;

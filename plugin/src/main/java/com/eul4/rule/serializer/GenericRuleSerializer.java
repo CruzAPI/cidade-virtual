@@ -1,8 +1,8 @@
-package com.eul4.serializer;
+package com.eul4.rule.serializer;
 
 import com.eul4.Main;
 import com.eul4.Price;
-import com.eul4.rule.GenericAttribute;
+import com.eul4.rule.attribute.GenericAttribute;
 import com.eul4.rule.Rule;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,7 +11,6 @@ import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Objects;
 import java.util.function.Function;
 
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package com.eul4.rule;
+package com.eul4.rule.attribute;
 
 import lombok.Getter;
 import lombok.Setter;

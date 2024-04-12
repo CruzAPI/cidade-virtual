@@ -30,6 +30,8 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 	
 	private ItemStack likeGenerator;
 	private ItemStack dislikeGenerator;
+	private ItemStack likeDeposit;
+	private ItemStack dislikeDeposit;
 	
 	public CraftStructureShopGui(CommonPlayer commonPlayer)
 	{
@@ -40,6 +42,12 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		
 		dislikeGenerator = new ItemStack(Material.REDSTONE);
 		setDisplayNameAndPriceInLore(dislikeGenerator, ItemBuilder.DISLIKE_GENERATOR);
+		
+		likeDeposit = new ItemStack(Material.EMERALD_BLOCK);
+		setDisplayNameAndPriceInLore(likeDeposit, ItemBuilder.LIKE_DEPOSIT);
+		
+		dislikeDeposit = new ItemStack(Material.REDSTONE_BLOCK);
+		setDisplayNameAndPriceInLore(dislikeDeposit, ItemBuilder.DISLIKE_DEPOSIT);
 		
 		itemStructureMap.keySet().forEach(getInventory()::addItem);
 	}

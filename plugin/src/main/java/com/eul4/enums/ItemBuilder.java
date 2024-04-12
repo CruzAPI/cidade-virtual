@@ -35,6 +35,21 @@ public enum ItemBuilder
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
 	}, StructureTypeEnum.DISLIKE_GENERATOR),
+	
+	LIKE_DEPOSIT((itemBuilder, commonPlayer) ->
+	{
+		ItemStack item = new ItemStack(Material.EMERALD_BLOCK);
+		setItemBuilderTag(item, itemBuilder, commonPlayer);
+		return item;
+	}, StructureTypeEnum.LIKE_DEPOSIT),
+	
+	DISLIKE_DEPOSIT((itemBuilder, commonPlayer) ->
+	{
+		ItemStack item = new ItemStack(Material.REDSTONE_BLOCK);
+		setItemBuilderTag(item, itemBuilder, commonPlayer);
+		return item;
+	}, StructureTypeEnum.DISLIKE_DEPOSIT),
+	
 	;
 	
 	private final BiFunction<ItemBuilder, CommonPlayer, ItemStack> itemStackFunction;

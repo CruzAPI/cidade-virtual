@@ -6,7 +6,7 @@ import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.LikeGenerator;
-import com.eul4.rule.LikeGeneratorAttribute;
+import com.eul4.rule.attribute.LikeGeneratorAttribute;
 import com.eul4.rule.Rule;
 
 import java.io.IOException;

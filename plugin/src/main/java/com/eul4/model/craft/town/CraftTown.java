@@ -13,6 +13,8 @@ import com.eul4.model.craft.town.structure.CraftTownHall;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
+import com.eul4.model.town.structure.DislikeDeposit;
+import com.eul4.model.town.structure.LikeDeposit;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.service.TownSerializer;
@@ -394,8 +396,38 @@ public class CraftTown implements Town
 	
 	public void resetAttributes()
 	{
-		likeCapacity = townHall.getLikeCapacity();
-		dislikeCapacity = townHall.getDislikeCapacity();
+		likeCapacity = calculateLikeCapacity();
+		dislikeCapacity = calculateDislikeCapacity();
+	}
+	
+	public int calculateLikeCapacity()
+	{
+		int likeCapacity = townHall.getLikeCapacity();
+		
+		for(Structure structure : structures.values())
+		{
+			if(structure instanceof LikeDeposit likeDeposit)
+			{
+				likeCapacity += likeDeposit.getCapacity();
+			}
+		}
+		
+		return likeCapacity;
+	}
+	
+	public int calculateDislikeCapacity()
+	{
+		int dislikeCapacity = townHall.getDislikeCapacity();
+		
+		for(Structure structure : structures.values())
+		{
+			if(structure instanceof DislikeDeposit dislikeDeposit)
+			{
+				dislikeCapacity += dislikeDeposit.getCapacity();
+			}
+		}
+		
+		return dislikeCapacity;
 	}
 	
 	@Override

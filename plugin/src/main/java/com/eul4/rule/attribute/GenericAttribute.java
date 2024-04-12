@@ -1,4 +1,4 @@
-package com.eul4.rule;
+package com.eul4.rule.attribute;
 
 import com.eul4.Price;
 import lombok.Getter;

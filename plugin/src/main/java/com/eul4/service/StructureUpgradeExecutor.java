@@ -10,7 +10,7 @@ import com.eul4.exception.UpgradeNotFoundException;
 import com.eul4.function.Execution;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.structure.Structure;
-import com.eul4.rule.GenericAttribute;
+import com.eul4.rule.attribute.GenericAttribute;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;

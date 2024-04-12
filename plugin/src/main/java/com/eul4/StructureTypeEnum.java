@@ -4,19 +4,13 @@ import com.eul4.common.i18n.Message;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.function.StructureInstantiation;
 import com.eul4.i18n.PluginMessage;
-import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
-import com.eul4.model.craft.town.structure.CraftLikeGenerator;
-import com.eul4.model.craft.town.structure.CraftTownHall;
+import com.eul4.model.craft.town.structure.*;
 import com.eul4.model.inventory.StructureGui;
-import com.eul4.model.inventory.craft.CraftDislikeGeneratorGui;
-import com.eul4.model.inventory.craft.CraftLikeGeneratorGui;
-import com.eul4.model.inventory.craft.CraftTownHallGui;
+import com.eul4.model.inventory.craft.*;
 import com.eul4.model.town.Town;
-import com.eul4.model.town.structure.DislikeGenerator;
-import com.eul4.model.town.structure.LikeGenerator;
-import com.eul4.model.town.structure.Structure;
-import com.eul4.model.town.structure.TownHall;
+import com.eul4.model.town.structure.*;
 import com.eul4.rule.*;
+import com.eul4.rule.attribute.*;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -63,6 +57,28 @@ public class StructureTypeEnum<S extends Structure, A extends GenericAttribute> 
 			NamedTextColor.RED,
 			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME,
 			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_UPGRADE_PREVIEW_LORE
+	);
+	
+	public static final StructureTypeEnum<DislikeDeposit, DislikeDepositAttribute> DISLIKE_DEPOSIT = new StructureTypeEnum<>(
+			CraftDislikeDeposit::new,
+			CraftDislikeDeposit::new,
+			CraftDislikeDepositGui::new,
+			Main::getDislikeDepositRule,
+			"DISLIKE_DEPOSIT",
+			NamedTextColor.RED,
+			PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_NAME,
+			PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
+	);
+	
+	public static final StructureTypeEnum<LikeDeposit, LikeDepositAttribute> LIKE_DEPOSIT = new StructureTypeEnum<>(
+			CraftLikeDeposit::new,
+			CraftLikeDeposit::new,
+			CraftLikeDepositGui::new,
+			Main::getLikeDepositRule,
+			"LIKE_DEPOSIT",
+			NamedTextColor.RED,
+			PluginMessage.STRUCTURE_LIKE_DEPOSIT_NAME,
+			PluginMessage.STRUCTURE_LIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
 	);
 	
 	private final StructureInstantiation instantiation;

@@ -44,8 +44,8 @@ task("deploy")
             throw StopExecutionException("Failed to stop server! (exit code: ${stopServerProcess.exitValue()})")
         }
 
-        println("Sleeping 10s...")
-        Thread.sleep(10000L);
+        println("Sleeping 3s...")
+        Thread.sleep(3000L);
 
         println("Deploying in remote...")
         val pluginDeployProcess = Runtime.getRuntime().exec("scp ./plugin/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")

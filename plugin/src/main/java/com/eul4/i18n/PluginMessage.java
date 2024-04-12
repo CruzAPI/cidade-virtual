@@ -225,7 +225,11 @@ public enum PluginMessage implements Message
 		};
 	}),
 	
-	;
+	UPGRADE_LOCKED("upgrade-locked.requires-town-hall-level", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text((int) args[0]),
+	});
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

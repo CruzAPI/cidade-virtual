@@ -77,7 +77,6 @@ public abstract class CraftStructure implements Structure
 	
 	private BukkitRunnable buildTask;
 	
-	
 	private transient Vector hologramRelativePosition;
 	
 	public CraftStructure(Town town)
@@ -547,5 +546,13 @@ public abstract class CraftStructure implements Structure
 	{
 		reloadAttributes();
 		updateHologram();
+	}
+	
+	@Override
+	public boolean hasUpgradeUnlocked()
+	{
+		GenericAttribute nextAttribute = getRule().getAttribute(level + 1);
+		
+		return nextAttribute != null && town.getTownHall().getLevelStatus() >= nextAttribute.getRequiresTownHallLevel();
 	}
 }

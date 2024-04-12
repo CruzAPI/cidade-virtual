@@ -8,6 +8,7 @@ import com.eul4.enums.Currency;
 import com.eul4.enums.ItemBuilder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureShopGui;
+import com.eul4.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -53,25 +54,7 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		
 		if(price != null)
 		{
-			List<Component> components = new ArrayList<>();
-			
-			if(price.getLikes() > 0)
-			{
-				components.add(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
-						empty().color(GREEN),
-						price.getLikes(),
-						Currency.LIKE));
-			}
-			
-			if(price.getDislikes() > 0)
-			{
-				components.add(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
-						empty().color(RED),
-						price.getDislikes(),
-						Currency.DISLIKE));
-			}
-			
-			meta.lore(components);
+			meta.lore(MessageUtil.getPriceLore(price, commonPlayer));
 		}
 		else
 		{

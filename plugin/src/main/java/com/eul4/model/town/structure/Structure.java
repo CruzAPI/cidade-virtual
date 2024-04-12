@@ -1,6 +1,5 @@
 package com.eul4.model.town.structure;
 
-import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
@@ -84,4 +83,6 @@ public interface Structure extends Externalizable
 	void reloadAttributes();
 	
 	void reloadAttributesAndUpdateHologram();
+	
+	boolean hasUpgradeUnlocked();
 }

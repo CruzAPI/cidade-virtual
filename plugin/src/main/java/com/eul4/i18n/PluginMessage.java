@@ -8,6 +8,7 @@ import com.eul4.enums.Currency;
 import com.eul4.rule.DislikeGeneratorAttribute;
 import com.eul4.rule.LikeGeneratorAttribute;
 import com.eul4.rule.TownHallAttribute;
+import com.eul4.util.TickConverter;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -210,8 +211,8 @@ public enum PluginMessage implements Message
 			empty().color(GRAY),
 			text(currentLevelAttributes.getCapacity()),
 			text(nextLevelAttributes.getCapacity()),
-			text(currentLevelAttributes.getDelay()),
-			text(nextLevelAttributes.getDelay()),
+			text(TickConverter.generationPerHour(currentLevelAttributes.getDelay())),
+			text(TickConverter.generationPerHour(nextLevelAttributes.getDelay())),
 			TimerTranslater.translate(buildTicks, bundle),
 		};
 	}),
@@ -228,8 +229,8 @@ public enum PluginMessage implements Message
 			empty().color(GRAY),
 			text(currentLevelAttributes.getCapacity()),
 			text(nextLevelAttributes.getCapacity()),
-			text(currentLevelAttributes.getDelay()),
-			text(nextLevelAttributes.getDelay()),
+			text(TickConverter.generationPerHour(currentLevelAttributes.getDelay())),
+			text(TickConverter.generationPerHour(nextLevelAttributes.getDelay())),
 			TimerTranslater.translate(buildTicks, bundle),
 		};
 	}),

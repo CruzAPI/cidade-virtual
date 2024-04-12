@@ -391,6 +391,7 @@ public abstract class CraftStructure implements Structure
 		};
 		
 		buildTask.runTaskTimer(town.getPlugin(), 0L, 1L);
+		onBuildStart();
 	}
 	
 	@Override
@@ -431,7 +432,7 @@ public abstract class CraftStructure implements Structure
 	
 	protected void onBuildStart()
 	{
-		resetAttributes();
+		reloadAttributes();
 	}
 	
 	protected void onBuildFinish()
@@ -547,6 +548,7 @@ public abstract class CraftStructure implements Structure
 	{
 		resetAttributes();
 		updateHologram();
+		teleportHologram();
 	}
 	
 	@Override

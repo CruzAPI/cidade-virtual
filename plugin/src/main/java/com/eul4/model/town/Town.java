@@ -3,12 +3,10 @@ package com.eul4.model.town;
 import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
-import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
 import com.eul4.exception.StructureNotForSaleException;
-import com.eul4.model.craft.town.structure.CraftStructure;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
 import org.bukkit.Location;
@@ -19,8 +17,6 @@ import org.bukkit.entity.Player;
 import java.awt.*;
 import java.io.Externalizable;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -78,8 +74,10 @@ public interface Town extends Externalizable
 			throws StructureLimitException, StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException;
 	
 	TownHall getTownHall();
-	void reloadAttributes();
+	void reloadAllStructureAttributes();
 	
 	int countStructures(StructureType<?, ?> structureType);
 	int getStructureLimit(StructureType<?, ?> structureType);
+	
+	void reloadAttributes();
 }

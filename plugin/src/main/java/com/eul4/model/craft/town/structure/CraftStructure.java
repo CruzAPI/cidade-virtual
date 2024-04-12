@@ -100,7 +100,7 @@ public abstract class CraftStructure implements Structure
 		this.buildTicks = isBuilt ? 0 : getRule().getAttribute(1).getTotalBuildTicks();
 		this.totalBuildTicks = buildTicks;
 		
-		reloadAttributes();
+		resetAttributes();
 		
 		this.hologram = new Hologram(town.getPlugin(),
 				centerTownBlock.getBlock().getLocation().add(hologramRelativePosition));
@@ -353,7 +353,7 @@ public abstract class CraftStructure implements Structure
 	public void load()
 	{
 		hologram.load(town.getPlugin());
-		reloadAttributes();
+		resetAttributes();
 		scheduleBuildTaskIfPossible();
 	}
 	
@@ -431,13 +431,13 @@ public abstract class CraftStructure implements Structure
 	
 	protected void onBuildStart()
 	{
-		reloadAttributes();
+		resetAttributes();
 	}
 	
 	protected void onBuildFinish()
 	{
 		updateHologram();
-		reloadAttributes();
+		reloadAttributesAndReloadTownAttributes();
 	}
 	
 	public double getBuildProgressPercentage()
@@ -537,16 +537,23 @@ public abstract class CraftStructure implements Structure
 	public abstract Rule<? extends GenericAttribute> getRule();
 	
 	@Override
-	public void reloadAttributes()
+	public void resetAttributes()
 	{
 		hologramRelativePosition = getRule().getAttribute(level).getHologramVector();
 	}
 	
 	@Override
-	public void reloadAttributesAndUpdateHologram()
+	public void reloadAttributes()
+	{
+		resetAttributes();
+		updateHologram();
+	}
+	
+	@Override
+	public void reloadAttributesAndReloadTownAttributes()
 	{
 		reloadAttributes();
-		updateHologram();
+		town.reloadAttributes();
 	}
 	
 	@Override

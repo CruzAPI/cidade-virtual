@@ -194,9 +194,9 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 	public abstract Rule<? extends GeneratorAttribute> getRule();
 	
 	@Override
-	public void reloadAttributes()
+	public void resetAttributes()
 	{
-		super.reloadAttributes();
+		super.resetAttributes();
 		
 		capacity = getRule().getAttributeOrDefault(getLevelStatus()).getCapacity();
 		delay = getRule().getAttributeOrDefault(getLevelStatus()).getDelay();

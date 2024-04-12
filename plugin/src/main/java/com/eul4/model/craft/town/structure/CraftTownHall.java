@@ -9,7 +9,6 @@ import com.eul4.model.town.structure.TownHall;
 import com.eul4.rule.Rule;
 import com.eul4.rule.TownHallAttribute;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 
 import java.io.IOException;
 import java.util.Map;
@@ -48,9 +47,9 @@ public class CraftTownHall extends CraftStructure implements TownHall
 	}
 	
 	@Override
-	public void reloadAttributes()
+	public void resetAttributes()
 	{
-		super.reloadAttributes();
+		super.resetAttributes();
 		
 		likeCapacity = getRule().getAttribute(getLevelStatus()).getLikeCapacity();
 		dislikeCapacity = getRule().getAttribute(getLevelStatus()).getDislikeCapacity();

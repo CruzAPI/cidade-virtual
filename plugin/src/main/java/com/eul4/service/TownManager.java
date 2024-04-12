@@ -180,6 +180,6 @@ public class TownManager
 			return;
 		}
 		
-		towns.values().forEach(Town::reloadAttributes);
+		towns.values().forEach(Town::reloadAllStructureAttributes);
 	}
 }

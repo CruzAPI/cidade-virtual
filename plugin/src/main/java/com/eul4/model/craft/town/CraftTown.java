@@ -7,7 +7,6 @@ import com.eul4.common.wrapper.LocationSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
-import com.eul4.exception.StructureNotForSaleException;
 import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
 import com.eul4.model.craft.town.structure.CraftTownHall;
@@ -19,7 +18,6 @@ import com.eul4.model.town.structure.TownHall;
 import com.eul4.service.TownSerializer;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -81,7 +79,7 @@ public class CraftTown implements Town
 		this.structures = new HashMap<>();
 		
 		createInitialStructures();
-		reloadAttributes();
+		reloadAllStructureAttributes();
 	}
 	
 	@Override
@@ -334,7 +332,7 @@ public class CraftTown implements Town
 	{
 		structures.values().forEach(Structure::load);
 		townTiles.values().forEach(TownTile::load);
-		reloadAttributes();
+		reloadAllStructureAttributes();
 	}
 	
 	@Override
@@ -394,12 +392,23 @@ public class CraftTown implements Town
 		return price;
 	}
 	
-	public void reloadAttributes()
+	public void resetAttributes()
 	{
-		structures.values().forEach(Structure::reloadAttributesAndUpdateHologram);
-		
 		likeCapacity = townHall.getLikeCapacity();
 		dislikeCapacity = townHall.getDislikeCapacity();
+	}
+	
+	@Override
+	public void reloadAllStructureAttributes()
+	{
+		structures.values().forEach(Structure::reloadAttributes);
+		resetAttributes();
+	}
+	
+	@Override
+	public void reloadAttributes()
+	{
+		resetAttributes();
 	}
 	
 	@Override

@@ -80,9 +80,11 @@ public interface Structure extends Externalizable
 	
 	Rule<? extends GenericAttribute> getRule();
 	
+	void resetAttributes();
+	
 	void reloadAttributes();
 	
-	void reloadAttributesAndUpdateHologram();
+	void reloadAttributesAndReloadTownAttributes();
 	
 	boolean hasUpgradeUnlocked();
 }

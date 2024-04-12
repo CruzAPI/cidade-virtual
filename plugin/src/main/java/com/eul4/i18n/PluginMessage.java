@@ -185,6 +185,8 @@ public enum PluginMessage implements Message
 		TownHallAttribute currentLevelAttributes = (TownHallAttribute) args[0];
 		TownHallAttribute nextLevelAttributes = (TownHallAttribute) args[1];
 		
+		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
+		
 		return new Component[]
 		{
 			empty().color(GRAY),
@@ -192,6 +194,7 @@ public enum PluginMessage implements Message
 			text(nextLevelAttributes.getLikeCapacity()),
 			text(currentLevelAttributes.getDislikeCapacity()),
 			text(nextLevelAttributes.getDislikeCapacity()),
+			TimerTranslater.translate(buildTicks, bundle),
 		};
 	}),
 	
@@ -200,20 +203,7 @@ public enum PluginMessage implements Message
 		LikeGeneratorAttribute currentLevelAttributes = (LikeGeneratorAttribute) args[0];
 		LikeGeneratorAttribute nextLevelAttributes = (LikeGeneratorAttribute) args[1];
 		
-		return new Component[]
-		{
-			empty().color(GRAY),
-			text(currentLevelAttributes.getCapacity()),
-			text(nextLevelAttributes.getCapacity()),
-			text(currentLevelAttributes.getDelay()),
-			text(nextLevelAttributes.getDelay()),
-		};
-	}),
-	
-	STRUCTURE_DISLIKE_GENERATOR_UPGRADE_PREVIEW_LORE("structure.dislike-generator.upgrade-preview-lore", (bundle, args) ->
-	{
-		DislikeGeneratorAttribute currentLevelAttributes = (DislikeGeneratorAttribute) args[0];
-		DislikeGeneratorAttribute nextLevelAttributes = (DislikeGeneratorAttribute) args[1];
+		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
 		
 		return new Component[]
 		{
@@ -222,6 +212,25 @@ public enum PluginMessage implements Message
 			text(nextLevelAttributes.getCapacity()),
 			text(currentLevelAttributes.getDelay()),
 			text(nextLevelAttributes.getDelay()),
+			TimerTranslater.translate(buildTicks, bundle),
+		};
+	}),
+	
+	STRUCTURE_DISLIKE_GENERATOR_UPGRADE_PREVIEW_LORE("structure.dislike-generator.upgrade-preview-lore", (bundle, args) ->
+	{
+		DislikeGeneratorAttribute currentLevelAttributes = (DislikeGeneratorAttribute) args[0];
+		DislikeGeneratorAttribute nextLevelAttributes = (DislikeGeneratorAttribute) args[1];
+		
+		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(currentLevelAttributes.getCapacity()),
+			text(nextLevelAttributes.getCapacity()),
+			text(currentLevelAttributes.getDelay()),
+			text(nextLevelAttributes.getDelay()),
+			TimerTranslater.translate(buildTicks, bundle),
 		};
 	}),
 	

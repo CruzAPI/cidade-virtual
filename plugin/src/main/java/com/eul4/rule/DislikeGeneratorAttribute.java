@@ -9,5 +9,5 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class DislikeGeneratorAttribute extends GeneratorAttribute
 {
-
+	public static final DislikeGeneratorAttribute DEFAULT = new DislikeGeneratorAttribute();
 }

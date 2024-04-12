@@ -97,7 +97,7 @@ public abstract class CraftStructure implements Structure
 		this.centerTownBlock = centerTownBlock;
 		this.level = 1;
 		this.status = isBuilt ? StructureStatus.BUILT : StructureStatus.UNREADY;
-		this.buildTicks = isBuilt ? 0 : 30 * 20;
+		this.buildTicks = isBuilt ? 0 : getRule().getAttribute(1).getTotalBuildTicks();
 		this.totalBuildTicks = buildTicks;
 		
 		reloadAttributes();
@@ -491,13 +491,14 @@ public abstract class CraftStructure implements Structure
 		}
 		
 		int nextLevel = level + 1;
+		int buildTicks = getRule().getAttribute(nextLevel).getTotalBuildTicks();
 		
 		construct(loadSchematic(getSchematicFile(nextLevel, StructureStatus.UNREADY)));
 		
-		status = StructureStatus.UNREADY;
-		buildTicks = 30 * 20;
-		totalBuildTicks = buildTicks;
-		level = nextLevel;
+		this.status = StructureStatus.UNREADY;
+		this.buildTicks = buildTicks;
+		this.totalBuildTicks = buildTicks;
+		this.level = nextLevel;
 		
 		scheduleBuildTaskIfPossible();
 	}

@@ -23,7 +23,12 @@ public class CraftTownHall extends CraftStructure implements TownHall
 	
 	public CraftTownHall(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		super(town, centerTownBlock, true);
+		super(town, centerTownBlock, false);
+	}
+	
+	public CraftTownHall(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	{
+		super(town, centerTownBlock, isBuilt);
 	}
 	
 	public CraftTownHall(Town town)

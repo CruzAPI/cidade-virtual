@@ -13,6 +13,6 @@ public abstract class GenericAttribute
 {
 	private Price price;
 	private int requiresTownHallLevel;
-	private long totalBuildTicks;
+	private int totalBuildTicks;
 	private Vector hologramVector;
 }

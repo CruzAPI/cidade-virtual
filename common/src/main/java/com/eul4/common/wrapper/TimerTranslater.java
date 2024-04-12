@@ -4,6 +4,7 @@ import com.eul4.common.model.player.CommonPlayer;
 import net.kyori.adventure.text.Component;
 
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static com.eul4.common.i18n.CommonMessage.*;
 import static net.kyori.adventure.text.Component.empty;
@@ -11,6 +12,11 @@ import static net.kyori.adventure.text.Component.text;
 
 public class TimerTranslater
 {
+	public static Component translate(int ticks, ResourceBundle bundle)
+	{
+		return translate(ticks, bundle.getLocale());
+	}
+	
 	public static Component translate(int ticks, CommonPlayer commonPlayer)
 	{
 		return translate(ticks, commonPlayer.getLocale());

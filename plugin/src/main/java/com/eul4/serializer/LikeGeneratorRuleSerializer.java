@@ -17,7 +17,7 @@ public class LikeGeneratorRuleSerializer extends GeneratorRuleSerializer
 	public Rule<LikeGeneratorAttribute> load() throws FileNotFoundException
 	{
 		return deserializeRule(loadConfig(plugin.getDataFileManager()
-				.getLikeGeneratorRuleFile()), this::deserializeAttribute);
+				.getLikeGeneratorRuleFile()), LikeGeneratorAttribute.DEFAULT, this::deserializeAttribute);
 	}
 	
 	private LikeGeneratorAttribute deserializeAttribute(ConfigurationSection section)

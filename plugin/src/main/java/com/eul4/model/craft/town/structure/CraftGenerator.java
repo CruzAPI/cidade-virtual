@@ -87,7 +87,7 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 			@Override
 			public void run()
 			{
-				if(++tick % getDelay() == 0)
+				if(delay != 0 && ++tick % delay == 0)
 				{
 					generateIncome();
 				}
@@ -198,7 +198,7 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 	{
 		super.reloadAttributes();
 		
-		capacity = getRule().getAttribute(getLevelStatus()).getCapacity();
-		delay = getRule().getAttribute(getLevelStatus()).getDelay();
+		capacity = getRule().getAttributeOrDefault(getLevelStatus()).getCapacity();
+		delay = getRule().getAttributeOrDefault(getLevelStatus()).getDelay();
 	}
 }

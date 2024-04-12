@@ -1,20 +1,20 @@
 package com.eul4.rule;
 
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@RequiredArgsConstructor
 @ToString
 public class Rule<A extends GenericAttribute>
 {
-	public final Map<Integer, A> rules;
+	private final Map<Integer, A> rules;
+	private final A defaultAttribute;
 	
-	public Rule()
+	public Rule(A defaultAttribute)
 	{
-		this(new HashMap<>());
+		this.rules = new HashMap<>();
+		this.defaultAttribute = defaultAttribute;
 	}
 	
 	public void setRule(int level, A attribute)
@@ -25,6 +25,11 @@ public class Rule<A extends GenericAttribute>
 	public A getAttribute(int level)
 	{
 		return rules.get(level);
+	}
+	
+	public A getAttributeOrDefault(int level)
+	{
+		return rules.getOrDefault(level, defaultAttribute);
 	}
 	
 	public boolean hasAttribute(int level)

@@ -20,7 +20,7 @@ public class CraftLikeGenerator extends CraftGenerator implements LikeGenerator
 	
 	public CraftLikeGenerator(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		this(town, centerTownBlock, true);
+		this(town, centerTownBlock, false);
 	}
 	
 	public CraftLikeGenerator(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException

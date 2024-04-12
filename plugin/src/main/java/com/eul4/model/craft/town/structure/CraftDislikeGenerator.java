@@ -20,7 +20,7 @@ public class CraftDislikeGenerator extends CraftGenerator implements DislikeGene
 	
 	public CraftDislikeGenerator(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		this(town, centerTownBlock, true);
+		this(town, centerTownBlock, false);
 	}
 	
 	public CraftDislikeGenerator(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException

@@ -20,7 +20,7 @@ public class TownHallRuleSerializer extends GenericRuleSerializer
 	public Rule<TownHallAttribute> load() throws FileNotFoundException
 	{
 		return deserializeRule(loadConfig(plugin.getDataFileManager()
-				.getTownHallRuleFile()), this::deserializeAttribute);
+				.getTownHallRuleFile()), TownHallAttribute.DEFAULT, this::deserializeAttribute);
 	}
 	
 	private TownHallAttribute deserializeAttribute(ConfigurationSection section)

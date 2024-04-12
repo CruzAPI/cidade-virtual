@@ -29,10 +29,10 @@ public abstract class GenericRuleSerializer
 		return YamlConfiguration.loadConfiguration(file);
 	}
 	
-	public <A extends GenericAttribute> Rule<A> deserializeRule(YamlConfiguration config,
+	public <A extends GenericAttribute> Rule<A> deserializeRule(YamlConfiguration config, A defaultAttribute,
 			Function<ConfigurationSection, A> function)
 	{
-		Rule<A> rule = new Rule<>();
+		Rule<A> rule = new Rule<>(defaultAttribute);
 		
 		for(String key : config.getKeys(false))
 		{
@@ -55,14 +55,16 @@ public abstract class GenericRuleSerializer
 		final double hologramZ = section.getDouble("hologram_pos.z");
 		final Vector hologramVector = new Vector(hologramX, hologramY, hologramZ);
 		
-		ConfigurationSection priceSection = Objects.requireNonNull(section.getConfigurationSection("price"));
+		ConfigurationSection priceSection = section.getConfigurationSection("price");
 		
-		final int like = priceSection.getInt("like");
-		final int dislike = priceSection.getInt("dislike");
+		if(priceSection != null)
+		{
+			final int like = priceSection.getInt("like");
+			final int dislike = priceSection.getInt("dislike");
+			
+			genericAttribute.setPrice(new Price(like, dislike));
+		}
 		
-		Price price = new Price(like, dislike);
-		
-		genericAttribute.setPrice(price);
 		genericAttribute.setRequiresTownHallLevel(requiresTownHallLevel);
 		genericAttribute.setTotalBuildTicks(totalBuildTicks);
 		genericAttribute.setHologramVector(hologramVector);

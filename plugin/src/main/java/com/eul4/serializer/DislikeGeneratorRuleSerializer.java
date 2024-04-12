@@ -17,7 +17,7 @@ public class DislikeGeneratorRuleSerializer extends GeneratorRuleSerializer
 	public Rule<DislikeGeneratorAttribute> load() throws FileNotFoundException
 	{
 		return deserializeRule(loadConfig(plugin.getDataFileManager()
-				.getDislikeGeneratorRuleFile()), this::deserializeAttribute);
+				.getDislikeGeneratorRuleFile()), DislikeGeneratorAttribute.DEFAULT, this::deserializeAttribute);
 	}
 	
 	public DislikeGeneratorAttribute deserializeAttribute(ConfigurationSection section)

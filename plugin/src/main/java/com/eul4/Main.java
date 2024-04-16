@@ -9,6 +9,9 @@ import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.type.player.CommonPlayerType;
 import com.eul4.common.type.player.PlayerType;
+import com.eul4.externalizer.BlockChunkToShortCoordinateExternalizer;
+import com.eul4.externalizer.BlockDataExternalizer;
+import com.eul4.externalizer.BlockDataMapExternalizer;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
 import com.eul4.model.player.TownPlayer;
@@ -38,14 +41,15 @@ public class Main extends Common
 	private World cidadeVirtualWorld;
 	private TownManager townManager;
 	
-	private BlockDataSerializer blockDataSerializer;
-	private BlockChunkToShortCoordinateSerializer blockChunkToShortCoordinateSerializer;
-	private BlockDataMapSerializer blockDataMapSerializer;
 	private BlockDataLoader blockDataLoader;
 	private DataFileManager dataFileManager;
 	private TownSerializer townSerializer;
 	private StructureUpgradeExecutor structureUpgradeExecutor;
 	private PurchaseExecutor purchaseExecutor;
+	
+	private BlockDataExternalizer blockDataExternalizer;
+	private BlockDataMapExternalizer blockDataMapExternalizer;
+	private BlockChunkToShortCoordinateExternalizer blockChunkToShortCoordinateExternalizer;
 	
 	private TownHallRuleSerializer townHallRuleSerializer;
 	private LikeGeneratorRuleSerializer likeGeneratorRuleSerializer;
@@ -120,9 +124,10 @@ public class Main extends Common
 	@SneakyThrows
 	private void loadServices()
 	{
-		blockDataSerializer = new BlockDataSerializer();
-		blockChunkToShortCoordinateSerializer = new BlockChunkToShortCoordinateSerializer();
-		blockDataMapSerializer = new BlockDataMapSerializer(this);
+		blockDataExternalizer = new BlockDataExternalizer();
+		blockChunkToShortCoordinateExternalizer = new BlockChunkToShortCoordinateExternalizer();
+		blockDataMapExternalizer = new BlockDataMapExternalizer(this);
+		
 		dataFileManager = new DataFileManager(this);
 		blockDataLoader = new BlockDataLoader(this);
 		townManager = new TownManager(this);
@@ -171,6 +176,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownSaveListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
+		pluginManager.registerEvents(new TownHardnessListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)
@@ -212,6 +218,7 @@ public class Main extends Common
 		super.onDisable();
 		
 		townManager.saveTowns();
+		getServer().getWorlds().forEach(blockDataLoader::saveChunks);
 		
 		getLogger().info("Plugin disabled.");
 	}

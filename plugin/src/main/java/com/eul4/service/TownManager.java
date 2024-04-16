@@ -93,7 +93,7 @@ public class TownManager
 		plugin.getTownSerializer().saveTowns();
 	}
 	
-	public Town createNewTown(UUID uuid) throws CannotConstructException, IOException
+	private Town createNewTown(UUID uuid) throws CannotConstructException, IOException
 	{
 		Location location = findNextEmptyTown();
 		BlockVector3 to = BlockVector3.at(location.getX(), location.getY() + 1, location.getZ());

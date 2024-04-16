@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 @RequiredArgsConstructor
@@ -25,7 +26,8 @@ public class TownListener implements Listener
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
 		
-		if(!(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer))
+		if(!(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
+				|| block.getWorld() != plugin.getTownWorld())
 		{
 			return;
 		}
@@ -41,6 +43,33 @@ public class TownListener implements Listener
 		
 		town.findTownBlock(block)
 				.ifPresent(townBlock -> event.setCancelled(!townBlock.canBuild()));
+	}
+	
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent event)
+	{
+		Player player = event.getPlayer();
+		Block block = event.getBlock();
+		
+		if(!(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
+				|| block.getWorld() != plugin.getTownWorld())
+		{
+			return;
+		}
+		
+		event.setCancelled(true);
+		
+		Town town = townPlayer.getTown();
+		
+		if(town == null)
+		{
+			return;
+		}
+		
+		town.findTownBlock(block)
+				.map(TownBlock::canBuild)
+				.map(Boolean.FALSE::equals)
+				.ifPresent(event::setCancelled);
 	}
 	
 	@EventHandler

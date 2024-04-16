@@ -299,6 +299,8 @@ public enum PluginMessage implements Message
 		};
 	}),
 	
+	THIS_BLOCK_WILL_EXCEED_HARDNESS_LIMIT("this-block-will-exceed-hardness-limit", empty().color(RED)),
+	
 	;
 	
 	private final String key;

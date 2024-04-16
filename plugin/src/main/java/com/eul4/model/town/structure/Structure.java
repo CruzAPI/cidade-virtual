@@ -19,6 +19,7 @@ import org.bukkit.util.Vector;
 import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 import java.util.UUID;
 
 public interface Structure extends Externalizable
@@ -87,4 +88,6 @@ public interface Structure extends Externalizable
 	void reloadAttributesAndReloadTownAttributes();
 	
 	boolean hasUpgradeUnlocked();
+	
+	Set<TownBlock> getTownBlocks();
 }

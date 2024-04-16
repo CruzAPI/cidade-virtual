@@ -4,6 +4,7 @@ import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.enums.StructureStatus;
+import com.eul4.event.StructureConstructEvent;
 import com.eul4.exception.*;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
@@ -62,6 +63,7 @@ public abstract class CraftStructure implements Structure
 	protected int level = 0;
 	private int rotation;
 	
+	@Getter
 	private Set<TownBlock> townBlocks = new HashSet<>();
 	
 	@Getter
@@ -269,6 +271,8 @@ public abstract class CraftStructure implements Structure
 		
 		this.townBlocks = townBlocks;
 		this.townBlocks.forEach(townBlock -> townBlock.setStructure(this));
+		
+		town.getPlugin().getServer().getPluginManager().callEvent(new StructureConstructEvent(this));
 		
 		var world = FaweAPI.getWorld(centerTownBlock.getBlock().getWorld().getName());
 		

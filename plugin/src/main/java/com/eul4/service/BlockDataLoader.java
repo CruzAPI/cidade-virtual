@@ -11,46 +11,31 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class BlockDataLoader
 {
 	private final Main plugin;
-	private final Function<Chunk, Map<Block, BlockData>> loadChunkFunction;
 	
 	private final Map<Chunk, Map<Block, BlockData>> loadedChunks = new HashMap<>();
 	
 	public BlockDataLoader(Main plugin)
 	{
 		this.plugin = plugin;
-		this.loadChunkFunction = chunk ->
-		{
-			File file = plugin.getDataFileManager().getBlockDataFile(chunk);
-			
-			if(!file.exists() || file.length() == 0L)
-			{
-				return new HashMap<>();
-			}
-			
-			try(FileInputStream fileIn = new FileInputStream(file);
-					ByteArrayInputStream streamIn = new ByteArrayInputStream(ByteStreams.toByteArray(fileIn));
-					ObjectInputStream in = new ObjectInputStream(streamIn))
-			{
-				return plugin.getBlockDataMapSerializer()
-						.deserialize((Map<Short, byte[]>) in.readObject(), chunk);
-			}
-			catch(ClassNotFoundException | IOException ex)
-			{
-				ex.printStackTrace();
-			}
-			
-			return new HashMap<>();
-		};
+	}
+	
+	public boolean hasBlockData(Block block)
+	{
+		return loadChunk(block).containsKey(block);
 	}
 	
 	public BlockData loadBlockData(Block block)
 	{
 		return loadChunk(block.getChunk()).get(block);
+	}
+	
+	public BlockData loadBlockDataOrDefault(Block block)
+	{
+		return loadChunk(block.getChunk()).computeIfAbsent(block, x -> new BlockData());
 	}
 	
 	public void saveBlockData(Block block, BlockData blockData)
@@ -82,7 +67,7 @@ public class BlockDataLoader
 			final Map.Entry<Chunk, Map<Block, BlockData>> entry = iterator.next();
 			
 			final Chunk chunk = entry.getKey();
-			final Map<Block, BlockData> blockDatas = entry.getValue();
+			final Map<Block, BlockData> blockDataMap = entry.getValue();
 			
 			final boolean isChunkLoaded = chunk.isLoaded();
 			
@@ -91,24 +76,9 @@ public class BlockDataLoader
 				continue;
 			}
 			
-			final File file;
-			
 			try
 			{
-				file = plugin.getDataFileManager().createBlockDataFileIfNotExists(chunk);
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-				continue;
-			}
-			
-			try(FileOutputStream fileOutputStream = new FileOutputStream(file);
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream))
-			{
-				objectOutputStream.writeObject(plugin.getBlockDataMapSerializer().serialize(blockDatas));
-				fileOutputStream.write(byteArrayOutputStream.toByteArray());
+				saveBlockDataMap(chunk, blockDataMap);
 				
 				if(!isChunkLoaded)
 				{
@@ -122,8 +92,44 @@ public class BlockDataLoader
 		}
 	}
 	
+	private void saveBlockDataMap(Chunk chunk, Map<Block, BlockData> blockDataMap) throws IOException
+	{
+		try(FileOutputStream fileOutputStream = new FileOutputStream(plugin.getDataFileManager().createBlockDataFileIfNotExists(chunk));
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(byteArrayOutputStream))
+		{
+			plugin.getBlockDataMapExternalizer().write(blockDataMap, out);
+			out.flush();
+			fileOutputStream.write(byteArrayOutputStream.toByteArray());
+		}
+	}
+	
 	private Map<Block, BlockData> loadChunk(Chunk chunk)
 	{
-		return loadedChunks.computeIfAbsent(chunk, loadChunkFunction);
+		return loadedChunks.computeIfAbsent(chunk, this::loadChunkInDisk);
+	}
+	
+	private Map<Block, BlockData> loadChunkInDisk(Chunk chunk)
+	{
+		File file = plugin.getDataFileManager().getBlockDataFile(chunk);
+		
+		if(!file.exists() || file.length() == 0L)
+		{
+			plugin.getLogger().warning("Loading empty chunk x=" + chunk.getX() + " z=" + chunk.getZ());
+			return new HashMap<>();
+		}
+		
+		try(FileInputStream fileIn = new FileInputStream(file);
+				ByteArrayInputStream streamIn = new ByteArrayInputStream(ByteStreams.toByteArray(fileIn));
+				DataInputStream in = new DataInputStream(streamIn))
+		{
+			return plugin.getBlockDataMapExternalizer().read(chunk, in);
+		}
+		catch(IOException ex)
+		{
+			plugin.getLogger().warning("Error trying to read chunk data. Loading empty chunk x=" + chunk.getX() + " z=" + chunk.getZ());
+			ex.printStackTrace();
+			return new HashMap<>();
+		}
 	}
 }

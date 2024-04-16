@@ -7,6 +7,7 @@ import com.eul4.common.wrapper.LocationSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
+import com.eul4.exception.TownHardnessLimitException;
 import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
 import com.eul4.model.craft.town.structure.CraftTownHall;
@@ -37,7 +38,9 @@ import java.util.function.Consumer;
 public class CraftTown implements Town
 {
 	@Serial
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
+	
+	public static final Map<Block, TownBlock> TOWN_BLOCKS = new HashMap<>();
 	
 	private UUID ownerUUID;
 	private Location location;
@@ -56,6 +59,8 @@ public class CraftTown implements Town
 	
 	private int likes;
 	private int dislikes;
+	
+	private double hardness;
 	
 	private transient int likeCapacity;
 	private transient int dislikeCapacity;
@@ -82,6 +87,8 @@ public class CraftTown implements Town
 		
 		createInitialStructures();
 		reloadAllStructureAttributes();
+		
+		TOWN_BLOCKS.putAll(townBlocks);
 	}
 	
 	@Override
@@ -102,6 +109,19 @@ public class CraftTown implements Town
 			townHall = (TownHall) Objects.requireNonNull(townSerializer.readStructureReference(this, in));
 			likes = in.readInt();
 			dislikes = in.readInt();
+		}
+		else if(version == 2L)
+		{
+			ownerUUID = (UUID) in.readObject();
+			location = ((LocationSerializable) in.readObject()).getBukkitLocation(plugin.getServer());
+			townBlocks = townSerializer.readTownBlocks(this, in);
+			townTiles = townSerializer.readTownTiles(this, in);
+			structures = townSerializer.readStructures(this, in);
+			movingStructure = townSerializer.readStructureReference(this, in);
+			townHall = (TownHall) Objects.requireNonNull(townSerializer.readStructureReference(this, in));
+			likes = in.readInt();
+			dislikes = in.readInt();
+			hardness = in.readDouble();
 		}
 		else
 		{
@@ -127,6 +147,7 @@ public class CraftTown implements Town
 		townSerializer.writeStructureReference(townHall, out);
 		out.writeInt(likes);
 		out.writeInt(dislikes);
+		out.writeDouble(hardness);
 		out.flush();
 	}
 	
@@ -335,6 +356,7 @@ public class CraftTown implements Town
 		structures.values().forEach(Structure::load);
 		townTiles.values().forEach(TownTile::load);
 		reloadAllStructureAttributes();
+		TOWN_BLOCKS.putAll(townBlocks);
 	}
 	
 	@Override
@@ -463,5 +485,45 @@ public class CraftTown implements Town
 	public int getStructureLimit(StructureType<?, ?> structureType)
 	{
 		return townHall.getStructureLimitMap().getOrDefault(structureType, 0);
+	}
+	
+	@Override
+	public double getHardness()
+	{
+		return hardness;
+	}
+	
+	@Override
+	public double getHardnessLimit()
+	{
+		return 2000.0D;
+	}
+	
+	@Override
+	public void increaseHardness(double hardness) throws TownHardnessLimitException
+	{
+		if(this.hardness + hardness > getHardnessLimit())
+		{
+			throw new TownHardnessLimitException();
+		}
+		
+		this.hardness += hardness;
+	}
+	
+	@Override
+	public void decreaseHardness(double hardness)
+	{
+		this.hardness = Math.max(0.0D, this.hardness - hardness);
+	}
+	
+	@Override
+	public void setHardness(double hardness) throws TownHardnessLimitException
+	{
+		if(hardness > getHardnessLimit())
+		{
+			throw new TownHardnessLimitException();
+		}
+		
+		this.hardness = Math.max(0.0D, hardness);
 	}
 }

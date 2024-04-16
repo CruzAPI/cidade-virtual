@@ -1,12 +1,18 @@
-package com.eul4.service;
+package com.eul4.externalizer;
 
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 
-public class BlockChunkToShortCoordinateSerializer
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+public class BlockChunkToShortCoordinateExternalizer
 {
-	public Block deserialize(Chunk chunk, short coordinates)
+	public Block read(Chunk chunk, DataInput in) throws IOException
 	{
+		short coordinates = in.readShort();
+		
 		final int x = (coordinates >> 12) & 0x0F;
 		final int z = (coordinates >> 8) & 0x0F;
 		final int y = (coordinates) & 0xFF;
@@ -14,7 +20,7 @@ public class BlockChunkToShortCoordinateSerializer
 		return chunk.getBlock(x, y, z);
 	}
 	
-	public short serialize(Block block)
+	public void write(Block block, DataOutput out) throws IOException
 	{
 		final Chunk chunk = block.getChunk();
 		
@@ -22,6 +28,6 @@ public class BlockChunkToShortCoordinateSerializer
 		final int z = block.getZ() - chunk.getZ() * 16;
 		final int y = block.getY();
 		
-		return (short) (x << 12 | z << 8 | y);
+		out.writeShort(x << 12 | z << 8 | y);
 	}
 }

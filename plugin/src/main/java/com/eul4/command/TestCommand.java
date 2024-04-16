@@ -1,6 +1,7 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.exception.CannotConstructException;
 import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -13,8 +14,11 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
@@ -41,16 +45,41 @@ public class TestCommand implements TabExecutor
 			return true;
 		}
 		
-		
-		
 		if(args.length == 0)
 		{
 			player.teleport(plugin.getCidadeVirtualWorld().getSpawnLocation());
 		}
+		else if(args.length == 1 && args[0].equalsIgnoreCase("size"))
+		{
+			player.sendMessage("towns size: " + plugin.getTownManager().getTowns().size());
+		}
 		else if(args.length == 1)
 		{
+			final int amount = Integer.parseInt(args[0]);
+			
+			for(int i = 0; i < amount; i++)
+			{
+				try
+				{
+					plugin.getTownManager().getOrCreateNewTown(UUID.randomUUID());
+				}
+				catch(Exception e)
+				{
+					throw new RuntimeException(e);
+				}
+			}
+			
+			player.sendMessage("Towns created: " + amount);
+		}
+		else if(args.length == 2)
+		{
 			TownPlayer townPlayer = (TownPlayer) plugin.getPlayerManager().get(player);
-			Bukkit.broadcastMessage("? " + townPlayer.getTown().getTownHall().getUUID());
+			double hardness = townPlayer.getTown().getHardness();
+			double hardnessLimit = townPlayer.getTown().getHardnessLimit();
+
+			DecimalFormat df = new DecimalFormat("0.0#");
+
+			player.sendMessage(df.format(hardness) + "/" + df.format(hardnessLimit));
 		}
 		else if(args.length == 2)
 		{

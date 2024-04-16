@@ -3,10 +3,8 @@ package com.eul4.model.town;
 import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
-import com.eul4.exception.CannotConstructException;
-import com.eul4.exception.InsufficientBalanceException;
-import com.eul4.exception.StructureLimitException;
-import com.eul4.exception.StructureNotForSaleException;
+import com.eul4.exception.*;
+import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
 import org.bukkit.Location;
@@ -17,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.awt.*;
 import java.io.Externalizable;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +27,12 @@ public interface Town extends Externalizable
 	int TOWN_FULL_DIAMATER = 55 * 2 + 1;
 	int INITIAL_AVAILABLE_RADIUS = 13;
 	int Y = 49;
+	
+	static TownBlock getStaticTownBlock(Block block)
+	{
+		final Block fixedBlockY = block.getWorld().getBlockAt(block.getX(), Y, block.getZ());
+		return CraftTown.TOWN_BLOCKS.get(fixedBlockY);
+	}
 	
 	Map<Block, TownBlock> getTownBlocks();
 	TownBlock getTownBlock(Block block);
@@ -80,4 +85,11 @@ public interface Town extends Externalizable
 	int getStructureLimit(StructureType<?, ?> structureType);
 	
 	void reloadAttributes();
+	
+	double getHardness();
+	double getHardnessLimit();
+	void decreaseHardness(double hardness);
+	void increaseHardness(double hardness) throws TownHardnessLimitException;
+	
+	void setHardness(double hardness) throws TownHardnessLimitException;
 }

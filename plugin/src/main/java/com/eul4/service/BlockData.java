@@ -12,6 +12,8 @@ import java.io.Serializable;
 @ToString
 public class BlockData implements Serializable
 {
+	public static final long SERIAL_VERSION_UID = 1L;
+	
 	@Accessors(fluent = true)
 	private boolean hasHardness;
 }

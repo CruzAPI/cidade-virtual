@@ -11,23 +11,29 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.service.BlockData;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.Waterlogged;
+import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.bukkit.block.BlockFace.UP;
 
@@ -36,65 +42,23 @@ public class TownHardnessListener implements Listener
 {
 	private final Main plugin;
 	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-		Block block = event.getBlock();
-		TownBlock townBlock = Town.getStaticTownBlock(block);
-		
-		if(townBlock == null)
-		{
-			return;
-		}
-		
-		BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		
-		if(blockData.hasHardness())
-		{
-			townBlock.getTown().decreaseHardness(block.getType().getHardness());
-		}
+		changeHardnessToNewState(event, event.getBlock().getState(),
+				isWaterlogged(event.getBlock()) || event.getBlock().getType() == Material.ICE
+				? Material.WATER.createBlockData()
+				: Material.AIR.createBlockData());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		Block block = event.getBlock();
-		TownBlock townBlock = Town.getStaticTownBlock(block);
+		changeHardnessToNewState(event, event.getBlockReplacedState(), event.getBlock().getBlockData());
 		
-		if(!(plugin.getPlayerManager().get(event.getPlayer()) instanceof TownPlayer townPlayer)
-				|| townBlock == null)
+		if(plugin.getPlayerManager().get(event.getPlayer()) instanceof TownPlayer townPlayer
+				&& event.isCancelled())
 		{
-			return;
-		}
-		
-		double hardness = townBlock.getTown().getHardness();
-		
-		BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		
-		if(blockData.hasHardness())
-		{
-			hardness -= event.getBlockReplacedState().getType().getHardness();
-			
-			if(event.getBlockReplacedState().getBlockData() instanceof Waterlogged waterloggedReplaced
-					&& waterloggedReplaced.isWaterlogged()
-					&& !(block.getBlockData() instanceof Waterlogged waterloggedBlock
-					&& waterloggedBlock.isWaterlogged()))
-			{
-				Bukkit.broadcastMessage("placing in waterlog");
-				hardness -= Material.WATER.getHardness();
-			}
-		}
-		
-		hardness += block.getType().getHardness();
-		
-		try
-		{
-			townBlock.getTown().setHardness(hardness);
-			blockData.hasHardness(true);
-		}
-		catch(TownHardnessLimitException e)
-		{
-			event.setCancelled(true);
 			townPlayer.sendMessage(PluginMessage.THIS_BLOCK_WILL_EXCEED_HARDNESS_LIMIT);
 		}
 	}
@@ -102,143 +66,29 @@ public class TownHardnessListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(StructureGrowEvent event)
 	{
-		if(event.getWorld() != plugin.getTownWorld())
-		{
-			return;
-		}
-		
-		Set<Town> townSet = new HashSet<>();
-		double hardness = 0.0D;
-		
-		for(BlockState blockState : event.getBlocks())
-		{
-			hardness += blockState.getType().getHardness();
-			TownBlock townBlock = Town.getStaticTownBlock(blockState.getBlock());
-			
-			if(townBlock == null)
-			{
-				event.setCancelled(true);
-				return;
-			}
-			
-			townSet.add(townBlock.getTown());
-		}
-		
-		if(townSet.size() != 1)
-		{
-			event.setCancelled(true);
-			return;
-		}
-		
-		Town town = townSet.iterator().next();
-		
-		try
-		{
-			town.increaseHardness(hardness);
-			
-			for(BlockState blockState : event.getBlocks())
-			{
-				plugin.getBlockDataLoader().loadBlockDataOrDefault(blockState.getBlock()).hasHardness(true);
-			}
-		}
-		catch(TownHardnessLimitException e)
-		{
-			event.setCancelled(true);
-		}
+		changeMultipleHardnessToNewState(event, event.getBlocks());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(LeavesDecayEvent event)
 	{
-		Block block = event.getBlock();
-		TownBlock townBlock = Town.getStaticTownBlock(block);
-		
-		if(townBlock == null)
-		{
-			return;
-		}
-		
-		BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		
-		if(blockData.hasHardness())
-		{
-			townBlock.getTown().decreaseHardness(block.getType().getHardness());
-		}
+		changeHardnessToNewState(event, event.getBlock().getState(), Material.AIR.createBlockData());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(BlockSpreadEvent event)
 	{
-		Block block = event.getBlock();
-		TownBlock townBlock = Town.getStaticTownBlock(block);
-		
-		if(townBlock == null)
-		{
-			return;
-		}
-		
-		BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		Town town = townBlock.getTown();
-		
-		double townHardness = town.getHardness();
-		
-		if(blockData.hasHardness())
-		{
-			townHardness -= block.getType().getHardness();
-		}
-		
-		try
-		{
-			townHardness += event.getNewState().getType().getHardness();
-			town.setHardness(townHardness);
-			blockData.hasHardness(true);
-		}
-		catch(TownHardnessLimitException e)
-		{
-			event.setCancelled(true);
-		}
+		changeHardnessToNewState(event, event.getNewState());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(BlockFormEvent event)
 	{
-		Block block = event.getBlock();
-		BlockState newState = event.getNewState();
-		
-		Bukkit.broadcastMessage("block: " + block.getType() + " h: " + block.getType().getHardness());
-		Bukkit.broadcastMessage("newState: " + newState.getType() + " h: " + newState.getType().getHardness());
-		
-		TownBlock townBlock = Town.getStaticTownBlock(block);
-		
-		if(townBlock == null)
-		{
-			return;
-		}
-		
-		BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		Town town = townBlock.getTown();
-		
-		double townHardness = town.getHardness();
-		
-		if(blockData.hasHardness())
-		{
-			townHardness -= block.getType().getHardness();
-		}
-		
-		try
-		{
-			townHardness += event.getNewState().getType().getHardness();
-			town.setHardness(townHardness);
-			blockData.hasHardness(true);
-		}
-		catch(TownHardnessLimitException e)
-		{
-			event.setCancelled(true);
-		}
+		changeHardnessToNewState(event, event.getNewState());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void on(BlockFromToEvent event)
+	public void onLiquidFlow(BlockFromToEvent event)
 	{
 		Block block = event.getBlock();
 		
@@ -250,119 +100,70 @@ public class TownHardnessListener implements Listener
 			return;
 		}
 		
-		Block toBlock = event.getToBlock();
-		TownBlock townBlock = Town.getStaticTownBlock(toBlock);
+		changeHardnessToNewState(event, event.getToBlock().getState(), event.getBlock().getBlockData());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onDragonEggTeleport(BlockFromToEvent event)
+	{
+		Block block = event.getBlock();
 		
-		if(townBlock == null)
+		if(block.getType() != Material.DRAGON_EGG)
 		{
 			return;
 		}
 		
-		try
-		{
-			townBlock.getTown().increaseHardness(Material.WATER.getHardness());
-			plugin.getBlockDataLoader().loadBlockDataOrDefault(toBlock).hasHardness(true);
-		}
-		catch(TownHardnessLimitException e)
-		{
-			event.setCancelled(true);
-		}
+		Block toBlock = event.getToBlock();
+		
+		BlockState fromState = block.getState();
+		BlockState toState = toBlock.getState();
+		
+		fromState.setType(toBlock.getType());
+		fromState.setBlockData(toBlock.getBlockData());
+		
+		toState.setType(block.getType());
+		toState.setBlockData(block.getBlockData());
+		
+		changeMultipleHardnessToNewState(event, List.of(fromState, toState));
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(FluidLevelChangeEvent event)
 	{
-		Block block = event.getBlock();
-		var newData = event.getNewData();
-		
-		TownBlock townBlock = Town.getStaticTownBlock(block);
-		
-		if(townBlock == null)
-		{
-			return;
-		}
-		
-		double hardness = townBlock.getTown().getHardness();
-		
-		BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		
-		if(blockData.hasHardness())
-		{
-			hardness -= block.getType().getHardness();
-		}
-		
-		hardness += newData.getMaterial().getHardness();
-		
-		try
-		{
-			townBlock.getTown().setHardness(hardness);
-			blockData.hasHardness(true);
-		}
-		catch(TownHardnessLimitException e)
-		{
-			event.setCancelled(true);
-		}
+		changeHardnessToNewState(event, event.getBlock().getState(), event.getNewData());
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(PlayerBucketEmptyEvent event)
 	{
-		Block block = event.getBlock();
-		TownBlock townBlock = Town.getStaticTownBlock(block);
+		final org.bukkit.block.data.BlockData newData;
 		
-		if(townBlock == null)
+		if(event.getBlock().getBlockData() instanceof Waterlogged waterlogged)
 		{
-			return;
+			newData = waterlogged.clone();
+			((Waterlogged) newData).setWaterlogged(true);
+		}
+		else
+		{
+			newData = Material.WATER.createBlockData();
 		}
 		
-		double hardness = townBlock.getTown().getHardness();
+		changeHardnessToNewState(event, event.getBlock().getState(), newData);
 		
-		hardness += Material.WATER.getHardness();
-		
-		BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		
-		if(blockData.hasHardness() && isFilled(block))
+		if(plugin.getPlayerManager().get(event.getPlayer()) instanceof TownPlayer townPlayer
+				&& event.isCancelled())
 		{
-			return;
-		}
-		
-		try
-		{
-			townBlock.getTown().setHardness(hardness);
-			blockData.hasHardness(true);
-		}
-		catch(TownHardnessLimitException e)
-		{
-			event.setCancelled(true);
+			townPlayer.sendMessage(PluginMessage.THIS_BLOCK_WILL_EXCEED_HARDNESS_LIMIT);
 		}
 	}
 	
-	private boolean isFilled(Block block)
-	{
-		return block.getType() == Material.WATER || block.getType() == Material.LAVA
-				|| (block.getBlockData() instanceof Waterlogged waterlogged && waterlogged.isWaterlogged());
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(PlayerBucketFillEvent event)
 	{
-		Block block = event.getBlock();
-		TownBlock townBlock = Town.getStaticTownBlock(block);
-		
-		if(townBlock == null)
-		{
-			return;
-		}
-		
-		BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		
-		if(blockData.hasHardness())
-		{
-			townBlock.getTown().decreaseHardness(Material.WATER.getHardness());
-		}
+		changeHardnessToNewState(event, event.getBlock().getState(), Material.AIR.createBlockData());
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(StructureConstructEvent event)
 	{
 		Structure structure = event.getStructure();
@@ -387,6 +188,481 @@ public class TownHardnessListener implements Listener
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(BlockDestroyEvent event)
+	{
+		changeHardnessToNewState(event, event.getBlock().getState(), event.getNewState());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(BlockGrowEvent event)
+	{
+		changeHardnessToNewState(event, event.getNewState());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(MoistureChangeEvent event)
+	{
+		changeHardnessToNewState(event, event.getNewState());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(BlockFadeEvent event)
+	{
+		changeHardnessToNewState(event, event.getNewState());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(BlockMultiPlaceEvent event)
+	{
+		changeHardnessToNewState(event,
+				event.getReplacedBlockStates().get(1),
+				event.getBlock().getBlockData());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(BlockPistonExtendEvent event)
+	{
+		final Block pistonBase = event.getBlock();
+		
+		final List<Block> blocks = event.getBlocks();
+		final List<BlockState> newBlockStates = new ArrayList<>();
+		
+		final Block pistonHead = pistonBase.getRelative(event.getDirection());
+		
+		if(blocks.isEmpty())
+		{
+			changeHardnessToNewState(event,
+					pistonBase.getRelative(event.getDirection()).getState(),
+					Material.PISTON_HEAD.createBlockData());
+			
+			return;
+		}
+		
+		for(final Block block : event.getBlocks())
+		{
+			final Block previous = block.getRelative(event.getDirection().getOppositeFace());
+			final Block next = block.getRelative(event.getDirection());
+			final BlockState newBlockState = block.getState();
+			
+			if(pistonBase.equals(previous))
+			{
+				newBlockState.setType(Material.PISTON_HEAD);
+				newBlockState.setBlockData(Material.PISTON_HEAD.createBlockData());
+			}
+			else if(blocks.contains(previous))
+			{
+				newBlockState.setType(previous.getType());
+				newBlockState.setBlockData(previous.getBlockData());
+			}
+			else
+			{
+				newBlockState.setType(Material.AIR);
+				newBlockState.setBlockData(Material.AIR.createBlockData());
+			}
+			
+			newBlockStates.add(newBlockState);
+			
+			if(!blocks.contains(next) && block.getPistonMoveReaction() != PistonMoveReaction.BREAK)
+			{
+				final BlockState nextNewBlockState = next.getState();
+				
+				nextNewBlockState.setType(block.getType());
+				nextNewBlockState.setBlockData(block.getBlockData());
+				
+				newBlockStates.add(nextNewBlockState);
+			}
+		}
+		
+		changeMultipleHardnessToNewState(event, newBlockStates);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(BlockPistonRetractEvent event)
+	{
+		for(StackTraceElement traceElement : Thread.currentThread().getStackTrace())
+		{
+			plugin.getLogger().info(traceElement.toString());
+		}
+		
+		final Block pistonBase = event.getBlock();
+		final Block pistonHead = pistonBase.getRelative(event.getDirection());
+		final List<Block> blocks = event.getBlocks();
+		final List<BlockState> newBlockStates = new ArrayList<>();
+		
+		if(blocks.isEmpty())
+		{
+			BlockState oldState = pistonHead.getState();
+			
+			oldState.setType(Material.PISTON_HEAD);
+			oldState.setBlockData(Material.PISTON_HEAD.createBlockData());
+			
+			changeHardnessToNewState(event,
+					oldState,
+					Material.AIR.createBlockData());
+			
+			return;
+		}
+		
+		for(final Block block : event.getBlocks())
+		{
+			final Block nearest = block.getRelative(event.getDirection().getOppositeFace());
+			final Block furthest = block.getRelative(event.getDirection());
+			final BlockState newBlockState = block.getState();
+			
+			if(blocks.contains(furthest))
+			{
+				newBlockState.setType(furthest.getType());
+				newBlockState.setBlockData(furthest.getBlockData());
+			}
+			else
+			{
+				newBlockState.setType(Material.AIR);
+				newBlockState.setBlockData(Material.AIR.createBlockData());
+			}
+			
+			newBlockStates.add(newBlockState);
+			
+			if(!blocks.contains(nearest))
+			{
+				final BlockState nearestNewBlockState = nearest.getState();
+
+				nearestNewBlockState.setType(block.getType());
+				nearestNewBlockState.setBlockData(block.getBlockData());
+
+				newBlockStates.add(nearestNewBlockState);
+			}
+		}
+		
+		changeMultipleHardnessToNewState(event, newBlockStates);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onDispenseBucket(BlockDispenseEvent event)
+	{
+		Block block = event.getBlock();
+		Dispenser dispenser = (Dispenser) block.getBlockData();
+		
+		ItemStack item = event.getItem();
+		
+		BlockFace facing = dispenser.getFacing();
+		Block relative = block.getRelative(facing);
+		
+		if(item.getType() == Material.BUCKET && canFillBucket(relative))
+		{
+			changeHardnessToNewState(event, relative.getState(), getBlockDataUnfilled(relative.getBlockData()));
+		}
+	}
+	
+	private boolean canFillBucket(Block block)
+	{
+		return canFillBucket(block.getBlockData());
+	}
+	
+	private boolean canFillBucket(org.bukkit.block.data.BlockData blockData)
+	{
+		return blockData.getMaterial() == Material.LAVA
+				|| blockData.getMaterial() == Material.WATER
+				|| blockData.getMaterial() == Material.POWDER_SNOW
+				|| blockData instanceof Waterlogged waterlogged && waterlogged.isWaterlogged();
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onDispenseLava(BlockDispenseEvent event)
+	{
+		Block block = event.getBlock();
+		ItemStack item = event.getItem();
+		
+		Dispenser dispenser = (Dispenser) block.getBlockData();
+		
+		BlockFace facing = dispenser.getFacing();
+		Block relative = block.getRelative(facing);
+		
+		if(item.getType() == Material.LAVA_BUCKET)
+		{
+			if(relative.getType().isSolid())
+			{
+				return;
+			}
+			
+			BlockState airState = newState(relative, Material.AIR);
+			
+			BlockState oldState = isFilled(relative) ? relative.getState() : airState;
+			
+			changeHardnessToNewState(event, oldState, Material.LAVA.createBlockData());
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onDispenseWater(BlockDispenseEvent event)
+	{
+		Block block = event.getBlock();
+		ItemStack item = event.getItem();
+		
+		Dispenser dispenser = (Dispenser) block.getBlockData();
+		
+		BlockFace facing = dispenser.getFacing();
+		Block relative = block.getRelative(facing);
+		
+		if(canBeFilledByWater(relative) && isWaterBucket(item.getType()))
+		{
+			BlockState airState = newState(relative, Material.AIR);
+			
+			BlockState oldState = isFilled(relative) || relative.getBlockData() instanceof Waterlogged
+					? relative.getState() : airState;
+			
+			var newData = getDataFilledWithWater(relative.getBlockData());
+			
+			changeHardnessToNewState(event, oldState, newData);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onDispensePowderSnow(BlockDispenseEvent event)
+	{
+		Block block = event.getBlock();
+		ItemStack item = event.getItem();
+		
+		Dispenser dispenser = (Dispenser) block.getBlockData();
+		
+		BlockFace facing = dispenser.getFacing();
+		Block relative = block.getRelative(facing);
+		
+		if(item.getType() == Material.POWDER_SNOW_BUCKET && relative.getType() == Material.AIR)
+		{
+			changeHardnessToNewState(event, relative.getState(), Material.POWDER_SNOW.createBlockData());
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(EntityExplodeEvent event)
+	{
+		List<BlockState> newBlockStates = new ArrayList<>();
+		
+		for(Block block : event.blockList())
+		{
+			newBlockStates.add(newState(block, Material.AIR));
+		}
+		
+		changeMultipleHardnessToNewState(event, newBlockStates);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(BlockExplodeEvent event)
+	{
+		List<BlockState> newBlockStates = new ArrayList<>();
+		
+		for(Block block : event.blockList())
+		{
+			newBlockStates.add(newState(block, Material.AIR));
+		}
+		
+		changeMultipleHardnessToNewState(event, newBlockStates);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(EntityChangeBlockEvent event)
+	{
+		changeHardnessToNewState(event, event.getBlock().getState(), event.getBlockData());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(SpongeAbsorbEvent event)
+	{
+		changeMultipleHardnessToNewState(event, event.getBlocks());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void on(BlockBurnEvent event)
+	{
+		changeHardnessToNewState(event, newState(event.getBlock(), Material.AIR));
+	}
+	
+	private BlockState newState(Block block, Material newMaterial)
+	{
+		return newState(block.getState(), newMaterial);
+	}
+	
+	private BlockState newState(BlockState blockState, Material newMaterial)
+	{
+		blockState.setType(newMaterial);
+		blockState.setBlockData(newMaterial.createBlockData());
+		
+		return blockState;
+	}
+	
+	private org.bukkit.block.data.BlockData getBlockDataUnfilled(org.bukkit.block.data.BlockData blockData)
+	{
+		if(blockData instanceof Waterlogged waterlogged)
+		{
+			waterlogged.setWaterlogged(false);
+			return waterlogged;
+		}
+		else
+		{
+			return Material.AIR.createBlockData();
+		}
+	}
+	
+	private boolean isWaterBucket(Material material)
+	{
+		return switch(material)
+		{
+			case WATER_BUCKET, COD_BUCKET, AXOLOTL_BUCKET, PUFFERFISH_BUCKET, TROPICAL_FISH_BUCKET, SALMON_BUCKET, TADPOLE_BUCKET ->
+					true;
+			default -> false;
+		};
+	}
+	
+	private org.bukkit.block.data.BlockData getDataFilledWithWater(org.bukkit.block.data.BlockData blockData)
+	{
+		if(blockData instanceof Waterlogged waterlogged)
+		{
+			waterlogged.setWaterlogged(true);
+			return waterlogged;
+		}
+		else
+		{
+			return Material.WATER.createBlockData();
+		}
+	}
+	
+	private boolean canBeFilledByWater(Block block)
+	{
+		return canBeFilledByWater(block.getBlockData());
+	}
+	
+	private boolean canBeFilledByWater(org.bukkit.block.data.BlockData blockData)
+	{
+		return !blockData.getMaterial().isSolid() || blockData instanceof Waterlogged;
+	}
+	
+	private boolean isFilled(Block block)
+	{
+		return isFilled(block.getBlockData());
+	}
+	
+	private boolean isFilled(org.bukkit.block.data.BlockData blockData)
+	{
+		return blockData.getMaterial() == Material.LAVA || blockData.getMaterial() == Material.WATER || isWaterlogged(blockData);
+	}
+	
+	private void changeHardnessToNewState(Cancellable cancellable, BlockState newState)
+	{
+		changeHardnessToNewState(cancellable, newState.getBlock().getState(), newState.getBlockData());
+	}
+	
+	private void changeHardnessToNewState(Cancellable cancellable,
+			BlockState oldState,
+			org.bukkit.block.data.BlockData newData)
+	{
+		plugin.getLogger().warning("event=" + cancellable.getClass().getSimpleName());
+		plugin.getLogger().warning("pos=" + oldState.getLocation().toVector().toBlockVector());
+		plugin.getLogger().warning("oldState=" + oldState.getBlockData());
+		plugin.getLogger().warning("newData=" + newData);
+		
+		final Block block = oldState.getBlock();
+		final TownBlock townBlock = Town.getStaticTownBlock(block);
+		
+		if(townBlock == null)
+		{
+			return;
+		}
+		
+		final BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
+		
+		
+		final Town town = townBlock.getTown();
+		double hardness = town.getHardness();
+		final double oldHardness = hardness;
+		
+		if(blockData.hasHardness())
+		{
+			hardness -= getHardnessPlusWaterlogged(oldState);
+		}
+		
+		hardness += getHardnessPlusWaterlogged(newData);
+		
+		plugin.getLogger().warning(String.format("oldHardness=%.2f", oldHardness));
+		plugin.getLogger().warning(String.format("newHardness=%.2f", hardness));
+		
+		try
+		{
+			townBlock.getTown().setHardness(hardness);
+			blockData.hasHardness(true);
+		}
+		catch(TownHardnessLimitException e)
+		{
+			cancellable.setCancelled(true);
+		}
+	}
+	
+	private void changeMultipleHardnessToNewState(Cancellable cancellable, List<BlockState> newBlockStates)
+	{
+		Map<Town, Double> townMap = new HashMap<>();
+		
+		for(BlockState blockState : newBlockStates)
+		{
+			TownBlock townBlock = Town.getStaticTownBlock(blockState.getBlock());
+			
+			if(townBlock == null)
+			{
+				continue;
+			}
+			
+			Town town = townBlock.getTown();
+			
+			townMap.putIfAbsent(town, town.getHardness());
+			townMap.computeIfPresent(town, (townKey, hardness) -> hardness - getHardnessPlusWaterlogged(blockState.getBlock()));
+			townMap.computeIfPresent(town, (townKey, hardness) -> hardness + getHardnessPlusWaterlogged(blockState));
+		}
+		
+		if(townMap.isEmpty())
+		{
+			return;
+		}
+		
+		if(townMap.size() != 1)
+		{
+			cancellable.setCancelled(true);
+			return;
+		}
+		
+		Map.Entry<Town, Double> entry = townMap.entrySet().iterator().next();
+		Town town = entry.getKey();
+		double hardness = entry.getValue();
+		
+		plugin.getLogger().warning("multiple-blocks-event=" + cancellable.getClass().getSimpleName());
+		plugin.getLogger().warning("size=" + newBlockStates.size());
+		
+		for(BlockState blockState : newBlockStates)
+		{
+			plugin.getLogger().warning("debug=" + blockState.getBlock().getType() + ":" + blockState.getType());
+		}
+		
+		plugin.getLogger().warning(String.format("oldHardness=%.2f", town.getHardness()));
+		plugin.getLogger().warning(String.format("newHardness=%.2f", hardness));
+		
+		try
+		{
+			town.setHardness(hardness);
+			
+			for(BlockState blockState : newBlockStates)
+			{
+				plugin.getBlockDataLoader().loadBlockDataOrDefault(blockState.getBlock()).hasHardness(true);
+			}
+		}
+		catch(TownHardnessLimitException e)
+		{
+			cancellable.setCancelled(true);
+		}
+	}
+	
+	private double getHardnessPlusWaterlogged(BlockState blockState)
+	{
+		return getHardnessPlusWaterlogged(blockState.getBlockData());
+	}
+	
 	private double getHardnessPlusWaterlogged(Block block)
 	{
 		return getHardnessPlusWaterlogged(block.getBlockData());
@@ -404,97 +680,13 @@ public class TownHardnessListener implements Listener
 		return hardness;
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void on(BlockDestroyEvent event)
+	private boolean isWaterlogged(Block block)
 	{
-		Block block = event.getBlock();
-		var newState = event.getNewState();
-		
-		TownBlock townBlock = Town.getStaticTownBlock(block);
-		
-		Bukkit.broadcastMessage("destroy:" + block.getType() + ":" + newState.getMaterial());
-		
-		if(townBlock == null)
-		{
-			return;
-		}
-		
-		Town town = townBlock.getTown();
-		double hardness = town.getHardness();
-		
-		BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		
-		if(blockData.hasHardness())
-		{
-			hardness -= getHardnessPlusWaterlogged(block);
-		}
-		
-		hardness += getHardnessPlusWaterlogged(newState);
-		
-		try
-		{
-			town.setHardness(hardness);
-			blockData.hasHardness(true);
-		}
-		catch(TownHardnessLimitException e)
-		{
-			event.setCancelled(true);
-		}
+		return isWaterlogged(block.getBlockData());
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void on(BlockGrowEvent event)
+	private boolean isWaterlogged(org.bukkit.block.data.BlockData blockData)
 	{
-	
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void on(MoistureChangeEvent event)
-	{
-		changeHardnessToNewState(event, event.getNewState());
-	}
-	
-	private void changeHardnessToNewState(BlockEvent blockEvent, BlockState newState)
-	{
-		if(!(blockEvent instanceof Cancellable cancellable))
-		{
-			return;
-		}
-		
-		final Block block = blockEvent.getBlock();
-		final TownBlock townBlock = Town.getStaticTownBlock(block);
-		
-		if(townBlock == null)
-		{
-			return;
-		}
-		
-		final BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
-		
-		final Town town = townBlock.getTown();
-		double hardness = town.getHardness();
-		
-		if(blockData.hasHardness())
-		{
-			hardness -= block.getType().getHardness();
-		}
-		
-		hardness += newState.getType().getHardness();
-		
-		try
-		{
-			townBlock.getTown().setHardness(hardness);
-			blockData.hasHardness(true);
-		}
-		catch(TownHardnessLimitException e)
-		{
-			cancellable.setCancelled(true);
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void on(CreatureSpawnEvent event)
-	{
-		event.setCancelled(true);
+		return blockData instanceof Waterlogged waterlogged && waterlogged.isWaterlogged();
 	}
 }

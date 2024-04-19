@@ -496,7 +496,7 @@ public class CraftTown implements Town
 	@Override
 	public double getHardnessLimit()
 	{
-		return 2000.0D;
+		return 20000.0D;
 	}
 	
 	@Override

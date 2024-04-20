@@ -27,11 +27,18 @@ public interface Town extends Externalizable
 	int TOWN_FULL_DIAMATER = 55 * 2 + 1;
 	int INITIAL_AVAILABLE_RADIUS = 13;
 	int Y = 49;
+	int GRASS_Y = Y;
+	int BED_ROCK_Y = 41;
 	
 	static TownBlock getStaticTownBlock(Block block)
 	{
 		final Block fixedBlockY = block.getWorld().getBlockAt(block.getX(), Y, block.getZ());
 		return CraftTown.TOWN_BLOCKS.get(fixedBlockY);
+	}
+	
+	static Optional<TownBlock> findStaticTownBlock(Block block)
+	{
+		return Optional.ofNullable(getStaticTownBlock(block));
 	}
 	
 	Map<Block, TownBlock> getTownBlocks();

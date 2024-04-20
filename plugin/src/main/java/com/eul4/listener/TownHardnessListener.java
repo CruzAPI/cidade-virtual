@@ -23,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.eul4.util.BlockUtil.*;
 import static org.bukkit.block.BlockFace.UP;
 
 @RequiredArgsConstructor
@@ -280,11 +282,6 @@ public class TownHardnessListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(BlockPistonRetractEvent event)
 	{
-		for(StackTraceElement traceElement : Thread.currentThread().getStackTrace())
-		{
-			plugin.getLogger().info(traceElement.toString());
-		}
-		
 		final Block pistonBase = event.getBlock();
 		final Block pistonHead = pistonBase.getRelative(event.getDirection());
 		final List<Block> blocks = event.getBlocks();
@@ -352,19 +349,6 @@ public class TownHardnessListener implements Listener
 		{
 			changeHardnessToNewState(event, relative.getState(), getBlockDataUnfilled(relative.getBlockData()));
 		}
-	}
-	
-	private boolean canFillBucket(Block block)
-	{
-		return canFillBucket(block.getBlockData());
-	}
-	
-	private boolean canFillBucket(org.bukkit.block.data.BlockData blockData)
-	{
-		return blockData.getMaterial() == Material.LAVA
-				|| blockData.getMaterial() == Material.WATER
-				|| blockData.getMaterial() == Material.POWDER_SNOW
-				|| blockData instanceof Waterlogged waterlogged && waterlogged.isWaterlogged();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -478,75 +462,6 @@ public class TownHardnessListener implements Listener
 		changeHardnessToNewState(event, newState(event.getBlock(), Material.AIR));
 	}
 	
-	private BlockState newState(Block block, Material newMaterial)
-	{
-		return newState(block.getState(), newMaterial);
-	}
-	
-	private BlockState newState(BlockState blockState, Material newMaterial)
-	{
-		blockState.setType(newMaterial);
-		blockState.setBlockData(newMaterial.createBlockData());
-		
-		return blockState;
-	}
-	
-	private org.bukkit.block.data.BlockData getBlockDataUnfilled(org.bukkit.block.data.BlockData blockData)
-	{
-		if(blockData instanceof Waterlogged waterlogged)
-		{
-			waterlogged.setWaterlogged(false);
-			return waterlogged;
-		}
-		else
-		{
-			return Material.AIR.createBlockData();
-		}
-	}
-	
-	private boolean isWaterBucket(Material material)
-	{
-		return switch(material)
-		{
-			case WATER_BUCKET, COD_BUCKET, AXOLOTL_BUCKET, PUFFERFISH_BUCKET, TROPICAL_FISH_BUCKET, SALMON_BUCKET, TADPOLE_BUCKET ->
-					true;
-			default -> false;
-		};
-	}
-	
-	private org.bukkit.block.data.BlockData getDataFilledWithWater(org.bukkit.block.data.BlockData blockData)
-	{
-		if(blockData instanceof Waterlogged waterlogged)
-		{
-			waterlogged.setWaterlogged(true);
-			return waterlogged;
-		}
-		else
-		{
-			return Material.WATER.createBlockData();
-		}
-	}
-	
-	private boolean canBeFilledByWater(Block block)
-	{
-		return canBeFilledByWater(block.getBlockData());
-	}
-	
-	private boolean canBeFilledByWater(org.bukkit.block.data.BlockData blockData)
-	{
-		return !blockData.getMaterial().isSolid() || blockData instanceof Waterlogged;
-	}
-	
-	private boolean isFilled(Block block)
-	{
-		return isFilled(block.getBlockData());
-	}
-	
-	private boolean isFilled(org.bukkit.block.data.BlockData blockData)
-	{
-		return blockData.getMaterial() == Material.LAVA || blockData.getMaterial() == Material.WATER || isWaterlogged(blockData);
-	}
-	
 	private void changeHardnessToNewState(Cancellable cancellable, BlockState newState)
 	{
 		changeHardnessToNewState(cancellable, newState.getBlock().getState(), newState.getBlockData());
@@ -556,10 +471,10 @@ public class TownHardnessListener implements Listener
 			BlockState oldState,
 			org.bukkit.block.data.BlockData newData)
 	{
-		plugin.getLogger().warning("event=" + cancellable.getClass().getSimpleName());
-		plugin.getLogger().warning("pos=" + oldState.getLocation().toVector().toBlockVector());
-		plugin.getLogger().warning("oldState=" + oldState.getBlockData());
-		plugin.getLogger().warning("newData=" + newData);
+		plugin.getLogger().finer("event=" + cancellable.getClass().getSimpleName());
+		plugin.getLogger().finer("pos=" + oldState.getLocation().toVector().toBlockVector());
+		plugin.getLogger().finer("oldState=" + oldState.getBlockData());
+		plugin.getLogger().finer("newData=" + newData);
 		
 		final Block block = oldState.getBlock();
 		final TownBlock townBlock = Town.getStaticTownBlock(block);
@@ -583,8 +498,8 @@ public class TownHardnessListener implements Listener
 		
 		hardness += getHardnessPlusWaterlogged(newData);
 		
-		plugin.getLogger().warning(String.format("oldHardness=%.2f", oldHardness));
-		plugin.getLogger().warning(String.format("newHardness=%.2f", hardness));
+		plugin.getLogger().finer(String.format("oldHardness=%.2f", oldHardness));
+		plugin.getLogger().finer(String.format("newHardness=%.2f", hardness));
 		
 		try
 		{
@@ -632,16 +547,10 @@ public class TownHardnessListener implements Listener
 		Town town = entry.getKey();
 		double hardness = entry.getValue();
 		
-		plugin.getLogger().warning("multiple-blocks-event=" + cancellable.getClass().getSimpleName());
-		plugin.getLogger().warning("size=" + newBlockStates.size());
-		
-		for(BlockState blockState : newBlockStates)
-		{
-			plugin.getLogger().warning("debug=" + blockState.getBlock().getType() + ":" + blockState.getType());
-		}
-		
-		plugin.getLogger().warning(String.format("oldHardness=%.2f", town.getHardness()));
-		plugin.getLogger().warning(String.format("newHardness=%.2f", hardness));
+		plugin.getLogger().finer("multiple-blocks-event=" + cancellable.getClass().getSimpleName());
+		plugin.getLogger().finer("size=" + newBlockStates.size());
+		plugin.getLogger().finer(String.format("oldHardness=%.2f", town.getHardness()));
+		plugin.getLogger().finer(String.format("newHardness=%.2f", hardness));
 		
 		try
 		{
@@ -658,35 +567,9 @@ public class TownHardnessListener implements Listener
 		}
 	}
 	
-	private double getHardnessPlusWaterlogged(BlockState blockState)
+	@EventHandler
+	public void on(CreatureSpawnEvent event)
 	{
-		return getHardnessPlusWaterlogged(blockState.getBlockData());
-	}
-	
-	private double getHardnessPlusWaterlogged(Block block)
-	{
-		return getHardnessPlusWaterlogged(block.getBlockData());
-	}
-	
-	private double getHardnessPlusWaterlogged(org.bukkit.block.data.BlockData blockData)
-	{
-		double hardness = blockData.getMaterial().getHardness();
-		
-		if(blockData instanceof Waterlogged waterlogged && waterlogged.isWaterlogged())
-		{
-			hardness += Material.WATER.getHardness();
-		}
-		
-		return hardness;
-	}
-	
-	private boolean isWaterlogged(Block block)
-	{
-		return isWaterlogged(block.getBlockData());
-	}
-	
-	private boolean isWaterlogged(org.bukkit.block.data.BlockData blockData)
-	{
-		return blockData instanceof Waterlogged waterlogged && waterlogged.isWaterlogged();
+		event.setCancelled(true);
 	}
 }

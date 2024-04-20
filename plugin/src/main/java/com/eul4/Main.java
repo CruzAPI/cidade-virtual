@@ -177,6 +177,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
+		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)

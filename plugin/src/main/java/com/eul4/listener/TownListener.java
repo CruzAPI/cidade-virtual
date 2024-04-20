@@ -20,7 +20,7 @@ public class TownListener implements Listener
 {
 	private final Main plugin;
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		Player player = event.getPlayer();
@@ -42,10 +42,11 @@ public class TownListener implements Listener
 		}
 		
 		town.findTownBlock(block)
-				.ifPresent(townBlock -> event.setCancelled(!townBlock.canBuild()));
+				.map(TownBlock::hasProtection)
+				.ifPresent(event::setCancelled);
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		Player player = event.getPlayer();
@@ -67,8 +68,7 @@ public class TownListener implements Listener
 		}
 		
 		town.findTownBlock(block)
-				.map(TownBlock::canBuild)
-				.map(Boolean.FALSE::equals)
+				.map(TownBlock::hasProtection)
 				.ifPresent(event::setCancelled);
 	}
 	

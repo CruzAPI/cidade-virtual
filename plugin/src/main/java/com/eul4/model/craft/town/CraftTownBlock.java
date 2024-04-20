@@ -160,4 +160,10 @@ public class CraftTownBlock implements TownBlock
 			}
 		}
 	}
+	
+	@Override
+	public boolean hasProtection()
+	{
+		return !canBuild();
+	}
 }

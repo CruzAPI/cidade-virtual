@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface TownBlock extends Externalizable
 {
 	boolean canBuild();
+	boolean hasProtection();
 	boolean hasStructure();
 	
 	void setAvailable(boolean value);

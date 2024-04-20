@@ -99,4 +99,5 @@ public interface Town extends Externalizable
 	void increaseHardness(double hardness) throws TownHardnessLimitException;
 	
 	void setHardness(double hardness) throws TownHardnessLimitException;
+	boolean isOwner(Player player);
 }

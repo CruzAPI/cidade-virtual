@@ -526,4 +526,10 @@ public class CraftTown implements Town
 		
 		this.hardness = Math.max(0.0D, hardness);
 	}
+	
+	@Override
+	public boolean isOwner(Player player)
+	{
+		return player.getUniqueId().equals(ownerUUID);
+	}
 }

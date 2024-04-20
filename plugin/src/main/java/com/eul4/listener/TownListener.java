@@ -13,12 +13,59 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 @RequiredArgsConstructor
 public class TownListener implements Listener
 {
 	private final Main plugin;
+	
+	@EventHandler(ignoreCancelled = true)
+	public void onBucketFill(PlayerBucketFillEvent event)
+	{
+		Block block = event.getBlock();
+		Player player = event.getPlayer();
+		
+		if(Town.findStaticTownBlock(block)
+				.map(TownBlock::getTown)
+				.filter(town -> !town.isOwner(player))
+				.isPresent())
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	public void onBucketEmpty(PlayerBucketEmptyEvent event)
+	{
+		Block block = event.getBlock();
+		Player player = event.getPlayer();
+		
+		if(Town.findStaticTownBlock(block)
+				.map(TownBlock::getTown)
+				.filter(town -> !town.isOwner(player))
+				.isPresent())
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	public void onPlayerInteract(PlayerInteractEvent event)
+	{
+		Block block = event.getClickedBlock();
+		Player player = event.getPlayer();
+		
+		if(Town.findStaticTownBlock(block)
+				.map(TownBlock::getTown)
+				.filter(town -> !town.isOwner(player))
+				.isPresent())
+		{
+			event.setCancelled(true);
+		}
+	}
 	
 	@EventHandler(ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event)
@@ -73,7 +120,7 @@ public class TownListener implements Listener
 	}
 	
 	@EventHandler
-	public void onPlayerInteract(PlayerInteractEvent event)
+	public void onTileRightClick(PlayerInteractEvent event)
 	{
 		final Player player = event.getPlayer();
 		

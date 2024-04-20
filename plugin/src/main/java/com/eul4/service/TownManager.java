@@ -146,10 +146,10 @@ public class TownManager
 		int dx = 0;
 		int dz = -1;
 		
-		for(; ; )
+		for(;;)
 		{
 			Block block = plugin.getTownWorld()
-					.getBlockAt(x * Town.TOWN_FULL_DIAMATER, Town.Y, z * Town.TOWN_FULL_DIAMATER);
+					.getBlockAt(x * Town.TOWN_FULL_DIAMATER, Town.BED_ROCK_Y, z * Town.TOWN_FULL_DIAMATER);
 			
 			if(block.getType().isAir())
 			{

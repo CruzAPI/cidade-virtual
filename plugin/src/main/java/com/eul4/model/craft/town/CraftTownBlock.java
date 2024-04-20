@@ -134,9 +134,23 @@ public class CraftTownBlock implements TownBlock
 	{
 		structure = null;
 		
-		for(Block block = this.block; block.getY() < block.getWorld().getMaxHeight(); block = block.getRelative(BlockFace.UP))
+		for(Block block = this.block.getWorld().getBlockAt(this.block.getX(), 0, this.block.getZ());
+				block.getY() < block.getWorld().getMaxHeight();
+				block = block.getRelative(BlockFace.UP))
 		{
-			if(block.getY() == Town.Y)
+			if(block.getY() < Town.BED_ROCK_Y)
+			{
+				block.setType(Material.AIR);
+			}
+			else if(block.getY() == Town.BED_ROCK_Y)
+			{
+				block.setType(Material.BEDROCK);
+			}
+			else if(block.getY() < Town.GRASS_Y)
+			{
+				block.setType(Material.DIRT);
+			}
+			else if(block.getY() == Town.GRASS_Y)
 			{
 				block.setType(Material.GRASS_BLOCK);
 			}

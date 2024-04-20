@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.TownBlock;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.google.common.io.ByteStreams;
 import com.sk89q.worldedit.EditSession;
@@ -149,9 +150,9 @@ public class TownManager
 		for(;;)
 		{
 			Block block = plugin.getTownWorld()
-					.getBlockAt(x * Town.TOWN_FULL_DIAMATER, Town.BED_ROCK_Y, z * Town.TOWN_FULL_DIAMATER);
+					.getBlockAt(x * Town.TOWN_FULL_DIAMATER, Town.Y, z * Town.TOWN_FULL_DIAMATER);
 			
-			if(block.getType().isAir())
+			if(Town.findStaticTownBlock(block).isEmpty())
 			{
 				return block.getLocation();
 			}

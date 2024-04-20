@@ -4,6 +4,7 @@ import com.eul4.common.hologram.Hologram;
 import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -109,8 +110,8 @@ public class CraftTownTile implements TownTile
 			{
 				Block relative = getBlock().getRelative(x, 0, z);
 				
-				relative.setType(Material.GRASS_BLOCK);
 				town.findTownBlock(relative).ifPresent(townBlock -> townBlock.setAvailable(true));
+				town.findTownBlock(relative).ifPresent(TownBlock::reset);
 			}
 		}
 	}

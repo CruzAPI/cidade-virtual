@@ -23,7 +23,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -565,11 +564,5 @@ public class TownHardnessListener implements Listener
 		{
 			cancellable.setCancelled(true);
 		}
-	}
-	
-	@EventHandler
-	public void on(CreatureSpawnEvent event)
-	{
-		event.setCancelled(true);
 	}
 }

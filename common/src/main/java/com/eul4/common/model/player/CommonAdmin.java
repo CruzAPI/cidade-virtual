@@ -3,7 +3,11 @@ package com.eul4.common.model.player;
 public interface CommonAdmin extends CommonPlayer
 {
 	boolean canBuild();
-	void setBuild(boolean value);
+	void canBuild(boolean value);
 	
-	boolean toggleBuild();
+	default boolean toggleBuild()
+	{
+		canBuild(!canBuild());
+		return canBuild();
+	}
 }

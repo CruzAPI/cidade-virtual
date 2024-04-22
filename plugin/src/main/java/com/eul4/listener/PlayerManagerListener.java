@@ -1,6 +1,9 @@
-package com.eul4.common.listener;
+package com.eul4.listener;
 
-import com.eul4.common.Common;
+import com.eul4.Main;
+import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.model.player.TownPlayer;
+import com.eul4.type.player.PluginPlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,12 +14,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 @RequiredArgsConstructor
 public class PlayerManagerListener implements Listener
 {
-	private final Common plugin;
+	private final Main plugin;
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		plugin.getPlayerManager().register(event.getPlayer(), plugin.getDefaultPlayerType());
+		plugin.getPlayerManager().register(event.getPlayer(), plugin, PluginPlayerType.TOWN_PLAYER);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)

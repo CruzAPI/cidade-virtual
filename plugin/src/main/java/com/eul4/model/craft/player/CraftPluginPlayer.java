@@ -11,16 +11,16 @@ public class CraftPluginPlayer extends CraftCommonPlayer implements PluginPlayer
 {
 	protected final Main plugin;
 	
-	public CraftPluginPlayer(Player player, Common plugin)
+	protected CraftPluginPlayer(Player player, Main plugin)
 	{
 		super(player, plugin);
-		this.plugin = (Main) plugin;
+		this.plugin = plugin;
 	}
 	
-	public CraftPluginPlayer(CommonPlayer oldCommonPlayer)
+	protected CraftPluginPlayer(PluginPlayer pluginPlayer)
 	{
-		super(oldCommonPlayer);
-		this.plugin = (Main) oldCommonPlayer.getPlugin();
+		super(pluginPlayer);
+		this.plugin = pluginPlayer.getPlugin();
 	}
 	
 	@Override

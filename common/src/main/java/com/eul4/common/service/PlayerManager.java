@@ -16,44 +16,44 @@ import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class PlayerManager
+public class PlayerManager<PP extends CommonPlayer>
 {
 	private final Common plugin;
 	
-	private final Map<UUID, CommonPlayer> commonPlayers = new HashMap<>();
+	private final Map<UUID, PP> commonPlayers = new HashMap<>();
 	
-	public <CP extends CommonPlayer> CP register(Player player, PlayerType<CP> playerType)
+	public <PL extends Common, P extends PP> P register(Player player, PL plugin, PlayerType<PL, P> playerType)
 	{
 		if(commonPlayers.containsKey(player.getUniqueId()))
 		{
 			throw new InvalidCommonPlayerException("Player already registered");
 		}
 		
-		final CP newCommonPlayer = playerType.getNewInstanceBiFunction().apply(player, plugin);
+		final P newCommonPlayer = playerType.getNewInstanceBiFunction().apply(player, plugin);
 		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
 		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(newCommonPlayer));
 		return newCommonPlayer;
 	}
 	
-	public <CP extends CommonPlayer> CP reregister(CommonPlayer oldCommonPlayer, CommonPlayerType<CP> commonPlayerType)
+	public <P extends PP> P reregister(PP oldPluginPlayer, CommonPlayerType<PP, P> commonPlayerType)
 	{
-		if(!isValid(oldCommonPlayer))
+		if(!isValid(oldPluginPlayer))
 		{
 			throw new InvalidCommonPlayerException("This CommonPlayer instance is invalid");
 		}
 		
-		final CP newCommonPlayer = commonPlayerType.getNewInstanceFunction().apply(oldCommonPlayer);
+		final P newCommonPlayer = commonPlayerType.getNewInstanceFunction().apply(oldPluginPlayer);
 		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
-		plugin.getServer().getPluginManager().callEvent(new CommonPlayerReregisterEvent(oldCommonPlayer, newCommonPlayer));
+		plugin.getServer().getPluginManager().callEvent(new CommonPlayerReregisterEvent(oldPluginPlayer, newCommonPlayer));
 		return newCommonPlayer;
 	}
 	
-	public CommonPlayer get(Player player)
+	public PP get(Player player)
 	{
 		return get(player.getUniqueId());
 	}
 	
-	public CommonPlayer get(UUID uuid)
+	public PP get(UUID uuid)
 	{
 		return commonPlayers.get(uuid);
 	}
@@ -78,7 +78,7 @@ public class PlayerManager
 		return commonPlayers.get(commonPlayer.getUniqueId()) == commonPlayer;
 	}
 	
-	public Collection<CommonPlayer> getAll()
+	public Collection<PP> getAll()
 	{
 		return commonPlayers.values();
 	}

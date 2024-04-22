@@ -1,7 +1,7 @@
 package com.eul4.model.craft.player;
 
-import com.eul4.common.Common;
-import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.Main;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
@@ -12,14 +12,14 @@ public class CraftTownPlayer extends CraftPluginPlayer implements TownPlayer
 {
 	private Structure movingStructure;
 	
-	public CraftTownPlayer(Player player, Common plugin)
+	public CraftTownPlayer(Player player, Main plugin)
 	{
 		super(player, plugin);
 	}
 	
-	public CraftTownPlayer(CommonPlayer oldCommonPlayer)
+	public CraftTownPlayer(PluginPlayer pluginPlayer)
 	{
-		super(oldCommonPlayer);
+		super(pluginPlayer);
 	}
 	
 	@Override
@@ -50,5 +50,11 @@ public class CraftTownPlayer extends CraftPluginPlayer implements TownPlayer
 	public void setMovingStructure(Structure structure)
 	{
 		this.movingStructure = structure;
+	}
+	
+	@Override
+	public void analyzeTown(Town town)
+	{
+		plugin.getPlayerManager();
 	}
 }

@@ -6,21 +6,17 @@ import com.eul4.command.*;
 import com.eul4.common.Common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
-import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.common.type.player.CommonPlayerType;
-import com.eul4.common.type.player.PlayerType;
+import com.eul4.common.service.PlayerManager;
 import com.eul4.externalizer.BlockChunkToShortCoordinateExternalizer;
 import com.eul4.externalizer.BlockDataExternalizer;
 import com.eul4.externalizer.BlockDataMapExternalizer;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
 import com.eul4.service.*;
-import com.eul4.type.player.PluginCommonPlayerType;
-import com.eul4.type.player.PluginPlayerType;
 import com.eul4.util.FileUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -40,6 +36,7 @@ public class Main extends Common
 	private World townWorld;
 	private World cidadeVirtualWorld;
 	private TownManager townManager;
+	private PlayerManager<PluginPlayer> playerManager;
 	
 	private BlockDataLoader blockDataLoader;
 	private DataFileManager dataFileManager;
@@ -124,6 +121,7 @@ public class Main extends Common
 	@SneakyThrows
 	private void loadServices()
 	{
+		playerManager = new PlayerManager<>(this);
 		blockDataExternalizer = new BlockDataExternalizer();
 		blockChunkToShortCoordinateExternalizer = new BlockChunkToShortCoordinateExternalizer();
 		blockDataMapExternalizer = new BlockDataMapExternalizer(this);
@@ -145,7 +143,6 @@ public class Main extends Common
 		dislikeDepositRuleSerializer = new DislikeDepositRuleSerializer(this);
 	}
 	
-	
 	private void registerPacketInterceptors()
 	{
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
@@ -153,10 +150,12 @@ public class Main extends Common
 	
 	private void registerCommands()
 	{
+		getCommand("admin").setExecutor(new AdminCommand(this));
 		getCommand("balance").setExecutor(new BalanceCommand(this));
 		getCommand("town").setExecutor(new TownCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("move").setExecutor(new MoveCommand(this));
+		getCommand("raid").setExecutor(new RaidCommand(this));
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
 	}
@@ -175,6 +174,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
+		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);
@@ -229,16 +229,9 @@ public class Main extends Common
 		return new File("plugins/FastAsyncWorldEdit/schematics");
 	}
 	
-	
 	@Override
-	public PlayerType<TownPlayer> getDefaultPlayerType()
+	public PlayerManager<PluginPlayer> getPlayerManager()
 	{
-		return PluginPlayerType.TOWN_PLAYER;
-	}
-	
-	@Override
-	public CommonPlayerType<? extends CommonPlayer> getDefaultCommonPlayerType()
-	{
-		return PluginCommonPlayerType.TOWN_PLAYER;
+		return playerManager;
 	}
 }

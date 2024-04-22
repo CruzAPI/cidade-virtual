@@ -100,4 +100,7 @@ public interface Town extends Externalizable
 	
 	void setHardness(double hardness) throws TownHardnessLimitException;
 	boolean isOwner(Player player);
+	boolean isOnline();
+	
+	int getLevel();
 }

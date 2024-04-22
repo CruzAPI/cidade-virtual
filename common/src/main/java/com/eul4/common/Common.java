@@ -2,7 +2,6 @@ package com.eul4.common;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.eul4.common.command.AdminCommand;
 import com.eul4.common.command.BuildCommand;
 import com.eul4.common.event.WorldSaveOrStopEvent;
 import com.eul4.common.i18n.BundleBaseName;
@@ -11,12 +10,7 @@ import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.interceptor.HologramTranslatorAdapter;
 import com.eul4.common.interceptor.SpawnEntityInterceptor;
 import com.eul4.common.listener.*;
-import com.eul4.common.model.player.CommonAdmin;
-import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.service.PlayerManager;
-import com.eul4.common.type.player.CommonPlayerType;
-import com.eul4.common.type.player.CraftCommonPlayerType;
-import com.eul4.common.type.player.PlayerType;
 import lombok.Getter;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
@@ -30,7 +24,6 @@ import java.util.ResourceBundle;
 @Getter
 public abstract class Common extends JavaPlugin
 {
-	private PlayerManager playerManager;
 	private HologramTranslatorAdapter hologramTranslatorAdapter;
 	
 	private EntityRegisterListener entityRegisterListener;
@@ -39,8 +32,6 @@ public abstract class Common extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		playerManager = new PlayerManager(this);
-		
 		loadServices();
 		
 		registerCommonResourceBundles();
@@ -60,7 +51,6 @@ public abstract class Common extends JavaPlugin
 	
 	private void registerCommand()
 	{
-		getCommand("admin").setExecutor(new AdminCommand(this));
 		getCommand("build").setExecutor(new BuildCommand(this));
 	}
 	
@@ -89,7 +79,6 @@ public abstract class Common extends JavaPlugin
 		pluginManager.registerEvents(entityRegisterListener = new EntityRegisterListener(this), this);
 		pluginManager.registerEvents(new CommonAdminListener(this), this);
 		pluginManager.registerEvents(new CommonPlayerListener(this), this);
-		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new GuiListener(this), this);
 		pluginManager.registerEvents(new FixInventoryVisualBugListener(this), this);
 		pluginManager.registerEvents(new CancelItemDropListener(this), this);
@@ -110,15 +99,6 @@ public abstract class Common extends JavaPlugin
 		getLogger().info("Commons disabled!");
 	}
 	
-	public abstract PlayerType<? extends CommonPlayer> getDefaultPlayerType();
-	
-	public abstract CommonPlayerType<? extends CommonPlayer> getDefaultCommonPlayerType();
-	
-	public CommonPlayerType<? extends CommonAdmin> getDefaultCommonAdminPlayerType()
-	{
-		return CraftCommonPlayerType.COMMON_ADMIN;
-	}
-	
 	public boolean isQueued(BukkitRunnable bukkitRunnable)
 	{
 		return Optional.ofNullable(bukkitRunnable)
@@ -126,4 +106,6 @@ public abstract class Common extends JavaPlugin
 				.filter(getServer().getScheduler()::isQueued)
 				.isPresent();
 	}
+	
+	public abstract PlayerManager<?> getPlayerManager();
 }

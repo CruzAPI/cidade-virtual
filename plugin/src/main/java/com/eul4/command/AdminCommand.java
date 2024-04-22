@@ -1,13 +1,12 @@
-package com.eul4.common.command;
+package com.eul4.command;
 
-import com.eul4.common.Common;
+import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.model.player.PluginPlayer;
+import com.eul4.type.player.PluginCommonPlayerType;
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -22,7 +21,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 @RequiredArgsConstructor
 public class AdminCommand implements TabExecutor
 {
-	private final Common plugin;
+	private final Main plugin;
 	
 	@Override
 	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
@@ -38,24 +37,24 @@ public class AdminCommand implements TabExecutor
 			return true;
 		}
 		
-		final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
+		final PluginPlayer pluginPlayer = plugin.getPlayerManager().get(player);
 		
 		if(!player.isOp())
 		{
-			commonPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
+			pluginPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
 			return true;
 		}
 		
 		final CommonPlayer newCommonPlayer;
 		
-		if(commonPlayer instanceof CommonAdmin)
+		if(pluginPlayer instanceof CommonAdmin)
 		{
-			newCommonPlayer = plugin.getPlayerManager().reregister(commonPlayer, plugin.getDefaultCommonPlayerType());
+			newCommonPlayer = plugin.getPlayerManager().reregister(pluginPlayer, PluginCommonPlayerType.TOWN_PLAYER);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, YELLOW, CommonMessage.PLAYER);
 		}
 		else
 		{
-			newCommonPlayer = plugin.getPlayerManager().reregister(commonPlayer, plugin.getDefaultCommonAdminPlayerType());
+			newCommonPlayer = plugin.getPlayerManager().reregister(pluginPlayer, PluginCommonPlayerType.ADMIN);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, RED, CommonMessage.ADMINISTRATOR);
 		}
 		

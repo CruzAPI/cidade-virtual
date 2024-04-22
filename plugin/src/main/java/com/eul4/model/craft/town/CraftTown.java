@@ -532,4 +532,16 @@ public class CraftTown implements Town
 	{
 		return player.getUniqueId().equals(ownerUUID);
 	}
+	
+	@Override
+	public boolean isOnline()
+	{
+		return getOwner().isOnline();
+	}
+	
+	@Override
+	public int getLevel()
+	{
+		return townHall.getLevel();
+	}
 }

@@ -12,6 +12,8 @@ import com.eul4.externalizer.BlockDataExternalizer;
 import com.eul4.externalizer.BlockDataMapExternalizer;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
+import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
+import com.eul4.listener.player.RaidAnalyzerListener;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
@@ -163,6 +165,9 @@ public class Main extends Common
 	private void registerListeners()
 	{
 		final PluginManager pluginManager = getServer().getPluginManager();
+		
+		pluginManager.registerEvents(new RaidAnalyzerHotbarListener(this), this);
+		pluginManager.registerEvents(new RaidAnalyzerListener(this), this);
 		
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);

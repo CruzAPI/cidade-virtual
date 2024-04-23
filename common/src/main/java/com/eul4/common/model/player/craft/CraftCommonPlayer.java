@@ -15,6 +15,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -45,7 +46,7 @@ public class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public void reset()
 	{
-	
+		player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
 	}
 	
 	@Override

@@ -1,8 +1,10 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
+import com.eul4.type.player.PluginCommonPlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,14 +42,21 @@ public class RaidCommand implements TabExecutor
 			return true;
 		}
 		
+		RaidAnalyzer raidAnalyzer = plugin.getPlayerManager().reregister(townPlayer, PluginCommonPlayerType.RAID_ANALYZER);
+		
 		player.sendMessage("Searching towns to raid...");
 		
-		findRandomTown(townPlayer).ifPresentOrElse(townPlayer::analyzeTown,
+		findRandomTown(townPlayer).ifPresentOrElse(raidAnalyzer::analyzeTown,
 				() -> player.sendMessage("No towns found to raid! :("));
 		
 		return false;
 	}
-
+	
+	private void startRaid()
+	{
+	
+	}
+	
 	public Optional<Town> findRandomTown(TownPlayer townPlayer)
 	{
 		Player player = townPlayer.getPlayer();

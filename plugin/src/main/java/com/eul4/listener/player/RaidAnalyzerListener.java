@@ -13,6 +13,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 @RequiredArgsConstructor
@@ -111,6 +112,19 @@ public class RaidAnalyzerListener implements Listener
 	{
 		if(!(event.getEntity() instanceof Player player)
 				|| !(plugin.getPlayerManager().get(player) instanceof RaidAnalyzer raidAnalyzer))
+		{
+			return;
+		}
+		
+		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void on(PlayerInteractEntityEvent event)
+	{
+		Player player = event.getPlayer();
+		
+		if(!(plugin.getPlayerManager().get(player) instanceof RaidAnalyzer raidAnalyzer))
 		{
 			return;
 		}

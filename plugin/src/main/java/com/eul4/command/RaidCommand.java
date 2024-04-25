@@ -65,6 +65,10 @@ public class RaidCommand implements TabExecutor
 		Map<Integer, List<Town>> onlineTownsLeveled = new HashMap<>();
 		Map<Integer, List<Town>> offlineTownsLeveled = new HashMap<>();
 		
+		Collection<Town> towns = plugin.getTownManager().getTowns().values();
+		int i = 0;
+		int size = towns.size();
+		
 		for(Town town : plugin.getTownManager().getTowns().values())
 		{
 			if(town.isOwner(player) || hasSkipped(player, town))
@@ -72,18 +76,13 @@ public class RaidCommand implements TabExecutor
 				continue;
 			}
 			
-			List<Town> towns;
+			int percentage = (int) ((double) i / size * 100.0D);
+//			player.showTitle(percentage + "%");
 			
-			if(town.isOnline())
-			{
-				towns = onlineTownsLeveled.computeIfAbsent(town.getLevel(), x -> new ArrayList<>());
-			}
-			else
-			{
-				towns = offlineTownsLeveled.computeIfAbsent(town.getLevel(), x -> new ArrayList<>());
-			}
+			(town.isOnline() ? onlineTownsLeveled : offlineTownsLeveled)
+					.computeIfAbsent(town.getLevel(), x -> new ArrayList<>()).add(town);
 			
-			towns.add(town);
+			i++;
 		}
 		
 		return findNearestLeveledRandomTown(attackerTown.getLevel(), onlineTownsLeveled, offlineTownsLeveled);

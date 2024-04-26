@@ -31,28 +31,21 @@ task("deploy")
     dependsOn("plugin:remap")
 
     doLast {
-        val user = "cruzapi"
-        val host = "45.233.112.53"
+        val process = ProcessBuilder("./stop.sh").start()
 
-        val containerName = "cidade-virtual-server"
-
-        println("Stopping server...")
-        val stopServerProcess = Runtime.getRuntime().exec("ssh -t $user@$host /bin/bash -ic \"stop\\ $containerName\"")
-
-        if(stopServerProcess.waitFor() != 0)
+        if(process.waitFor() != 0)
         {
-            throw StopExecutionException("Failed to stop server! (exit code: ${stopServerProcess.exitValue()})")
+            throw GradleException("Failed to stop server! (exit code: ${process.exitValue()})")
         }
 
         println("Sleeping 3s...")
         Thread.sleep(3000L);
 
-        println("Deploying in remote...")
-        val pluginDeployProcess = Runtime.getRuntime().exec("scp ./plugin/build/libs/*.jar $user@$host:~/cidade-virtual/server/plugins")
+        val scpProcess = ProcessBuilder("./scp.sh").start()
 
-        if(pluginDeployProcess.waitFor() != 0)
+        if(scpProcess.waitFor() != 0)
         {
-            throw StopExecutionException("Failed to deploy: Plugin (exit code: ${pluginDeployProcess.exitValue()})")
+            throw GradleException("Failed to deploy: Plugin (exit code: ${scpProcess.exitValue()})")
         }
     }
 }

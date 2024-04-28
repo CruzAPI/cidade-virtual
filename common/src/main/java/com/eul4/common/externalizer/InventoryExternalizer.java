@@ -28,9 +28,18 @@ public class InventoryExternalizer
 
 			for(int i = 0; i < contents.length; i++)
 			{
-				final byte[] bytes = new byte[in.readInt()];
-				in.read(bytes);
-				contents[i] = ItemStack.deserializeBytes(bytes);
+				int length = in.readInt();
+				
+				if(length == -1)
+				{
+					contents[i] = null;
+				}
+				else
+				{
+					final byte[] bytes = new byte[length];
+					in.read(bytes);
+					contents[i] = ItemStack.deserializeBytes(bytes);
+				}
 			}
 
 			return contents;
@@ -49,10 +58,17 @@ public class InventoryExternalizer
 
 		for(ItemStack content : contents)
 		{
-			final byte[] bytes = content.serializeAsBytes();
-
-			out.writeInt(bytes.length);
-			out.write(bytes);
+			if(content == null)
+			{
+				out.writeInt(-1);
+			}
+			else
+			{
+				final byte[] bytes = content.serializeAsBytes();
+	
+				out.writeInt(bytes.length);
+				out.write(bytes);
+			}
 		}
 	}
 }

@@ -13,4 +13,6 @@ public interface TownPlayer extends PluginPlayer, Externalizable
 	void setMovingStructure(Structure structure);
 	
 	void analyzeTown(Town town);
+	void test(boolean test);
+	boolean test();
 }

@@ -2,11 +2,9 @@ package com.eul4.common.service;
 
 import com.eul4.common.Common;
 import com.eul4.common.event.CommonPlayerRegisterEvent;
-import com.eul4.common.event.CommonPlayerReregisterEvent;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.exception.InvalidCommonPlayerException;
 import com.eul4.common.type.player.CommonPlayerType;
-import com.eul4.common.type.player.PlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 
@@ -22,34 +20,29 @@ public class PlayerManager<PP extends CommonPlayer>
 	
 	private final Map<UUID, PP> commonPlayers = new HashMap<>();
 	
-	public <PL extends Common, P extends PP> P register(Player player, PL plugin, PlayerType<PL, P> playerType)
+	public <PL extends Common, P extends PP> P register(Player player, PL plugin, CommonPlayerType<PP, PL, P> playerType)
 	{
 		if(commonPlayers.containsKey(player.getUniqueId()))
 		{
 			throw new InvalidCommonPlayerException("Player already registered");
 		}
 		
-		final P newCommonPlayer = playerType.getNewInstanceBiFunction().apply(player, plugin);
+		final P newCommonPlayer = playerType.getPluginConstructor().apply(player, plugin);
 		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
-		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(newCommonPlayer));
+		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(null, newCommonPlayer));
 		return newCommonPlayer;
 	}
 	
-	public <P extends PP> P register(PP oldPluginPlayer, CommonPlayerType<PP, P> commonPlayerType)
+	public <P extends PP> P register(PP oldPluginPlayer, CommonPlayerType<PP, ?, P> commonPlayerType)
 	{
 		return register(oldPluginPlayer.getPlayer(), oldPluginPlayer, commonPlayerType);
 	}
 	
-	public <P extends PP> P register(Player player, PP oldPluginPlayer, CommonPlayerType<PP, P> commonPlayerType)
+	public <P extends PP> P register(Player player, PP oldPluginPlayer, CommonPlayerType<PP, ?, P> commonPlayerType)
 	{
-		if(!isValid(oldPluginPlayer))
-		{
-			throw new InvalidCommonPlayerException("This CommonPlayer instance is invalid");
-		}
-		
-		final P newCommonPlayer = commonPlayerType.getNewInstanceBiFunction().apply(player, oldPluginPlayer);
+		final P newCommonPlayer = commonPlayerType.getCommonPlayerConstructor().apply(player, oldPluginPlayer);
 		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
-		plugin.getServer().getPluginManager().callEvent(new CommonPlayerReregisterEvent(oldPluginPlayer, newCommonPlayer));
+		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(oldPluginPlayer, newCommonPlayer));
 		return newCommonPlayer;
 	}
 	

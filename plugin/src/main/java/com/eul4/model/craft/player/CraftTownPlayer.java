@@ -1,13 +1,12 @@
 package com.eul4.model.craft.player;
 
 import com.eul4.Main;
-import com.eul4.model.player.Admin;
+import com.eul4.common.type.player.CommonPlayerTypeEnum;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.type.player.PluginCommonPlayerType;
-import com.eul4.type.player.PluginPlayerType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -62,13 +61,19 @@ public class CraftTownPlayer extends CraftPluginPlayer implements TownPlayer
 	}
 	
 	@Override
-	public PluginCommonPlayerType<TownPlayer> getCommonPlayerType()
+	public boolean test()
 	{
-		return PluginCommonPlayerType.TOWN_PLAYER;
+		return getTownPlayerData().isTest();
 	}
 	
 	@Override
-	public PluginCommonPlayerType.Type getLastLoadableCommonPlayerType()
+	public void test(boolean test)
+	{
+		getTownPlayerData().setTest(test);
+	}
+	
+	@Override
+	public PluginCommonPlayerType.Type getCommonPlayerTypeEnum()
 	{
 		return PluginCommonPlayerType.Type.TOWN_PLAYER;
 	}

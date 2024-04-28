@@ -1,12 +1,11 @@
 package com.eul4.model.craft.player;
 
+import com.eul4.Main;
 import com.eul4.hotbar.RaidAnalyzerHotbar;
-import com.eul4.model.player.Admin;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.PluginCommonPlayerType;
-import com.eul4.type.player.PluginPlayerType;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -22,15 +21,17 @@ public class CraftRaidAnalyzer extends CraftPluginPlayer implements RaidAnalyzer
 {
 	private final RaidAnalyzerHotbar hotbar = new RaidAnalyzerHotbar(this);
 	private final Set<Town> skippedTowns = new HashSet<>();
-	private final PluginCommonPlayerType.Type lastLoadableCommonPlayerType;
 
 	private Town analyzingTown;
+	
+	public CraftRaidAnalyzer(Player player, Main plugin)
+	{
+		super(player, plugin);
+	}
 	
 	public CraftRaidAnalyzer(Player player, PluginPlayer pluginPlayer)
 	{
 		super(player, pluginPlayer);
-		
-		lastLoadableCommonPlayerType = pluginPlayer.getLastLoadableCommonPlayerType();
 	}
 	
 	@Override
@@ -74,14 +75,21 @@ public class CraftRaidAnalyzer extends CraftPluginPlayer implements RaidAnalyzer
 	}
 	
 	@Override
-	public PluginCommonPlayerType<RaidAnalyzer> getCommonPlayerType()
+	public void savePlayerData()
 	{
-		return PluginCommonPlayerType.RAID_ANALYZER;
+	
 	}
 	
 	@Override
-	public PluginCommonPlayerType.Type getLastLoadableCommonPlayerType()
+	public PluginCommonPlayerType.Type getCommonPlayerTypeEnum()
 	{
-		return lastLoadableCommonPlayerType;
+		return PluginCommonPlayerType.Type.RAID_ANALYZER;
+	}
+	
+	@Override
+	public PluginPlayer load()
+	{
+		commonPlayerData.getPlayerData().apply(player);
+		return plugin.getPlayerManager().register(player, this, PluginCommonPlayerType.TOWN_PLAYER);
 	}
 }

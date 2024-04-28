@@ -5,6 +5,7 @@ import com.eul4.common.event.GuiCloseEvent;
 import com.eul4.common.event.GuiOpenEvent;
 import com.eul4.common.factory.GuiEnum;
 import com.eul4.common.i18n.Message;
+import com.eul4.common.model.data.CommonPlayerData;
 import com.eul4.common.model.data.PlayerData;
 import com.eul4.common.model.inventory.Gui;
 import com.eul4.common.model.player.CommonPlayer;
@@ -26,7 +27,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public abstract class CraftCommonPlayer implements CommonPlayer
 {
 	private static final long VERSION = 0L;
@@ -37,11 +37,24 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	private final Locale locale = new Locale("pt", "BR");
 	
 	private Gui gui;
-	protected PlayerData playerData;
+	protected CommonPlayerData commonPlayerData;
+	
+	public CraftCommonPlayer(Player player, Common plugin)
+	{
+		this.player = player;
+		this.plugin = plugin;
+		
+		this.commonPlayerData = CommonPlayerData.builder()
+				.playerData(new PlayerData(player))
+				.build();
+	}
 	
 	public CraftCommonPlayer(Player player, CommonPlayer oldCommonPlayer)
 	{
-		this(player, oldCommonPlayer.getPlugin());
+		this.player = player;
+		this.plugin = oldCommonPlayer.getPlugin();
+		
+		this.commonPlayerData = oldCommonPlayer.getCommonPlayerData();
 	}
 	
 	@Override
@@ -51,7 +64,7 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		
 		if(version == 0L)
 		{
-			playerData = plugin.getPlayerDataExternalizer().read(in);
+			commonPlayerData = plugin.getCommonPlayerDataExternalizer().read(in);
 		}
 		else
 		{
@@ -62,8 +75,10 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException
 	{
+		savePlayerData();
+		
 		out.writeLong(VERSION);
-		plugin.getPlayerDataExternalizer().write(getPlayerData(), out);
+		plugin.getCommonPlayerDataExternalizer().write(commonPlayerData, out);
 	}
 	
 	@Override
@@ -143,8 +158,9 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		return plugin.getServer().createInventory(player, inventoryType, component);
 	}
 	
-	public PlayerData getPlayerData()
+	@Override
+	public void savePlayerData()
 	{
-		return new PlayerData(player);
+		commonPlayerData.setPlayerData(new PlayerData(player));
 	}
 }

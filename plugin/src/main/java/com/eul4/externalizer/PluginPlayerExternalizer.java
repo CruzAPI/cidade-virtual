@@ -1,12 +1,10 @@
 package com.eul4.externalizer;
 
 import com.eul4.Main;
-import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.type.player.PluginPlayerType;
+import com.eul4.type.player.PluginCommonPlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -21,15 +19,15 @@ public class PluginPlayerExternalizer
 	
 	public PluginPlayer read(Player player, ObjectInput in) throws IOException, ClassNotFoundException
 	{
-		return read(in.readInt(), player, in);
+		return read(in.readLong(), player, in);
 	}
 	
 	public PluginPlayer read(long version, Player player, ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		if(version == 0L)
 		{
-			PluginPlayerType.Type type = PluginPlayerType.Type.values()[in.readInt()];
-			PluginPlayer pluginPlayer = type.getPluginPlayerType().getNewInstanceBiFunction().apply(player, plugin);
+			PluginCommonPlayerType.Type type = PluginCommonPlayerType.Type.values()[in.readInt()];
+			PluginPlayer pluginPlayer = type.getCommonPlayerType().getPluginConstructor().apply(player, plugin);
 			
 			pluginPlayer.readExternal(in);
 			
@@ -42,7 +40,7 @@ public class PluginPlayerExternalizer
 	public void write(PluginPlayer pluginPlayer, ObjectOutput out) throws IOException
 	{
 		out.writeLong(VERSION);
-		out.writeInt(pluginPlayer.getLastLoadableCommonPlayerType().ordinal());
+		out.writeInt(pluginPlayer.getCommonPlayerTypeEnum().ordinal());
 		pluginPlayer.writeExternal(out);
 	}
 }

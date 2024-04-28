@@ -4,6 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.eul4.common.command.BuildCommand;
 import com.eul4.common.event.WorldSaveOrStopEvent;
+import com.eul4.common.externalizer.CommonPlayerDataExternalizer;
 import com.eul4.common.externalizer.InventoryExternalizer;
 import com.eul4.common.externalizer.LocationExternalizer;
 import com.eul4.common.externalizer.PlayerDataExternalizer;
@@ -32,6 +33,7 @@ public abstract class Common extends JavaPlugin
 	private EntityRegisterListener entityRegisterListener;
 	private SpawnEntityInterceptor spawnEntityInterceptor;
 	
+	private CommonPlayerDataExternalizer commonPlayerDataExternalizer;
 	private InventoryExternalizer inventoryExternalizer;
 	private LocationExternalizer locationExternalizer;
 	private PlayerDataExternalizer playerDataExternalizer;
@@ -45,6 +47,7 @@ public abstract class Common extends JavaPlugin
 		registerListeners();
 		registerPacketAdapters();
 		registerCommand();
+		registerExternalizer();
 		
 		entityRegisterListener.loadEntities();
 		
@@ -53,6 +56,7 @@ public abstract class Common extends JavaPlugin
 	
 	private void registerExternalizer()
 	{
+		commonPlayerDataExternalizer = new CommonPlayerDataExternalizer(this);
 		inventoryExternalizer = new InventoryExternalizer(this);
 		locationExternalizer = new LocationExternalizer(this);
 		playerDataExternalizer = new PlayerDataExternalizer(this);

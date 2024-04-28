@@ -42,13 +42,7 @@ public class CraftAdmin extends CraftPluginPlayer implements Admin
 	}
 	
 	@Override
-	public PluginCommonPlayerType<Admin> getCommonPlayerType()
-	{
-		return PluginCommonPlayerType.ADMIN;
-	}
-	
-	@Override
-	public PluginCommonPlayerType.Type getLastLoadableCommonPlayerType()
+	public PluginCommonPlayerType.Type getCommonPlayerTypeEnum()
 	{
 		return PluginCommonPlayerType.Type.ADMIN;
 	}

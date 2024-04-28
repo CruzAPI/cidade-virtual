@@ -12,6 +12,7 @@ public class CommonPlayerRegisterEvent extends Event
 {
 	private static final HandlerList HANDLER = new HandlerList();
 	
+	private final CommonPlayer oldCommonPlayer;
 	private final CommonPlayer commonPlayer;
 	
 	public static HandlerList getHandlerList()

@@ -47,11 +47,27 @@ public class TestCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			player.teleport(plugin.getCidadeVirtualWorld().getSpawnLocation());
+			if(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
+			{
+				player.sendMessage("test: " + townPlayer.test());
+			}
+			else
+			{
+				player.sendMessage("You are not a town player.");
+			}
 		}
-		else if(args.length == 1 && args[0].equalsIgnoreCase("size"))
+		else if(args.length == 1)
 		{
-			player.sendMessage("towns size: " + plugin.getTownManager().getTowns().size());
+			if(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
+			{
+				boolean test = Boolean.parseBoolean(args[0]);
+				townPlayer.test(test);
+				player.sendMessage("setting test to: " + townPlayer.test());
+			}
+			else
+			{
+				player.sendMessage("You are not a town player.");
+			}
 		}
 		else if(args.length == 1)
 		{

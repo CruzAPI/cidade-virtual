@@ -7,11 +7,8 @@ import com.eul4.common.Common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.service.PlayerManager;
-import com.eul4.externalizer.BlockChunkToShortCoordinateExternalizer;
-import com.eul4.externalizer.BlockDataExternalizer;
-import com.eul4.externalizer.BlockDataMapExternalizer;
+import com.eul4.externalizer.*;
 import com.eul4.common.externalizer.InventoryExternalizer;
-import com.eul4.externalizer.PluginPlayerExternalizer;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
@@ -53,7 +50,8 @@ public class Main extends Common
 	private BlockDataMapExternalizer blockDataMapExternalizer;
 	private BlockChunkToShortCoordinateExternalizer blockChunkToShortCoordinateExternalizer;
 	private PluginPlayerExternalizer pluginPlayerExternalizer;
-
+	private TownPlayerDataExternalizer townPlayerDataExternalizer;
+	
 	private TownHallRuleSerializer townHallRuleSerializer;
 	private LikeGeneratorRuleSerializer likeGeneratorRuleSerializer;
 	private DislikeGeneratorRuleSerializer dislikeGeneratorRuleSerializer;
@@ -134,6 +132,7 @@ public class Main extends Common
 		blockChunkToShortCoordinateExternalizer = new BlockChunkToShortCoordinateExternalizer();
 		blockDataMapExternalizer = new BlockDataMapExternalizer(this);
 		pluginPlayerExternalizer = new PluginPlayerExternalizer(this);
+		townPlayerDataExternalizer = new TownPlayerDataExternalizer(this);
 		externalizablePlayerLoader = new ExternalizablePlayerLoader(this);
 		
 		dataFileManager = new DataFileManager(this);

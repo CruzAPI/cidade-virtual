@@ -10,6 +10,8 @@ import com.eul4.common.service.PlayerManager;
 import com.eul4.externalizer.BlockChunkToShortCoordinateExternalizer;
 import com.eul4.externalizer.BlockDataExternalizer;
 import com.eul4.externalizer.BlockDataMapExternalizer;
+import com.eul4.common.externalizer.InventoryExternalizer;
+import com.eul4.externalizer.PluginPlayerExternalizer;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
@@ -35,6 +37,7 @@ import java.util.ResourceBundle;
 @Getter
 public class Main extends Common
 {
+	private World world;
 	private World townWorld;
 	private World cidadeVirtualWorld;
 	private TownManager townManager;
@@ -49,7 +52,8 @@ public class Main extends Common
 	private BlockDataExternalizer blockDataExternalizer;
 	private BlockDataMapExternalizer blockDataMapExternalizer;
 	private BlockChunkToShortCoordinateExternalizer blockChunkToShortCoordinateExternalizer;
-	
+	private PluginPlayerExternalizer pluginPlayerExternalizer;
+
 	private TownHallRuleSerializer townHallRuleSerializer;
 	private LikeGeneratorRuleSerializer likeGeneratorRuleSerializer;
 	private DislikeGeneratorRuleSerializer dislikeGeneratorRuleSerializer;
@@ -63,6 +67,8 @@ public class Main extends Common
 	private Rule<DislikeDepositAttribute> dislikeDepositRule;
 	
 	private BuyStructureCommand buyStructureCommand;
+	
+	private ExternalizablePlayerLoader externalizablePlayerLoader;
 	
 	@Override
 	public void onEnable()
@@ -127,6 +133,8 @@ public class Main extends Common
 		blockDataExternalizer = new BlockDataExternalizer();
 		blockChunkToShortCoordinateExternalizer = new BlockChunkToShortCoordinateExternalizer();
 		blockDataMapExternalizer = new BlockDataMapExternalizer(this);
+		pluginPlayerExternalizer = new PluginPlayerExternalizer(this);
+		externalizablePlayerLoader = new ExternalizablePlayerLoader(this);
 		
 		dataFileManager = new DataFileManager(this);
 		blockDataLoader = new BlockDataLoader(this);
@@ -179,6 +187,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
+		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
@@ -193,6 +202,11 @@ public class Main extends Common
 	private void loadWorlds()
 	{
 		WorldCreator wc;
+		
+		wc = new WorldCreator("world");
+		wc.type(WorldType.NORMAL);
+		wc.environment(World.Environment.NORMAL);
+		world = wc.createWorld();
 		
 		wc = new WorldCreator("town_world");
 		wc.type(WorldType.FLAT);

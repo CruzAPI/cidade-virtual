@@ -2,9 +2,12 @@ package com.eul4.listener;
 
 import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
+import com.eul4.service.ExternalizablePlayerLoader;
 import com.eul4.type.player.PluginPlayerType;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -19,7 +22,29 @@ public class PlayerManagerListener implements Listener
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		plugin.getPlayerManager().register(event.getPlayer(), plugin, PluginPlayerType.TOWN_PLAYER);
+		Player player = event.getPlayer();
+		
+		ExternalizablePlayerLoader externalizablePlayerLoader = plugin.getExternalizablePlayerLoader();
+		
+		PluginPlayer memoryPluginPlayer = externalizablePlayerLoader.getUnsavedPlayers().get(player.getUniqueId());
+		
+		if(memoryPluginPlayer != null)
+		{
+			plugin.getPlayerManager().register(player, memoryPluginPlayer, memoryPluginPlayer.getLastLoadableCommonPlayerType().getPluginPlayerType());
+			return;
+		}
+		
+		PluginPlayer diskPluginPlayer = externalizablePlayerLoader.loadPlayer(player);
+		
+		if(diskPluginPlayer != null)
+		{
+			player.sendMessage("from disk: " + diskPluginPlayer.getCommonPlayerType().);
+			plugin.getPlayerManager().register(player, diskPluginPlayer, diskPluginPlayer.getCommonPlayerType());
+			return;
+		}
+		
+		plugin.getPlayerManager().register(player, plugin, PluginPlayerType.TOWN_PLAYER);
+		player.sendMessage("Welcome!");
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.function.BiFunction;
 
-public abstract class PlayerType<PL extends Common, CP extends CommonPlayer>
+public abstract class PlayerType<PL extends Common, PP extends CommonPlayer>
 {
-	public abstract BiFunction<Player, PL, CP> getNewInstanceBiFunction();
+	public abstract BiFunction<Player, PL, PP> getNewInstanceBiFunction();
 }

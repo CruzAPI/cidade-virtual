@@ -49,12 +49,12 @@ public class AdminCommand implements TabExecutor
 		
 		if(pluginPlayer instanceof CommonAdmin)
 		{
-			newCommonPlayer = plugin.getPlayerManager().reregister(pluginPlayer, PluginCommonPlayerType.TOWN_PLAYER);
+			newCommonPlayer = plugin.getPlayerManager().register(pluginPlayer, PluginCommonPlayerType.TOWN_PLAYER);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, YELLOW, CommonMessage.PLAYER);
 		}
 		else
 		{
-			newCommonPlayer = plugin.getPlayerManager().reregister(pluginPlayer, PluginCommonPlayerType.ADMIN);
+			newCommonPlayer = plugin.getPlayerManager().register(pluginPlayer, PluginCommonPlayerType.ADMIN);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, RED, CommonMessage.ADMINISTRATOR);
 		}
 		

@@ -5,42 +5,65 @@ import com.eul4.common.event.GuiCloseEvent;
 import com.eul4.common.event.GuiOpenEvent;
 import com.eul4.common.factory.GuiEnum;
 import com.eul4.common.i18n.Message;
+import com.eul4.common.model.data.PlayerData;
 import com.eul4.common.model.inventory.Gui;
 import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.common.type.player.CommonPlayerType;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.potion.PotionEffect;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.UUID;
 
 @Getter
 @Setter
-public class CraftCommonPlayer implements CommonPlayer
+@RequiredArgsConstructor
+public abstract class CraftCommonPlayer implements CommonPlayer
 {
+	private static final long VERSION = 0L;
+	
 	protected final Player player;
 	protected final Common plugin;
 	
 	private final Locale locale = new Locale("pt", "BR");
 	
 	private Gui gui;
+	protected PlayerData playerData;
 	
-	public CraftCommonPlayer(Player player, Common plugin)
+	public CraftCommonPlayer(Player player, CommonPlayer oldCommonPlayer)
 	{
-		this.player = player;
-		this.plugin = plugin;
+		this(player, oldCommonPlayer.getPlugin());
 	}
 	
-	public CraftCommonPlayer(CommonPlayer oldCommonPlayer)
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
 	{
-		this(oldCommonPlayer.getPlayer(), oldCommonPlayer.getPlugin());
+		long version = in.readLong();
+		
+		if(version == 0L)
+		{
+			playerData = plugin.getPlayerDataExternalizer().read(in);
+		}
+		else
+		{
+			throw new RuntimeException();
+		}
+	}
+	
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException
+	{
+		out.writeLong(VERSION);
+		plugin.getPlayerDataExternalizer().write(getPlayerData(), out);
 	}
 	
 	@Override
@@ -118,5 +141,10 @@ public class CraftCommonPlayer implements CommonPlayer
 	public Inventory createInventory(InventoryType inventoryType, Component component)
 	{
 		return plugin.getServer().createInventory(player, inventoryType, component);
+	}
+	
+	public PlayerData getPlayerData()
+	{
+		return new PlayerData(player);
 	}
 }

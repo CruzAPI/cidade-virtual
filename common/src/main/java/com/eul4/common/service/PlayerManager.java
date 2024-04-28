@@ -35,14 +35,19 @@ public class PlayerManager<PP extends CommonPlayer>
 		return newCommonPlayer;
 	}
 	
-	public <P extends PP> P reregister(PP oldPluginPlayer, CommonPlayerType<PP, P> commonPlayerType)
+	public <P extends PP> P register(PP oldPluginPlayer, CommonPlayerType<PP, P> commonPlayerType)
+	{
+		return register(oldPluginPlayer.getPlayer(), oldPluginPlayer, commonPlayerType);
+	}
+	
+	public <P extends PP> P register(Player player, PP oldPluginPlayer, CommonPlayerType<PP, P> commonPlayerType)
 	{
 		if(!isValid(oldPluginPlayer))
 		{
 			throw new InvalidCommonPlayerException("This CommonPlayer instance is invalid");
 		}
 		
-		final P newCommonPlayer = commonPlayerType.getNewInstanceFunction().apply(oldPluginPlayer);
+		final P newCommonPlayer = commonPlayerType.getNewInstanceBiFunction().apply(player, oldPluginPlayer);
 		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
 		plugin.getServer().getPluginManager().callEvent(new CommonPlayerReregisterEvent(oldPluginPlayer, newCommonPlayer));
 		return newCommonPlayer;

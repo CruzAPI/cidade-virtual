@@ -42,7 +42,7 @@ public class RaidCommand implements TabExecutor
 			return true;
 		}
 		
-		RaidAnalyzer raidAnalyzer = plugin.getPlayerManager().reregister(townPlayer, PluginCommonPlayerType.RAID_ANALYZER);
+		RaidAnalyzer raidAnalyzer = plugin.getPlayerManager().register(townPlayer, PluginCommonPlayerType.RAID_ANALYZER);
 		
 		player.sendMessage("Searching towns to raid...");
 		

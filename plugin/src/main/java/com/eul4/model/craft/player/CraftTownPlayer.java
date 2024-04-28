@@ -1,10 +1,13 @@
 package com.eul4.model.craft.player;
 
 import com.eul4.Main;
+import com.eul4.model.player.Admin;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
+import com.eul4.type.player.PluginCommonPlayerType;
+import com.eul4.type.player.PluginPlayerType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -17,9 +20,9 @@ public class CraftTownPlayer extends CraftPluginPlayer implements TownPlayer
 		super(player, plugin);
 	}
 	
-	public CraftTownPlayer(PluginPlayer pluginPlayer)
+	public CraftTownPlayer(Player player, PluginPlayer pluginPlayer)
 	{
-		super(pluginPlayer);
+		super(player, pluginPlayer);
 	}
 	
 	@Override
@@ -56,5 +59,17 @@ public class CraftTownPlayer extends CraftPluginPlayer implements TownPlayer
 	public void analyzeTown(Town town)
 	{
 		plugin.getPlayerManager();
+	}
+	
+	@Override
+	public PluginCommonPlayerType<TownPlayer> getCommonPlayerType()
+	{
+		return PluginCommonPlayerType.TOWN_PLAYER;
+	}
+	
+	@Override
+	public PluginCommonPlayerType.Type getLastLoadableCommonPlayerType()
+	{
+		return PluginCommonPlayerType.Type.TOWN_PLAYER;
 	}
 }

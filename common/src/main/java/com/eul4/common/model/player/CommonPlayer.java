@@ -4,17 +4,22 @@ import com.eul4.common.Common;
 import com.eul4.common.factory.GuiEnum;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.i18n.Messageable;
+import com.eul4.common.model.data.PlayerData;
 import com.eul4.common.model.inventory.Gui;
+import com.eul4.common.type.player.CommonPlayerType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
+import java.io.Externalizable;
 import java.util.Locale;
 import java.util.UUID;
 
-public interface CommonPlayer extends Messageable
+public interface CommonPlayer extends Messageable, Externalizable
 {
+	CommonPlayerType<?, ?> getCommonPlayerType();
+	PlayerData getPlayerData();
 	Player getPlayer();
 	Common getPlugin();
 	UUID getUniqueId();

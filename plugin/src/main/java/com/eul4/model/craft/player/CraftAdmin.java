@@ -3,6 +3,7 @@ package com.eul4.model.craft.player;
 import com.eul4.Main;
 import com.eul4.model.player.Admin;
 import com.eul4.model.player.PluginPlayer;
+import com.eul4.type.player.PluginCommonPlayerType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -15,9 +16,9 @@ public class CraftAdmin extends CraftPluginPlayer implements Admin
 		super(player, plugin);
 	}
 	
-	public CraftAdmin(PluginPlayer pluginPlayer)
+	public CraftAdmin(Player player, PluginPlayer pluginPlayer)
 	{
-		super(pluginPlayer);
+		super(player, pluginPlayer);
 	}
 	
 	@Override
@@ -38,5 +39,17 @@ public class CraftAdmin extends CraftPluginPlayer implements Admin
 	public void canBuild(boolean value)
 	{
 		this.canBuild = value;
+	}
+	
+	@Override
+	public PluginCommonPlayerType<Admin> getCommonPlayerType()
+	{
+		return PluginCommonPlayerType.ADMIN;
+	}
+	
+	@Override
+	public PluginCommonPlayerType.Type getLastLoadableCommonPlayerType()
+	{
+		return PluginCommonPlayerType.Type.ADMIN;
 	}
 }

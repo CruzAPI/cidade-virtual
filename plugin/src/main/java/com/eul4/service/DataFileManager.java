@@ -7,6 +7,7 @@ import org.bukkit.Chunk;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class DataFileManager
@@ -47,6 +48,16 @@ public class DataFileManager
 	public File getTownHallRuleFile()
 	{
 		return new File(plugin.getDataFolder(), "town_hall_rule.yml");
+	}
+	
+	public File getPlayerDataFile(UUID uuid)
+	{
+		return new File(plugin.getDataFolder() + "/player_data", uuid.toString() + ".dat");
+	}
+	
+	public File createPlayerDataFile(UUID uuid) throws IOException
+	{
+		return createFileIfNotExists(getPlayerDataFile(uuid));
 	}
 	
 	public File getStructurePricesFile()

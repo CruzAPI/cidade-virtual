@@ -4,6 +4,9 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.eul4.common.command.BuildCommand;
 import com.eul4.common.event.WorldSaveOrStopEvent;
+import com.eul4.common.externalizer.InventoryExternalizer;
+import com.eul4.common.externalizer.LocationExternalizer;
+import com.eul4.common.externalizer.PlayerDataExternalizer;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
@@ -29,6 +32,10 @@ public abstract class Common extends JavaPlugin
 	private EntityRegisterListener entityRegisterListener;
 	private SpawnEntityInterceptor spawnEntityInterceptor;
 	
+	private InventoryExternalizer inventoryExternalizer;
+	private LocationExternalizer locationExternalizer;
+	private PlayerDataExternalizer playerDataExternalizer;
+	
 	@Override
 	public void onEnable()
 	{
@@ -42,6 +49,13 @@ public abstract class Common extends JavaPlugin
 		entityRegisterListener.loadEntities();
 		
 		getLogger().info("Commons enabled!");
+	}
+	
+	private void registerExternalizer()
+	{
+		inventoryExternalizer = new InventoryExternalizer(this);
+		locationExternalizer = new LocationExternalizer(this);
+		playerDataExternalizer = new PlayerDataExternalizer(this);
 	}
 	
 	private void loadServices()

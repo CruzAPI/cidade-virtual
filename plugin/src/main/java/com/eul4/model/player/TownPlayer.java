@@ -3,7 +3,9 @@ package com.eul4.model.player;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
 
-public interface TownPlayer extends PluginPlayer
+import java.io.Externalizable;
+
+public interface TownPlayer extends PluginPlayer, Externalizable
 {
 	Town getTown();
 	boolean hasTown();

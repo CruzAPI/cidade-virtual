@@ -1,13 +1,11 @@
 package com.eul4.model.craft.player;
 
 import com.eul4.Main;
-import com.eul4.common.Common;
 import com.eul4.common.model.player.craft.CraftCommonPlayer;
-import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.model.player.PluginPlayer;
 import org.bukkit.entity.Player;
 
-public class CraftPluginPlayer extends CraftCommonPlayer implements PluginPlayer
+public abstract class CraftPluginPlayer extends CraftCommonPlayer implements PluginPlayer
 {
 	protected final Main plugin;
 	
@@ -17,9 +15,9 @@ public class CraftPluginPlayer extends CraftCommonPlayer implements PluginPlayer
 		this.plugin = plugin;
 	}
 	
-	protected CraftPluginPlayer(PluginPlayer pluginPlayer)
+	protected CraftPluginPlayer(Player player, PluginPlayer pluginPlayer)
 	{
-		super(pluginPlayer);
+		super(player, pluginPlayer);
 		this.plugin = pluginPlayer.getPlugin();
 	}
 	

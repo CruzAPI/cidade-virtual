@@ -11,6 +11,8 @@ import com.eul4.exception.TownHardnessLimitException;
 import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
 import com.eul4.model.craft.town.structure.CraftTownHall;
+import com.eul4.model.player.Attacker;
+import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
@@ -21,6 +23,7 @@ import com.eul4.model.town.structure.TownHall;
 import com.eul4.service.TownSerializer;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -66,6 +69,11 @@ public class CraftTown implements Town
 	private transient int dislikeCapacity;
 	
 	private TownHall townHall;
+	
+	@Setter
+	private Attacker attacker;
+	@Setter
+	private RaidAnalyzer analyzer;
 	
 	public CraftTown(Main plugin)
 	{
@@ -397,7 +405,7 @@ public class CraftTown implements Town
 	}
 	
 	@Override
-	public Price buyNewStructure(StructureType<?, ?> structureType, TownBlock townBlock)
+	public Price buyNewStructure(StructureType structureType, TownBlock townBlock)
 			throws StructureLimitException, CannotConstructException, IOException, InsufficientBalanceException
 	{
 		final int count = countStructures(structureType);
@@ -466,7 +474,7 @@ public class CraftTown implements Town
 	}
 	
 	@Override
-	public int countStructures(StructureType<?, ?> structureType)
+	public int countStructures(StructureType structureType)
 	{
 		int count = 0;
 		
@@ -482,7 +490,7 @@ public class CraftTown implements Town
 	}
 	
 	@Override
-	public int getStructureLimit(StructureType<?, ?> structureType)
+	public int getStructureLimit(StructureType structureType)
 	{
 		return townHall.getStructureLimitMap().getOrDefault(structureType, 0);
 	}
@@ -543,5 +551,23 @@ public class CraftTown implements Town
 	public int getLevel()
 	{
 		return townHall.getLevel();
+	}
+	
+	@Override
+	public boolean isUnderAttack()
+	{
+		return attacker != null;
+	}
+	
+	@Override
+	public boolean isUnderAnalysis()
+	{
+		return analyzer != null;
+	}
+	
+	@Override
+	public boolean canBeAnalyzed()
+	{
+		return !isUnderAttack() && !isUnderAnalysis();
 	}
 }

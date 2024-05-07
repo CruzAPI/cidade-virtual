@@ -112,7 +112,7 @@ public class TownSerializer
 	
 	private Structure readStructure(Town town, ObjectInput in) throws IOException, ClassNotFoundException
 	{
-		StructureType<?, ?> structureType = StructureType.values().get(in.readInt());
+		StructureType structureType = StructureType.values()[in.readInt()];
 		Structure structure = structureType.getNewStructureTown().apply(town);
 		
 		structure.readExternal(in);
@@ -161,6 +161,7 @@ public class TownSerializer
 		
 		for(Map.Entry<Block, TownBlock> entry : townBlocks.entrySet())
 		{
+			//TODO: salvar int x int z
 			out.writeObject(new BlockSerializable(entry.getKey()));
 			entry.getValue().writeExternal(out);
 		}

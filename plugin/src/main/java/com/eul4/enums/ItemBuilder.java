@@ -1,7 +1,6 @@
 package com.eul4.enums;
 
 import com.eul4.StructureType;
-import com.eul4.StructureTypeEnum;
 import com.eul4.common.constant.CommonNamespacedKey;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
@@ -27,28 +26,28 @@ public enum ItemBuilder
 		ItemStack item = new ItemStack(Material.EMERALD);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureTypeEnum.LIKE_GENERATOR),
+	}, StructureType.LIKE_GENERATOR),
 	
 	DISLIKE_GENERATOR((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.REDSTONE);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureTypeEnum.DISLIKE_GENERATOR),
+	}, StructureType.DISLIKE_GENERATOR),
 	
 	LIKE_DEPOSIT((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.EMERALD_BLOCK);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureTypeEnum.LIKE_DEPOSIT),
+	}, StructureType.LIKE_DEPOSIT),
 	
 	DISLIKE_DEPOSIT((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.REDSTONE_BLOCK);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureTypeEnum.DISLIKE_DEPOSIT),
+	}, StructureType.DISLIKE_DEPOSIT),
 	
 	;
 	

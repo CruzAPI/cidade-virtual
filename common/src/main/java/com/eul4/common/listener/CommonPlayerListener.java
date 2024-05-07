@@ -6,8 +6,10 @@ import com.eul4.common.model.player.CommonPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.WorldSaveEvent;
 
 @RequiredArgsConstructor
 public class CommonPlayerListener implements Listener
@@ -30,6 +32,18 @@ public class CommonPlayerListener implements Listener
 		if(oldCommonPlayer != null)
 		{
 			oldCommonPlayer.savePlayerData();
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void on(WorldSaveEvent event)
+	{
+		if(event.getWorld() == plugin.getWorld())
+		{
+			for(CommonPlayer commonPlayer : plugin.getPlayerManager().getAll())
+			{
+				commonPlayer.savePlayerData();
+			}
 		}
 	}
 }

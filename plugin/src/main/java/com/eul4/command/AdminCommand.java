@@ -5,7 +5,7 @@ import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.type.player.PluginCommonPlayerType;
+import com.eul4.type.player.PluginPlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -37,24 +37,24 @@ public class AdminCommand implements TabExecutor
 			return true;
 		}
 		
-		final PluginPlayer pluginPlayer = plugin.getPlayerManager().get(player);
+		final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
 		
 		if(!player.isOp())
 		{
-			pluginPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
+			commonPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
 			return true;
 		}
 		
 		final CommonPlayer newCommonPlayer;
 		
-		if(pluginPlayer instanceof CommonAdmin)
+		if(commonPlayer instanceof CommonAdmin)
 		{
-			newCommonPlayer = plugin.getPlayerManager().register(pluginPlayer, PluginCommonPlayerType.TOWN_PLAYER);
+			newCommonPlayer = plugin.getPlayerManager().register(commonPlayer, PluginPlayerType.TOWN_PLAYER);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, YELLOW, CommonMessage.PLAYER);
 		}
 		else
 		{
-			newCommonPlayer = plugin.getPlayerManager().register(pluginPlayer, PluginCommonPlayerType.ADMIN);
+			newCommonPlayer = plugin.getPlayerManager().register(commonPlayer, PluginPlayerType.ADMIN);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, RED, CommonMessage.ADMINISTRATOR);
 		}
 		

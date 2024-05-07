@@ -8,5 +8,5 @@ public interface TownHall extends Structure
 {
 	int getLikeCapacity();
 	int getDislikeCapacity();
-	Map<StructureType<?, ?>, Integer> getStructureLimitMap();
+	Map<StructureType, Integer> getStructureLimitMap();
 }

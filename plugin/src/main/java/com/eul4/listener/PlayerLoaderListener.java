@@ -18,7 +18,7 @@ public class PlayerLoaderListener implements Listener
 	{
 		if(event.getCommonPlayer() instanceof PluginPlayer pluginPlayer)
 		{
-			plugin.getExternalizablePlayerLoader().getUnsavedPlayers()
+			plugin.getPlayerDataFiler().getMemoryPlayers()
 					.put(pluginPlayer.getUniqueId(), pluginPlayer);
 		}
 	}
@@ -26,11 +26,9 @@ public class PlayerLoaderListener implements Listener
 	@EventHandler
 	public void on(WorldSaveEvent event)
 	{
-		if(plugin.getWorld() != event.getWorld())
+		if(plugin.getWorld() == event.getWorld())
 		{
-			return;
+			plugin.getPlayerDataFiler().saveMemoryPlayers();
 		}
-		
-		plugin.getExternalizablePlayerLoader().savePlayers();
 	}
 }

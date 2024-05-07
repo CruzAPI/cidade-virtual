@@ -3,7 +3,7 @@ package com.eul4.model.craft.player;
 import com.eul4.Main;
 import com.eul4.model.player.Admin;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.type.player.PluginCommonPlayerType;
+import com.eul4.type.player.PluginPlayerType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -42,8 +42,14 @@ public class CraftAdmin extends CraftPluginPlayer implements Admin
 	}
 	
 	@Override
-	public PluginCommonPlayerType.Type getCommonPlayerTypeEnum()
+	public boolean mustSavePlayerData()
 	{
-		return PluginCommonPlayerType.Type.ADMIN;
+		return true;
+	}
+	
+	@Override
+	public PluginPlayerType getPluginPlayerType()
+	{
+		return PluginPlayerType.ADMIN;
 	}
 }

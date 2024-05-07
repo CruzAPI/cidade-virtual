@@ -1,7 +1,6 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
-import com.eul4.StructureType;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.enums.ItemBuilder;
 import com.eul4.model.inventory.StructureShopGui;

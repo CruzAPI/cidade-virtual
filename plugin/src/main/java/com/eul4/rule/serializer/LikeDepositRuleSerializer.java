@@ -1,7 +1,7 @@
 package com.eul4.rule.serializer;
 
 import com.eul4.Main;
-import com.eul4.StructureTypeEnum;
+import com.eul4.StructureType;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.LikeDepositAttribute;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +18,7 @@ public class LikeDepositRuleSerializer extends DepositRuleSerializer
 	public Rule<LikeDepositAttribute> load() throws FileNotFoundException
 	{
 		return deserializeRule(loadConfig(plugin.getDataFileManager()
-				.getRuleFile(StructureTypeEnum.LIKE_DEPOSIT)), LikeDepositAttribute.DEFAULT, this::deserializeAttribute);
+				.getRuleFile(StructureType.LIKE_DEPOSIT)), LikeDepositAttribute.DEFAULT, this::deserializeAttribute);
 	}
 	
 	public LikeDepositAttribute deserializeAttribute(ConfigurationSection section)

@@ -4,10 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.eul4.common.command.BuildCommand;
 import com.eul4.common.event.WorldSaveOrStopEvent;
-import com.eul4.common.externalizer.CommonPlayerDataExternalizer;
-import com.eul4.common.externalizer.InventoryExternalizer;
-import com.eul4.common.externalizer.LocationExternalizer;
-import com.eul4.common.externalizer.PlayerDataExternalizer;
+import com.eul4.common.externalizer.*;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
@@ -35,8 +32,11 @@ public abstract class Common extends JavaPlugin
 	
 	private CommonPlayerDataExternalizer commonPlayerDataExternalizer;
 	private InventoryExternalizer inventoryExternalizer;
+	private ItemStackExternalizer itemStackExternalizer;
 	private LocationExternalizer locationExternalizer;
 	private PlayerDataExternalizer playerDataExternalizer;
+	
+	private PlayerManager playerManager;
 	
 	@Override
 	public void onEnable()
@@ -58,13 +58,14 @@ public abstract class Common extends JavaPlugin
 	{
 		commonPlayerDataExternalizer = new CommonPlayerDataExternalizer(this);
 		inventoryExternalizer = new InventoryExternalizer(this);
+		itemStackExternalizer = new ItemStackExternalizer(this);
 		locationExternalizer = new LocationExternalizer(this);
 		playerDataExternalizer = new PlayerDataExternalizer(this);
 	}
 	
 	private void loadServices()
 	{
-	
+		playerManager = new PlayerManager(this);
 	}
 	
 	private void registerCommand()
@@ -125,5 +126,5 @@ public abstract class Common extends JavaPlugin
 				.isPresent();
 	}
 	
-	public abstract PlayerManager<?> getPlayerManager();
+	public abstract World getWorld();
 }

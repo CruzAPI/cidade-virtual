@@ -4,21 +4,20 @@ import com.eul4.Main;
 import com.eul4.common.model.player.craft.CraftCommonPlayer;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
+import com.eul4.type.player.PluginPlayerType;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 @Getter
+@Setter
 public abstract class CraftPluginPlayer extends CraftCommonPlayer implements PluginPlayer
 {
 	private static final long VERSION = 0L;
 	
 	protected final Main plugin;
 	
-	private TownPlayerData townPlayerData;
+	protected TownPlayerData townPlayerData;
 	
 	protected CraftPluginPlayer(Player player, Main plugin)
 	{
@@ -35,29 +34,13 @@ public abstract class CraftPluginPlayer extends CraftCommonPlayer implements Plu
 	}
 	
 	@Override
-	public void writeExternal(ObjectOutput out) throws IOException
+	public void reset()
 	{
-		super.writeExternal(out);
+		super.reset();
 		
-		out.writeLong(VERSION);
-		
-		plugin.getTownPlayerDataExternalizer().write(townPlayerData, out);
-	}
-	
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-	{
-		super.readExternal(in);
-		
-		long version = in.readLong();
-		
-		if(version == 0L)
+		if(!oldInstance.mustSavePlayerData() && this.mustSavePlayerData())
 		{
-			townPlayerData = plugin.getTownPlayerDataExternalizer().read(in);
-		}
-		else
-		{
-			throw new RuntimeException();
+		
 		}
 	}
 	
@@ -66,5 +49,17 @@ public abstract class CraftPluginPlayer extends CraftCommonPlayer implements Plu
 	{
 		commonPlayerData.getPlayerData().apply(player);
 		return this;
+	}
+	
+	@Override
+	public final PluginPlayerType getPlayerType()
+	{
+		return getPluginPlayerType();
+	}
+	
+	@Override
+	public final Class<? extends PluginPlayer> getType()
+	{
+		return getPluginPlayerType().getType();
 	}
 }

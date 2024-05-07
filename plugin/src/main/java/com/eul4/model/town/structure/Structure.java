@@ -36,7 +36,7 @@ public interface Structure extends Externalizable
 	
 	int getLevel();
 	File getSchematicFile();
-	StructureType<?, ?> getStructureType();
+	StructureType getStructureType();
 	
 	void startMove() throws IOException, CannotConstructException;
 	

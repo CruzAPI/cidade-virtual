@@ -81,7 +81,7 @@ public class DataFileManager
 		return file;
 	}
 	
-	public File getRuleFile(StructureType<?, ?> structureType)
+	public File getRuleFile(StructureType structureType)
 	{
 		String fileName = structureType.name().toLowerCase() + "_rule.yml";
 		return new File(plugin.getDataFolder(), fileName);

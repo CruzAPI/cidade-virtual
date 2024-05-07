@@ -2,6 +2,7 @@ package com.eul4.common.externalizer;
 
 import com.eul4.common.Common;
 import com.eul4.common.model.data.CommonPlayerData;
+import com.eul4.common.model.data.PlayerData;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
@@ -19,8 +20,10 @@ public class CommonPlayerDataExternalizer
 	{
 		if(version == 0L)
 		{
+			PlayerData playerData = plugin.getPlayerDataExternalizer().read(in);
+			
 			return CommonPlayerData.builder()
-					.playerData(plugin.getPlayerDataExternalizer().read(in))
+					.playerData(playerData)
 					.build();
 		}
 		

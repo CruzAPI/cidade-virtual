@@ -56,19 +56,19 @@ public class TestCommand implements TabExecutor
 				player.sendMessage("You are not a town player.");
 			}
 		}
-		else if(args.length == 1)
-		{
-			if(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
-			{
-				boolean test = Boolean.parseBoolean(args[0]);
-				townPlayer.test(test);
-				player.sendMessage("setting test to: " + townPlayer.test());
-			}
-			else
-			{
-				player.sendMessage("You are not a town player.");
-			}
-		}
+//		else if(args.length == 1)
+//		{
+//			if(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
+//			{
+//				boolean test = Boolean.parseBoolean(args[0]);
+//				townPlayer.test(test);
+//				player.sendMessage("setting test to: " + townPlayer.test());
+//			}
+//			else
+//			{
+//				player.sendMessage("You are not a town player.");
+//			}
+//		}
 		else if(args.length == 1)
 		{
 			final int amount = Integer.parseInt(args[0]);

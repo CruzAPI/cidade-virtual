@@ -1,9 +1,9 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.service.ExternalizablePlayerLoader;
-import com.eul4.type.player.PluginCommonPlayerType;
+import com.eul4.type.player.PluginPlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,32 +21,19 @@ public class PlayerManagerListener implements Listener
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player player = event.getPlayer();
-
-		ExternalizablePlayerLoader externalizablePlayerLoader = plugin.getExternalizablePlayerLoader();
-
-		PluginPlayer memoryPluginPlayer = externalizablePlayerLoader.getUnsavedPlayers().get(player.getUniqueId());
-
-		if(memoryPluginPlayer != null)
+		
+		PlayerDataFiler playerDataFiler = plugin.getPlayerDataFiler();
+		
+		PluginPlayer pluginPlayer = playerDataFiler.loadFromMemoryOrDiskLogging(player);
+		
+		if(pluginPlayer != null)
 		{
-			PluginCommonPlayerType.Type type = memoryPluginPlayer.getCommonPlayerTypeEnum();
-			player.sendMessage("from memory: " + type.name());
-			PluginPlayer pluginPlayer = plugin.getPlayerManager().register(player, memoryPluginPlayer, type.getCommonPlayerType());
-			pluginPlayer.load();
-			return;
-		}
-
-		PluginPlayer diskPluginPlayer = externalizablePlayerLoader.loadPlayer(player);
-
-		if(diskPluginPlayer != null)
-		{
-			PluginCommonPlayerType.Type type = diskPluginPlayer.getCommonPlayerTypeEnum();
-			player.sendMessage("from disk: " + type.name());
-			PluginPlayer pluginPlayer = plugin.getPlayerManager().register(player, diskPluginPlayer, type.getCommonPlayerType());
+			pluginPlayer = (PluginPlayer) plugin.getPlayerManager().register(player, pluginPlayer);
 			pluginPlayer.load();
 			return;
 		}
 		
-		plugin.getPlayerManager().register(player, plugin, PluginCommonPlayerType.TOWN_PLAYER);
+		plugin.getPlayerManager().register(player, plugin, PluginPlayerType.TOWN_PLAYER);
 		player.sendMessage("Welcome!");
 	}
 	

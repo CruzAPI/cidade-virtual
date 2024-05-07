@@ -49,6 +49,8 @@ public abstract class GenericRuleSerializer
 		final int requiresTownHallLevel = section.getInt("requires_town_hall_level");
 		final int totalBuildTicks = section.getInt("total_build_ticks");
 		
+		final double hp = section.getDouble("hp", 500.0D);
+		
 		final double hologramX = section.getDouble("hologram_pos.x");
 		final double hologramY = section.getDouble("hologram_pos.y");
 		final double hologramZ = section.getDouble("hologram_pos.z");
@@ -64,6 +66,7 @@ public abstract class GenericRuleSerializer
 			genericAttribute.setPrice(new Price(like, dislike));
 		}
 		
+		genericAttribute.setHp(hp);
 		genericAttribute.setRequiresTownHallLevel(requiresTownHallLevel);
 		genericAttribute.setTotalBuildTicks(totalBuildTicks);
 		genericAttribute.setHologramVector(hologramVector);

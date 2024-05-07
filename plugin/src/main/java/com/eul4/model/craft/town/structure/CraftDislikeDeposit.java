@@ -1,16 +1,13 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
-import com.eul4.StructureTypeEnum;
 import com.eul4.enums.Currency;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.DislikeDeposit;
-import com.eul4.model.town.structure.DislikeGenerator;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.DislikeDepositAttribute;
-import com.eul4.rule.attribute.DislikeGeneratorAttribute;
 
 import java.io.IOException;
 
@@ -32,9 +29,9 @@ public class CraftDislikeDeposit extends CraftDeposit implements DislikeDeposit
 	}
 	
 	@Override
-	public StructureType<DislikeDeposit, DislikeDepositAttribute> getStructureType()
+	public StructureType getStructureType()
 	{
-		return StructureTypeEnum.DISLIKE_DEPOSIT;
+		return StructureType.DISLIKE_DEPOSIT;
 	}
 	
 	@Override
@@ -44,8 +41,9 @@ public class CraftDislikeDeposit extends CraftDeposit implements DislikeDeposit
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public Rule<DislikeDepositAttribute> getRule()
 	{
-		return getStructureType().getRule(town.getPlugin());
+		return (Rule<DislikeDepositAttribute>) getStructureType().getRule(town.getPlugin());
 	}
 }

@@ -1,7 +1,6 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
-import com.eul4.StructureTypeEnum;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -47,14 +46,15 @@ public class CraftDislikeGenerator extends CraftGenerator implements DislikeGene
 	}
 	
 	@Override
-	public StructureType<DislikeGenerator, DislikeGeneratorAttribute> getStructureType()
+	public StructureType getStructureType()
 	{
-		return StructureTypeEnum.DISLIKE_GENERATOR;
+		return StructureType.DISLIKE_GENERATOR;
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public Rule<DislikeGeneratorAttribute> getRule()
 	{
-		return getStructureType().getRule(town.getPlugin());
+		return (Rule<DislikeGeneratorAttribute>) getStructureType().getRule(town.getPlugin());
 	}
 }

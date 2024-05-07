@@ -5,6 +5,8 @@ import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.exception.*;
 import com.eul4.model.craft.town.CraftTown;
+import com.eul4.model.player.Attacker;
+import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
 import org.bukkit.Location;
@@ -15,7 +17,6 @@ import org.bukkit.entity.Player;
 import java.awt.*;
 import java.io.Externalizable;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -82,14 +83,14 @@ public interface Town extends Externalizable
 	
 	void checkIfAffordable(Price price) throws InsufficientBalanceException;
 	
-	Price buyNewStructure(StructureType<?, ?> structureType, TownBlock townBlock)
+	Price buyNewStructure(StructureType structureType, TownBlock townBlock)
 			throws StructureLimitException, StructureNotForSaleException, CannotConstructException, IOException, InsufficientBalanceException;
 	
 	TownHall getTownHall();
 	void reloadAllStructureAttributes();
 	
-	int countStructures(StructureType<?, ?> structureType);
-	int getStructureLimit(StructureType<?, ?> structureType);
+	int countStructures(StructureType structureType);
+	int getStructureLimit(StructureType structureType);
 	
 	void reloadAttributes();
 	
@@ -103,4 +104,14 @@ public interface Town extends Externalizable
 	boolean isOnline();
 	
 	int getLevel();
+	
+	boolean isUnderAttack();
+	Attacker getAttacker();
+	RaidAnalyzer getAnalyzer();
+	void setAttacker(Attacker attacker);
+	void setAnalyzer(RaidAnalyzer analyzer);
+	
+	boolean isUnderAnalysis();
+	
+	boolean canBeAnalyzed();
 }

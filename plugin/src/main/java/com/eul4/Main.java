@@ -6,14 +6,14 @@ import com.eul4.command.*;
 import com.eul4.common.Common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
-import com.eul4.common.service.PlayerManager;
-import com.eul4.externalizer.*;
-import com.eul4.common.externalizer.InventoryExternalizer;
+import com.eul4.externalizer.BlockChunkToShortCoordinateExternalizer;
+import com.eul4.externalizer.BlockDataExternalizer;
+import com.eul4.externalizer.BlockDataMapExternalizer;
+import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
 import com.eul4.listener.player.RaidAnalyzerListener;
-import com.eul4.model.player.PluginPlayer;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
@@ -38,7 +38,6 @@ public class Main extends Common
 	private World townWorld;
 	private World cidadeVirtualWorld;
 	private TownManager townManager;
-	private PlayerManager<PluginPlayer> playerManager;
 	
 	private BlockDataLoader blockDataLoader;
 	private DataFileManager dataFileManager;
@@ -49,8 +48,6 @@ public class Main extends Common
 	private BlockDataExternalizer blockDataExternalizer;
 	private BlockDataMapExternalizer blockDataMapExternalizer;
 	private BlockChunkToShortCoordinateExternalizer blockChunkToShortCoordinateExternalizer;
-	private PluginPlayerExternalizer pluginPlayerExternalizer;
-	private TownPlayerDataExternalizer townPlayerDataExternalizer;
 	
 	private TownHallRuleSerializer townHallRuleSerializer;
 	private LikeGeneratorRuleSerializer likeGeneratorRuleSerializer;
@@ -65,8 +62,9 @@ public class Main extends Common
 	private Rule<DislikeDepositAttribute> dislikeDepositRule;
 	
 	private BuyStructureCommand buyStructureCommand;
+	private RaidCommand	raidCommand;
 	
-	private ExternalizablePlayerLoader externalizablePlayerLoader;
+	private PlayerDataFiler playerDataFiler;
 	
 	@Override
 	public void onEnable()
@@ -127,13 +125,10 @@ public class Main extends Common
 	@SneakyThrows
 	private void loadServices()
 	{
-		playerManager = new PlayerManager<>(this);
 		blockDataExternalizer = new BlockDataExternalizer();
 		blockChunkToShortCoordinateExternalizer = new BlockChunkToShortCoordinateExternalizer();
 		blockDataMapExternalizer = new BlockDataMapExternalizer(this);
-		pluginPlayerExternalizer = new PluginPlayerExternalizer(this);
-		townPlayerDataExternalizer = new TownPlayerDataExternalizer(this);
-		externalizablePlayerLoader = new ExternalizablePlayerLoader(this);
+		playerDataFiler = new PlayerDataFiler(this);
 		
 		dataFileManager = new DataFileManager(this);
 		blockDataLoader = new BlockDataLoader(this);
@@ -164,7 +159,7 @@ public class Main extends Common
 		getCommand("town").setExecutor(new TownCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("move").setExecutor(new MoveCommand(this));
-		getCommand("raid").setExecutor(new RaidCommand(this));
+		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
 	}
@@ -245,11 +240,5 @@ public class Main extends Common
 	public File getSchematicsFolder()
 	{
 		return new File("plugins/FastAsyncWorldEdit/schematics");
-	}
-	
-	@Override
-	public PlayerManager<PluginPlayer> getPlayerManager()
-	{
-		return playerManager;
 	}
 }

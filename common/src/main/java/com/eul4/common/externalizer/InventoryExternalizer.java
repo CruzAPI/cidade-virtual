@@ -13,7 +13,7 @@ public class InventoryExternalizer
 {
 	private final Common plugin;
 
-	private static final long VERSION = 0L;
+	private static final long VERSION = 1L;
 
 	public ItemStack[] read(ObjectInput in) throws IOException
 	{
@@ -28,47 +28,39 @@ public class InventoryExternalizer
 
 			for(int i = 0; i < contents.length; i++)
 			{
-				int length = in.readInt();
-				
-				if(length == -1)
-				{
-					contents[i] = null;
-				}
-				else
-				{
-					final byte[] bytes = new byte[length];
-					in.read(bytes);
-					contents[i] = ItemStack.deserializeBytes(bytes);
-				}
+				contents[i] = plugin.getItemStackExternalizer().read(0L, in);
 			}
 
 			return contents;
 		}
-		else
+		
+		if(version == 1L)
 		{
-			throw new RuntimeException();
+			final long itemStackSerialVersion = in.readLong();
+			
+			ItemStack[] contents = new ItemStack[in.readInt()];
+			
+			for(int i = 0; i < contents.length; i++)
+			{
+				contents[i] = plugin.getItemStackExternalizer().read(itemStackSerialVersion, in);
+			}
+			
+			return contents;
 		}
+		
+		throw new RuntimeException();
 	}
 
 	public void write(ItemStack[] contents, ObjectOutput out) throws IOException
 	{
 		out.writeLong(VERSION);
-
+		out.writeLong(ItemStackExternalizer.VERSION);
+		
 		out.writeInt(contents.length);
-
+		
 		for(ItemStack content : contents)
 		{
-			if(content == null)
-			{
-				out.writeInt(-1);
-			}
-			else
-			{
-				final byte[] bytes = content.serializeAsBytes();
-	
-				out.writeInt(bytes.length);
-				out.write(bytes);
-			}
+			plugin.getItemStackExternalizer().write(content, out);
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
-import com.eul4.StructureTypeEnum;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -18,7 +17,7 @@ public class CraftTownHall extends CraftStructure implements TownHall
 {
 	private int likeCapacity;
 	private int dislikeCapacity;
-	private Map<StructureType<?, ?>, Integer> structureLimitMap;
+	private Map<StructureType, Integer> structureLimitMap;
 	
 	public CraftTownHall(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
@@ -36,14 +35,16 @@ public class CraftTownHall extends CraftStructure implements TownHall
 	}
 	
 	@Override
-	public StructureType<TownHall, TownHallAttribute> getStructureType()
+	public StructureType getStructureType()
 	{
-		return StructureTypeEnum.TOWN_HALL;
+		return StructureType.TOWN_HALL;
 	}
 	
+	@Override
+	@SuppressWarnings("unchecked")
 	public Rule<TownHallAttribute> getRule()
 	{
-		return getStructureType().getRule(town.getPlugin());
+		return (Rule<TownHallAttribute>) getStructureType().getRule(town.getPlugin());
 	}
 	
 	@Override

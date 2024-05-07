@@ -46,7 +46,6 @@ public class EntityRegisterListener implements Listener
 		
 		for(World world : plugin.getServer().getWorlds())
 		{
-			plugin.getServer().getLogger().warning(world.getName() + ": " + world.getEntities().size());
 			for(Entity entity : world.getEntities())
 			{
 				if(entity.isPersistent())
@@ -55,9 +54,6 @@ public class EntityRegisterListener implements Listener
 				}
 			}
 		}
-		
-		plugin.getServer().getLogger().warning("persistentEntities: (" + persistentEntities.size() + ") "
-				+ persistentEntities);
 	}
 	
 	public Entity getEntityByUuid(UUID uuid)

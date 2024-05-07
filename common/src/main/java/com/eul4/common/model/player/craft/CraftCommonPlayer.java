@@ -10,7 +10,6 @@ import com.eul4.common.model.data.PlayerData;
 import com.eul4.common.model.inventory.Gui;
 import com.eul4.common.model.player.CommonPlayer;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -37,6 +36,7 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	private final Locale locale = new Locale("pt", "BR");
 	
 	private Gui gui;
+	protected CommonPlayer oldInstance;
 	protected CommonPlayerData commonPlayerData;
 	
 	public CraftCommonPlayer(Player player, Common plugin)
@@ -44,9 +44,7 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		this.player = player;
 		this.plugin = plugin;
 		
-		this.commonPlayerData = CommonPlayerData.builder()
-				.playerData(new PlayerData(player))
-				.build();
+		this.commonPlayerData = new CommonPlayerData();
 	}
 	
 	public CraftCommonPlayer(Player player, CommonPlayer oldCommonPlayer)
@@ -54,31 +52,8 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		this.player = player;
 		this.plugin = oldCommonPlayer.getPlugin();
 		
+		this.oldInstance = oldCommonPlayer;
 		this.commonPlayerData = oldCommonPlayer.getCommonPlayerData();
-	}
-	
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-	{
-		long version = in.readLong();
-		
-		if(version == 0L)
-		{
-			commonPlayerData = plugin.getCommonPlayerDataExternalizer().read(in);
-		}
-		else
-		{
-			throw new RuntimeException();
-		}
-	}
-	
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException
-	{
-		savePlayerData();
-		
-		out.writeLong(VERSION);
-		plugin.getCommonPlayerDataExternalizer().write(commonPlayerData, out);
 	}
 	
 	@Override
@@ -159,8 +134,17 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	}
 	
 	@Override
-	public void savePlayerData()
+	public final void savePlayerData()
 	{
-		commonPlayerData.setPlayerData(new PlayerData(player));
+		if(mustSavePlayerData())
+		{
+			commonPlayerData.setPlayerData(new PlayerData(player));
+		}
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		oldInstance = null;
 	}
 }

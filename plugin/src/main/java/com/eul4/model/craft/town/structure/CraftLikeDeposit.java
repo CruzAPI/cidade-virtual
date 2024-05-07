@@ -1,7 +1,6 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
-import com.eul4.StructureTypeEnum;
 import com.eul4.enums.Currency;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
@@ -30,9 +29,9 @@ public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
 	}
 	
 	@Override
-	public StructureType<LikeDeposit, LikeDepositAttribute> getStructureType()
+	public StructureType getStructureType()
 	{
-		return StructureTypeEnum.LIKE_DEPOSIT;
+		return StructureType.LIKE_DEPOSIT;
 	}
 	
 	@Override
@@ -42,8 +41,9 @@ public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public Rule<LikeDepositAttribute> getRule()
 	{
-		return getStructureType().getRule(town.getPlugin());
+		return (Rule<LikeDepositAttribute>) getStructureType().getRule(town.getPlugin());
 	}
 }

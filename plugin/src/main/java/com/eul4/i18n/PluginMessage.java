@@ -9,10 +9,12 @@ import com.eul4.rule.attribute.DislikeDepositAttribute;
 import com.eul4.rule.attribute.DislikeGeneratorAttribute;
 import com.eul4.rule.attribute.LikeGeneratorAttribute;
 import com.eul4.rule.attribute.TownHallAttribute;
+import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.OfflinePlayer;
 
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
@@ -68,7 +70,7 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().decorate(BOLD),
-		((StructureType<?, ?>) args[0]).getNameMessage().translateWord(bundle, String::toUpperCase).color(((StructureType<?, ?>) args[0]).getColor()),
+		((StructureType) args[0]).getNameMessage().translateWord(bundle, String::toUpperCase).color(((StructureType) args[0]).getColor()),
 		LEVEL.translateWord(bundle, String::toUpperCase),
 		text((int) args[1]),
 	}),
@@ -188,7 +190,7 @@ public enum PluginMessage implements Message
 	STRUCTURE_LIMIT_REACHED("structure-limit-reached", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		((StructureType<?, ?>) args[0]).getNameMessage().translate(bundle),
+		((StructureType) args[0]).getNameMessage().translate(bundle),
 		text((int) args[1]),
 		text((int) args[2]),
 	}),
@@ -300,6 +302,25 @@ public enum PluginMessage implements Message
 	}),
 	
 	THIS_BLOCK_WILL_EXCEED_HARDNESS_LIMIT("this-block-will-exceed-hardness-limit", empty().color(RED)),
+	
+	TITLE_SEARCHING("title.searching", empty().color(GRAY)),
+	TITLE_OWNER_TOWN("title.owner-town", (bundle, args) -> new Component[]
+	{
+		empty().color(GRAY),
+		MessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
+	}),
+	
+	SUBTITLE_SECONDS_TO_ANALYZE("subtitle.seconds-to-analyze", (bundle, args) -> new Component[]
+	{
+		empty(),
+		text((int) args[0]),
+	}),
+	
+	ANALYZING_TOWN("analyzing-town", (bundle, args) -> new Component[]
+	{
+		empty(),
+		MessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
+	}),
 	
 	;
 	

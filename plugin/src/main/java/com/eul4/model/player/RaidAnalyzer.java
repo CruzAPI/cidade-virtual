@@ -10,4 +10,5 @@ public interface RaidAnalyzer extends PluginPlayer
 	void attack();
 	void reroll();
 	void cancel();
+	boolean hasSkipped(Town town);
 }

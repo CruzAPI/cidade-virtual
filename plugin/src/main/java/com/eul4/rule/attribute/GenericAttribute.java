@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 public abstract class GenericAttribute
 {
 	private Price price;
+	private double hp;
 	private int requiresTownHallLevel;
 	private int totalBuildTicks;
 	private Vector hologramVector;

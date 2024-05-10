@@ -10,6 +10,5 @@ import java.io.ObjectInput;
 @FunctionalInterface
 public interface PluginReaderConstructor
 {
-	PluginPlayerReader<? extends PluginPlayer> newInstance(ObjectInput in, Versions versions, Player player, Main plugin)
-			throws InvalidVersionException;
+	PluginPlayerReader<? extends PluginPlayer> newInstance(ObjectInput in, Versions versions) throws InvalidVersionException;
 }

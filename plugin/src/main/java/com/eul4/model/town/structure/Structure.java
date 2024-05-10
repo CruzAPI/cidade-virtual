@@ -90,4 +90,13 @@ public interface Structure extends Externalizable
 	boolean hasUpgradeUnlocked();
 	
 	Set<TownBlock> getTownBlocks();
+	
+	void setCenterTownBlock(TownBlock centerTownBlock);
+	void setLevel(int level);
+	void setRotation(int rotation);
+	void setTownBlocks(Set<TownBlock> townBlocks);
+	void setStatus(StructureStatus status);
+	void setBuildTicks(int buildTicks);
+	void setTotalBuildTicks(int totalBuildTicks);
+	void setHologram(Hologram hologram);
 }

@@ -5,5 +5,10 @@ import java.io.IOException;
 @FunctionalInterface
 public interface Reader<T>
 {
-	T readObject() throws IOException, ClassNotFoundException;
+	T readObject(T object) throws IOException, ClassNotFoundException;
+	
+	static <T> Reader<T> identity()
+	{
+		return t -> t;
+	}
 }

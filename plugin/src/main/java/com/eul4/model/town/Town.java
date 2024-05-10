@@ -19,6 +19,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public interface Town extends Externalizable
@@ -114,4 +115,10 @@ public interface Town extends Externalizable
 	boolean isUnderAnalysis();
 	
 	boolean canBeAnalyzed();
+	
+	UUID getOwnerUUID();
+	
+	void setTownBlocks(Map<Block, TownBlock> townBlocks);
+	void setTownTiles(Map<Block, TownTile> townTiles);
+	void setStructures(Set<Structure> structures);
 }

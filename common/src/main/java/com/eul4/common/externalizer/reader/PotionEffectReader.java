@@ -2,6 +2,7 @@ package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import org.bukkit.potion.PotionEffect;
 
@@ -12,6 +13,7 @@ import java.util.Map;
 public class PotionEffectReader extends ObjectReader<PotionEffect>
 {
 	private final Reader<PotionEffect> reader;
+	private final Readable<PotionEffect> readable;
 	
 	public PotionEffectReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
 	{
@@ -19,7 +21,8 @@ public class PotionEffectReader extends ObjectReader<PotionEffect>
 		
 		if(commonVersions.getPotionEffectVersion() == 0)
 		{
-			this.reader = this::readerVersion0;
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion0;
 		}
 		else
 		{
@@ -28,14 +31,19 @@ public class PotionEffectReader extends ObjectReader<PotionEffect>
 	}
 	
 	@SuppressWarnings("unchecked")
-	private PotionEffect readerVersion0() throws IOException, ClassNotFoundException
+	private PotionEffect readableVersion0() throws IOException, ClassNotFoundException
 	{
 		return new PotionEffect((Map<String, Object>) in.readObject());
 	}
 	
-	@Override
-	protected PotionEffect readObject() throws IOException, ClassNotFoundException
+	public PotionEffect readReference() throws IOException, ClassNotFoundException
 	{
-		return reader.readObject();
+		return super.readReference(readable);
+	}
+	
+	@Override
+	protected PotionEffect readObject(PotionEffect potionEffect) throws IOException, ClassNotFoundException
+	{
+		return reader.readObject(potionEffect);
 	}
 }

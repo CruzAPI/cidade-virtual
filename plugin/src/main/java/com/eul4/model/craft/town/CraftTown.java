@@ -45,8 +45,8 @@ public class CraftTown implements Town
 	
 	public static final Map<Block, TownBlock> TOWN_BLOCKS = new HashMap<>();
 	
-	private UUID ownerUUID;
-	private Location location;
+	private final UUID ownerUUID;
+	private final Block block;
 	
 	private final Main plugin;
 	
@@ -54,7 +54,7 @@ public class CraftTown implements Town
 	
 	private Map<Block, TownTile> townTiles;
 	
-	private Map<UUID, Structure> structures;
+	private Set<Structure> structures;
 	private transient Structure movingStructure;
 	private transient ClipboardHolder movingStructureClipboardHolder;
 	
@@ -75,23 +75,22 @@ public class CraftTown implements Town
 	@Setter
 	private RaidAnalyzer analyzer;
 	
-	public CraftTown(Main plugin)
+	public CraftTown(UUID ownerUUID, Block block, Main plugin)
 	{
+		this.ownerUUID = ownerUUID;
+		this.block = block;
 		this.plugin = plugin;
 		this.removeMovingStructureItem = player ->
 				player.getInventory().removeItemAnySlot(movingStructure.getItem());
 	}
 	
-	public CraftTown(OfflinePlayer owner, Location location, Main plugin) throws CannotConstructException, IOException
+	public CraftTown(OfflinePlayer owner, Block block, Main plugin) throws CannotConstructException, IOException
 	{
-		this(plugin);
-		
-		this.ownerUUID = owner.getUniqueId();
-		this.location = location;
+		this(owner.getUniqueId(), block, plugin);
 		
 		this.townBlocks = getInitialTownBlocks();
 		this.townTiles = getInitialTownTiles();
-		this.structures = new HashMap<>();
+		this.structures = new HashSet<>();
 		
 		createInitialStructures();
 		reloadAllStructureAttributes();
@@ -222,7 +221,7 @@ public class CraftTown implements Town
 	
 	public void createInitialStructures() throws CannotConstructException, IOException
 	{
-		TownBlock centerTownBlock = getTownBlock(location.getBlock());
+		TownBlock centerTownBlock = getTownBlock(block);
 		Block centerBlock = centerTownBlock.getBlock();
 		
 		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, -3));
@@ -348,7 +347,7 @@ public class CraftTown implements Town
 	@Override
 	public Location getLocation()
 	{
-		return location;
+		return block.getLocation();
 	}
 	
 	@Override
@@ -361,7 +360,7 @@ public class CraftTown implements Town
 	@Override
 	public void load()
 	{
-		structures.values().forEach(Structure::load);
+		structures.forEach(Structure::load);
 		townTiles.values().forEach(TownTile::load);
 		reloadAllStructureAttributes();
 		TOWN_BLOCKS.putAll(townBlocks);
@@ -382,7 +381,7 @@ public class CraftTown implements Town
 	@Override
 	public void addStructure(Structure structure)
 	{
-		structures.put(structure.getUUID(), structure);
+		structures.add(structure);
 	}
 	
 	@Override
@@ -434,7 +433,7 @@ public class CraftTown implements Town
 	{
 		int likeCapacity = townHall.getLikeCapacity();
 		
-		for(Structure structure : structures.values())
+		for(Structure structure : structures)
 		{
 			if(structure instanceof LikeDeposit likeDeposit)
 			{

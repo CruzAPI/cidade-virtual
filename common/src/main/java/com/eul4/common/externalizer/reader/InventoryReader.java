@@ -2,6 +2,7 @@ package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +14,7 @@ import java.io.ObjectInput;
 public class InventoryReader extends ObjectReader<ItemStack[]>
 {
 	private final Reader<ItemStack[]> reader;
+	private final Readable<ItemStack[]> readable;
 	
 	private final ItemStackReader itemStackReader;
 	
@@ -22,17 +24,18 @@ public class InventoryReader extends ObjectReader<ItemStack[]>
 		
 		this.itemStackReader = new ItemStackReader(in, commonVersions);
 		
-		if(commonVersions.getInventoryVersion() == 0)
+		switch(commonVersions.getInventoryVersion())
 		{
-			this.reader = this::readerVersion0;
-		}
-		else
-		{
+		case 0:
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion0;
+			break;
+		default:
 			throw new InvalidVersionException("Invalid Inventory version: " + commonVersions.getInventoryVersion());
 		}
 	}
 	
-	private ItemStack[] readerVersion0() throws IOException, ClassNotFoundException
+	private ItemStack[] readableVersion0() throws IOException, ClassNotFoundException
 	{
 		ItemStack[] contents = new ItemStack[in.readInt()];
 		
@@ -44,9 +47,14 @@ public class InventoryReader extends ObjectReader<ItemStack[]>
 		return contents;
 	}
 	
-	@Override
-	protected ItemStack[] readObject() throws IOException, ClassNotFoundException
+	public ItemStack[] readReference() throws IOException, ClassNotFoundException
 	{
-		return reader.readObject();
+		return super.readReference(readable);
+	}
+	
+	@Override
+	protected ItemStack[] readObject(ItemStack[] contents) throws IOException, ClassNotFoundException
+	{
+		return reader.readObject(contents);
 	}
 }

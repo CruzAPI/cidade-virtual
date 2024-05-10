@@ -1,5 +1,6 @@
 package com.eul4.externalizer.reader;
 
+import com.eul4.Main;
 import com.eul4.Versions;
 import com.eul4.common.Common;
 import com.eul4.common.exception.InvalidVersionException;
@@ -7,6 +8,7 @@ import com.eul4.common.externalizer.reader.CommonPlayerReader;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -18,9 +20,9 @@ public abstract class PluginPlayerReader<P extends PluginPlayer> extends CommonP
 	
 	private final Reader<P> reader;
 	
-	public PluginPlayerReader(ObjectInput in, Versions versions, Common plugin, Supplier<P> supplier) throws InvalidVersionException
+	public PluginPlayerReader(ObjectInput in, Versions versions) throws InvalidVersionException
 	{
-		super(in, versions, plugin, supplier);
+		super(in, versions);
 		
 		this.townPlayerDataReader = new TownPlayerDataReader(in, versions);
 		
@@ -34,10 +36,8 @@ public abstract class PluginPlayerReader<P extends PluginPlayer> extends CommonP
 		}
 	}
 	
-	private P readerVersion0() throws IOException, ClassNotFoundException
+	private P readerVersion0(P pluginPlayer) throws IOException, ClassNotFoundException
 	{
-		P pluginPlayer = getInstance();
-		
 		TownPlayerData townPlayerData = townPlayerDataReader.readReference();
 		
 		pluginPlayer.setTownPlayerData(townPlayerData);
@@ -46,10 +46,10 @@ public abstract class PluginPlayerReader<P extends PluginPlayer> extends CommonP
 	}
 	
 	@Override
-	protected P readObject() throws IOException, ClassNotFoundException
+	protected P readObject(P pluginPlayer) throws IOException, ClassNotFoundException
 	{
-		super.readObject();
+		super.readObject(pluginPlayer);
 		
-		return reader.readObject();
+		return reader.readObject(pluginPlayer);
 	}
 }

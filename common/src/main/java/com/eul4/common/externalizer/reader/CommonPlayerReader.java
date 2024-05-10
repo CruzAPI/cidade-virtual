@@ -6,26 +6,22 @@ import com.eul4.common.model.data.CommonPlayerData;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.wrapper.CommonVersions;
 import com.eul4.common.wrapper.Reader;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.util.function.Supplier;
 
-public class CommonPlayerReader<P extends CommonPlayer> extends ObjectReader<P>
+public abstract class CommonPlayerReader<P extends CommonPlayer> extends ObjectReader<P>
 {
 	private final Reader<P> reader;
-	private final Supplier<P> supplier;
 	
 	private final CommonPlayerDataReader commonPlayerDataReader;
 	
-	private P instance;
-	
-	public CommonPlayerReader(ObjectInput in, CommonVersions commonVersions, Common plugin, Supplier<P> supplier) throws InvalidVersionException
+	public CommonPlayerReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
 	{
 		super(in, commonVersions);
 		
-		this.commonPlayerDataReader = new CommonPlayerDataReader(in, commonVersions, plugin);
-		this.supplier = supplier;
+		this.commonPlayerDataReader = new CommonPlayerDataReader(in, commonVersions);
 		
 		if(commonVersions.getCommonPlayerVersion() == 0)
 		{
@@ -37,25 +33,20 @@ public class CommonPlayerReader<P extends CommonPlayer> extends ObjectReader<P>
 		}
 	}
 	
-	private P readerVersion0() throws IOException, ClassNotFoundException
+	private P readerVersion0(P commonPlayer) throws IOException, ClassNotFoundException
 	{
-		P commonPlayer = supplier.get();
-		
-		CommonPlayerData commonPlayerData = commonPlayerDataReader.readReference();
+		CommonPlayerData commonPlayerData = commonPlayerDataReader.readReference(commonPlayer.getPlugin());
 		
 		commonPlayer.setCommonPlayerData(commonPlayerData);
 		
 		return commonPlayer;
 	}
 	
-	public P getInstance()
-	{
-		return instance = (instance == null ? supplier.get() : instance);
-	}
+	public abstract P readReference(Player player, Common plugin) throws IOException, ClassNotFoundException;
 	
 	@Override
-	protected P readObject() throws IOException, ClassNotFoundException
+	protected P readObject(P commonPlayer) throws IOException, ClassNotFoundException
 	{
-		return reader.readObject();
+		return reader.readObject(commonPlayer);
 	}
 }

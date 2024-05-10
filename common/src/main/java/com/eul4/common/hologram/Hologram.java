@@ -3,7 +3,7 @@ package com.eul4.common.hologram;
 import com.eul4.common.Common;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.i18n.ResourceBundleHandler;
-import com.eul4.common.wrapper.LocationSerializable;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecraft.server.level.ServerLevel;
@@ -11,23 +11,23 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.entity.ArmorStand;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.function.Consumer;
 
-public class Hologram implements Serializable
+@Getter
+public class Hologram
 {
-	private transient Common plugin;
 	private final ArrayList<TranslatedHologramLine> hologramLines = new ArrayList<>();
-	private LocationSerializable locationSerializable;
+	
+	private final Common plugin;
+	private Location location;
 	
 	public Hologram(Common plugin, Location location)
 	{
 		this.plugin = plugin;
-		this.locationSerializable = new LocationSerializable(location);
+		this.location = location;
 	}
 	
 	public void remove()
@@ -70,8 +70,7 @@ public class Hologram implements Serializable
 	
 	private ArmorStand newArmorStandNotSpawned()
 	{
-		final Location location = this.locationSerializable.getBukkitLocation(plugin.getServer())
-				.subtract(0.0D, 0.28D * hologramLines.size(), 0.0D);
+		final Location location = this.location.clone().subtract(0.0D, 0.28D * hologramLines.size(), 0.0D);
 		
 		ServerLevel serverLevel = ((CraftWorld) location.getWorld()).getHandle();
 		var nmsArmorStand = new net.minecraft.world.entity.decoration.ArmorStand(serverLevel,
@@ -94,20 +93,13 @@ public class Hologram implements Serializable
 	
 	public void teleport(Location location)
 	{
-		this.locationSerializable = new LocationSerializable(location);
+		this.location = location;
 		
 		for(int i = 0; i < hologramLines.size(); i++)
 		{
 			hologramLines.get(i).armorStand.teleport(location.clone()
 					.subtract(0.0D, 0.28D * i, 0.0D));
 		}
-	}
-	
-	public void load(Common plugin)
-	{
-		this.plugin = plugin;
-		
-		hologramLines.forEach(TranslatedHologramLine::load);
 	}
 	
 	public int size()
@@ -130,18 +122,16 @@ public class Hologram implements Serializable
 		}
 	}
 	
-	public class TranslatedHologramLine implements Serializable
+	public class TranslatedHologramLine
 	{
-		private final UUID armorStandUuid;
+		private final ArmorStand armorStand;
 		
-		private transient ArmorStand armorStand;
-		private transient Message message;
-		private transient Object[] args;
+		private Message message;
+		private Object[] args;
 		
 		public TranslatedHologramLine(ArmorStand armorStand)
 		{
-			this.armorStandUuid = armorStand.getUniqueId();
-			this.armorStand = armorStand;
+			this.armorStand = Objects.requireNonNull(armorStand);
 		}
 		
 		public void setMessageAndArgs(Message message, Object... args)
@@ -163,15 +153,6 @@ public class Hologram implements Serializable
 			return LegacyComponentSerializer.legacySection().serialize(message == null
 					? this.armorStand.customName()
 					: message.translate(locale, args));
-		}
-		
-		public void load()
-		{
-			locationSerializable.getBukkitLocation(plugin.getServer()).getChunk().load();
-			
-			armorStand = Objects.requireNonNull((ArmorStand) plugin
-					.getEntityRegisterListener()
-					.getEntityByUuid(armorStandUuid));
 		}
 	}
 }

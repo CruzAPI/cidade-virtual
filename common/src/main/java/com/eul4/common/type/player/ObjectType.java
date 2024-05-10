@@ -1,0 +1,5 @@
+package com.eul4.common.type.player;
+
+public interface ObjectType
+{
+}

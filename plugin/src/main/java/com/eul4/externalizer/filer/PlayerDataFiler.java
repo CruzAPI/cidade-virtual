@@ -149,7 +149,7 @@ public class PlayerDataFiler
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
 				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
 		{
-			PluginPlayer pluginPlayer = new GenericPluginPlayerReader(in, readVersions(in), player, plugin).readReference();
+			PluginPlayer pluginPlayer = new GenericPluginPlayerReader(in, readVersions(in)).readReference(player, plugin);
 			plugin.getLogger().info(MessageFormat.format("{0} data loaded: {1}", player.getName(), pluginPlayer));
 			return pluginPlayer;
 		}

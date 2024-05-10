@@ -3,6 +3,7 @@ package com.eul4.externalizer.reader;
 import com.eul4.Versions;
 import com.eul4.common.externalizer.reader.ObjectReader;
 import com.eul4.common.exception.InvalidVersionException;
+import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.playerdata.TownPlayerData;
 
@@ -12,6 +13,7 @@ import java.io.ObjectInput;
 public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 {
 	private final Reader<TownPlayerData> reader;
+	private final Readable<TownPlayerData> readable;
 	
 	public TownPlayerDataReader(ObjectInput in, Versions versions) throws InvalidVersionException
 	{
@@ -19,7 +21,8 @@ public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 		
 		if(versions.getTownPlayerVersion() == 0)
 		{
-			this.reader = this::readerVersion0;
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion0;
 		}
 		else
 		{
@@ -27,7 +30,7 @@ public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 		}
 	}
 	
-	private TownPlayerData readerVersion0() throws IOException
+	private TownPlayerData readableVersion0() throws IOException
 	{
 		boolean test = in.readBoolean();
 		
@@ -36,9 +39,14 @@ public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 				.build();
 	}
 	
-	@Override
-	protected TownPlayerData readObject() throws IOException, ClassNotFoundException
+	public TownPlayerData readReference() throws IOException, ClassNotFoundException
 	{
-		return reader.readObject();
+		return super.readReference(readable);
+	}
+	
+	@Override
+	protected TownPlayerData readObject(TownPlayerData townPlayerData) throws IOException, ClassNotFoundException
+	{
+		return reader.readObject(townPlayerData);
 	}
 }

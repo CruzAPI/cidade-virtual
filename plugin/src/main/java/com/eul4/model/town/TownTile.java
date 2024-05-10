@@ -1,15 +1,12 @@
 package com.eul4.model.town;
 
-import com.sk89q.worldedit.util.Direction;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.io.Externalizable;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public interface TownTile extends Externalizable
+public interface TownTile
 {
 	int RADIUS = 4;
 	int DIAMETER = RADIUS * 2 + 1;

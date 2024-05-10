@@ -1,6 +1,7 @@
 package com.eul4.common.externalizer.writer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -22,16 +23,14 @@ public abstract class ObjectWriter<T>
 		
 		if(references.containsKey(reference))
 		{
-			int referenceId = references.get(reference);
-			out.writeInt(referenceId);
+			out.writeInt(references.get(reference));
 		}
 		else
 		{
-			writeObject(reference);
 			references.put(reference, currentId++);
+			writeObject(reference);
 		}
 	}
 	
 	protected abstract void writeObject(T object) throws IOException;
-	
 }

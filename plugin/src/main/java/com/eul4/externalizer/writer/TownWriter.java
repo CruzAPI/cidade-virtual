@@ -1,26 +1,21 @@
 package com.eul4.externalizer.writer;
 
 import com.eul4.common.externalizer.writer.ObjectWriter;
+import com.eul4.common.type.player.Writers;
 import com.eul4.model.town.Town;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class TownWriter extends ObjectWriter<Town>
 {
-	public TownWriter(ObjectOutput out)
+	public TownWriter(Writers writers)
 	{
-		super(out);
-		this.writer =
+		super(writers);
 	}
 	
-	public Town writeReference(Town town)
+	@Override
+	protected void writeObject(Town object) throws IOException
 	{
-	
-	}
-	
-	public Town writeReference(Town town)
-	{
-	
+		//TODO: write fields...
 	}
 }

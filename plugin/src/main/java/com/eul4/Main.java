@@ -10,6 +10,7 @@ import com.eul4.externalizer.BlockChunkToShortCoordinateExternalizer;
 import com.eul4.externalizer.BlockDataExternalizer;
 import com.eul4.externalizer.BlockDataMapExternalizer;
 import com.eul4.externalizer.filer.PlayerDataFiler;
+import com.eul4.externalizer.filer.TownsFiler;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
@@ -41,7 +42,6 @@ public class Main extends Common
 	
 	private BlockDataLoader blockDataLoader;
 	private DataFileManager dataFileManager;
-	private TownSerializer townSerializer;
 	private StructureUpgradeExecutor structureUpgradeExecutor;
 	private PurchaseExecutor purchaseExecutor;
 	
@@ -65,6 +65,7 @@ public class Main extends Common
 	private RaidCommand	raidCommand;
 	
 	private PlayerDataFiler playerDataFiler;
+	private TownsFiler townsFiler;
 	
 	@Override
 	public void onEnable()
@@ -95,7 +96,7 @@ public class Main extends Common
 		
 		super.onEnable();
 		
-		townManager.loadTownsOrElse(getServer()::shutdown);
+//		townManager.loadTownsOrElse(getServer()::shutdown);
 		
 		registerCommands();
 		registerListeners();
@@ -129,11 +130,11 @@ public class Main extends Common
 		blockChunkToShortCoordinateExternalizer = new BlockChunkToShortCoordinateExternalizer();
 		blockDataMapExternalizer = new BlockDataMapExternalizer(this);
 		playerDataFiler = new PlayerDataFiler(this);
+		townsFiler = new TownsFiler(this);
 		
 		dataFileManager = new DataFileManager(this);
 		blockDataLoader = new BlockDataLoader(this);
 		townManager = new TownManager(this);
-		townSerializer = new TownSerializer(this);
 		structureUpgradeExecutor = new StructureUpgradeExecutor(this);
 		purchaseExecutor = new PurchaseExecutor(this);
 	}
@@ -231,7 +232,7 @@ public class Main extends Common
 	{
 		super.onDisable();
 		
-		townManager.saveTowns();
+		townsFiler.saveTowns();
 		getServer().getWorlds().forEach(blockDataLoader::saveChunks);
 		
 		getLogger().info("Plugin disabled.");

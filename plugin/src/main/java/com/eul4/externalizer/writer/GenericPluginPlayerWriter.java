@@ -1,31 +1,16 @@
 package com.eul4.externalizer.writer;
 
 import com.eul4.common.externalizer.writer.ObjectWriter;
+import com.eul4.common.type.player.Writers;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.type.player.PluginPlayerType;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GenericPluginPlayerWriter extends ObjectWriter<PluginPlayer>
 {
-	private final Map<Class<? extends PluginPlayer>, PluginPlayerWriter<?>> writers;
-	
-	public GenericPluginPlayerWriter(ObjectOutput out)
+	public GenericPluginPlayerWriter(Writers writers)
 	{
-		super(out);
-		
-		Map<Class<? extends PluginPlayer>, PluginPlayerWriter<?>> tmpMap = new HashMap<>();
-		
-		for(PluginPlayerType type : PluginPlayerType.values())
-		{
-			tmpMap.put(type.getType(), type.getPluginWriterConstructor().newInstance(out));
-		}
-		
-		this.writers = Collections.unmodifiableMap(tmpMap);
+		super(writers);
 	}
 	
 	@Override
@@ -38,6 +23,8 @@ public class GenericPluginPlayerWriter extends ObjectWriter<PluginPlayer>
 	@SuppressWarnings("unchecked")
 	private <P extends PluginPlayer> void getWriterAndWriteReference(PluginPlayer pluginPlayer, Class<P> type) throws IOException
 	{
-		((PluginPlayerWriter<P>) writers.get(type)).writeReference(type.cast(pluginPlayer));
+		PluginPlayerWriter<P> writer = (PluginPlayerWriter<P>) writers.getWriter(pluginPlayer.getPlayerType().getWriterClass());
+		
+		writer.writeReference(type.cast(pluginPlayer));
 	}
 }

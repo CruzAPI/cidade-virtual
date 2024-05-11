@@ -6,4 +6,5 @@ public interface Generator extends Structure
 	int getCapacity();
 	int getDelay();
 	void collect();
+	void setBalance(int balance);
 }

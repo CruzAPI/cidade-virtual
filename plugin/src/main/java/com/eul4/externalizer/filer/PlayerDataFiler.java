@@ -1,11 +1,15 @@
 package com.eul4.externalizer.filer;
 
 import com.eul4.Main;
-import com.eul4.Versions;
 import com.eul4.common.exception.InvalidVersionException;
+import com.eul4.common.type.player.CommonObjectType;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Writers;
 import com.eul4.externalizer.reader.GenericPluginPlayerReader;
 import com.eul4.externalizer.writer.GenericPluginPlayerWriter;
 import com.eul4.model.player.PluginPlayer;
+import com.eul4.type.player.PluginObjectType;
 import com.eul4.util.FileUtil;
 import com.google.common.io.ByteStreams;
 import lombok.Getter;
@@ -22,6 +26,26 @@ public class PlayerDataFiler
 {
 	private static final byte VERSION = 0;
 	
+	private static final ObjectType[] OBJECT_TYPES = new ObjectType[]
+	{
+		CommonObjectType.COMMON_PLAYER_DATA,
+		CommonObjectType.COMMON_PLAYER,
+		CommonObjectType.INVENTORY,
+		CommonObjectType.ITEM_STACK,
+		CommonObjectType.LOCATION,
+		CommonObjectType.OBJECT,
+		CommonObjectType.PLAYER_DATA,
+		CommonObjectType.POTION_EFFECT_COLLECTION,
+		CommonObjectType.POTION_EFFECT,
+		PluginObjectType.ADMIN,
+		PluginObjectType.ATTACKER,
+		PluginObjectType.GENERIC_PLUGIN_PLAYER,
+		PluginObjectType.PLUGIN_PLAYER,
+		PluginObjectType.RAID_ANALYZER,
+		PluginObjectType.TOWN_PLAYER_DATA,
+		PluginObjectType.TOWN_PLAYER,
+	};
+
 	private final Main plugin;
 	
 	@Getter
@@ -59,7 +83,9 @@ public class PlayerDataFiler
 					ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
 			{
 				writeVersions(out);
-				new GenericPluginPlayerWriter(out).writeReference(pluginPlayer);
+				Writers.of(out, OBJECT_TYPES)
+						.getWriter(GenericPluginPlayerWriter.class)
+						.writeReference(pluginPlayer);
 				out.flush();
 				fileOutputStream.write(byteArrayOutputStream.toByteArray());
 			}
@@ -149,7 +175,9 @@ public class PlayerDataFiler
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
 				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
 		{
-			PluginPlayer pluginPlayer = new GenericPluginPlayerReader(in, readVersions(in)).readReference(player, plugin);
+			PluginPlayer pluginPlayer = Readers.of(in, readVersions(in))
+					.getReader(GenericPluginPlayerReader.class)
+					.readReference(player,plugin);
 			plugin.getLogger().info(MessageFormat.format("{0} data loaded: {1}", player.getName(), pluginPlayer));
 			return pluginPlayer;
 		}
@@ -162,30 +190,32 @@ public class PlayerDataFiler
 		}
 	}
 	
-	private Versions readVersions(ObjectInput in) throws InvalidVersionException, IOException
+	private Map<ObjectType, Byte> readVersions(ObjectInput in) throws InvalidVersionException, IOException
 	{
 		byte version = in.readByte();
 		
 		if(version == 0)
 		{
-			return Versions.builder()
-					.commonPlayerDataVersion(in.readByte())
-					.commonPlayerVersion(in.readByte())
-					.inventoryVersion(in.readByte())
-					.itemStackVersion(in.readByte())
-					.locationVersion(in.readByte())
-					.objectVersion(in.readByte())
-					.playerDataVersion(in.readByte())
-					.potionEffectCollectionVersion(in.readByte())
-					.potionEffectVersion(in.readByte())
-					.adminVersion(in.readByte())
-					.attackerVersion(in.readByte())
-					.genericPluginPlayerVersion(in.readByte())
-					.pluginPlayerVersion(in.readByte())
-					.raidAnalyzerVersion(in.readByte())
-					.townPlayerDataVersion(in.readByte())
-					.townPlayerVersion(in.readByte())
-					.build();
+			Map<ObjectType, Byte> versions = new HashMap<>();
+			
+			versions.put(CommonObjectType.COMMON_PLAYER_DATA, in.readByte());
+			versions.put(CommonObjectType.COMMON_PLAYER, in.readByte());
+			versions.put(CommonObjectType.INVENTORY, in.readByte());
+			versions.put(CommonObjectType.ITEM_STACK, in.readByte());
+			versions.put(CommonObjectType.LOCATION, in.readByte());
+			versions.put(CommonObjectType.OBJECT, in.readByte());
+			versions.put(CommonObjectType.PLAYER_DATA, in.readByte());
+			versions.put(CommonObjectType.POTION_EFFECT_COLLECTION, in.readByte());
+			versions.put(CommonObjectType.POTION_EFFECT, in.readByte());
+			versions.put(PluginObjectType.ADMIN, in.readByte());
+			versions.put(PluginObjectType.ATTACKER, in.readByte());
+			versions.put(PluginObjectType.GENERIC_PLUGIN_PLAYER, in.readByte());
+			versions.put(PluginObjectType.PLUGIN_PLAYER, in.readByte());
+			versions.put(PluginObjectType.RAID_ANALYZER, in.readByte());
+			versions.put(PluginObjectType.TOWN_PLAYER_DATA, in.readByte());
+			versions.put(PluginObjectType.TOWN_PLAYER, in.readByte());
+			
+			return versions;
 		}
 		
 		throw new InvalidVersionException("Invalid PlayerDataFiler version: " + version);
@@ -195,21 +225,9 @@ public class PlayerDataFiler
 	{
 		out.writeByte(VERSION);
 		
-		out.writeByte(Versions.COMMON_PLAYER_DATA);
-		out.writeByte(Versions.COMMON_PLAYER);
-		out.writeByte(Versions.INVENTORY);
-		out.writeByte(Versions.ITEM_STACK);
-		out.writeByte(Versions.LOCATION);
-		out.writeByte(Versions.OBJECT);
-		out.writeByte(Versions.PLAYER_DATA);
-		out.writeByte(Versions.POTION_EFFECT_COLLECTION);
-		out.writeByte(Versions.POTION_EFFECT);
-		out.writeByte(Versions.ADMIN);
-		out.writeByte(Versions.ATTACKER);
-		out.writeByte(Versions.GENERIC_PLUGIN_PLAYER);
-		out.writeByte(Versions.PLUGIN_PLAYER);
-		out.writeByte(Versions.RAID_ANALYZER);
-		out.writeByte(Versions.TOWN_PLAYER_DATA);
-		out.writeByte(Versions.TOWN_PLAYER);
+		for(ObjectType objectType : OBJECT_TYPES)
+		{
+			out.writeByte(objectType.getVersion());
+		}
 	}
 }

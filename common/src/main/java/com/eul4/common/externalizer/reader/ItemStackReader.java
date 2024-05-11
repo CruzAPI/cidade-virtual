@@ -1,31 +1,35 @@
 package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
-import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.type.player.CommonObjectType;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 
 public final class ItemStackReader extends ObjectReader<ItemStack>
 {
 	private final Reader<ItemStack> reader;
 	private final Readable<ItemStack> readable;
 	
-	public ItemStackReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
+	public ItemStackReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, commonVersions);
+		super(readers);
 		
-		if(commonVersions.getItemStackVersion() == 0)
+		final ObjectType objectType = CommonObjectType.ITEM_STACK;
+		final byte version = readers.getVersions().get(objectType);
+		
+		switch(version)
 		{
+		case 0:
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion0;
-		}
-		else
-		{
-			throw new InvalidVersionException("Invalid ItemStack version: " + commonVersions.getItemStackVersion());
+			break;
+		default:
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	

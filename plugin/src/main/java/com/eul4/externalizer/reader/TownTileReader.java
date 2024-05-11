@@ -1,50 +1,51 @@
 package com.eul4.externalizer.reader;
 
-import com.eul4.Versions;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.BlockReader;
-import com.eul4.common.externalizer.reader.HologramReader;
 import com.eul4.common.externalizer.reader.ObjectReader;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.craft.town.CraftTownTile;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownTile;
+import com.eul4.type.player.PluginObjectType;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 
 public class TownTileReader extends ObjectReader<TownTile>
 {
-	private final BlockReader blockReader;
-	
 	private final Reader<TownTile> reader;
 	private final ParameterizedReadable<TownTile, Town> parameterizedReadable;
 	
-	public TownTileReader(ObjectInput in, Versions versions) throws InvalidVersionException
+	public TownTileReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, versions);
+		super(readers);
 		
-		this.blockReader = new BlockReader(in, versions);
+		final ObjectType objectType = PluginObjectType.TOWN_TILE;
+		final byte version = readers.getVersions().get(objectType);
 		
-		if(versions.getTownBlockMapVersion() == 0)
+		switch(version)
 		{
+		case 0:
 			this.reader = this::readerVersion0;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
-		}
-		else
-		{
-			throw new InvalidVersionException("Invalid TownBlockMap version: " + versions.getTownBlockMapVersion());
+			break;
+		default:
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
 	private Readable<TownTile> parameterizedReadableVersion0(Town town)
 	{
-		return () -> new CraftTownTile(town, blockReader.readReference(town.getPlugin()), in.readBoolean());
+		return () -> new CraftTownTile(town,
+				readers.getReader(BlockReader.class).readReference(town.getPlugin()),
+				in.readBoolean());
 	}
 	
-	private TownTile readerVersion0(TownTile townTile) throws IOException, ClassNotFoundException
+	private TownTile readerVersion0(TownTile townTile)
 	{
 		//TODO: read TownTile fields...
 		

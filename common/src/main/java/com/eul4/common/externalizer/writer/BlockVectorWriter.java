@@ -1,15 +1,15 @@
 package com.eul4.common.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import org.bukkit.util.BlockVector;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class BlockVectorWriter extends ObjectWriter<BlockVector>
 {
-	public BlockVectorWriter(ObjectOutput out)
+	public BlockVectorWriter(Writers writers)
 	{
-		super(out);
+		super(writers);
 	}
 	
 	@Override

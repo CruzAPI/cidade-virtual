@@ -1,41 +1,41 @@
 package com.eul4.externalizer.reader;
 
-import com.eul4.Versions;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.ObjectReader;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.type.player.PluginObjectType;
 import org.bukkit.block.Block;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TownBlockMapReader extends ObjectReader<Map<Block, TownBlock>>
 {
-	private final TownBlockReader townBlockReader;
-	
 	private final Reader<Map<Block, TownBlock>> reader;
 	private final ParameterizedReadable<Map<Block, TownBlock>, Town> parameterizedReadable;
 	
-	public TownBlockMapReader(ObjectInput in, Versions versions) throws InvalidVersionException
+	public TownBlockMapReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, versions);
+		super(readers);
 		
-		this.townBlockReader = new TownBlockReader(in, versions);
+		final ObjectType objectType = PluginObjectType.TOWN_BLOCK_MAP;
+		final byte version = readers.getVersions().get(objectType);
 		
-		if(versions.getTownBlockMapVersion() == 0)
+		switch(version)
 		{
+		case 0:
 			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
-		}
-		else
-		{
-			throw new InvalidVersionException("Invalid TownBlockMap version: " + versions.getTownBlockMapVersion());
+			break;
+		default:
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
@@ -49,7 +49,7 @@ public class TownBlockMapReader extends ObjectReader<Map<Block, TownBlock>>
 			
 			for(int i = 0; i < size; i++)
 			{
-				TownBlock townBlock = townBlockReader.readReference(town);
+				TownBlock townBlock = readers.getReader(TownBlockReader.class).readReference(town);
 				townBlockMap.put(townBlock.getBlock(), townBlock);
 			}
 			

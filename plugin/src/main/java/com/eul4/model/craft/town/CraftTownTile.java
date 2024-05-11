@@ -1,7 +1,6 @@
 package com.eul4.model.craft.town;
 
 import com.eul4.common.hologram.Hologram;
-import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -9,14 +8,9 @@ import com.eul4.model.town.TownTile;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +20,6 @@ import static org.bukkit.block.BlockFace.*;
 @RequiredArgsConstructor
 public class CraftTownTile implements TownTile
 {
-	@Serial
-	private static final long serialVersionUID = 1L;
-	
 	private final Town town;
 	private Block block;
 	private boolean isInTownBorder;
@@ -42,35 +33,6 @@ public class CraftTownTile implements TownTile
 		this.block = block;
 		
 		setInTownBorder(isInTownBorder);
-	}
-	
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-	{
-		final long version = in.readLong();
-		
-		if(version == 1L)
-		{
-			block = ((BlockSerializable) in.readObject()).getBukkitBlock(town.getPlugin().getServer());
-			isInTownBorder = in.readBoolean();
-			bought = in.readBoolean();
-			hologram = (Hologram) in.readObject();
-		}
-		else
-		{
-			throw new RuntimeException("CraftTown serial version not found: " + version);
-		}
-	}
-	
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException
-	{
-		out.writeLong(serialVersionUID);
-		
-		out.writeObject(new BlockSerializable(block));
-		out.writeBoolean(isInTownBorder);
-		out.writeBoolean(bought);
-		out.writeObject(hologram);
 	}
 	
 	@Override
@@ -176,14 +138,5 @@ public class CraftTownTile implements TownTile
 	{
 		Optional.ofNullable(hologram).ifPresent(Hologram::remove);
 		hologram = null;
-	}
-	
-	@Override
-	public void load()
-	{
-		if(hologram != null)
-		{
-			hologram.load(town.getPlugin());
-		}
 	}
 }

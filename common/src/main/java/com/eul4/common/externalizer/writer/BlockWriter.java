@@ -1,16 +1,16 @@
 package com.eul4.common.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import org.bukkit.block.Block;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.util.UUID;
 
 public class BlockWriter extends ObjectWriter<Block>
 {
-	public BlockWriter(ObjectOutput out)
+	public BlockWriter(Writers writers)
 	{
-		super(out);
+		super(writers);
 	}
 	
 	@Override

@@ -1,16 +1,16 @@
 package com.eul4.externalizer.writer;
 
 import com.eul4.common.externalizer.writer.ObjectWriter;
+import com.eul4.common.type.player.Writers;
 import com.eul4.model.playerdata.TownPlayerData;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class TownPlayerDataWriter extends ObjectWriter<TownPlayerData>
 {
-	protected TownPlayerDataWriter(ObjectOutput out)
+	public TownPlayerDataWriter(Writers writers)
 	{
-		super(out);
+		super(writers);
 	}
 	
 	@Override

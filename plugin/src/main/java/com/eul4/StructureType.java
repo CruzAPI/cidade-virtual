@@ -1,9 +1,9 @@
 package com.eul4;
 
-import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.externalizer.reader.*;
+import com.eul4.externalizer.writer.*;
 import com.eul4.function.StructureInstantiation;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.craft.town.structure.*;
@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
-import java.io.ObjectInput;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -27,9 +26,11 @@ import java.util.function.Function;
 public enum StructureType
 {
 	TOWN_HALL(
+			CraftTownHall.class,
 			CraftTownHall::new,
 			CraftTownHall::new,
-			TownHallReader::new,
+			TownHallWriter.class,
+			TownHallReader.class,
 			CraftTownHallGui::new,
 			Main::getTownHallRule,
 			NamedTextColor.YELLOW,
@@ -38,9 +39,11 @@ public enum StructureType
 	),
 	
 	LIKE_GENERATOR(
+			CraftLikeGenerator.class,
 			CraftLikeGenerator::new,
 			CraftLikeGenerator::new,
-			LikeGeneratorReader::new,
+			LikeGeneratorWriter.class,
+			LikeGeneratorReader.class,
 			CraftLikeGeneratorGui::new,
 			Main::getLikeGeneratorRule,
 			NamedTextColor.GREEN,
@@ -49,9 +52,11 @@ public enum StructureType
 	),
 	
 	DISLIKE_GENERATOR(
+			CraftDislikeGenerator.class,
 			CraftDislikeGenerator::new,
 			CraftDislikeGenerator::new,
-			DislikeGeneratorReader::new,
+			DislikeGeneratorWriter.class,
+			DislikeGeneratorReader.class,
 			CraftDislikeGeneratorGui::new,
 			Main::getDislikeGeneratorRule,
 			NamedTextColor.RED,
@@ -60,9 +65,11 @@ public enum StructureType
 	),
 	
 	DISLIKE_DEPOSIT(
+			CraftDislikeDeposit.class,
 			CraftDislikeDeposit::new,
 			CraftDislikeDeposit::new,
-			DislikeDepositReader::new,
+			DislikeDepositWriter.class,
+			DislikeDepositReader.class,
 			CraftDislikeDepositGui::new,
 			Main::getDislikeDepositRule,
 			NamedTextColor.RED,
@@ -71,9 +78,11 @@ public enum StructureType
 	),
 	
 	LIKE_DEPOSIT(
+			CraftLikeDeposit.class,
 			CraftLikeDeposit::new,
 			CraftLikeDeposit::new,
-			LikeDepositReader::new,
+			LikeDepositWriter.class,
+			LikeDepositReader.class,
 			CraftLikeDepositGui::new,
 			Main::getLikeDepositRule,
 			NamedTextColor.RED,
@@ -81,9 +90,11 @@ public enum StructureType
 			PluginMessage.STRUCTURE_LIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
 	);
 	
+	private final Class<? extends Structure> structureClass;
 	private final StructureInstantiation instantiation;
 	private final Function<Town, ? extends Structure> newStructureTown;
-	private final StructureReaderConstructor structureReaderConstructor;
+	private final Class<? extends StructureWriter<?>> writerClass;
+	private final Class<? extends StructureReader<?>> readerClass;
 	private final BiFunction<CommonPlayer, Structure, StructureGui> newStructureGui;
 	private final Function<Main, Rule<? extends GenericAttribute>> ruleFunction;
 	private final TextColor color;
@@ -93,11 +104,5 @@ public enum StructureType
 	public Rule<?> getRule(Main plugin)
 	{
 		return ruleFunction.apply(plugin);
-	}
-	
-	@FunctionalInterface
-	public interface StructureReaderConstructor
-	{
-		StructureReader<?> newInstance(ObjectInput in, Versions versions) throws InvalidVersionException;
 	}
 }

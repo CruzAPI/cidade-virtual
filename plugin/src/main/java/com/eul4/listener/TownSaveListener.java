@@ -16,7 +16,7 @@ public class TownSaveListener implements Listener
 	{
 		if(event.getWorld() == plugin.getTownWorld())
 		{
-			plugin.getTownManager().saveTowns();
+			plugin.getTownsFiler().saveTowns();
 		}
 	}
 }

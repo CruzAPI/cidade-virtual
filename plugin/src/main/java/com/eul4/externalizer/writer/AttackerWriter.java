@@ -1,15 +1,15 @@
 package com.eul4.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import com.eul4.model.player.Attacker;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class AttackerWriter extends PluginPlayerWriter<Attacker>
 {
-	public AttackerWriter(ObjectOutput out)
+	public AttackerWriter(Writers writers)
 	{
-		super(out);
+		super(writers);
 	}
 	
 	@Override

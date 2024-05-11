@@ -1,15 +1,15 @@
 package com.eul4.common.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class ItemStackWriter extends ObjectWriter<ItemStack>
 {
-	public ItemStackWriter(ObjectOutput out)
+	public ItemStackWriter(Writers writers)
 	{
-		super(out);
+		super(writers);
 	}
 	
 	@Override

@@ -3,11 +3,9 @@ package com.eul4.model.town;
 import com.eul4.model.town.structure.Structure;
 import org.bukkit.block.Block;
 
-import java.io.Externalizable;
-import java.io.Serializable;
 import java.util.Optional;
 
-public interface TownBlock extends Externalizable
+public interface TownBlock
 {
 	boolean canBuild();
 	boolean hasProtection();

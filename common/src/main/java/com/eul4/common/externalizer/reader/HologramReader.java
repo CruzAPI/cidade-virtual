@@ -3,43 +3,42 @@ package com.eul4.common.externalizer.reader;
 import com.eul4.common.Common;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.hologram.Hologram;
-import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.type.player.CommonObjectType;
+import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 
 public class HologramReader extends ObjectReader<Hologram>
 {
 	private final Reader<Hologram> reader;
 	private final ParameterizedReadable<Hologram, Common> parameterizedReadable;
 	
-	private final TranslatedHologramLineReader translatedHologramLineReader;
-	private final LocationReader locationReader;
-	
-	public HologramReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
+	public HologramReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, commonVersions);
+		super(readers);
 		
-		this.locationReader = new LocationReader(in, commonVersions);
-		this.translatedHologramLineReader = new TranslatedHologramLineReader(in, commonVersions);
+		final ObjectType objectType = CommonObjectType.HOLOGRAM;
+		final byte version = readers.getVersions().get(objectType);
 		
-		if(commonVersions.getHologramVersion() == 0)
+		switch(version)
 		{
+		case 0:
 			this.reader = this::readerVersion0;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
-		}
-		else
-		{
-			throw new InvalidVersionException("Invalid Hologram version: " + commonVersions.getHologramVersion());
+			break;
+		default:
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
-	private Readable<Hologram> parameterizedReadableVersion0(Common plugin) throws IOException, ClassNotFoundException
+	private Readable<Hologram> parameterizedReadableVersion0(Common plugin)
 	{
-		return () -> new Hologram(plugin, locationReader.readReference(plugin));
+		return () -> new Hologram(plugin,
+				readers.getReader(LocationReader.class).readReference(plugin));
 	}
 	
 	private Hologram readerVersion0(Hologram hologram) throws IOException, ClassNotFoundException
@@ -48,7 +47,7 @@ public class HologramReader extends ObjectReader<Hologram>
 		
 		for(int i = 0; i < size; i++)
 		{
-			hologram.getHologramLines().add(translatedHologramLineReader.readReference(hologram));
+			hologram.getHologramLines().add(readers.getReader(TranslatedHologramLineReader.class).readReference(hologram));
 		}
 		
 		return hologram;

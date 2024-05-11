@@ -3,7 +3,6 @@ package com.eul4.model.craft.town;
 import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
-import com.eul4.common.wrapper.LocationSerializable;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
@@ -20,7 +19,6 @@ import com.eul4.model.town.structure.DislikeDeposit;
 import com.eul4.model.town.structure.LikeDeposit;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
-import com.eul4.service.TownSerializer;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,18 +29,13 @@ import org.bukkit.entity.Player;
 
 import java.awt.*;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serial;
 import java.util.*;
 import java.util.function.Consumer;
 
 @Getter
+@Setter
 public class CraftTown implements Town
 {
-	@Serial
-	private static final long serialVersionUID = 2L;
-	
 	public static final Map<Block, TownBlock> TOWN_BLOCKS = new HashMap<>();
 	
 	private final UUID ownerUUID;
@@ -96,66 +89,6 @@ public class CraftTown implements Town
 		reloadAllStructureAttributes();
 		
 		TOWN_BLOCKS.putAll(townBlocks);
-	}
-	
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-	{
-		final long version = in.readLong();
-		
-		TownSerializer townSerializer = plugin.getTownSerializer();
-		
-		if(version == 1L)
-		{
-			ownerUUID = (UUID) in.readObject();
-			location = ((LocationSerializable) in.readObject()).getBukkitLocation(plugin.getServer());
-			townBlocks = townSerializer.readTownBlocks(this, in);
-			townTiles = townSerializer.readTownTiles(this, in);
-			structures = townSerializer.readStructures(this, in);
-			movingStructure = townSerializer.readStructureReference(this, in);
-			townHall = (TownHall) Objects.requireNonNull(townSerializer.readStructureReference(this, in));
-			likes = in.readInt();
-			dislikes = in.readInt();
-		}
-		else if(version == 2L)
-		{
-			ownerUUID = (UUID) in.readObject();
-			location = ((LocationSerializable) in.readObject()).getBukkitLocation(plugin.getServer());
-			townBlocks = townSerializer.readTownBlocks(this, in);
-			townTiles = townSerializer.readTownTiles(this, in);
-			structures = townSerializer.readStructures(this, in);
-			movingStructure = townSerializer.readStructureReference(this, in);
-			townHall = (TownHall) Objects.requireNonNull(townSerializer.readStructureReference(this, in));
-			likes = in.readInt();
-			dislikes = in.readInt();
-			hardness = in.readDouble();
-		}
-		else
-		{
-			throw new RuntimeException("CraftTown serial version not found: " + version);
-		}
-		
-		load();
-	}
-	
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException
-	{
-		final TownSerializer townSerializer = plugin.getTownSerializer();
-		
-		out.writeLong(serialVersionUID);
-		
-		out.writeObject(ownerUUID);
-		out.writeObject(new LocationSerializable(location));
-		townSerializer.writeTownBlocks(townBlocks, out);
-		townSerializer.writeTownTiles(this, out);
-		townSerializer.writeStructures(structures, out);
-		townSerializer.writeStructureReference(movingStructure, out);
-		townSerializer.writeStructureReference(townHall, out);
-		out.writeInt(likes);
-		out.writeInt(dislikes);
-		out.writeDouble(hardness);
-		out.flush();
 	}
 	
 	private Map<Block, TownBlock> getInitialTownBlocks()
@@ -361,7 +294,6 @@ public class CraftTown implements Town
 	public void load()
 	{
 		structures.forEach(Structure::load);
-		townTiles.values().forEach(TownTile::load);
 		reloadAllStructureAttributes();
 		TOWN_BLOCKS.putAll(townBlocks);
 	}
@@ -448,7 +380,7 @@ public class CraftTown implements Town
 	{
 		int dislikeCapacity = townHall.getDislikeCapacity();
 		
-		for(Structure structure : structures.values())
+		for(Structure structure : structures)
 		{
 			if(structure instanceof DislikeDeposit dislikeDeposit)
 			{
@@ -462,7 +394,7 @@ public class CraftTown implements Town
 	@Override
 	public void reloadAllStructureAttributes()
 	{
-		structures.values().forEach(Structure::reloadAttributes);
+		structures.forEach(Structure::reloadAttributes);
 		resetAttributes();
 	}
 	
@@ -477,7 +409,7 @@ public class CraftTown implements Town
 	{
 		int count = 0;
 		
-		for(Structure structure : structures.values())
+		for(Structure structure : structures)
 		{
 			if(structure.getStructureType() == structureType)
 			{
@@ -568,5 +500,11 @@ public class CraftTown implements Town
 	public boolean canBeAnalyzed()
 	{
 		return !isUnderAttack() && !isUnderAnalysis();
+	}
+	
+	@Override
+	public void setHardnessField(double hardness)
+	{
+		this.hardness = hardness;
 	}
 }

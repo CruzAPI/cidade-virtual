@@ -1,34 +1,24 @@
 package com.eul4.common.externalizer.writer;
 
 import com.eul4.common.model.data.PlayerData;
+import com.eul4.common.type.player.Writers;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class PlayerDataWriter extends ObjectWriter<PlayerData>
 {
-	private final PotionEffectCollectionWriter potionEffectCollectionWriter;
-	private final InventoryWriter inventoryWriter;
-	private final ItemStackWriter itemStackWriter;
-	private final LocationWriter locationWriter;
-	
-	public PlayerDataWriter(ObjectOutput out)
+	public PlayerDataWriter(Writers writers)
 	{
-		super(out);
-		
-		this.potionEffectCollectionWriter = new PotionEffectCollectionWriter(out);
-		this.inventoryWriter = new InventoryWriter(out);
-		this.itemStackWriter = inventoryWriter.getItemStackWriter();
-		this.locationWriter = new LocationWriter(out);
+		super(writers);
 	}
 	
 	@Override
 	protected void writeObject(PlayerData playerData) throws IOException
 	{
-		potionEffectCollectionWriter.writeReference(playerData.getActivePotionEffects());
+		writers.getWriter(PotionEffectCollectionWriter.class).writeReference(playerData.getActivePotionEffects());
 		out.writeBoolean(playerData.isAllowFlight());
 		out.writeInt(playerData.getArrowsInBody());
-		inventoryWriter.writeReference(playerData.getContents());
+		writers.getWriter(InventoryWriter.class).writeReference(playerData.getContents());
 		out.writeFloat(playerData.getExhaustion());
 		out.writeFloat(playerData.getFallDistance());
 		out.writeInt(playerData.getFireTicks());
@@ -39,8 +29,8 @@ public class PlayerDataWriter extends ObjectWriter<PlayerData>
 		out.writeInt(playerData.getGameMode().ordinal());
 		out.writeDouble(playerData.getHealth());
 		out.writeDouble(playerData.getHealthScale());
-		itemStackWriter.writeReference(playerData.getItemOnCursor());
-		locationWriter.writeReference(playerData.getLocation());
+		writers.getWriter(ItemStackWriter.class).writeReference(playerData.getItemOnCursor());
+		writers.getWriter(LocationWriter.class).writeReference(playerData.getLocation());
 		out.writeInt(playerData.getMaximumAir());
 		out.writeInt(playerData.getMaximumNoDamageTicks());
 		out.writeInt(playerData.getNoActionTicks());

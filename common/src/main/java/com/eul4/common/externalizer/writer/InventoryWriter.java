@@ -1,21 +1,17 @@
 package com.eul4.common.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 @Getter
 public class InventoryWriter extends ObjectWriter<ItemStack[]>
 {
-	private final ItemStackWriter itemStackWriter;
-	
-	public InventoryWriter(ObjectOutput out)
+	public InventoryWriter(Writers writers)
 	{
-		super(out);
-		
-		this.itemStackWriter = new ItemStackWriter(out);
+		super(writers);
 	}
 	
 	@Override
@@ -25,7 +21,7 @@ public class InventoryWriter extends ObjectWriter<ItemStack[]>
 		
 		for(ItemStack content : contents)
 		{
-			itemStackWriter.writeReference(content);
+			writers.getWriter(ItemStackWriter.class).writeReference(content);
 		}
 	}
 }

@@ -34,7 +34,13 @@ public class TownManager
 	private final Main plugin;
 	
 	@Getter
-	private Map<UUID, Town> towns;
+	private final Map<UUID, Town> towns;
+	
+	public TownManager(Main plugin) throws Exception
+	{
+		this.plugin = plugin;
+		this.towns = plugin.getTownsFiler().loadTownsFromDisk();;
+	}
 	
 	public Town getOrCreateNewTown(UUID uuid) throws CannotConstructException, IOException
 	{
@@ -46,52 +52,6 @@ public class TownManager
 		Town town = createNewTown(uuid);
 		towns.put(uuid, town);
 		return town;
-	}
-	
-	private void loadTowns() throws IOException, ClassNotFoundException
-	{
-		if(towns != null)
-		{
-			return;
-		}
-		
-		final File file = plugin.getDataFileManager().getTownsFile();
-		
-		if(!file.exists() || file.length() == 0L)
-		{
-			plugin.getServer().getLogger().warning("No towns found to load!");
-			towns = new HashMap<>();
-			return;
-		}
-		
-		plugin.getLogger().info("towns.dat length: " + file.length());
-		
-		try(FileInputStream fileInputStream = new FileInputStream(file);
-				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
-				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
-		{
-			plugin.getLogger().warning("read size: " + byteArrayInputStream.available());
-			towns = plugin.getTownSerializer().readTowns(in);
-			plugin.getServer().getLogger().warning("Towns loaded: " + towns.size());
-		}
-	}
-	
-	public void loadTownsOrElse(Runnable runnable)
-	{
-		try
-		{
-			loadTowns();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			runnable.run();
-		}
-	}
-	
-	public void saveTowns()
-	{
-		plugin.getTownSerializer().saveTowns();
 	}
 	
 	private Town createNewTown(UUID uuid) throws CannotConstructException, IOException
@@ -137,7 +97,7 @@ public class TownManager
 			throw new RuntimeException(e);
 		}
 		
-		return new CraftTown(plugin.getServer().getOfflinePlayer(uuid), location, plugin);
+		return new CraftTown(plugin.getServer().getOfflinePlayer(uuid), location.getBlock(), plugin);
 	}
 	
 	public Location findNextEmptyTown()
@@ -176,11 +136,6 @@ public class TownManager
 	
 	public void reloadTowns()
 	{
-		if(towns == null)
-		{
-			return;
-		}
-		
 		towns.values().forEach(Town::reloadAllStructureAttributes);
 	}
 }

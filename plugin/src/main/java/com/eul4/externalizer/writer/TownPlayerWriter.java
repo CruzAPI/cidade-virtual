@@ -1,15 +1,15 @@
 package com.eul4.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import com.eul4.model.player.TownPlayer;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class TownPlayerWriter extends PluginPlayerWriter<TownPlayer>
 {
-	public TownPlayerWriter(ObjectOutput out)
+	public TownPlayerWriter(Writers writers)
 	{
-		super(out);
+		super(writers);
 	}
 	
 	@Override

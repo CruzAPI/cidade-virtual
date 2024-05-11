@@ -1,15 +1,15 @@
 package com.eul4.common.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class PotionEffectWriter extends ObjectWriter<PotionEffect>
 {
-	public PotionEffectWriter(ObjectOutput out)
+	public PotionEffectWriter(Writers writers)
 	{
-		super(out);
+		super(writers);
 	}
 	
 	@Override

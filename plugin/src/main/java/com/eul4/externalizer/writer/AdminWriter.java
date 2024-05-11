@@ -1,15 +1,15 @@
 package com.eul4.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import com.eul4.model.player.Admin;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class AdminWriter extends PluginPlayerWriter<Admin>
 {
-	public AdminWriter(ObjectOutput out)
+	public AdminWriter(Writers writers)
 	{
-		super(out);
+		super(writers);
 	}
 	
 	@Override

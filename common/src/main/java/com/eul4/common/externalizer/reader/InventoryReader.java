@@ -1,14 +1,15 @@
 package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
-import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.type.player.CommonObjectType;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 
 @Getter
 public class InventoryReader extends ObjectReader<ItemStack[]>
@@ -16,22 +17,21 @@ public class InventoryReader extends ObjectReader<ItemStack[]>
 	private final Reader<ItemStack[]> reader;
 	private final Readable<ItemStack[]> readable;
 	
-	private final ItemStackReader itemStackReader;
-	
-	public InventoryReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
+	public InventoryReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, commonVersions);
+		super(readers);
 		
-		this.itemStackReader = new ItemStackReader(in, commonVersions);
+		final ObjectType objectType = CommonObjectType.INVENTORY;
+		final byte version = readers.getVersions().get(objectType);
 		
-		switch(commonVersions.getInventoryVersion())
+		switch(version)
 		{
 		case 0:
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion0;
 			break;
 		default:
-			throw new InvalidVersionException("Invalid Inventory version: " + commonVersions.getInventoryVersion());
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
@@ -41,7 +41,7 @@ public class InventoryReader extends ObjectReader<ItemStack[]>
 		
 		for(int i = 0; i < contents.length; i++)
 		{
-			contents[i] = itemStackReader.readReference();
+			contents[i] = readers.getReader(ItemStackReader.class).readReference();
 		}
 		
 		return contents;

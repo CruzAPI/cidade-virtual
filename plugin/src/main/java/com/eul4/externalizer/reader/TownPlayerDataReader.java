@@ -1,32 +1,36 @@
 package com.eul4.externalizer.reader;
 
-import com.eul4.Versions;
-import com.eul4.common.externalizer.reader.ObjectReader;
 import com.eul4.common.exception.InvalidVersionException;
+import com.eul4.common.externalizer.reader.ObjectReader;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.playerdata.TownPlayerData;
+import com.eul4.type.player.PluginObjectType;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 
 public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 {
 	private final Reader<TownPlayerData> reader;
 	private final Readable<TownPlayerData> readable;
 	
-	public TownPlayerDataReader(ObjectInput in, Versions versions) throws InvalidVersionException
+	public TownPlayerDataReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, versions);
+		super(readers);
 		
-		if(versions.getTownPlayerVersion() == 0)
+		final ObjectType objectType = PluginObjectType.TOWN_PLAYER_DATA;
+		final byte version = readers.getVersions().get(objectType);
+		
+		switch(version)
 		{
+		case 0:
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion0;
-		}
-		else
-		{
-			throw new InvalidVersionException("Invalid TownPlayerData version: " + versions.getTownPlayerDataVersion());
+			break;
+		default:
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	

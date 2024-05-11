@@ -1,13 +1,14 @@
 package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
-import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.type.player.CommonObjectType;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -16,22 +17,21 @@ public class PotionEffectCollectionReader extends ObjectReader<Collection<Potion
 	private final Reader<Collection<PotionEffect>> reader;
 	private final Readable<Collection<PotionEffect>> readable;
 	
-	private final PotionEffectReader potionEffectReader;
-	
-	public PotionEffectCollectionReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
+	public PotionEffectCollectionReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, commonVersions);
+		super(readers);
 		
-		this.potionEffectReader = new PotionEffectReader(in, commonVersions);
+		final ObjectType objectType = CommonObjectType.POTION_EFFECT_COLLECTION;
+		final byte version = readers.getVersions().get(objectType);
 		
-		if(commonVersions.getPotionEffectCollectionVersion() == 0)
+		switch(version)
 		{
+		case 0:
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion0;
-		}
-		else
-		{
-			throw new InvalidVersionException("Invalid PotionEffectCollection version: " + commonVersions.getPotionEffectCollectionVersion());
+			break;
+		default:
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
@@ -43,7 +43,7 @@ public class PotionEffectCollectionReader extends ObjectReader<Collection<Potion
 		
 		for(int i = 0; i < length; i++)
 		{
-			potionEffectCollection.add(potionEffectReader.readReference());
+			potionEffectCollection.add(readers.getReader(PotionEffectReader.class).readReference());
 		}
 		
 		return potionEffectCollection;

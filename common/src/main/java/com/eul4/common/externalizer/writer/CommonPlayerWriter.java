@@ -1,24 +1,20 @@
 package com.eul4.common.externalizer.writer;
 
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.type.player.Writers;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public abstract class CommonPlayerWriter<P extends CommonPlayer> extends ObjectWriter<P>
 {
-	private final CommonPlayerDataWriter commonPlayerDataWriter;
-	
-	public CommonPlayerWriter(ObjectOutput out)
+	public CommonPlayerWriter(Writers writers)
 	{
-		super(out);
-		
-		this.commonPlayerDataWriter = new CommonPlayerDataWriter(out);
+		super(writers);
 	}
 	
 	@Override
 	protected void writeObject(P commonPlayer) throws IOException
 	{
-		commonPlayerDataWriter.writeReference(commonPlayer.getCommonPlayerData());
+		writers.getWriter(CommonPlayerDataWriter.class).writeReference(commonPlayer.getCommonPlayerData());
 	}
 }

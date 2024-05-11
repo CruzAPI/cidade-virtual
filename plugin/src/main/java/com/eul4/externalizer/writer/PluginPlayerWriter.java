@@ -1,20 +1,16 @@
 package com.eul4.externalizer.writer;
 
 import com.eul4.common.externalizer.writer.CommonPlayerWriter;
+import com.eul4.common.type.player.Writers;
 import com.eul4.model.player.PluginPlayer;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 
 public abstract class PluginPlayerWriter<P extends PluginPlayer> extends CommonPlayerWriter<P>
 {
-	private final TownPlayerDataWriter townPlayerDataWriter;
-	
-	public PluginPlayerWriter(ObjectOutput out)
+	public PluginPlayerWriter(Writers writers)
 	{
-		super(out);
-		
-		this.townPlayerDataWriter = new TownPlayerDataWriter(out);
+		super(writers);
 	}
 	
 	@Override
@@ -22,6 +18,6 @@ public abstract class PluginPlayerWriter<P extends PluginPlayer> extends CommonP
 	{
 		super.writeObject(pluginPlayer);
 		
-		townPlayerDataWriter.writeReference(pluginPlayer.getTownPlayerData());
+		writers.getWriter(TownPlayerDataWriter.class).writeReference(pluginPlayer.getTownPlayerData());
 	}
 }

@@ -19,6 +19,4 @@ public interface TownTile
 	List<TownTile> getNeighboringTiles();
 	boolean isInTownBorder();
 	void setInTownBorder(boolean value);
-	
-	void load();
 }

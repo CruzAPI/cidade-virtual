@@ -1,51 +1,48 @@
 package com.eul4.externalizer.reader;
 
 import com.eul4.Main;
-import com.eul4.Versions;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.ObjectReader;
+import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.BiParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.player.PluginPlayer;
+import com.eul4.type.player.PluginObjectType;
 import com.eul4.type.player.PluginPlayerType;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GenericPluginPlayerReader extends ObjectReader<PluginPlayer>
 {
 	private final Reader<PluginPlayer> reader;
 	private final BiParameterizedReadable<PluginPlayer, Player, Main> biParameterizedReadable;
 	
-	private final Map<PluginPlayerType, PluginPlayerReader<?>> readers = new HashMap<>();
-	
-	public GenericPluginPlayerReader(ObjectInput in, Versions versions) throws InvalidVersionException
+	public GenericPluginPlayerReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, versions);
+		super(readers);
 		
-		for(PluginPlayerType type : PluginPlayerType.values())
-		{
-			readers.put(type, type.getPluginReaderConstructor().newInstance(in, versions));
-		}
+		final ObjectType objectType = PluginObjectType.GENERIC_PLUGIN_PLAYER;
+		final byte version = readers.getVersions().get(objectType);
 		
-		if(versions.getGenericPluginPlayerVersion() == 0)
+		switch(version)
 		{
+		case 0:
 			this.reader = Reader.identity();
 			this.biParameterizedReadable = this::biParameterizedReadableVersion0;
-		}
-		else
-		{
-			throw new InvalidVersionException("Invalid GenericPluginPlayer version: " + versions.getGenericPluginPlayerVersion());
+			break;
+		default:
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
-	private Readable<PluginPlayer> biParameterizedReadableVersion0(Player player, Main plugin) throws IOException, ClassNotFoundException
+	private Readable<PluginPlayer> biParameterizedReadableVersion0(Player player, Main plugin)
 	{
-		return () -> readers.get(PluginPlayerType.values()[in.readInt()]).readReference(player, plugin);
+		return () -> readers
+				.getReader(PluginPlayerType.values()[in.readInt()].getReaderClass())
+				.readReference(player, plugin);
 	}
 	
 	public PluginPlayer readReference(Player player, Main plugin) throws IOException, ClassNotFoundException

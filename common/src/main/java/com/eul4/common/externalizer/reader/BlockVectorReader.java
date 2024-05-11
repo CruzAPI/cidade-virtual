@@ -1,40 +1,39 @@
 package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
-import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.type.player.CommonObjectType;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import org.bukkit.util.BlockVector;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 
 public class BlockVectorReader extends ObjectReader<BlockVector>
 {
 	private final Reader<BlockVector> reader;
 	private final Readable<BlockVector> readable;
 	
-	public BlockVectorReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
+	public BlockVectorReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, commonVersions);
+		super(readers);
 		
-		if(commonVersions.getBlockVectorVersion() == 0)
+		final ObjectType objectType = CommonObjectType.BLOCK_VECTOR;
+		final byte version = readers.getVersions().get(objectType);
+		
+		switch(version)
 		{
-			this.reader = this::readerVersion0;
+		case 0:
+			this.reader = Reader.identity();
 			this.readable = this::readableVersion0;
-		}
-		else
-		{
-			throw new InvalidVersionException("Invalid BlockVector version: " + commonVersions.getBlockVectorVersion());
+			break;
+		default:
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
-	private BlockVector readerVersion0(BlockVector blockVector) throws IOException, ClassNotFoundException
-	{
-		return blockVector;
-	}
-	
-	private BlockVector readableVersion0() throws IOException, ClassNotFoundException
+	private BlockVector readableVersion0() throws IOException
 	{
 		return new BlockVector(in.readInt(), in.readInt(), in.readInt());
 	}

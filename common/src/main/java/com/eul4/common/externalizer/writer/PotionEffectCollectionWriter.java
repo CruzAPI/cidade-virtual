@@ -1,20 +1,16 @@
 package com.eul4.common.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.util.Collection;
 
 public class PotionEffectCollectionWriter extends ObjectWriter<Collection<PotionEffect>>
 {
-	private final PotionEffectWriter potionEffectWriter;
-	
-	public PotionEffectCollectionWriter(ObjectOutput out)
+	public PotionEffectCollectionWriter(Writers writers)
 	{
-		super(out);
-		
-		this.potionEffectWriter = new PotionEffectWriter(out);
+		super(writers);
 	}
 	
 	@Override
@@ -24,7 +20,7 @@ public class PotionEffectCollectionWriter extends ObjectWriter<Collection<Potion
 		
 		for(PotionEffect potionEffect : potionEffects)
 		{
-			potionEffectWriter.writeReference(potionEffect);
+			writers.getWriter(PotionEffectWriter.class).writeReference(potionEffect);
 		}
 	}
 }

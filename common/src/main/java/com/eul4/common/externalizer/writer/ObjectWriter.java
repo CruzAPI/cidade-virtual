@@ -1,7 +1,7 @@
 package com.eul4.common.externalizer.writer;
 
+import com.eul4.common.type.player.Writers;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -11,11 +11,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public abstract class ObjectWriter<T>
 {
+	protected final Writers writers;
 	protected final ObjectOutput out;
 	
 	private final Map<T, Integer> references = new HashMap<>();
 	
 	private int currentId;
+	
+	public ObjectWriter(Writers writers)
+	{
+		this.writers = writers;
+		this.out = writers.getObjectOutput();
+	}
 	
 	public void writeReference(T reference) throws IOException
 	{

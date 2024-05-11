@@ -8,21 +8,20 @@ import com.eul4.exception.*;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
-import com.eul4.rule.attribute.GenericAttribute;
 import com.eul4.rule.Rule;
+import com.eul4.rule.attribute.GenericAttribute;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.io.Externalizable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 
-public interface Structure extends Externalizable
+public interface Structure
 {
 	UUID getUUID();
 	String getName();

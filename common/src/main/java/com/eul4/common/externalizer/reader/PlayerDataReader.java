@@ -2,7 +2,9 @@ package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.model.data.PlayerData;
-import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.type.player.CommonObjectType;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
@@ -13,7 +15,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.util.Collection;
 
 public class PlayerDataReader extends ObjectReader<PlayerData>
@@ -21,39 +22,32 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 	private final Reader<PlayerData> reader;
 	private final ParameterizedReadable<PlayerData, Plugin> parameterizedReadable;
 	
-	private final PotionEffectCollectionReader potionEffectCollectionReader;
-	private final LocationReader locationReader;
-	private final InventoryReader inventoryReader;
-	private final ItemStackReader itemStackReader;
-	
-	public PlayerDataReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
+	public PlayerDataReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, commonVersions);
+		super(readers);
 		
-		this.potionEffectCollectionReader = new PotionEffectCollectionReader(in, commonVersions);
-		this.locationReader = new LocationReader(in, commonVersions);
-		this.inventoryReader = new InventoryReader(in, commonVersions);
-		this.itemStackReader = inventoryReader.getItemStackReader();
+		final ObjectType objectType = CommonObjectType.PLAYER_DATA;
+		final byte version = readers.getVersions().get(objectType);
 		
-		switch(commonVersions.getPlayerDataVersion())
+		switch(version)
 		{
 		case 0:
 			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
 		default:
-			throw new InvalidVersionException("Invalid PlayerData version: " + commonVersions.getPlayerDataVersion());
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
-	private Readable<PlayerData> parameterizedReadableVersion0(Plugin plugin) throws IOException, ClassNotFoundException
+	private Readable<PlayerData> parameterizedReadableVersion0(Plugin plugin)
 	{
 		return () ->
 		{
-			Collection<PotionEffect> activePotionEffects = potionEffectCollectionReader.readReference();
+			Collection<PotionEffect> activePotionEffects = readers.getReader(PotionEffectCollectionReader.class).readReference();
 			boolean allowFlight = in.readBoolean();
 			int arrowsInBody = in.readInt();
-			ItemStack[] contents = inventoryReader.readReference();
+			ItemStack[] contents = readers.getReader(InventoryReader.class).readReference();
 			float exhaustion = in.readFloat();
 			float fallDistance = in.readFloat();
 			int fireTicks = in.readInt();
@@ -64,8 +58,8 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 			GameMode gameMode = GameMode.values()[in.readInt()];
 			double health = in.readDouble();
 			double healthScale = in.readDouble();
-			ItemStack itemOnCursor = itemStackReader.readReference();
-			Location location = locationReader.readReference(plugin);
+			ItemStack itemOnCursor = readers.getReader(ItemStackReader.class).readReference();
+			Location location = readers.getReader(LocationReader.class).readReference(plugin);
 			int maximumAir = in.readInt();
 			int maximumNoDamageTicks = in.readInt();
 			int noActionTicks = in.readInt();

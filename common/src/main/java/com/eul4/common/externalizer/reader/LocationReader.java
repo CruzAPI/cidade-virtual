@@ -1,7 +1,9 @@
 package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
-import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.type.player.CommonObjectType;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
@@ -9,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.util.UUID;
 
 public class LocationReader extends ObjectReader<Location>
@@ -17,18 +18,21 @@ public class LocationReader extends ObjectReader<Location>
 	private final Reader<Location> reader;
 	private final ParameterizedReadable<Location, Plugin> parameterizedReadable;
 	
-	public LocationReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
+	public LocationReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, commonVersions);
+		super(readers);
 		
-		if(commonVersions.getLocationVersion() == 0)
+		final ObjectType objectType = CommonObjectType.LOCATION;
+		final byte version = readers.getVersions().get(objectType);
+		
+		switch(version)
 		{
+		case 0:
 			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
-		}
-		else
-		{
-			throw new InvalidVersionException("Invalid Location version: " + commonVersions.getLocationVersion());
+			break;
+		default:
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	

@@ -3,36 +3,36 @@ package com.eul4.common.externalizer.reader;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.model.data.CommonPlayerData;
 import com.eul4.common.model.data.PlayerData;
-import com.eul4.common.wrapper.CommonVersions;
+import com.eul4.common.type.player.CommonObjectType;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 
 public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 {
 	private final Reader<CommonPlayerData> reader;
 	private final ParameterizedReadable<CommonPlayerData, Plugin> parameterizedReadable;
 	
-	private final PlayerDataReader playerDataReader;
-	
-	public CommonPlayerDataReader(ObjectInput in, CommonVersions commonVersions) throws InvalidVersionException
+	public CommonPlayerDataReader(Readers readers) throws InvalidVersionException
 	{
-		super(in, commonVersions);
+		super(readers);
 		
-		this.playerDataReader = new PlayerDataReader(in, commonVersions);
+		final ObjectType objectType = CommonObjectType.COMMON_PLAYER_DATA;
+		final byte version = readers.getVersions().get(objectType);
 		
-		switch(commonVersions.getCommonPlayerDataVersion())
+		switch(version)
 		{
 		case 0:
 			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
 		default:
-			throw new InvalidVersionException("Invalid CommonPlayerData version: " + commonVersions.getCommonPlayerDataVersion());
+			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
@@ -40,7 +40,7 @@ public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 	{
 		return () ->
 		{
-			PlayerData playerData = playerDataReader.readReference(plugin);
+			PlayerData playerData = readers.getReader(PlayerDataReader.class).readReference(plugin);
 			
 			return CommonPlayerData.builder()
 					.playerData(playerData)

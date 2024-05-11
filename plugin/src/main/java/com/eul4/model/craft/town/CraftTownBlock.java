@@ -1,6 +1,5 @@
 package com.eul4.model.craft.town;
 
-import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
@@ -10,18 +9,11 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serial;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 public class CraftTownBlock implements TownBlock
 {
-	@Serial
-	private static final long serialVersionUID = 1L;
-	
 	private final Town town;
 	private Block block;
 	private boolean available;
@@ -33,31 +25,6 @@ public class CraftTownBlock implements TownBlock
 		this(town);
 		this.block = block;
 		this.available = available;
-	}
-	
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-	{
-		final long version = in.readLong();
-		
-		if(version == 1L)
-		{
-			block = ((BlockSerializable) in.readObject()).getBukkitBlock(town.getPlugin().getServer());
-			available = in.readBoolean();
-		}
-		else
-		{
-			throw new RuntimeException("CraftTownBlock serial version not found: " + version);
-		}
-	}
-	
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException
-	{
-		out.writeLong(serialVersionUID);
-		
-		out.writeObject(new BlockSerializable(block));
-		out.writeBoolean(available);
 	}
 	
 	@Override

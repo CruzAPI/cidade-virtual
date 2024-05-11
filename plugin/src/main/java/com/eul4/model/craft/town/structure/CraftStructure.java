@@ -2,7 +2,6 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.common.wrapper.BlockSerializable;
 import com.eul4.enums.StructureStatus;
 import com.eul4.event.StructureConstructEvent;
 import com.eul4.exception.*;
@@ -11,9 +10,8 @@ import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
-import com.eul4.rule.attribute.GenericAttribute;
 import com.eul4.rule.Rule;
-import com.eul4.service.TownSerializer;
+import com.eul4.rule.attribute.GenericAttribute;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -28,6 +26,7 @@ import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import joptsimple.internal.Strings;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -42,17 +41,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+@Setter
 public abstract class CraftStructure implements Structure
 {
-	@Serial
-	private static final long serialVersionUID = 1L;
-	
 	@Getter
 	protected final Town town;
 	
@@ -112,50 +110,6 @@ public abstract class CraftStructure implements Structure
 		
 		town.addStructure(this);
 		scheduleBuildTaskIfPossible();
-	}
-	
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-	{
-		final TownSerializer townSerializer = town.getPlugin().getTownSerializer();
-		
-		final long version = in.readLong();
-		
-		if(version == 1L)
-		{
-			uuid = (UUID) in.readObject();
-			centerTownBlock = Objects.requireNonNull(town.getTownBlock(((BlockSerializable) in.readObject())
-					.getBukkitBlock(town.getPlugin().getServer())));
-			level = in.readInt();
-			rotation = in.readInt();
-			townBlocks = townSerializer.readStructureTownBlocks(this, in);
-			status = StructureStatus.values()[in.readInt()];
-			buildTicks = in.readInt();
-			totalBuildTicks = in.readInt();
-			hologram = (Hologram) in.readObject();
-		}
-		else
-		{
-			throw new RuntimeException("CraftStructure serial version not found: " + version);
-		}
-	}
-	
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException
-	{
-		final TownSerializer townSerializer = town.getPlugin().getTownSerializer();
-		
-		out.writeLong(serialVersionUID);
-		
-		out.writeObject(uuid);
-		out.writeObject(new BlockSerializable(centerTownBlock.getBlock()));
-		out.writeInt(level);
-		out.writeInt(rotation);
-		townSerializer.writeStructureTownBlocks(townBlocks, out);
-		out.writeInt(status.ordinal());
-		out.writeInt(buildTicks);
-		out.writeInt(totalBuildTicks);
-		out.writeObject(hologram);
 	}
 	
 	@Override
@@ -356,7 +310,6 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public void load()
 	{
-		hologram.load(town.getPlugin());
 		resetAttributes();
 		scheduleBuildTaskIfPossible();
 	}

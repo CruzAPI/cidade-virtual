@@ -15,14 +15,13 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
-import java.io.Externalizable;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-public interface Town extends Externalizable
+public interface Town
 {
 	int TOWN_RADIUS = 49;
 	int TOWN_FULL_RADIUS = 55;
@@ -67,7 +66,7 @@ public interface Town extends Externalizable
 	
 	void load();
 	
-	Map<UUID, Structure> getStructures();
+	Set<Structure> getStructures();
 	
 	int getLikes();
 	int getLikeCapacity();
@@ -121,4 +120,8 @@ public interface Town extends Externalizable
 	void setTownBlocks(Map<Block, TownBlock> townBlocks);
 	void setTownTiles(Map<Block, TownTile> townTiles);
 	void setStructures(Set<Structure> structures);
+	void setTownHall(TownHall townHall);
+	void setLikes(int likes);
+	void setDislikes(int dislike);
+	void setHardnessField(double hardness);
 }

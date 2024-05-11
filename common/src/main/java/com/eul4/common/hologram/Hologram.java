@@ -122,6 +122,7 @@ public class Hologram
 		}
 	}
 	
+	@Getter
 	public class TranslatedHologramLine
 	{
 		private final ArmorStand armorStand;

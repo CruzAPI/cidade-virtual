@@ -8,23 +8,19 @@ import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Generator;
-import com.eul4.rule.attribute.GeneratorAttribute;
 import com.eul4.rule.Rule;
+import com.eul4.rule.attribute.GeneratorAttribute;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serial;
 import java.util.Optional;
 
 @Getter
+@Setter
 public abstract class CraftGenerator extends CraftStructure implements Generator
 {
-	@Serial
-	private static final long serialVersionUID = 1L;
-	
 	@Getter
 	protected int balance;
 	
@@ -44,33 +40,6 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 		super(town, centerTownBlock, isBuilt);
 		
 		scheduleGenerationTaskIfPossible();
-	}
-	
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
-	{
-		super.readExternal(in);
-		
-		final long version = in.readLong();
-		
-		if(version == 1L)
-		{
-			balance = in.readInt();
-		}
-		else
-		{
-			throw new RuntimeException("CraftFarmStructure serial version not found: " + version);
-		}
-	}
-	
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException
-	{
-		super.writeExternal(out);
-		
-		out.writeLong(serialVersionUID);
-		
-		out.writeInt(balance);
 	}
 	
 	private void scheduleGenerationTaskIfPossible()

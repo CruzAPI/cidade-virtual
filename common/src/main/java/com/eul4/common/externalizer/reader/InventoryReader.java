@@ -19,7 +19,7 @@ public class InventoryReader extends ObjectReader<ItemStack[]>
 	
 	public InventoryReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, ItemStack[].class);
 		
 		final ObjectType objectType = CommonObjectType.INVENTORY;
 		final byte version = readers.getVersions().get(objectType);

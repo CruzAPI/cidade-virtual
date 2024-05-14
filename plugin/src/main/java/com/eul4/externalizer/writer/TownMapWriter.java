@@ -3,21 +3,25 @@ package com.eul4.externalizer.writer;
 import com.eul4.common.externalizer.writer.ObjectWriter;
 import com.eul4.common.type.player.Writers;
 import com.eul4.model.town.Town;
+import com.eul4.wrapper.TownMap;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
 
-public class TownMapWriter extends ObjectWriter<Map<UUID, Town>>
+public class TownMapWriter extends ObjectWriter<TownMap>
 {
 	public TownMapWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, TownMap.class);
 	}
 	
 	@Override
-	protected void writeObject(Map<UUID, Town> townMap) throws IOException
+	protected void writeObject(TownMap townMap) throws IOException
 	{
-		//TODO: write fields...
+		out.writeInt(townMap.size());
+		
+		for(Town town : townMap.values())
+		{
+			writers.getWriter(TownWriter.class).writeReference(town);
+		}
 	}
 }

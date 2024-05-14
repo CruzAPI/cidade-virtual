@@ -9,7 +9,7 @@ public class AdminWriter extends PluginPlayerWriter<Admin>
 {
 	public AdminWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, Admin.class);
 	}
 	
 	@Override

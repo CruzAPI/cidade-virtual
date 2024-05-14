@@ -21,7 +21,7 @@ public class GenericStructureReader extends ObjectReader<Structure>
 	
 	public GenericStructureReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, Structure.class);
 		
 		final ObjectType objectType = PluginObjectType.GENERIC_STRUCTURE;
 		final byte version = readers.getVersions().get(objectType);
@@ -29,7 +29,7 @@ public class GenericStructureReader extends ObjectReader<Structure>
 		switch(version)
 		{
 		case 0:
-			this.reader = Reader.identity();
+			this.reader = this::readerVersion0;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
 		default:
@@ -37,11 +37,26 @@ public class GenericStructureReader extends ObjectReader<Structure>
 		}
 	}
 	
+	private Structure readerVersion0(Structure structure) throws IOException, ClassNotFoundException
+	{
+		getReaderAndWriteReference(structure, structure.getStructureType().getStructureClass());
+		
+		return structure;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <S extends Structure> void getReaderAndWriteReference(Structure structure, Class<S> type) throws IOException, ClassNotFoundException
+	{
+		((StructureReader<S>) readers.getReader(structure.getStructureType().getReaderClass())).readReference(type.cast(structure));
+	}
+	
 	private Readable<Structure> parameterizedReadableVersion0(Town town)
 	{
-		return () -> readers
+		return () -> (Structure) readers
 				.getReader(StructureType.values()[in.readInt()].getReaderClass())
-				.readReference(town);
+				.getParameterizedReadable()
+				.getReadable(town)
+				.read();
 	}
 	
 	public Structure readReference(Town town) throws IOException, ClassNotFoundException

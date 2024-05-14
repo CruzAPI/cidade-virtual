@@ -5,7 +5,8 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
-import lombok.RequiredArgsConstructor;
+import com.eul4.wrapper.TownTileFields;
+import lombok.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -18,21 +19,27 @@ import java.util.Optional;
 import static org.bukkit.block.BlockFace.*;
 
 @RequiredArgsConstructor
+@Getter
+@Setter
 public class CraftTownTile implements TownTile
 {
+	@NonNull
 	private final Town town;
-	private Block block;
+	@NonNull
+	private final Block block;
+	
 	private boolean isInTownBorder;
 	private boolean bought;
 	
 	private Hologram hologram;
 	
+	private boolean loaded;
+	
 	public CraftTownTile(Town town, Block block, boolean isInTownBorder)
 	{
-		this.town = town;
-		this.block = block;
-		
+		this(town, block);
 		setInTownBorder(isInTownBorder);
+		loaded = true;
 	}
 	
 	@Override
@@ -82,7 +89,7 @@ public class CraftTownTile implements TownTile
 	@Override
 	public TownTile getRelative(BlockFace direction)
 	{
-		return town.getTownTiles().get(getBlock().getRelative(direction, TownTile.DIAMETER));
+		return town.getTownTileMap().get(getBlock().getRelative(direction, TownTile.DIAMETER));
 	}
 	
 	@Override
@@ -138,5 +145,26 @@ public class CraftTownTile implements TownTile
 	{
 		Optional.ofNullable(hologram).ifPresent(Hologram::remove);
 		hologram = null;
+	}
+	
+	@Override
+	public void loadFields(TownTileFields fields)
+	{
+		if(loaded)
+		{
+			return;
+		}
+		
+		hologram = fields.hologram;
+		bought = fields.bought;
+		isInTownBorder = fields.isInTownBorder;
+		
+		loaded = true;
+	}
+	
+	@Builder
+	public static CraftTownTile createTile(@NonNull Town town, @NonNull Block block)
+	{
+		return new CraftTownTile(town, block);
 	}
 }

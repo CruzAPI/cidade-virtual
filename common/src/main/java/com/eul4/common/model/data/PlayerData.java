@@ -1,5 +1,6 @@
 package com.eul4.common.model.data;
 
+import com.eul4.common.wrapper.PotionEffectCollection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class PlayerData
 {
-	private Collection<PotionEffect> activePotionEffects;
+	private PotionEffectCollection activePotionEffects;
 	private boolean allowFlight;
 	private int arrowsInBody;
 	private ItemStack[] contents;
@@ -44,7 +45,7 @@ public class PlayerData
 	
 	public PlayerData(Player player)
 	{
-		activePotionEffects = player.getActivePotionEffects();
+		activePotionEffects = new PotionEffectCollection(player.getActivePotionEffects());
 		allowFlight = player.getAllowFlight();
 		arrowsInBody = player.getArrowsInBody();
 		contents = player.getInventory().getContents();

@@ -20,7 +20,7 @@ public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 	
 	public CommonPlayerDataReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, CommonPlayerData.class);
 		
 		final ObjectType objectType = CommonObjectType.COMMON_PLAYER_DATA;
 		final byte version = readers.getVersions().get(objectType);

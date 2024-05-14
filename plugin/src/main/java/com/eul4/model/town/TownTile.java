@@ -1,5 +1,7 @@
 package com.eul4.model.town;
 
+import com.eul4.common.hologram.Hologram;
+import com.eul4.wrapper.TownTileFields;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
@@ -19,4 +21,11 @@ public interface TownTile
 	List<TownTile> getNeighboringTiles();
 	boolean isInTownBorder();
 	void setInTownBorder(boolean value);
+	
+	boolean isBought();
+	Hologram getHologram();
+	
+	void loadFields(TownTileFields fields);
+	
+	Town getTown();
 }

@@ -10,17 +10,19 @@ import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.DislikeGenerator;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 
 import java.io.IOException;
 
 public class DislikeGeneratorReader extends GeneratorReader<DislikeGenerator>
 {
 	private final Reader<DislikeGenerator> reader;
+	@Getter
 	private final ParameterizedReadable<DislikeGenerator, Town> parameterizedReadable;
 	
 	public DislikeGeneratorReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, DislikeGenerator.class);
 		
 		final ObjectType objectType = PluginObjectType.DISLIKE_GENERATOR;
 		final byte version = readers.getVersions().get(objectType);

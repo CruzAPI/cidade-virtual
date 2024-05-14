@@ -9,7 +9,7 @@ public class AttackerWriter extends PluginPlayerWriter<Attacker>
 {
 	public AttackerWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, Attacker.class);
 	}
 	
 	@Override

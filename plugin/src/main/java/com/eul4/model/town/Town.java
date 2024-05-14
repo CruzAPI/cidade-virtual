@@ -4,11 +4,15 @@ import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.exception.*;
+import com.eul4.externalizer.writer.TownBlockMapWriter;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.player.Attacker;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
+import com.eul4.wrapper.StructureSet;
+import com.eul4.wrapper.TownBlockMap;
+import com.eul4.wrapper.TownTileMap;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -42,7 +46,6 @@ public interface Town
 		return Optional.ofNullable(getStaticTownBlock(block));
 	}
 	
-	Map<Block, TownBlock> getTownBlocks();
 	TownBlock getTownBlock(Block block);
 	Optional<TownBlock> findTownBlock(Block block);
 	Location getLocation();
@@ -62,11 +65,9 @@ public interface Town
 	OfflinePlayer getOwner();
 	Optional<Player> getPlayer();
 	
-	Map<Block, TownTile> getTownTiles();
 	
 	void load();
 	
-	Set<Structure> getStructures();
 	
 	int getLikes();
 	int getLikeCapacity();
@@ -117,11 +118,17 @@ public interface Town
 	
 	UUID getOwnerUUID();
 	
-	void setTownBlocks(Map<Block, TownBlock> townBlocks);
-	void setTownTiles(Map<Block, TownTile> townTiles);
-	void setStructures(Set<Structure> structures);
+	TownTileMap getTownTileMap();
+	TownBlockMap getTownBlockMap();
+	StructureSet getStructureSet();
+	
+	void setTownBlockMap(TownBlockMap townBlockMap);
+	void setTownTileMap(TownTileMap townTileMap);
+	void setStructureSet(StructureSet structureSet);
 	void setTownHall(TownHall townHall);
 	void setLikes(int likes);
 	void setDislikes(int dislike);
 	void setHardnessField(double hardness);
+	
+	Block getBlock();
 }

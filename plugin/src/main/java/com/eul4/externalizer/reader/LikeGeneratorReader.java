@@ -10,17 +10,19 @@ import com.eul4.model.craft.town.structure.CraftLikeGenerator;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.LikeGenerator;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 
 import java.io.IOException;
 
 public class LikeGeneratorReader extends GeneratorReader<LikeGenerator>
 {
 	private final Reader<LikeGenerator> reader;
+	@Getter
 	private final ParameterizedReadable<LikeGenerator, Town> parameterizedReadable;
 	
 	public LikeGeneratorReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, LikeGenerator.class);
 		
 		final ObjectType objectType = PluginObjectType.LIKE_GENERATOR;
 		final byte version = readers.getVersions().get(objectType);

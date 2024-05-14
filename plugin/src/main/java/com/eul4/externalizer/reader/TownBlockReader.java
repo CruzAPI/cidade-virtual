@@ -21,7 +21,7 @@ public class TownBlockReader extends ObjectReader<TownBlock>
 	
 	public TownBlockReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, TownBlock.class);
 		
 		final ObjectType objectType = PluginObjectType.TOWN_BLOCK;
 		final byte version = readers.getVersions().get(objectType);
@@ -37,17 +37,24 @@ public class TownBlockReader extends ObjectReader<TownBlock>
 		}
 	}
 	
-	private TownBlock readerVersion0(TownBlock townBlock)
+	private TownBlock readerVersion0(TownBlock townBlock) throws IOException, ClassNotFoundException
 	{
-		//TODO: read TownBlock fields...
+		townBlock.setStructure(readers.getReader(GenericStructureReader.class).readReference(townBlock.getTown()));
 		return townBlock;
 	}
 	
 	private Readable<TownBlock> parameterizedReadableVersion0(Town town)
 	{
-		return () -> new CraftTownBlock(town,
-				town.getPlugin().getTownWorld().getBlockAt(in.readInt(), Town.Y, in.readInt()),
+		return () ->
+		{
+			final int position = in.readUnsignedShort();
+			final int relativeX = position % Town.TOWN_FULL_DIAMATER - Town.TOWN_FULL_RADIUS;
+			final int relativeZ = position / Town.TOWN_FULL_DIAMATER - Town.TOWN_FULL_RADIUS;
+			
+			return new CraftTownBlock(town,
+				town.getBlock().getRelative(relativeX, 0, relativeZ),
 				in.readBoolean());
+		};
 	}
 	
 	public TownBlock readReference(Town town) throws IOException, ClassNotFoundException

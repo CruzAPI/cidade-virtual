@@ -11,6 +11,7 @@ import com.eul4.common.wrapper.Reader;
 import com.eul4.model.craft.player.CraftAdmin;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.model.player.Admin;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -18,11 +19,12 @@ import java.io.IOException;
 public class AdminReader extends PluginPlayerReader<Admin>
 {
 	private final Reader<Admin> reader;
+	@Getter
 	private final BiParameterizedReadable<Admin, Player, Main> biParameterizedReadable;
 	
 	public AdminReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, Admin.class);
 		
 		final ObjectType objectType = PluginObjectType.ADMIN;
 		final byte version = readers.getVersions().get(objectType);
@@ -30,7 +32,7 @@ public class AdminReader extends PluginPlayerReader<Admin>
 		switch(version)
 		{
 		case 0:
-			this.reader = this::readerVersion0;
+			this.reader = Reader.identity();
 			this.biParameterizedReadable = this::biParameterizedReadableVersion0;
 			break;
 		default:
@@ -43,12 +45,6 @@ public class AdminReader extends PluginPlayerReader<Admin>
 		return () -> new CraftAdmin(player, plugin);
 	}
 	
-	private Admin readerVersion0(Admin admin)
-	{
-		//TODO: read admin fields...
-		return admin;
-	}
-	
 	@Override
 	public Admin readReference(Player player, Common plugin) throws IOException, ClassNotFoundException
 	{
@@ -59,7 +55,6 @@ public class AdminReader extends PluginPlayerReader<Admin>
 	protected Admin readObject(Admin admin) throws IOException, ClassNotFoundException
 	{
 		super.readObject(admin);
-		
 		return reader.readObject(admin);
 	}
 }

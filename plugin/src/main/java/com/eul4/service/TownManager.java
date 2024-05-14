@@ -4,9 +4,8 @@ import com.eul4.Main;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.town.Town;
-import com.eul4.model.town.TownBlock;
+import com.eul4.wrapper.TownMap;
 import com.fastasyncworldedit.core.FaweAPI;
-import com.google.common.io.ByteStreams;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
@@ -23,8 +22,9 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
-import java.io.*;
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,12 +34,17 @@ public class TownManager
 	private final Main plugin;
 	
 	@Getter
-	private final Map<UUID, Town> towns;
+	private TownMap towns;
 	
-	public TownManager(Main plugin) throws Exception
+	public void loadTowns() throws Exception
 	{
-		this.plugin = plugin;
-		this.towns = plugin.getTownsFiler().loadTownsFromDisk();;
+		if(towns != null)
+		{
+			throw new Exception("Towns already loaded.");
+		}
+		
+		this.towns = plugin.getTownsFiler().loadTownsFromDisk();
+		this.towns.values().forEach(Town::load);
 	}
 	
 	public Town getOrCreateNewTown(UUID uuid) throws CannotConstructException, IOException
@@ -136,6 +141,11 @@ public class TownManager
 	
 	public void reloadTowns()
 	{
+		if(towns == null)
+		{
+			return;
+		}
+		
 		towns.values().forEach(Town::reloadAllStructureAttributes);
 	}
 }

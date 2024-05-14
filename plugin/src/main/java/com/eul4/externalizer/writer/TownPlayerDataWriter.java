@@ -10,7 +10,7 @@ public class TownPlayerDataWriter extends ObjectWriter<TownPlayerData>
 {
 	public TownPlayerDataWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, TownPlayerData.class);
 	}
 	
 	@Override

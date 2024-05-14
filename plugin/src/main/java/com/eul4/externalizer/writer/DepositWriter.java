@@ -7,14 +7,14 @@ import java.io.IOException;
 
 public abstract class DepositWriter<D extends Deposit> extends StructureWriter<D>
 {
-	public DepositWriter(Writers writers)
+	public DepositWriter(Writers writers, Class<D> type)
 	{
-		super(writers);
+		super(writers, type);
 	}
 	
 	@Override
 	protected void writeObject(D deposit) throws IOException
 	{
-		//TODO: write fields...
+		super.writeObject(deposit);
 	}
 }

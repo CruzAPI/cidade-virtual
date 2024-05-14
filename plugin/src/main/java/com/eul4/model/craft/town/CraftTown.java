@@ -19,6 +19,9 @@ import com.eul4.model.town.structure.DislikeDeposit;
 import com.eul4.model.town.structure.LikeDeposit;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
+import com.eul4.wrapper.StructureSet;
+import com.eul4.wrapper.TownBlockMap;
+import com.eul4.wrapper.TownTileMap;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +32,10 @@ import org.bukkit.entity.Player;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 @Getter
@@ -43,11 +49,10 @@ public class CraftTown implements Town
 	
 	private final Main plugin;
 	
-	private Map<Block, TownBlock> townBlocks;
+	private TownBlockMap townBlockMap;
+	private TownTileMap townTileMap;
+	private StructureSet structureSet;
 	
-	private Map<Block, TownTile> townTiles;
-	
-	private Set<Structure> structures;
 	private transient Structure movingStructure;
 	private transient ClipboardHolder movingStructureClipboardHolder;
 	
@@ -81,24 +86,24 @@ public class CraftTown implements Town
 	{
 		this(owner.getUniqueId(), block, plugin);
 		
-		this.townBlocks = getInitialTownBlocks();
-		this.townTiles = getInitialTownTiles();
-		this.structures = new HashSet<>();
+		this.townBlockMap = getInitialTownBlocks();
+		this.townTileMap = getInitialTownTiles();
+		this.structureSet = new StructureSet();
 		
 		createInitialStructures();
 		reloadAllStructureAttributes();
 		
-		TOWN_BLOCKS.putAll(townBlocks);
+		TOWN_BLOCKS.putAll(townBlockMap);
 	}
 	
-	private Map<Block, TownBlock> getInitialTownBlocks()
+	private TownBlockMap getInitialTownBlocks()
 	{
-		if(townBlocks != null)
+		if(townBlockMap != null)
 		{
-			return townBlocks;
+			return townBlockMap;
 		}
 		
-		Map<Block, TownBlock> townBlocks = new HashMap<>();
+		TownBlockMap townBlockMap = new TownBlockMap();
 		
 		for(int x = -Town.TOWN_FULL_RADIUS; x <= Town.TOWN_FULL_RADIUS; x++)
 		{
@@ -106,21 +111,21 @@ public class CraftTown implements Town
 			{
 				Block block = getLocation().getBlock().getRelative(x, 0, z);
 				
-				townBlocks.put(block, new CraftTownBlock(this, block, isInInitialAvailableRadius(x, z)));
+				townBlockMap.put(block, new CraftTownBlock(this, block, isInInitialAvailableRadius(x, z)));
 			}
 		}
 		
-		return townBlocks;
+		return townBlockMap;
 	}
 	
-	private Map<Block, TownTile> getInitialTownTiles()
+	private TownTileMap getInitialTownTiles()
 	{
-		if(townTiles != null)
+		if(townTileMap != null)
 		{
-			return townTiles;
+			return townTileMap;
 		}
 		
-		Map<Block, TownTile> townTiles = new HashMap<>();
+		TownTileMap townTileMap = new TownTileMap();
 		
 		final int rings = 4;
 		final int skipRing = 1;
@@ -136,7 +141,7 @@ public class CraftTown implements Town
 		for(int i = minI; i < maxI; i++)
 		{
 			Block block = getLocation().getBlock().getRelative(x * TownTile.DIAMETER, 0, z * TownTile.DIAMETER);
-			townTiles.put(block, new CraftTownTile(this, block, isInTownBorder(i, x, z)));
+			townTileMap.put(block, new CraftTownTile(this, block, isInTownBorder(i, x, z)));
 			
 			if(x == z || x < 0 && x == -z || x > 0 && x == 1 - z)
 			{
@@ -149,7 +154,7 @@ public class CraftTown implements Town
 			z += dz;
 		}
 		
-		return townTiles;
+		return townTileMap;
 	}
 	
 	public void createInitialStructures() throws CannotConstructException, IOException
@@ -268,7 +273,7 @@ public class CraftTown implements Town
 	public TownBlock getTownBlock(Block block)
 	{
 		final Block fixedBlockY = block.getWorld().getBlockAt(block.getX(), Y, block.getZ());
-		return townBlocks.get(fixedBlockY);
+		return townBlockMap.get(fixedBlockY);
 	}
 	
 	@Override
@@ -286,16 +291,16 @@ public class CraftTown implements Town
 	@Override
 	public TownTile getTile(Point point)
 	{
-		return townTiles.get(getLocation().getBlock()
+		return townTileMap.get(getLocation().getBlock()
 				.getRelative(point.x * TownTile.DIAMETER, 0, point.y * TownTile.DIAMETER));
 	}
 	
 	@Override
 	public void load()
 	{
-		structures.forEach(Structure::load);
+		structureSet.forEach(Structure::load);
 		reloadAllStructureAttributes();
-		TOWN_BLOCKS.putAll(townBlocks);
+		TOWN_BLOCKS.putAll(townBlockMap);
 	}
 	
 	@Override
@@ -313,7 +318,7 @@ public class CraftTown implements Town
 	@Override
 	public void addStructure(Structure structure)
 	{
-		structures.add(structure);
+		structureSet.add(structure);
 	}
 	
 	@Override
@@ -365,7 +370,7 @@ public class CraftTown implements Town
 	{
 		int likeCapacity = townHall.getLikeCapacity();
 		
-		for(Structure structure : structures)
+		for(Structure structure : structureSet)
 		{
 			if(structure instanceof LikeDeposit likeDeposit)
 			{
@@ -380,7 +385,7 @@ public class CraftTown implements Town
 	{
 		int dislikeCapacity = townHall.getDislikeCapacity();
 		
-		for(Structure structure : structures)
+		for(Structure structure : structureSet)
 		{
 			if(structure instanceof DislikeDeposit dislikeDeposit)
 			{
@@ -394,7 +399,7 @@ public class CraftTown implements Town
 	@Override
 	public void reloadAllStructureAttributes()
 	{
-		structures.forEach(Structure::reloadAttributes);
+		structureSet.forEach(Structure::reloadAttributes);
 		resetAttributes();
 	}
 	
@@ -409,7 +414,7 @@ public class CraftTown implements Town
 	{
 		int count = 0;
 		
-		for(Structure structure : structures)
+		for(Structure structure : structureSet)
 		{
 			if(structure.getStructureType() == structureType)
 			{

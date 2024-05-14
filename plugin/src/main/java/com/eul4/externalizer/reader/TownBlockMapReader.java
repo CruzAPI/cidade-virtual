@@ -2,28 +2,26 @@ package com.eul4.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.ObjectReader;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.type.player.PluginObjectType;
-import org.bukkit.block.Block;
+import com.eul4.wrapper.TownBlockMap;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-public class TownBlockMapReader extends ObjectReader<Map<Block, TownBlock>>
+public class TownBlockMapReader extends ObjectReader<TownBlockMap>
 {
-	private final Reader<Map<Block, TownBlock>> reader;
-	private final ParameterizedReadable<Map<Block, TownBlock>, Town> parameterizedReadable;
+	private final Reader<TownBlockMap> reader;
+	private final ParameterizedReadable<TownBlockMap, Town> parameterizedReadable;
 	
 	public TownBlockMapReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, TownBlockMap.class);
 		
 		final ObjectType objectType = PluginObjectType.TOWN_BLOCK_MAP;
 		final byte version = readers.getVersions().get(objectType);
@@ -39,11 +37,11 @@ public class TownBlockMapReader extends ObjectReader<Map<Block, TownBlock>>
 		}
 	}
 	
-	private Readable<Map<Block, TownBlock>> parameterizedReadableVersion0(Town town)
+	private Readable<TownBlockMap> parameterizedReadableVersion0(Town town)
 	{
 		return () ->
 		{
-			Map<Block, TownBlock> townBlockMap = new HashMap<>();
+			TownBlockMap townBlockMap = new TownBlockMap();
 			
 			int size = in.readInt();
 			
@@ -57,13 +55,13 @@ public class TownBlockMapReader extends ObjectReader<Map<Block, TownBlock>>
 		};
 	}
 	
-	public Map<Block, TownBlock> readReference(Town town) throws IOException, ClassNotFoundException
+	public TownBlockMap readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
 	}
 	
 	@Override
-	protected Map<Block, TownBlock> readObject(Map<Block, TownBlock> townBlockMap) throws IOException, ClassNotFoundException
+	protected TownBlockMap readObject(TownBlockMap townBlockMap) throws IOException, ClassNotFoundException
 	{
 		return reader.readObject(townBlockMap);
 	}

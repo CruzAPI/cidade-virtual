@@ -75,7 +75,7 @@ public class CraftTownBlock implements TownBlock
 		
 		Block tileBlock = centerBlock.getRelative(tileBlockX, 0, tileBlockZ);
 		
-		return town.getTownTiles().get(tileBlock);
+		return town.getTownTileMap().get(tileBlock);
 	}
 	
 	@Override

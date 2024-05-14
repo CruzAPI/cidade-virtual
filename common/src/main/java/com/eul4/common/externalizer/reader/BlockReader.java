@@ -20,7 +20,7 @@ public class BlockReader extends ObjectReader<Block>
 	
 	public BlockReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, Block.class);
 		
 		final ObjectType objectType = CommonObjectType.BLOCK;
 		final byte version = readers.getVersions().get(objectType);

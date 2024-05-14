@@ -11,9 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.entity.ArmorStand;
 
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 @Getter
@@ -154,6 +152,21 @@ public class Hologram
 			return LegacyComponentSerializer.legacySection().serialize(message == null
 					? this.armorStand.customName()
 					: message.translate(locale, args));
+		}
+		
+		public Common getPlugin()
+		{
+			return plugin;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return Optional
+					.ofNullable(armorStand)
+					.map(ArmorStand::getUniqueId)
+					.map(UUID::toString)
+					.orElse("null");
 		}
 	}
 }

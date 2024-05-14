@@ -7,14 +7,15 @@ import java.io.IOException;
 
 public abstract class GeneratorWriter<G extends Generator> extends StructureWriter<G>
 {
-	public GeneratorWriter(Writers writers)
+	public GeneratorWriter(Writers writers, Class<G> type)
 	{
-		super(writers);
+		super(writers, type);
 	}
 	
 	@Override
 	protected void writeObject(G generator) throws IOException
 	{
+		super.writeObject(generator);
 		out.writeInt(generator.getBalance());
 	}
 }

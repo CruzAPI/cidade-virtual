@@ -9,12 +9,12 @@ public class LikeGeneratorWriter extends GeneratorWriter<LikeGenerator>
 {
 	public LikeGeneratorWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, LikeGenerator.class);
 	}
 	
 	@Override
 	protected void writeObject(LikeGenerator likeGenerator) throws IOException
 	{
-		//TODO: write fields...
+		super.writeObject(likeGenerator);
 	}
 }

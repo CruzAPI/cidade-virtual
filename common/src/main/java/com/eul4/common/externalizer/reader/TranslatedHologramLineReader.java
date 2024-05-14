@@ -3,8 +3,8 @@ package com.eul4.common.externalizer.reader;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.type.player.CommonObjectType;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
@@ -20,7 +20,7 @@ public class TranslatedHologramLineReader extends ObjectReader<Hologram.Translat
 	
 	public TranslatedHologramLineReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, Hologram.TranslatedHologramLine.class);
 		
 		final ObjectType objectType = CommonObjectType.TRANSLATED_HOLOGRAM_LINE;
 		final byte version = readers.getVersions().get(objectType);

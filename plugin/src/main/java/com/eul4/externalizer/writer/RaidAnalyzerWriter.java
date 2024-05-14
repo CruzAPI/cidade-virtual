@@ -9,7 +9,7 @@ public class RaidAnalyzerWriter extends PluginPlayerWriter<RaidAnalyzer>
 {
 	public RaidAnalyzerWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, RaidAnalyzer.class);
 	}
 	
 	@Override

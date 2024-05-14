@@ -1,13 +1,16 @@
 package com.eul4.externalizer.reader;
 
+import com.eul4.Main;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.CommonPlayerReader;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
+import com.eul4.common.wrapper.BiParameterizedReadable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
 import com.eul4.type.player.PluginObjectType;
+import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
@@ -15,9 +18,9 @@ public abstract class PluginPlayerReader<P extends PluginPlayer> extends CommonP
 {
 	private final Reader<P> reader;
 	
-	public PluginPlayerReader(Readers readers) throws InvalidVersionException
+	public PluginPlayerReader(Readers readers, Class<P> type) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, type);
 		
 		final ObjectType objectType = PluginObjectType.PLUGIN_PLAYER;
 		final byte version = readers.getVersions().get(objectType);
@@ -40,6 +43,8 @@ public abstract class PluginPlayerReader<P extends PluginPlayer> extends CommonP
 		
 		return pluginPlayer;
 	}
+	
+	public abstract BiParameterizedReadable<P, Player, Main> getBiParameterizedReadable();
 	
 	@Override
 	protected P readObject(P pluginPlayer) throws IOException, ClassNotFoundException

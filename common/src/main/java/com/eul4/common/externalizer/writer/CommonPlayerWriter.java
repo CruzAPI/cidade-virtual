@@ -7,9 +7,9 @@ import java.io.IOException;
 
 public abstract class CommonPlayerWriter<P extends CommonPlayer> extends ObjectWriter<P>
 {
-	public CommonPlayerWriter(Writers writers)
+	public CommonPlayerWriter(Writers writers, Class<P> type)
 	{
-		super(writers);
+		super(writers, type);
 	}
 	
 	@Override

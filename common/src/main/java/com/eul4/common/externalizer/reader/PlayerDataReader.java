@@ -3,19 +3,18 @@ package com.eul4.common.externalizer.reader;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.model.data.PlayerData;
 import com.eul4.common.type.player.CommonObjectType;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
+import com.eul4.common.wrapper.PotionEffectCollection;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
 
 import java.io.IOException;
-import java.util.Collection;
 
 public class PlayerDataReader extends ObjectReader<PlayerData>
 {
@@ -24,7 +23,7 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 	
 	public PlayerDataReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, PlayerData.class);
 		
 		final ObjectType objectType = CommonObjectType.PLAYER_DATA;
 		final byte version = readers.getVersions().get(objectType);
@@ -44,7 +43,7 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 	{
 		return () ->
 		{
-			Collection<PotionEffect> activePotionEffects = readers.getReader(PotionEffectCollectionReader.class).readReference();
+			PotionEffectCollection activePotionEffects = readers.getReader(PotionEffectCollectionReader.class).readReference();
 			boolean allowFlight = in.readBoolean();
 			int arrowsInBody = in.readInt();
 			ItemStack[] contents = readers.getReader(InventoryReader.class).readReference();

@@ -11,6 +11,7 @@ import com.eul4.common.wrapper.Reader;
 import com.eul4.model.craft.player.CraftTownPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
@@ -18,11 +19,12 @@ import java.io.IOException;
 public class TownPlayerReader extends PluginPlayerReader<TownPlayer>
 {
 	private final Reader<TownPlayer> reader;
+	@Getter
 	private final BiParameterizedReadable<TownPlayer, Player, Main> biParameterizedReadable;
 	
 	public TownPlayerReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, TownPlayer.class);
 		
 		final ObjectType objectType = PluginObjectType.TOWN_PLAYER;
 		final byte version = readers.getVersions().get(objectType);
@@ -45,7 +47,6 @@ public class TownPlayerReader extends PluginPlayerReader<TownPlayer>
 	
 	private TownPlayer readerVersion0(TownPlayer townPlayer)
 	{
-		//TODO: read TownPlayer fields...
 		return townPlayer;
 	}
 	

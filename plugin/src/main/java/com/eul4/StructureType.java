@@ -93,8 +93,8 @@ public enum StructureType
 	private final Class<? extends Structure> structureClass;
 	private final StructureInstantiation instantiation;
 	private final Function<Town, ? extends Structure> newStructureTown;
-	private final Class<? extends StructureWriter<?>> writerClass;
-	private final Class<? extends StructureReader<?>> readerClass;
+	private final Class<? extends StructureWriter<? extends Structure>> writerClass;
+	private final Class<? extends StructureReader<? extends Structure>> readerClass;
 	private final BiFunction<CommonPlayer, Structure, StructureGui> newStructureGui;
 	private final Function<Main, Rule<? extends GenericAttribute>> ruleFunction;
 	private final TextColor color;

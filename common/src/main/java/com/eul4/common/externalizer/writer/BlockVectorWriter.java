@@ -9,7 +9,7 @@ public class BlockVectorWriter extends ObjectWriter<BlockVector>
 {
 	public BlockVectorWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, BlockVector.class);
 	}
 	
 	@Override

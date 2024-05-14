@@ -11,7 +11,7 @@ public class InventoryWriter extends ObjectWriter<ItemStack[]>
 {
 	public InventoryWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, ItemStack[].class);
 	}
 	
 	@Override

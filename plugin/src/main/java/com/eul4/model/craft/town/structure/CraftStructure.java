@@ -12,6 +12,7 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.GenericAttribute;
+import com.eul4.wrapper.TownBlockSet;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -44,11 +45,10 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Setter
+@Getter
 public abstract class CraftStructure implements Structure
 {
 	@Getter
@@ -62,7 +62,7 @@ public abstract class CraftStructure implements Structure
 	private int rotation;
 	
 	@Getter
-	private Set<TownBlock> townBlocks = new HashSet<>();
+	private TownBlockSet townBlockSet = new TownBlockSet();
 	
 	@Getter
 	protected StructureStatus status;
@@ -202,7 +202,7 @@ public abstract class CraftStructure implements Structure
 		final int relativeMinZ = minZ - originZ;
 		final int relativeMaxZ = maxZ - originZ;
 		
-		Set<TownBlock> townBlocks = new HashSet<>();
+		TownBlockSet townBlockSet = new TownBlockSet();
 		
 		for(int x = relativeMinX; x <= relativeMaxX; x++)
 		{
@@ -210,7 +210,7 @@ public abstract class CraftStructure implements Structure
 			{
 				TownBlock townBlock = town.getTownBlock(center.getRelative(x, 0, z));
 				
-				townBlocks.add(townBlock);
+				townBlockSet.add(townBlock);
 				
 				if(townBlock == null || !townBlock.isAvailable()
 						|| (townBlock.hasStructure() && townBlock.getStructure() != this))
@@ -220,11 +220,11 @@ public abstract class CraftStructure implements Structure
 			}
 		}
 		
-		this.townBlocks.removeAll(townBlocks);
-		this.townBlocks.forEach(TownBlock::reset);
+		this.townBlockSet.removeAll(townBlockSet);
+		this.townBlockSet.forEach(TownBlock::reset);
 		
-		this.townBlocks = townBlocks;
-		this.townBlocks.forEach(townBlock -> townBlock.setStructure(this));
+		this.townBlockSet = townBlockSet;
+		this.townBlockSet.forEach(townBlock -> townBlock.setStructure(this));
 		
 		town.getPlugin().getServer().getPluginManager().callEvent(new StructureConstructEvent(this));
 		

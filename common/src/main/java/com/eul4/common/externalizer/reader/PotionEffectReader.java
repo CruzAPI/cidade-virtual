@@ -18,7 +18,7 @@ public class PotionEffectReader extends ObjectReader<PotionEffect>
 	
 	public PotionEffectReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, PotionEffect.class);
 		
 		final ObjectType objectType = CommonObjectType.POTION_EFFECT;
 		final byte version = readers.getVersions().get(objectType);

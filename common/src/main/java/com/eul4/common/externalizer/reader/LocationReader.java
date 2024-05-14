@@ -20,7 +20,7 @@ public class LocationReader extends ObjectReader<Location>
 	
 	public LocationReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, Location.class);
 		
 		final ObjectType objectType = CommonObjectType.LOCATION;
 		final byte version = readers.getVersions().get(objectType);

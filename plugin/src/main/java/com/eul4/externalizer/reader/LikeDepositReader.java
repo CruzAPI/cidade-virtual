@@ -1,8 +1,8 @@
 package com.eul4.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
@@ -10,17 +10,19 @@ import com.eul4.model.craft.town.structure.CraftLikeDeposit;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.LikeDeposit;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 
 import java.io.IOException;
 
 public class LikeDepositReader extends DepositReader<LikeDeposit>
 {
 	private final Reader<LikeDeposit> reader;
+	@Getter
 	private final ParameterizedReadable<LikeDeposit, Town> parameterizedReadable;
 	
 	public LikeDepositReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, LikeDeposit.class);
 		
 		final ObjectType objectType = PluginObjectType.LIKE_DEPOSIT;
 		final byte version = readers.getVersions().get(objectType);
@@ -28,7 +30,7 @@ public class LikeDepositReader extends DepositReader<LikeDeposit>
 		switch(version)
 		{
 		case 0:
-			this.reader = this::readerVersion0;
+			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
 		default:
@@ -41,13 +43,6 @@ public class LikeDepositReader extends DepositReader<LikeDeposit>
 		return () -> new CraftLikeDeposit(town);
 	}
 	
-	private LikeDeposit readerVersion0(LikeDeposit likeDeposit)
-	{
-		//TODO: read deposit fields...
-		
-		return likeDeposit;
-	}
-	
 	@Override
 	public LikeDeposit readReference(Town town) throws IOException, ClassNotFoundException
 	{
@@ -57,6 +52,7 @@ public class LikeDepositReader extends DepositReader<LikeDeposit>
 	@Override
 	protected LikeDeposit readObject(LikeDeposit likeDeposit) throws IOException, ClassNotFoundException
 	{
+		super.readObject(likeDeposit);
 		return reader.readObject(likeDeposit);
 	}
 }

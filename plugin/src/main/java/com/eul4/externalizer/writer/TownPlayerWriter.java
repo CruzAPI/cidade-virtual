@@ -9,7 +9,7 @@ public class TownPlayerWriter extends PluginPlayerWriter<TownPlayer>
 {
 	public TownPlayerWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, TownPlayer.class);
 	}
 	
 	@Override

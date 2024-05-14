@@ -9,13 +9,14 @@ public class LocationWriter extends ObjectWriter<Location>
 {
 	public LocationWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, Location.class);
 	}
 	
 	@Override
 	protected void writeObject(Location location) throws IOException
 	{
-		out.writeObject(location.getWorld().getUID());
+		out.writeLong(location.getWorld().getUID().getMostSignificantBits());
+		out.writeLong(location.getWorld().getUID().getLeastSignificantBits());
 		
 		out.writeDouble(location.getX());
 		out.writeDouble(location.getY());

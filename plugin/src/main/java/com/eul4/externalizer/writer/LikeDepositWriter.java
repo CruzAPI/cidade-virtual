@@ -9,12 +9,12 @@ public class LikeDepositWriter extends DepositWriter<LikeDeposit>
 {
 	public LikeDepositWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, LikeDeposit.class);
 	}
 	
 	@Override
 	protected void writeObject(LikeDeposit likeDeposit) throws IOException
 	{
-	
+		super.writeObject(likeDeposit);
 	}
 }

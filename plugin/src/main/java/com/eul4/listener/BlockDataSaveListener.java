@@ -5,7 +5,6 @@ import com.eul4.common.event.WorldSaveOrStopEvent;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.world.WorldSaveEvent;
 
 @RequiredArgsConstructor
 public class BlockDataSaveListener implements Listener
@@ -15,6 +14,6 @@ public class BlockDataSaveListener implements Listener
 	@EventHandler
 	public void onWorldSave(WorldSaveOrStopEvent event)
 	{
-		plugin.getBlockDataLoader().saveChunks(event.getWorld());
+		plugin.getBlockDataFiler().saveChunks(event.getWorld());
 	}
 }

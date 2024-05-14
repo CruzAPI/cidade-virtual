@@ -10,7 +10,7 @@ public class BlockWriter extends ObjectWriter<Block>
 {
 	public BlockWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, Block.class);
 	}
 	
 	@Override

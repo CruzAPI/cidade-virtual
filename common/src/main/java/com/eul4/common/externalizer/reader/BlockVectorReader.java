@@ -17,7 +17,7 @@ public class BlockVectorReader extends ObjectReader<BlockVector>
 	
 	public BlockVectorReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, BlockVector.class);
 		
 		final ObjectType objectType = CommonObjectType.BLOCK_VECTOR;
 		final byte version = readers.getVersions().get(objectType);

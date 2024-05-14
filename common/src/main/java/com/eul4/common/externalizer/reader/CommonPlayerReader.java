@@ -16,9 +16,9 @@ public abstract class CommonPlayerReader<P extends CommonPlayer> extends ObjectR
 {
 	private final Reader<P> reader;
 	
-	public CommonPlayerReader(Readers readers) throws InvalidVersionException
+	public CommonPlayerReader(Readers readers, Class<P> type) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, type);
 		
 		final ObjectType objectType = CommonObjectType.COMMON_PLAYER;
 		final byte version = readers.getVersions().get(objectType);

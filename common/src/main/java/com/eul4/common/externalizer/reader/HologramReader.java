@@ -19,7 +19,7 @@ public class HologramReader extends ObjectReader<Hologram>
 	
 	public HologramReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, Hologram.class);
 		
 		final ObjectType objectType = CommonObjectType.HOLOGRAM;
 		final byte version = readers.getVersions().get(objectType);

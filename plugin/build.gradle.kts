@@ -39,15 +39,3 @@ tasks.shadowJar {
         include(project(":common"))
     }
 }
-
-//tasks {
-//    named<ShadowJar>("shadowJar") {
-//        mergeServiceFiles()
-//
-//        archiveClassifier = null
-//
-//        dependencies {
-//            include(project(":common"))
-//        }
-//    }
-//}

@@ -2,28 +2,26 @@ package com.eul4.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.ObjectReader;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownTile;
 import com.eul4.type.player.PluginObjectType;
-import org.bukkit.block.Block;
+import com.eul4.wrapper.TownTileMap;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-public class TownTileMapReader extends ObjectReader<Map<Block, TownTile>>
+public class TownTileMapReader extends ObjectReader<TownTileMap>
 {
-	private final Reader<Map<Block, TownTile>> reader;
-	private final ParameterizedReadable<Map<Block, TownTile>, Town> parameterizedReadable;
+	private final Reader<TownTileMap> reader;
+	private final ParameterizedReadable<TownTileMap, Town> parameterizedReadable;
 	
 	public TownTileMapReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, TownTileMap.class);
 		
 		final ObjectType objectType = PluginObjectType.TOWN_TILE_MAP;
 		final byte version = readers.getVersions().get(objectType);
@@ -39,11 +37,11 @@ public class TownTileMapReader extends ObjectReader<Map<Block, TownTile>>
 		}
 	}
 	
-	private Readable<Map<Block, TownTile>> parameterizedReadableVersion0(Town town)
+	private Readable<TownTileMap> parameterizedReadableVersion0(Town town)
 	{
 		return () ->
 		{
-			Map<Block, TownTile> townTileMap = new HashMap<>();
+			TownTileMap townTileMap = new TownTileMap();
 			
 			int size = in.readInt();
 			
@@ -57,13 +55,13 @@ public class TownTileMapReader extends ObjectReader<Map<Block, TownTile>>
 		};
 	}
 	
-	public Map<Block, TownTile> readReference(Town town) throws IOException, ClassNotFoundException
+	public TownTileMap readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
 	}
 	
 	@Override
-	protected Map<Block, TownTile> readObject(Map<Block, TownTile> townTileMap) throws IOException, ClassNotFoundException
+	protected TownTileMap readObject(TownTileMap townTileMap) throws IOException, ClassNotFoundException
 	{
 		return reader.readObject(townTileMap);
 	}

@@ -24,7 +24,7 @@ tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
-task("deploy")
+task("deployk")
 {
     dependsOn("plugin:clean")
     dependsOn("plugin:shadowJar")
@@ -39,7 +39,7 @@ task("deploy")
         }
 
         println("Sleeping 3s...")
-        Thread.sleep(3000L);
+        Thread.sleep(3000L)
 
         val scpProcess = ProcessBuilder("./scp.sh").start()
 

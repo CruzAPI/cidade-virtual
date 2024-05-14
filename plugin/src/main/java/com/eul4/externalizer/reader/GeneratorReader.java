@@ -13,9 +13,9 @@ public abstract class GeneratorReader<G extends Generator> extends StructureRead
 {
 	private final Reader<G> reader;
 	
-	public GeneratorReader(Readers readers) throws InvalidVersionException
+	public GeneratorReader(Readers readers, Class<G> type) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, type);
 		
 		final ObjectType objectType = PluginObjectType.GENERATOR;
 		final byte version = readers.getVersions().get(objectType);

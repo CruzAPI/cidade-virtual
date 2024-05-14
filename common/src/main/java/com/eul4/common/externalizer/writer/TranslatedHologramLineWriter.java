@@ -10,7 +10,7 @@ public class TranslatedHologramLineWriter extends ObjectWriter<Hologram.Translat
 {
 	public TranslatedHologramLineWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, Hologram.TranslatedHologramLine.class);
 	}
 	
 	@Override

@@ -2,21 +2,26 @@ package com.eul4.externalizer.writer;
 
 import com.eul4.common.externalizer.writer.ObjectWriter;
 import com.eul4.common.type.player.Writers;
-import org.bukkit.block.Structure;
+import com.eul4.model.town.structure.Structure;
+import com.eul4.wrapper.StructureSet;
 
 import java.io.IOException;
-import java.util.Set;
 
-public class StructureSetWriter extends ObjectWriter<Set<Structure>>
+public class StructureSetWriter extends ObjectWriter<StructureSet>
 {
 	public StructureSetWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, StructureSet.class);
 	}
 	
 	@Override
-	protected void writeObject(Set<Structure> structureSet) throws IOException
+	protected void writeObject(StructureSet structureSet) throws IOException
 	{
-		//TODO: write fields...
+		out.writeInt(structureSet.size());
+		
+		for(Structure structure : structureSet)
+		{
+			writers.getWriter(GenericStructureWriter.class).writeReference(structure);
+		}
 	}
 }

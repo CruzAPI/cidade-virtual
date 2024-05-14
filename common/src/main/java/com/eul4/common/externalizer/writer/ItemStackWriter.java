@@ -9,13 +9,13 @@ public class ItemStackWriter extends ObjectWriter<ItemStack>
 {
 	public ItemStackWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, ItemStack.class);
 	}
 	
 	@Override
 	protected void writeObject(ItemStack itemStack) throws IOException
 	{
-		if(itemStack == null || itemStack.isEmpty())
+		if(itemStack.isEmpty())
 		{
 			out.writeInt(-1);
 		}

@@ -8,45 +8,49 @@ import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.Writers;
 import com.eul4.externalizer.reader.TownMapReader;
 import com.eul4.externalizer.writer.TownMapWriter;
-import com.eul4.model.town.Town;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.util.FileUtil;
+import com.eul4.wrapper.TownMap;
 import com.google.common.io.ByteStreams;
-import lombok.RequiredArgsConstructor;
 
 import java.io.*;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 
-@RequiredArgsConstructor
-public class TownsFiler
+public class TownsFiler extends Filer
 {
 	private static final byte VERSION = 0;
 	
-	private static final ObjectType[] OBJECT_TYPES = new ObjectType[]
+	private static final ObjectType[] OBJECT_TYPES_V0 = new ObjectType[]
 	{
-		CommonObjectType.COMMON_PLAYER_DATA,
-		CommonObjectType.COMMON_PLAYER,
-		CommonObjectType.INVENTORY,
-		CommonObjectType.ITEM_STACK,
+		CommonObjectType.BLOCK,
+		CommonObjectType.HOLOGRAM,
 		CommonObjectType.LOCATION,
 		CommonObjectType.OBJECT,
-		CommonObjectType.PLAYER_DATA,
-		CommonObjectType.POTION_EFFECT_COLLECTION,
-		CommonObjectType.POTION_EFFECT,
-		PluginObjectType.ADMIN,
-		PluginObjectType.ATTACKER,
-		PluginObjectType.GENERIC_PLUGIN_PLAYER,
-		PluginObjectType.PLUGIN_PLAYER,
-		PluginObjectType.RAID_ANALYZER,
-		PluginObjectType.TOWN_PLAYER_DATA,
-		PluginObjectType.TOWN_PLAYER,
+		CommonObjectType.TRANSLATED_HOLOGRAM_LINE,
+		PluginObjectType.DEPOSIT,
+		PluginObjectType.DISLIKE_DEPOSIT,
+		PluginObjectType.DISLIKE_GENERATOR,
+		PluginObjectType.GENERATOR,
+		PluginObjectType.GENERIC_STRUCTURE,
+		PluginObjectType.LIKE_DEPOSIT,
+		PluginObjectType.LIKE_GENERATOR,
+		PluginObjectType.STRUCTURE,
+		PluginObjectType.STRUCTURE_SET,
+		PluginObjectType.TOWN_BLOCK_MAP,
+		PluginObjectType.TOWN_BLOCK,
+		PluginObjectType.TOWN_BLOCK_SET,
+		PluginObjectType.TOWN_HALL,
+		PluginObjectType.TOWN_MAP,
+		PluginObjectType.TOWN,
+		PluginObjectType.TOWN_TILE_MAP,
+		PluginObjectType.TOWN_TILE,
 	};
 
-	private final Main plugin;
+	public TownsFiler(Main plugin)
+	{
+		super(plugin, VERSION);
+	}
 	
 	public void saveTowns()
 	{
@@ -61,18 +65,18 @@ public class TownsFiler
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 					ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
 			{
-				writeVersions(out);
-				Writers.of(out, OBJECT_TYPES)
+				Writers.of(plugin, out, writeVersions(out))
 						.getWriter(TownMapWriter.class)
-						.writeReference(plugin.getTownManager().getTowns());
+						.writeReferenceNotNull(plugin.getTownManager().getTowns());
 				out.flush();
 				fileOutputStream.write(byteArrayOutputStream.toByteArray());
 			}
 			
 			if(tmp.renameTo(file))
 			{
-				plugin.getLogger().info(MessageFormat.format("{0} towns saved! File length {1}",
+				plugin.getLogger().info(MessageFormat.format("{0} towns saved! {1} length: {2}",
 						plugin.getTownManager().getTowns().size(),
+						file.getName(),
 						file.length()));
 			}
 			else
@@ -90,20 +94,20 @@ public class TownsFiler
 		}
 	}
 	
-	public Map<UUID, Town> loadTownsFromDisk() throws Exception
+	public TownMap loadTownsFromDisk() throws Exception
 	{
 		final File file = plugin.getDataFileManager().getTownsFile();
 		
 		if(!file.exists())
 		{
-			plugin.getServer().getLogger().warning(file.getName() + " file not found! Loading empty towns...");
-			return new HashMap<>();
+			plugin.getLogger().warning(file.getName() + " file not found! Loading empty towns...");
+			return new TownMap();
 		}
 		
 		if(file.length() == 0L)
 		{
-			plugin.getServer().getLogger().warning(file.getName() + " file is empty! Loading empty towns...");
-			return new HashMap<>();
+			plugin.getLogger().warning(file.getName() + " file is empty! Loading empty towns...");
+			return new TownMap();
 		}
 		
 		plugin.getLogger().info("towns.dat length: " + file.length());
@@ -112,53 +116,25 @@ public class TownsFiler
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
 				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
 		{
-			Map<UUID, Town> towns =  Readers.of(in, readVersions(in))
+			TownMap towns = Readers.of(plugin, in, readVersions(in))
 					.getReader(TownMapReader.class)
 					.readReference(plugin);
-			plugin.getServer().getLogger().info(towns.size() + " towns loaded!");
+			plugin.getLogger().info(towns.size() + " towns loaded!");
 			
 			return towns;
 		}
 	}
 	
-	private Map<ObjectType, Byte> readVersions(ObjectInput in) throws InvalidVersionException, IOException
+	@Override
+	protected ObjectType[] getObjectTypes(byte version) throws InvalidVersionException
 	{
-		byte version = in.readByte();
-		
-		if(version == 0)
+		return switch(version)
 		{
-			Map<ObjectType, Byte> versions = new HashMap<>();
-			
-			versions.put(CommonObjectType.COMMON_PLAYER_DATA, in.readByte());
-			versions.put(CommonObjectType.COMMON_PLAYER, in.readByte());
-			versions.put(CommonObjectType.INVENTORY, in.readByte());
-			versions.put(CommonObjectType.ITEM_STACK, in.readByte());
-			versions.put(CommonObjectType.LOCATION, in.readByte());
-			versions.put(CommonObjectType.OBJECT, in.readByte());
-			versions.put(CommonObjectType.PLAYER_DATA, in.readByte());
-			versions.put(CommonObjectType.POTION_EFFECT_COLLECTION, in.readByte());
-			versions.put(CommonObjectType.POTION_EFFECT, in.readByte());
-			versions.put(PluginObjectType.ADMIN, in.readByte());
-			versions.put(PluginObjectType.ATTACKER, in.readByte());
-			versions.put(PluginObjectType.GENERIC_PLUGIN_PLAYER, in.readByte());
-			versions.put(PluginObjectType.PLUGIN_PLAYER, in.readByte());
-			versions.put(PluginObjectType.RAID_ANALYZER, in.readByte());
-			versions.put(PluginObjectType.TOWN_PLAYER_DATA, in.readByte());
-			versions.put(PluginObjectType.TOWN_PLAYER, in.readByte());
-			
-			return versions;
-		}
-		
-		throw new InvalidVersionException("Invalid TownsFiler version: " + version);
-	}
-	
-	private void writeVersions(ObjectOutput out) throws IOException
-	{
-		out.writeByte(VERSION);
-		
-		for(ObjectType objectType : OBJECT_TYPES)
-		{
-			out.writeByte(objectType.getVersion());
-		}
+			case 0 -> OBJECT_TYPES_V0;
+			default -> throw new InvalidVersionException(MessageFormat.format(
+					"Invalid {0} version: {1}",
+					getClass().getSimpleName(),
+					version));
+		};
 	}
 }

@@ -169,14 +169,14 @@ public class TownHardnessListener implements Listener
 	{
 		Structure structure = event.getStructure();
 		
-		for(TownBlock townBlock : structure.getTownBlocks())
+		for(TownBlock townBlock : structure.getTownBlockSet())
 		{
 			Block block = townBlock.getBlock();
 			
 			for(block = block.getWorld().getBlockAt(block.getX(), 0, block.getZ());
 					block.getY() < block.getWorld().getMaxHeight(); block = block.getRelative(UP))
 			{
-				BlockData blockData = plugin.getBlockDataLoader().loadBlockData(block);
+				BlockData blockData = plugin.getBlockDataFiler().loadBlockData(block);
 				
 				if(blockData == null || !blockData.hasHardness())
 				{
@@ -483,7 +483,7 @@ public class TownHardnessListener implements Listener
 			return;
 		}
 		
-		final BlockData blockData = plugin.getBlockDataLoader().loadBlockDataOrDefault(block);
+		final BlockData blockData = plugin.getBlockDataFiler().loadBlockDataOrDefault(block);
 		
 		
 		final Town town = townBlock.getTown();
@@ -557,7 +557,7 @@ public class TownHardnessListener implements Listener
 			
 			for(BlockState blockState : newBlockStates)
 			{
-				plugin.getBlockDataLoader().loadBlockDataOrDefault(blockState.getBlock()).hasHardness(true);
+				plugin.getBlockDataFiler().loadBlockDataOrDefault(blockState.getBlock()).hasHardness(true);
 			}
 		}
 		catch(TownHardnessLimitException e)

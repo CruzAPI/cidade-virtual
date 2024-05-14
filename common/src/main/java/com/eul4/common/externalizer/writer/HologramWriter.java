@@ -9,7 +9,7 @@ public class HologramWriter extends ObjectWriter<Hologram>
 {
 	public HologramWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, Hologram.class);
 	}
 	
 	@Override

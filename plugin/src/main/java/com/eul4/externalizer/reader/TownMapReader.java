@@ -3,27 +3,25 @@ package com.eul4.externalizer.reader;
 import com.eul4.Main;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.ObjectReader;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.PluginObjectType;
+import com.eul4.wrapper.TownMap;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
-public class TownMapReader extends ObjectReader<Map<UUID, Town>>
+public class TownMapReader extends ObjectReader<TownMap>
 {
-	private final Reader<Map<UUID, Town>> reader;
-	private final ParameterizedReadable<Map<UUID, Town>, Main> parameterizedReadable;
+	private final Reader<TownMap> reader;
+	private final ParameterizedReadable<TownMap, Main> parameterizedReadable;
 	
 	public TownMapReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, TownMap.class);
 		
 		final ObjectType objectType = PluginObjectType.TOWN_MAP;
 		final byte version = readers.getVersions().get(objectType);
@@ -39,11 +37,11 @@ public class TownMapReader extends ObjectReader<Map<UUID, Town>>
 		}
 	}
 	
-	private Readable<Map<UUID, Town>> parameterizedReadableVersion0(Main plugin)
+	private Readable<TownMap> parameterizedReadableVersion0(Main plugin)
 	{
 		return () ->
 		{
-			Map<UUID, Town> towns = new HashMap<>();
+			TownMap towns = new TownMap();
 			
 			int size = in.readInt();
 			
@@ -57,13 +55,13 @@ public class TownMapReader extends ObjectReader<Map<UUID, Town>>
 		};
 	}
 	
-	public Map<UUID, Town> readReference(Main plugin) throws IOException, ClassNotFoundException
+	public TownMap readReference(Main plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(plugin));
 	}
 	
 	@Override
-	protected Map<UUID, Town> readObject(Map<UUID, Town> towns) throws IOException, ClassNotFoundException
+	protected TownMap readObject(TownMap towns) throws IOException, ClassNotFoundException
 	{
 		return reader.readObject(towns);
 	}

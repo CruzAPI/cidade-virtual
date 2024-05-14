@@ -9,12 +9,12 @@ public class DislikeDepositWriter extends DepositWriter<DislikeDeposit>
 {
 	public DislikeDepositWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, DislikeDeposit.class);
 	}
 	
 	@Override
 	protected void writeObject(DislikeDeposit dislikeDeposit) throws IOException
 	{
-		//TODO: write fields...
+		super.writeObject(dislikeDeposit);
 	}
 }

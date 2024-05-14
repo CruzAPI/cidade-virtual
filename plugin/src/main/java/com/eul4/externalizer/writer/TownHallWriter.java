@@ -9,12 +9,12 @@ public class TownHallWriter extends StructureWriter<TownHall>
 {
 	public TownHallWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, TownHall.class);
 	}
 	
 	@Override
 	protected void writeObject(TownHall townHall) throws IOException
 	{
-		//TODO: write fields...
+		super.writeObject(townHall);
 	}
 }

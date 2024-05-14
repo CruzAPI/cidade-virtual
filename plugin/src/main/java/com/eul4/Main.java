@@ -6,9 +6,7 @@ import com.eul4.command.*;
 import com.eul4.common.Common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
-import com.eul4.externalizer.BlockChunkToShortCoordinateExternalizer;
-import com.eul4.externalizer.BlockDataExternalizer;
-import com.eul4.externalizer.BlockDataMapExternalizer;
+import com.eul4.externalizer.filer.BlockDataFiler;
 import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.externalizer.filer.TownsFiler;
 import com.eul4.i18n.PluginBundleBaseName;
@@ -31,6 +29,7 @@ import org.bukkit.plugin.PluginManager;
 import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 @Getter
 public class Main extends Common
@@ -40,14 +39,9 @@ public class Main extends Common
 	private World cidadeVirtualWorld;
 	private TownManager townManager;
 	
-	private BlockDataLoader blockDataLoader;
 	private DataFileManager dataFileManager;
 	private StructureUpgradeExecutor structureUpgradeExecutor;
 	private PurchaseExecutor purchaseExecutor;
-	
-	private BlockDataExternalizer blockDataExternalizer;
-	private BlockDataMapExternalizer blockDataMapExternalizer;
-	private BlockChunkToShortCoordinateExternalizer blockChunkToShortCoordinateExternalizer;
 	
 	private TownHallRuleSerializer townHallRuleSerializer;
 	private LikeGeneratorRuleSerializer likeGeneratorRuleSerializer;
@@ -64,6 +58,7 @@ public class Main extends Common
 	private BuyStructureCommand buyStructureCommand;
 	private RaidCommand	raidCommand;
 	
+	private BlockDataFiler blockDataFiler;
 	private PlayerDataFiler playerDataFiler;
 	private TownsFiler townsFiler;
 	
@@ -81,26 +76,29 @@ public class Main extends Common
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			getLogger().log(Level.SEVERE, "Failed to enable plugin! Server will shut down...", e);
 			getServer().shutdown();
 		}
 	}
 	
+	@SneakyThrows
 	private void enablePlugin()
 	{
 		registerResourceBundles();
 		loadWorlds();
-		loadServices();
-		loadSerializers();
-		reloadRules();
 		
 		super.onEnable();
 		
-//		townManager.loadTownsOrElse(getServer()::shutdown);
+		registerServices();
+		registerFilers();
+		registerRuleSerializers();
 		
 		registerCommands();
 		registerListeners();
 		registerPacketInterceptors();
+		
+		reloadRules();
+		townManager.loadTowns();
 		
 		getLogger().info("Plugin enabled.");
 	}
@@ -123,23 +121,23 @@ public class Main extends Common
 		townManager.reloadTowns();
 	}
 	
-	@SneakyThrows
-	private void loadServices()
+	private void registerFilers()
 	{
-		blockDataExternalizer = new BlockDataExternalizer();
-		blockChunkToShortCoordinateExternalizer = new BlockChunkToShortCoordinateExternalizer();
-		blockDataMapExternalizer = new BlockDataMapExternalizer(this);
 		playerDataFiler = new PlayerDataFiler(this);
 		townsFiler = new TownsFiler(this);
-		
+	}
+	
+	@SneakyThrows
+	private void registerServices()
+	{
 		dataFileManager = new DataFileManager(this);
-		blockDataLoader = new BlockDataLoader(this);
+		blockDataFiler = new BlockDataFiler(this);
 		townManager = new TownManager(this);
 		structureUpgradeExecutor = new StructureUpgradeExecutor(this);
 		purchaseExecutor = new PurchaseExecutor(this);
 	}
 	
-	private void loadSerializers()
+	private void registerRuleSerializers()
 	{
 		townHallRuleSerializer = new TownHallRuleSerializer(this);
 		likeGeneratorRuleSerializer = new LikeGeneratorRuleSerializer(this);
@@ -233,7 +231,7 @@ public class Main extends Common
 		super.onDisable();
 		
 		townsFiler.saveTowns();
-		getServer().getWorlds().forEach(blockDataLoader::saveChunks);
+		getServer().getWorlds().forEach(blockDataFiler::saveChunks);
 		
 		getLogger().info("Plugin disabled.");
 	}

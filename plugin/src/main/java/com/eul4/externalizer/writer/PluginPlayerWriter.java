@@ -8,9 +8,9 @@ import java.io.IOException;
 
 public abstract class PluginPlayerWriter<P extends PluginPlayer> extends CommonPlayerWriter<P>
 {
-	public PluginPlayerWriter(Writers writers)
+	public PluginPlayerWriter(Writers writers, Class<P> type)
 	{
-		super(writers);
+		super(writers, type);
 	}
 	
 	@Override

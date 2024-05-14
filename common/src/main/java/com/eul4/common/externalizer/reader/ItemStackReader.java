@@ -17,7 +17,7 @@ public final class ItemStackReader extends ObjectReader<ItemStack>
 	
 	public ItemStackReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, ItemStack.class);
 		
 		final ObjectType objectType = CommonObjectType.ITEM_STACK;
 		final byte version = readers.getVersions().get(objectType);
@@ -39,7 +39,7 @@ public final class ItemStackReader extends ObjectReader<ItemStack>
 		
 		if(length == -1)
 		{
-			return null;
+			return ItemStack.empty();
 		}
 		else
 		{

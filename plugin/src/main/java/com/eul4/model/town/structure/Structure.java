@@ -10,14 +10,17 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.GenericAttribute;
+import com.eul4.wrapper.TownBlockSet;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -88,12 +91,14 @@ public interface Structure
 	
 	boolean hasUpgradeUnlocked();
 	
-	Set<TownBlock> getTownBlocks();
+	TownBlockSet getTownBlockSet();
+	TownBlock getCenterTownBlock();
+	int getRotation();
 	
 	void setCenterTownBlock(TownBlock centerTownBlock);
 	void setLevel(int level);
 	void setRotation(int rotation);
-	void setTownBlocks(Set<TownBlock> townBlocks);
+	void setTownBlockSet(TownBlockSet townBlockSet);
 	void setStatus(StructureStatus status);
 	void setBuildTicks(int buildTicks);
 	void setTotalBuildTicks(int totalBuildTicks);

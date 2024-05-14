@@ -15,6 +15,8 @@ public enum PluginExternalizerType implements ExternalizerType
 {
 	ADMIN(AdminReader::new, AdminReader.class, AdminWriter::new, AdminWriter.class),
 	ATTACKER(AttackerReader::new, AttackerReader.class, AttackerWriter::new, AttackerWriter.class),
+	BLOCK_DATA_MAP(BlockDataMapReader::new, BlockDataMapReader.class, BlockDataMapWriter::new, BlockDataMapWriter.class),
+	BLOCK_DATA(BlockDataReader::new, BlockDataReader.class, BlockDataWriter::new, BlockDataWriter.class),
 	DISLIKE_DEPOSIT(DislikeDepositReader::new, DislikeDepositReader.class, DislikeDepositWriter::new, DislikeDepositWriter.class),
 	DISLIKE_GENERATOR(DislikeGeneratorReader::new, DislikeGeneratorReader.class, DislikeGeneratorWriter::new, DislikeGeneratorWriter.class),
 	GENERIC_PLUGIN_PLAYER(GenericPluginPlayerReader::new, GenericPluginPlayerReader.class, GenericPluginPlayerWriter::new, GenericPluginPlayerWriter.class),
@@ -22,17 +24,19 @@ public enum PluginExternalizerType implements ExternalizerType
 	LIKE_DEPOSIT(LikeDepositReader::new, LikeDepositReader.class, LikeDepositWriter::new, LikeDepositWriter.class),
 	LIKE_GENERATOR(LikeGeneratorReader::new, LikeGeneratorReader.class, LikeGeneratorWriter::new, LikeGeneratorWriter.class),
 	RAID_ANALYZER(RaidAnalyzerReader::new, RaidAnalyzerReader.class, RaidAnalyzerWriter::new, RaidAnalyzerWriter.class),
+	SHORT_COORDINATE_BLOCK_CHUNK(ShortCoordinateBlockChunkReader::new, ShortCoordinateBlockChunkReader.class, ShortCoordinateBlockChunkWriter::new, ShortCoordinateBlockChunkWriter.class),
 	STRUCTURE_SET(StructureSetReader::new, StructureSetReader.class, StructureSetWriter::new, StructureSetWriter.class),
 	TOWN_BLOCK_MAP(TownBlockMapReader::new, TownBlockMapReader.class, TownBlockMapWriter::new, TownBlockMapWriter.class),
 	TOWN_BLOCK(TownBlockReader::new, TownBlockReader.class, TownBlockWriter::new, TownBlockWriter.class),
+	TOWN_BLOCK_SET(TownBlockSetReader::new, TownBlockSetReader.class, TownBlockSetWriter::new, TownBlockSetWriter.class),
 	TOWN_HALL(TownHallReader::new, TownHallReader.class, TownHallWriter::new, TownHallWriter.class),
 	TOWN_MAP(TownMapReader::new, TownMapReader.class, TownMapWriter::new, TownMapWriter.class),
 	TOWN_PLAYER_DATA(TownPlayerDataReader::new, TownPlayerDataReader.class, TownPlayerDataWriter::new, TownPlayerDataWriter.class),
 	TOWN_PLAYER(TownPlayerReader::new, TownPlayerReader.class, TownPlayerWriter::new, TownPlayerWriter.class),
 	TOWN(TownReader::new, TownReader.class, TownWriter::new, TownWriter.class),
 	TOWN_TILE_MAP(TownTileMapReader::new, TownTileMapReader.class, TownTileMapWriter::new, TownTileMapWriter.class),
-	TOWN_TILE(TownTileReader::new, TownTileReader.class, TownTileWriter::new, TownTileWriter.class);
-	
+	TOWN_TILE(TownTileReader::new, TownTileReader.class, TownTileWriter::new, TownTileWriter.class),
+	;
 	private final ReaderConstructor readerConstructor;
 	private final Class<? extends ObjectReader<?>> readerClass;
 	private final WriterConstructor writerConstructor;

@@ -10,7 +10,7 @@ public class GenericPluginPlayerWriter extends ObjectWriter<PluginPlayer>
 {
 	public GenericPluginPlayerWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, PluginPlayer.class);
 	}
 	
 	@Override

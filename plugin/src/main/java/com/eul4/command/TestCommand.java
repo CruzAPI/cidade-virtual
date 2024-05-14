@@ -1,8 +1,11 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.StructureType;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.player.TownPlayer;
+import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,9 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
@@ -49,7 +50,16 @@ public class TestCommand implements TabExecutor
 		{
 			if(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
 			{
-				player.sendMessage("test: " + townPlayer.test());
+				Map<StructureType, Integer> count = new HashMap<>();
+				
+				for(TownBlock townBlock : townPlayer.getTown().getTownBlockMap().values())
+				{
+					StructureType type = Optional.ofNullable(townBlock.getStructure()).map(Structure::getStructureType).orElse(null);
+					count.putIfAbsent(type, 0);
+					count.computeIfPresent(type, (key, value) -> ++value);
+				}
+				
+				plugin.getLogger().info("count=" + count);
 			}
 			else
 			{

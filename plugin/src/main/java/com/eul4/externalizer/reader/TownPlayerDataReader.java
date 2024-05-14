@@ -18,7 +18,7 @@ public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 	
 	public TownPlayerDataReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers);
+		super(readers, TownPlayerData.class);
 		
 		final ObjectType objectType = PluginObjectType.TOWN_PLAYER_DATA;
 		final byte version = readers.getVersions().get(objectType);

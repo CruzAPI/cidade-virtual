@@ -9,12 +9,12 @@ public class DislikeGeneratorWriter extends GeneratorWriter<DislikeGenerator>
 {
 	public DislikeGeneratorWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, DislikeGenerator.class);
 	}
 	
 	@Override
 	protected void writeObject(DislikeGenerator dislikeGenerator) throws IOException
 	{
-		//TODO: write fields...
+		super.writeObject(dislikeGenerator);
 	}
 }

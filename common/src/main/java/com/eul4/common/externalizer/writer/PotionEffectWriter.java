@@ -9,7 +9,7 @@ public class PotionEffectWriter extends ObjectWriter<PotionEffect>
 {
 	public PotionEffectWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, PotionEffect.class);
 	}
 	
 	@Override

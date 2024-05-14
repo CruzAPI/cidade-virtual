@@ -10,7 +10,7 @@ public class GenericStructureWriter extends ObjectWriter<Structure>
 {
 	public GenericStructureWriter(Writers writers)
 	{
-		super(writers);
+		super(writers, Structure.class);
 	}
 	
 	@Override

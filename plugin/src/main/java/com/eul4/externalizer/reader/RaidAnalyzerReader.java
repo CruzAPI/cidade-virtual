@@ -16,10 +16,10 @@ import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
-public class RaidAnalyzerReader extends PluginPlayerReader<RaidAnalyzer>
+@Getter
+public class RaidAnalyzerReader extends SpiritualPlayerReader<RaidAnalyzer>
 {
 	private final Reader<RaidAnalyzer> reader;
-	@Getter
 	private final BiParameterizedReadable<RaidAnalyzer, Player, Main> biParameterizedReadable;
 	
 	public RaidAnalyzerReader(Readers readers) throws InvalidVersionException
@@ -32,7 +32,7 @@ public class RaidAnalyzerReader extends PluginPlayerReader<RaidAnalyzer>
 		switch(version)
 		{
 		case 0:
-			this.reader = Reader.identity();
+			this.reader = this::readerVersion0;
 			this.biParameterizedReadable = this::biParameterizedReadableVersion0;
 			break;
 		default:
@@ -40,7 +40,12 @@ public class RaidAnalyzerReader extends PluginPlayerReader<RaidAnalyzer>
 		}
 	}
 	
-	private Readable<RaidAnalyzer> biParameterizedReadableVersion0(Player player, Main plugin) throws IOException, ClassNotFoundException
+	private void readerVersion0(RaidAnalyzer raidAnalyzer) throws IOException, ClassNotFoundException
+	{
+		super.getReader().readObject(raidAnalyzer);
+	}
+	
+	private Readable<RaidAnalyzer> biParameterizedReadableVersion0(Player player, Main plugin)
 	{
 		return () -> new CraftRaidAnalyzer(player, plugin);
 	}
@@ -49,13 +54,5 @@ public class RaidAnalyzerReader extends PluginPlayerReader<RaidAnalyzer>
 	public RaidAnalyzer readReference(Player player, Common plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(biParameterizedReadable.getReadable(player, (Main) plugin));
-	}
-	
-	@Override
-	protected RaidAnalyzer readObject(RaidAnalyzer raidAnalyzer) throws IOException, ClassNotFoundException
-	{
-		super.readObject(raidAnalyzer);
-		
-		return reader.readObject(raidAnalyzer);
 	}
 }

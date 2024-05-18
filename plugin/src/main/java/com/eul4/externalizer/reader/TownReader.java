@@ -12,10 +12,12 @@ import com.eul4.common.wrapper.Reader;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.util.UUID;
 
+@Getter
 public class TownReader extends ObjectReader<Town>
 {
 	private final Reader<Town> reader;
@@ -46,7 +48,7 @@ public class TownReader extends ObjectReader<Town>
 				plugin);
 	}
 	
-	private Town readerVersion0(Town town) throws IOException, ClassNotFoundException
+	private void readerVersion0(Town town) throws IOException, ClassNotFoundException
 	{
 		town.setTownBlockMap(readers.getReader(TownBlockMapReader.class).readReference(town));
 		town.setTownTileMap(readers.getReader(TownTileMapReader.class).readReference(town));
@@ -56,18 +58,10 @@ public class TownReader extends ObjectReader<Town>
 		town.setLikes(in.readInt());
 		town.setDislikes(in.readInt());
 		town.setHardnessField(in.readDouble());
-		
-		return town;
 	}
 	
 	public Town readReference(Main plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(plugin));
-	}
-	
-	@Override
-	protected Town readObject(Town town) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(town);
 	}
 }

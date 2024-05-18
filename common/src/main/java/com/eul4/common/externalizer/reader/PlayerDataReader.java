@@ -9,6 +9,7 @@ import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.PotionEffectCollection;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +19,7 @@ import java.io.IOException;
 
 public class PlayerDataReader extends ObjectReader<PlayerData>
 {
+	@Getter
 	private final Reader<PlayerData> reader;
 	private final ParameterizedReadable<PlayerData, Plugin> parameterizedReadable;
 	
@@ -102,11 +104,5 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 	public PlayerData readReference(Plugin plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(plugin));
-	}
-	
-	@Override
-	protected PlayerData readObject(PlayerData playerData) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(playerData);
 	}
 }

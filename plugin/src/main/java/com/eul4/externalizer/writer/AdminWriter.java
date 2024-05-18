@@ -5,7 +5,7 @@ import com.eul4.model.player.Admin;
 
 import java.io.IOException;
 
-public class AdminWriter extends PluginPlayerWriter<Admin>
+public class AdminWriter extends PhysicalPlayerWriter<Admin>
 {
 	public AdminWriter(Writers writers)
 	{

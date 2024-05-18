@@ -8,9 +8,11 @@ import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.playerdata.TownPlayerData;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 {
 	private final Reader<TownPlayerData> reader;
@@ -46,11 +48,5 @@ public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 	public TownPlayerData readReference() throws IOException, ClassNotFoundException
 	{
 		return super.readReference(readable);
-	}
-	
-	@Override
-	protected TownPlayerData readObject(TownPlayerData townPlayerData) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(townPlayerData);
 	}
 }

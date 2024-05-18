@@ -8,16 +8,17 @@ import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.craft.town.structure.CraftTownHall;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class TownHallReader extends StructureReader<TownHall>
 {
 	private final Reader<TownHall> reader;
-	@Getter
 	private final ParameterizedReadable<TownHall, Town> parameterizedReadable;
 	
 	public TownHallReader(Readers readers) throws InvalidVersionException
@@ -30,12 +31,17 @@ public class TownHallReader extends StructureReader<TownHall>
 		switch(version)
 		{
 		case 0:
-			this.reader = Reader.identity();
+			this.reader = this::readerVersion0;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
+	}
+	
+	private void readerVersion0(TownHall townHall) throws IOException, ClassNotFoundException
+	{
+		super.getReader().readObject(townHall);
 	}
 	
 	private Readable<TownHall> parameterizedReadableVersion0(Town town)
@@ -47,12 +53,5 @@ public class TownHallReader extends StructureReader<TownHall>
 	public TownHall readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
-	}
-	
-	@Override
-	protected TownHall readObject(TownHall townHall) throws IOException, ClassNotFoundException
-	{
-		super.readObject(townHall);
-		return reader.readObject(townHall);
 	}
 }

@@ -14,10 +14,10 @@ import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class DislikeDepositReader extends DepositReader<DislikeDeposit>
 {
 	private final Reader<DislikeDeposit> reader;
-	@Getter
 	private final ParameterizedReadable<DislikeDeposit, Town> parameterizedReadable;
 	
 	public DislikeDepositReader(Readers readers) throws InvalidVersionException
@@ -30,12 +30,17 @@ public class DislikeDepositReader extends DepositReader<DislikeDeposit>
 		switch(version)
 		{
 		case 0:
-			this.reader = Reader.identity();
+			this.reader = this::readerVersion0;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
+	}
+	
+	private void readerVersion0(DislikeDeposit dislikeDeposit) throws IOException, ClassNotFoundException
+	{
+		super.getReader().readObject(dislikeDeposit);
 	}
 	
 	private Readable<DislikeDeposit> parameterizedReadableVersion0(Town town)
@@ -47,12 +52,5 @@ public class DislikeDepositReader extends DepositReader<DislikeDeposit>
 	public DislikeDeposit readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
-	}
-	
-	@Override
-	protected DislikeDeposit readObject(DislikeDeposit dislikeDeposit) throws IOException, ClassNotFoundException
-	{
-		super.readObject(dislikeDeposit);
-		return reader.readObject(dislikeDeposit);
 	}
 }

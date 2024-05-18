@@ -16,8 +16,9 @@ public class GenericPluginPlayerWriter extends ObjectWriter<PluginPlayer>
 	@Override
 	protected void writeObject(PluginPlayer pluginPlayer) throws IOException
 	{
+		out.writeInt(pluginPlayer.getPlayerType().getCategory().ordinal());
 		out.writeInt(pluginPlayer.getPlayerType().ordinal());
-		getWriterAndWriteReference(pluginPlayer, pluginPlayer.getPlayerType().getType());
+		getWriterAndWriteReference(pluginPlayer, pluginPlayer.getPlayerType().getInterfaceType());
 	}
 	
 	@SuppressWarnings("unchecked")

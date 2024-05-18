@@ -10,9 +10,11 @@ import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.wrapper.TownBlockSet;
+import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class TownBlockSetReader extends ObjectReader<TownBlockSet>
 {
 	private final Reader<TownBlockSet> reader;
@@ -56,11 +58,5 @@ public class TownBlockSetReader extends ObjectReader<TownBlockSet>
 	public TownBlockSet readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
-	}
-	
-	@Override
-	protected TownBlockSet readObject(TownBlockSet townBlockSet) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(townBlockSet);
 	}
 }

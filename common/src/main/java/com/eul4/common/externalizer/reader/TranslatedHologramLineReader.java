@@ -8,6 +8,7 @@ import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 import org.bukkit.entity.ArmorStand;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 public class TranslatedHologramLineReader extends ObjectReader<Hologram.TranslatedHologramLine>
 {
+	@Getter
 	private final Reader<Hologram.TranslatedHologramLine> reader;
 	private final ParameterizedReadable<Hologram.TranslatedHologramLine, Hologram> parameterizedReadable;
 	
@@ -52,11 +54,5 @@ public class TranslatedHologramLineReader extends ObjectReader<Hologram.Translat
 	public Hologram.TranslatedHologramLine readReference(Hologram hologram) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(hologram));
-	}
-	
-	@Override
-	protected Hologram.TranslatedHologramLine readObject(Hologram.TranslatedHologramLine translatedHologramLine) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(translatedHologramLine);
 	}
 }

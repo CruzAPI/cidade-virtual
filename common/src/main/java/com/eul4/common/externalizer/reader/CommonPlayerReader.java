@@ -8,12 +8,14 @@ import com.eul4.common.type.player.CommonObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
 public abstract class CommonPlayerReader<P extends CommonPlayer> extends ObjectReader<P>
 {
+	@Getter
 	private final Reader<P> reader;
 	
 	public CommonPlayerReader(Readers readers, Class<P> type) throws InvalidVersionException
@@ -43,10 +45,4 @@ public abstract class CommonPlayerReader<P extends CommonPlayer> extends ObjectR
 	}
 	
 	public abstract P readReference(Player player, Common plugin) throws IOException, ClassNotFoundException;
-	
-	@Override
-	protected P readObject(P commonPlayer) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(commonPlayer);
-	}
 }

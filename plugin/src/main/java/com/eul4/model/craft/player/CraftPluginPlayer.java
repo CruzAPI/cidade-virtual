@@ -11,10 +11,9 @@ import org.bukkit.entity.Player;
 
 @Getter
 @Setter
-public abstract class CraftPluginPlayer extends CraftCommonPlayer implements PluginPlayer
+public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer implements PluginPlayer
+	permits CraftSpiritualPlayer, CraftPhysicalPlayer
 {
-	private static final long VERSION = 0L;
-	
 	protected final Main plugin;
 	
 	protected TownPlayerData townPlayerData;
@@ -52,14 +51,8 @@ public abstract class CraftPluginPlayer extends CraftCommonPlayer implements Plu
 	}
 	
 	@Override
-	public final PluginPlayerType getPlayerType()
+	public final Class<? extends PluginPlayer> getInterfaceType()
 	{
-		return getPluginPlayerType();
-	}
-	
-	@Override
-	public final Class<? extends PluginPlayer> getType()
-	{
-		return getPluginPlayerType().getType();
+		return getPlayerType().getInterfaceType();
 	}
 }

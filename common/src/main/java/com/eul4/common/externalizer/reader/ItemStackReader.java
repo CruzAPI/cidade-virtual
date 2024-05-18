@@ -2,16 +2,18 @@ package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.type.player.CommonObjectType;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 
 public final class ItemStackReader extends ObjectReader<ItemStack>
 {
+	@Getter
 	private final Reader<ItemStack> reader;
 	private final Readable<ItemStack> readable;
 	
@@ -52,11 +54,5 @@ public final class ItemStackReader extends ObjectReader<ItemStack>
 	public ItemStack readReference() throws IOException, ClassNotFoundException
 	{
 		return super.readReference(readable);
-	}
-	
-	@Override
-	protected ItemStack readObject(ItemStack itemStack) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(itemStack);
 	}
 }

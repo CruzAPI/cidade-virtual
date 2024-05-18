@@ -6,9 +6,11 @@ import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.structure.Deposit;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public abstract class DepositReader<D extends Deposit> extends StructureReader<D>
 {
 	private final Reader<D> reader;
@@ -23,17 +25,15 @@ public abstract class DepositReader<D extends Deposit> extends StructureReader<D
 		switch(version)
 		{
 		case 0:
-			this.reader = Reader.identity();
+			this.reader = this::readerVersion0;
 			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
-	@Override
-	protected D readObject(D deposit) throws IOException, ClassNotFoundException
+	private void readerVersion0(D depositPlayer) throws IOException, ClassNotFoundException
 	{
-		super.readObject(deposit);
-		return reader.readObject(deposit);
+		super.getReader().readObject(depositPlayer);
 	}
 }

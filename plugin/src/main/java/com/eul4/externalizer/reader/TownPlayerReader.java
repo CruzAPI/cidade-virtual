@@ -3,8 +3,8 @@ package com.eul4.externalizer.reader;
 import com.eul4.Main;
 import com.eul4.common.Common;
 import com.eul4.common.exception.InvalidVersionException;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.BiParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
@@ -16,10 +16,10 @@ import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
-public class TownPlayerReader extends PluginPlayerReader<TownPlayer>
+@Getter
+public class TownPlayerReader extends PhysicalPlayerReader<TownPlayer>
 {
 	private final Reader<TownPlayer> reader;
-	@Getter
 	private final BiParameterizedReadable<TownPlayer, Player, Main> biParameterizedReadable;
 	
 	public TownPlayerReader(Readers readers) throws InvalidVersionException
@@ -40,27 +40,19 @@ public class TownPlayerReader extends PluginPlayerReader<TownPlayer>
 		}
 	}
 	
-	private Readable<TownPlayer> biParameterizedReadableVersion0(Player player, Main plugin) throws IOException, ClassNotFoundException
+	private Readable<TownPlayer> biParameterizedReadableVersion0(Player player, Main plugin)
 	{
 		return () -> new CraftTownPlayer(player, plugin);
 	}
 	
-	private TownPlayer readerVersion0(TownPlayer townPlayer)
+	private void readerVersion0(TownPlayer townPlayer) throws IOException, ClassNotFoundException
 	{
-		return townPlayer;
+		super.getReader().readObject(townPlayer);
 	}
 	
 	@Override
 	public TownPlayer readReference(Player player, Common plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(biParameterizedReadable.getReadable(player, (Main) plugin));
-	}
-	
-	@Override
-	protected TownPlayer readObject(TownPlayer townPlayer) throws IOException, ClassNotFoundException
-	{
-		super.readObject(townPlayer);
-		
-		return reader.readObject(townPlayer);
 	}
 }

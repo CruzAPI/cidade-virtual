@@ -3,10 +3,9 @@ package com.eul4.common.externalizer.reader;
 import com.eul4.common.Common;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.type.player.CommonObjectType;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Readable;
-import org.bukkit.generator.structure.Structure;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,7 +22,6 @@ public abstract class ObjectReader<T>
 	
 	private final Map<Integer, T> references = new HashMap<>();
 	private int currentId;
-	
 	
 	public ObjectReader(Readers readers, Class<T> type) throws InvalidVersionException
 	{
@@ -53,18 +51,12 @@ public abstract class ObjectReader<T>
 		{
 		case 1:
 			int id = in.readInt();
-			Integer hash = (references.get(id) == null ? null : references.get(id).hashCode());
 			return references.get(id);
 		case 0:
 			T reference = readable.read();
 			references.put(currentId++, reference);
-			
-			if(reference == readObject(reference))
-			{
-				return reference;
-			}
-			
-			throw new IOException("Method readObject(" + reference.getClass().getSimpleName() + ") is returning an invalid reference!");
+			getReader().readObject(reference);
+			return reference;
 		case -1:
 		default:
 			return null;
@@ -76,7 +68,7 @@ public abstract class ObjectReader<T>
 		return reader.readObject(readable);
 	}
 	
-	protected abstract T readObject(T object) throws IOException, ClassNotFoundException;
+	protected abstract com.eul4.common.wrapper.Reader<T> getReader();
 	
 	@FunctionalInterface
 	private interface Reader<T>

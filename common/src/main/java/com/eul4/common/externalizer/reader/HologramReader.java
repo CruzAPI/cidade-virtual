@@ -9,11 +9,13 @@ import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 
 import java.io.IOException;
 
 public class HologramReader extends ObjectReader<Hologram>
 {
+	@Getter
 	private final Reader<Hologram> reader;
 	private final ParameterizedReadable<Hologram, Common> parameterizedReadable;
 	
@@ -56,11 +58,5 @@ public class HologramReader extends ObjectReader<Hologram>
 	public Hologram readReference(Common plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(plugin));
-	}
-	
-	@Override
-	protected Hologram readObject(Hologram hologram) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(hologram);
 	}
 }

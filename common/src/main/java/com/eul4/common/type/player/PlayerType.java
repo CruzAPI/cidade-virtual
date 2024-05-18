@@ -8,5 +8,6 @@ public interface PlayerType
 {
 	CommonPlayer newInstance(Player player, Common common);
 	CommonPlayer newInstance(Player player, CommonPlayer commonPlayer);
-	Class<? extends CommonPlayer> getType();
+	Class<? extends CommonPlayer> getInterfaceType();
+	int ordinal();
 }

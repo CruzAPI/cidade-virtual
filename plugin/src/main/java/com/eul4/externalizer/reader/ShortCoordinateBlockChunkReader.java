@@ -8,11 +8,13 @@ import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 
 import java.io.IOException;
 
+@Getter
 public class ShortCoordinateBlockChunkReader extends ObjectReader<Block>
 {
 	private final Reader<Block> reader;
@@ -52,17 +54,15 @@ public class ShortCoordinateBlockChunkReader extends ObjectReader<Block>
 	
 	public Block readObject(Chunk chunk) throws IOException, ClassNotFoundException
 	{
-		return readObject(parameterizedReadable.getReadable(chunk).read());
+		Block block = parameterizedReadable.getReadable(chunk).read();
+		
+		reader.readObject(block);
+		
+		return block;
 	}
 	
 	public Block readReference(Chunk chunk) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(chunk));
-	}
-	
-	@Override
-	protected Block readObject(Block block) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(block);
 	}
 }

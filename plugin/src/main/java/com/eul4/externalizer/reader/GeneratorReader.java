@@ -6,9 +6,11 @@ import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.structure.Generator;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public abstract class GeneratorReader<G extends Generator> extends StructureReader<G>
 {
 	private final Reader<G> reader;
@@ -30,17 +32,10 @@ public abstract class GeneratorReader<G extends Generator> extends StructureRead
 		}
 	}
 	
-	private G readerVersion0(G generator) throws IOException
+	private void readerVersion0(G generator) throws IOException, ClassNotFoundException
 	{
-		generator.setBalance(in.readInt());
+		super.getReader().readObject(generator);
 		
-		return generator;
-	}
-	
-	@Override
-	protected G readObject(G generator) throws IOException, ClassNotFoundException
-	{
-		super.readObject(generator);
-		return reader.readObject(generator);
+		generator.setBalance(in.readInt());
 	}
 }

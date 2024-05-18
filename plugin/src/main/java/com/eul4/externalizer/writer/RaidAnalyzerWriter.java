@@ -5,7 +5,7 @@ import com.eul4.model.player.RaidAnalyzer;
 
 import java.io.IOException;
 
-public class RaidAnalyzerWriter extends PluginPlayerWriter<RaidAnalyzer>
+public class RaidAnalyzerWriter extends SpiritualPlayerWriter<RaidAnalyzer>
 {
 	public RaidAnalyzerWriter(Writers writers)
 	{

@@ -11,9 +11,11 @@ import com.eul4.model.craft.town.CraftTownBlock;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class TownBlockReader extends ObjectReader<TownBlock>
 {
 	private final Reader<TownBlock> reader;
@@ -37,10 +39,9 @@ public class TownBlockReader extends ObjectReader<TownBlock>
 		}
 	}
 	
-	private TownBlock readerVersion0(TownBlock townBlock) throws IOException, ClassNotFoundException
+	private void readerVersion0(TownBlock townBlock) throws IOException, ClassNotFoundException
 	{
 		townBlock.setStructure(readers.getReader(GenericStructureReader.class).readReference(townBlock.getTown()));
-		return townBlock;
 	}
 	
 	private Readable<TownBlock> parameterizedReadableVersion0(Town town)
@@ -60,11 +61,5 @@ public class TownBlockReader extends ObjectReader<TownBlock>
 	public TownBlock readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
-	}
-	
-	@Override
-	protected TownBlock readObject(TownBlock townBlock) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(townBlock);
 	}
 }

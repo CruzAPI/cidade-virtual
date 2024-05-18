@@ -30,7 +30,8 @@ public class PlayerManager
 		final CommonPlayer newCommonPlayer = playerType.newInstance(player, plugin);
 		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
 		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(null, newCommonPlayer));
-		return newCommonPlayer;
+		
+		return newCommonPlayer.load();
 	}
 	
 	public CommonPlayer register(CommonPlayer oldInstance, PlayerType playerType)
@@ -49,7 +50,8 @@ public class PlayerManager
 		final CommonPlayer newCommonPlayer = playerType.newInstance(player, oldInstance);
 		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
 		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(oldInstance, newCommonPlayer));
-		return newCommonPlayer;
+		
+		return newCommonPlayer.load();
 	}
 	
 	public CommonPlayer get(Player player)

@@ -2,11 +2,12 @@ package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.type.player.CommonObjectType;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.Plugin;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 public class BlockReader extends ObjectReader<Block>
 {
+	@Getter
 	private final Reader<Block> reader;
 	private final ParameterizedReadable<Block, Plugin> parameterizedReadable;
 	
@@ -53,11 +55,5 @@ public class BlockReader extends ObjectReader<Block>
 	public Block readReference(Plugin plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(plugin));
-	}
-	
-	@Override
-	protected Block readObject(Block block) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(block);
 	}
 }

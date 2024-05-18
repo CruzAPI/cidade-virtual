@@ -11,9 +11,11 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.wrapper.TownBlockMap;
+import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class TownBlockMapReader extends ObjectReader<TownBlockMap>
 {
 	private final Reader<TownBlockMap> reader;
@@ -58,11 +60,5 @@ public class TownBlockMapReader extends ObjectReader<TownBlockMap>
 	public TownBlockMap readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
-	}
-	
-	@Override
-	protected TownBlockMap readObject(TownBlockMap townBlockMap) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(townBlockMap);
 	}
 }

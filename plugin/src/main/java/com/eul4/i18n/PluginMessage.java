@@ -322,7 +322,20 @@ public enum PluginMessage implements Message
 		MessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
 	}),
 	
-	;
+	NO_TOWNS_FOUND("no-towns-found", empty().color(RED)),
+	
+	RAID_ANALYZER_HOTBAR_ATTACK("raid-analyzer.hotbar.attack", empty().color(WHITE)),
+	
+	RAID_ANALYZER_HOTBAR_REROLL("raid-analyzer.hotbar.reroll", (bundle, args) -> new Component[]
+	{
+		empty().color(GOLD),
+	}),
+	
+	RAID_ANALYZER_HOTBAR_CANCEL("raid-analyzer.hotbar.cancel", empty().color(RED)),
+	
+	RAID_SPECTATOR_HOTBAR_DEFEND("raid-spectator.hotbar.defend", empty().color(GRAY)),
+	
+	RAID_SPECTATOR_HOTBAR_VANILLA("raid-spectator.hotbar.vanilla", empty().color(RED));
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

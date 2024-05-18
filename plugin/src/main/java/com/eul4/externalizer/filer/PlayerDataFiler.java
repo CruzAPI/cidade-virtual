@@ -37,13 +37,18 @@ public class PlayerDataFiler extends Filer
 		CommonObjectType.POTION_EFFECT,
 		PluginObjectType.ADMIN,
 		PluginObjectType.ATTACKER,
+		PluginObjectType.DEFENDER,
 		PluginObjectType.GENERIC_PLUGIN_PLAYER,
 		PluginObjectType.PLUGIN_PLAYER,
+		PluginObjectType.PHYSICAL_PLAYER,
+		PluginObjectType.SPIRITUAL_PLAYER,
 		PluginObjectType.RAID_ANALYZER,
+		PluginObjectType.RAID_SPECTATOR,
 		PluginObjectType.TOWN_PLAYER_DATA,
 		PluginObjectType.TOWN_PLAYER,
+		PluginObjectType.VANILLA_PLAYER,
 	};
-
+	
 	@Getter
 	private final Map<UUID, PluginPlayer> memoryPlayers = new HashMap<>();
 	
@@ -133,7 +138,7 @@ public class PlayerDataFiler extends Filer
 		{
 			plugin.getLogger().info(MessageFormat.format("{0} data loaded from memory: {1}",
 					pluginPlayer.getPlayer().getName(),
-					pluginPlayer.getType().getSimpleName()));
+					pluginPlayer.getInterfaceType().getSimpleName()));
 		}
 		
 		return pluginPlayer;
@@ -145,7 +150,7 @@ public class PlayerDataFiler extends Filer
 		{
 			plugin.getLogger().info(MessageFormat.format("{0} data loaded from disk: {1}",
 					pluginPlayer.getPlayer().getName(),
-					pluginPlayer.getType().getSimpleName()));
+					pluginPlayer.getInterfaceType().getSimpleName()));
 		}
 		else
 		{

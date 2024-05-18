@@ -6,7 +6,8 @@ import com.eul4.model.player.PluginPlayer;
 
 import java.io.IOException;
 
-public abstract class PluginPlayerWriter<P extends PluginPlayer> extends CommonPlayerWriter<P>
+public abstract sealed class PluginPlayerWriter<P extends PluginPlayer> extends CommonPlayerWriter<P>
+	permits PhysicalPlayerWriter, SpiritualPlayerWriter
 {
 	public PluginPlayerWriter(Writers writers, Class<P> type)
 	{

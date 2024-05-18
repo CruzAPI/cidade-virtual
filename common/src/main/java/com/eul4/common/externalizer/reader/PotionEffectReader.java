@@ -2,10 +2,11 @@ package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.type.player.CommonObjectType;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 import org.bukkit.potion.PotionEffect;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 public class PotionEffectReader extends ObjectReader<PotionEffect>
 {
+	@Getter
 	private final Reader<PotionEffect> reader;
 	private final Readable<PotionEffect> readable;
 	
@@ -43,11 +45,5 @@ public class PotionEffectReader extends ObjectReader<PotionEffect>
 	public PotionEffect readReference() throws IOException, ClassNotFoundException
 	{
 		return super.readReference(readable);
-	}
-	
-	@Override
-	protected PotionEffect readObject(PotionEffect potionEffect) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(potionEffect);
 	}
 }

@@ -9,13 +9,14 @@ import com.eul4.common.wrapper.BiParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.town.structure.Structure;
+import com.eul4.type.player.PlayerCategory;
 import com.eul4.type.player.PluginObjectType;
-import com.eul4.type.player.PluginPlayerType;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
+@Getter
 public class GenericPluginPlayerReader extends ObjectReader<PluginPlayer>
 {
 	private final Reader<PluginPlayer> reader;
@@ -39,11 +40,9 @@ public class GenericPluginPlayerReader extends ObjectReader<PluginPlayer>
 		}
 	}
 	
-	private PluginPlayer readerVersion0(PluginPlayer pluginPlayer) throws IOException, ClassNotFoundException
+	private void readerVersion0(PluginPlayer pluginPlayer) throws IOException, ClassNotFoundException
 	{
-		getReaderAndWriteReference(pluginPlayer, pluginPlayer.getPlayerType().getType());
-		
-		return pluginPlayer;
+		getReaderAndWriteReference(pluginPlayer, pluginPlayer.getPlayerType().getInterfaceType());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -55,7 +54,8 @@ public class GenericPluginPlayerReader extends ObjectReader<PluginPlayer>
 	private Readable<PluginPlayer> biParameterizedReadableVersion0(Player player, Main plugin)
 	{
 		return () -> readers
-				.getReader(PluginPlayerType.values()[in.readInt()].getReaderClass())
+				.getReader(PlayerCategory.values()[in.readInt()]
+						.getEnumValues()[in.readInt()].getReaderClass())
 				.getBiParameterizedReadable()
 				.getReadable(player, plugin)
 				.read();
@@ -64,11 +64,5 @@ public class GenericPluginPlayerReader extends ObjectReader<PluginPlayer>
 	public PluginPlayer readReference(Player player, Main plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(biParameterizedReadable.getReadable(player, plugin));
-	}
-	
-	@Override
-	protected PluginPlayer readObject(PluginPlayer pluginPlayer) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(pluginPlayer);
 	}
 }

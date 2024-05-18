@@ -10,11 +10,14 @@ import com.eul4.common.wrapper.Reader;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
-public abstract class PluginPlayerReader<P extends PluginPlayer> extends CommonPlayerReader<P>
+@Getter
+public abstract sealed class PluginPlayerReader<P extends PluginPlayer> extends CommonPlayerReader<P>
+	permits PhysicalPlayerReader, SpiritualPlayerReader
 {
 	private final Reader<P> reader;
 	
@@ -35,22 +38,14 @@ public abstract class PluginPlayerReader<P extends PluginPlayer> extends CommonP
 		}
 	}
 	
-	private P readerVersion0(P pluginPlayer) throws IOException, ClassNotFoundException
+	private void readerVersion0(P pluginPlayer) throws IOException, ClassNotFoundException
 	{
+		super.getReader().readObject(pluginPlayer);
+		
 		TownPlayerData townPlayerData = readers.getReader(TownPlayerDataReader.class).readReference();
 		
 		pluginPlayer.setTownPlayerData(townPlayerData);
-		
-		return pluginPlayer;
 	}
 	
 	public abstract BiParameterizedReadable<P, Player, Main> getBiParameterizedReadable();
-	
-	@Override
-	protected P readObject(P pluginPlayer) throws IOException, ClassNotFoundException
-	{
-		super.readObject(pluginPlayer);
-		
-		return reader.readObject(pluginPlayer);
-	}
 }

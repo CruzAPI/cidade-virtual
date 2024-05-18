@@ -14,10 +14,10 @@ import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class LikeGeneratorReader extends GeneratorReader<LikeGenerator>
 {
 	private final Reader<LikeGenerator> reader;
-	@Getter
 	private final ParameterizedReadable<LikeGenerator, Town> parameterizedReadable;
 	
 	public LikeGeneratorReader(Readers readers) throws InvalidVersionException
@@ -30,7 +30,7 @@ public class LikeGeneratorReader extends GeneratorReader<LikeGenerator>
 		switch(version)
 		{
 		case 0:
-			this.reader = Reader.identity();
+			this.reader = this::readerVersion0;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
 		default:
@@ -43,16 +43,14 @@ public class LikeGeneratorReader extends GeneratorReader<LikeGenerator>
 		return () -> new CraftLikeGenerator(town);
 	}
 	
+	private void readerVersion0(LikeGenerator likeGenerator) throws IOException, ClassNotFoundException
+	{
+		super.getReader().readObject(likeGenerator);
+	}
+	
 	@Override
 	public LikeGenerator readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
-	}
-	
-	@Override
-	protected LikeGenerator readObject(LikeGenerator likeGenerator) throws IOException, ClassNotFoundException
-	{
-		super.readObject(likeGenerator);
-		return reader.readObject(likeGenerator);
 	}
 }

@@ -14,10 +14,10 @@ import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class DislikeGeneratorReader extends GeneratorReader<DislikeGenerator>
 {
 	private final Reader<DislikeGenerator> reader;
-	@Getter
 	private final ParameterizedReadable<DislikeGenerator, Town> parameterizedReadable;
 	
 	public DislikeGeneratorReader(Readers readers) throws InvalidVersionException
@@ -30,7 +30,7 @@ public class DislikeGeneratorReader extends GeneratorReader<DislikeGenerator>
 		switch(version)
 		{
 		case 0:
-			this.reader = Reader.identity();
+			this.reader = this::readerVersion0;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
 		default:
@@ -49,10 +49,8 @@ public class DislikeGeneratorReader extends GeneratorReader<DislikeGenerator>
 		return super.readReference(parameterizedReadable.getReadable(town));
 	}
 	
-	@Override
-	protected DislikeGenerator readObject(DislikeGenerator dislikeGenerator) throws IOException, ClassNotFoundException
+	private void readerVersion0(DislikeGenerator dislikeGenerator) throws IOException, ClassNotFoundException
 	{
-		super.readObject(dislikeGenerator);
-		return reader.readObject(dislikeGenerator);
+		super.getReader().readObject(dislikeGenerator);
 	}
 }

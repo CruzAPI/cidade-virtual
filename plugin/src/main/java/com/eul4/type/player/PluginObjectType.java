@@ -12,6 +12,7 @@ public enum PluginObjectType implements ObjectType
 	ATTACKER((byte) 0, PluginExternalizerType.ATTACKER),
 	BLOCK_DATA_MAP((byte) 0, PluginExternalizerType.BLOCK_DATA_MAP),
 	BLOCK_DATA((byte) 0, PluginExternalizerType.BLOCK_DATA),
+	DEFENDER((byte) 0, PluginExternalizerType.DEFENDER),
 	DEPOSIT((byte) 0, null),
 	DISLIKE_DEPOSIT((byte) 0, PluginExternalizerType.DISLIKE_DEPOSIT),
 	DISLIKE_GENERATOR((byte) 0, PluginExternalizerType.DISLIKE_GENERATOR),
@@ -20,9 +21,12 @@ public enum PluginObjectType implements ObjectType
 	GENERIC_STRUCTURE((byte) 0, PluginExternalizerType.GENERIC_STRUCTURE),
 	LIKE_DEPOSIT((byte) 0, PluginExternalizerType.LIKE_DEPOSIT),
 	LIKE_GENERATOR((byte) 0, PluginExternalizerType.LIKE_GENERATOR),
+	PHYSICAL_PLAYER((byte) 0, null),
 	PLUGIN_PLAYER((byte) 0, null),
 	RAID_ANALYZER((byte) 0, PluginExternalizerType.RAID_ANALYZER),
+	RAID_SPECTATOR((byte) 0, PluginExternalizerType.RAID_SPECTATOR),
 	SHORT_COORDINATE_BLOCK_CHUNK((byte) 0, PluginExternalizerType.SHORT_COORDINATE_BLOCK_CHUNK),
+	SPIRITUAL_PLAYER((byte) 0, null),
 	STRUCTURE((byte) 0, null),
 	STRUCTURE_SET((byte) 0, PluginExternalizerType.STRUCTURE_SET),
 	TOWN_BLOCK_MAP((byte) 0, PluginExternalizerType.TOWN_BLOCK_MAP),
@@ -34,7 +38,9 @@ public enum PluginObjectType implements ObjectType
 	TOWN_PLAYER((byte) 0, PluginExternalizerType.TOWN_PLAYER),
 	TOWN((byte) 0, PluginExternalizerType.TOWN),
 	TOWN_TILE_MAP((byte) 0, PluginExternalizerType.TOWN_TILE_MAP),
-	TOWN_TILE((byte) 0, PluginExternalizerType.TOWN_TILE);
+	TOWN_TILE((byte) 0, PluginExternalizerType.TOWN_TILE),
+	VANILLA_PLAYER((byte) 0, PluginExternalizerType.VANILLA_PLAYER),
+	;
 	
 	private final byte version;
 	private final PluginExternalizerType externalizerType;

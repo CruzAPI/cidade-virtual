@@ -38,4 +38,5 @@ public interface CommonPlayer extends Messageable
 	boolean mustSavePlayerData();
 	
 	void invalidate();
+	CommonPlayer load();
 }

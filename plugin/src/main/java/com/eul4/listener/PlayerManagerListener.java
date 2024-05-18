@@ -3,7 +3,7 @@ package com.eul4.listener;
 import com.eul4.Main;
 import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.type.player.PluginPlayerType;
+import com.eul4.type.player.PhysicalPlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +33,7 @@ public class PlayerManagerListener implements Listener
 			return;
 		}
 		
-		plugin.getPlayerManager().register(player, plugin, PluginPlayerType.TOWN_PLAYER);
+		plugin.getPlayerManager().register(player, plugin, PhysicalPlayerType.VANILLA_PLAYER);
 		player.sendMessage("Welcome!");
 	}
 	

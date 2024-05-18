@@ -7,6 +7,7 @@ import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 public class LocationReader extends ObjectReader<Location>
 {
+	@Getter
 	private final Reader<Location> reader;
 	private final ParameterizedReadable<Location, Plugin> parameterizedReadable;
 	
@@ -56,11 +58,5 @@ public class LocationReader extends ObjectReader<Location>
 	public Location readReference(Plugin plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(plugin));
-	}
-	
-	@Override
-	protected Location readObject(Location location) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(location);
 	}
 }

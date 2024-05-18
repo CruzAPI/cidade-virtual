@@ -7,13 +7,14 @@ import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
-import com.eul4.service.BlockData;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.wrapper.BlockDataMap;
+import lombok.Getter;
 import org.bukkit.Chunk;
 
 import java.io.IOException;
 
+@Getter
 public class BlockDataMapReader extends ObjectReader<BlockDataMap>
 {
 	private final Reader<BlockDataMap> reader;
@@ -37,7 +38,7 @@ public class BlockDataMapReader extends ObjectReader<BlockDataMap>
 		}
 	}
 	
-	private BlockDataMap readerVersion0(BlockDataMap blockDataMap) throws IOException, ClassNotFoundException
+	private void readerVersion0(BlockDataMap blockDataMap) throws IOException, ClassNotFoundException
 	{
 		final int size = in.readInt();
 		
@@ -47,8 +48,6 @@ public class BlockDataMapReader extends ObjectReader<BlockDataMap>
 					readers.getReader(ShortCoordinateBlockChunkReader.class).readObject(blockDataMap.getChunk()),
 					readers.getReader(BlockDataReader.class).readObject());
 		}
-		
-		return blockDataMap;
 	}
 	
 	private Readable<BlockDataMap> parameterizedReadableVersion0(Chunk chunk)
@@ -59,11 +58,5 @@ public class BlockDataMapReader extends ObjectReader<BlockDataMap>
 	public BlockDataMap readReference(Chunk chunk) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(chunk));
-	}
-	
-	@Override
-	protected BlockDataMap readObject(BlockDataMap blockDataMap) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(blockDataMap);
 	}
 }

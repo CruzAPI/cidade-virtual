@@ -1,5 +1,6 @@
 package com.eul4.hotbar;
 
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.RaidAnalyzer;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -24,17 +25,17 @@ public class RaidAnalyzerHotbar
 		
 		attack = new ItemStack(Material.IRON_SWORD);
 		meta = attack.getItemMeta();
-		meta.setDisplayName("attack?");
+		meta.displayName(PluginMessage.RAID_ANALYZER_HOTBAR_ATTACK.translate(raidAnalyzer));
 		attack.setItemMeta(meta);
 		
 		reroll = new ItemStack(Material.ARROW);
 		meta = reroll.getItemMeta();
-		meta.setDisplayName("reroll?");
+		meta.displayName(PluginMessage.RAID_ANALYZER_HOTBAR_REROLL.translate(raidAnalyzer));
 		reroll.setItemMeta(meta);
 		
 		cancel = new ItemStack(Material.RED_BED);
 		meta = cancel.getItemMeta();
-		meta.setDisplayName("cancel?");
+		meta.displayName(PluginMessage.RAID_ANALYZER_HOTBAR_CANCEL.translate(raidAnalyzer));
 		cancel.setItemMeta(meta);
 	}
 	

@@ -4,17 +4,19 @@ import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.model.data.CommonPlayerData;
 import com.eul4.common.model.data.PlayerData;
 import com.eul4.common.type.player.CommonObjectType;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
 
 public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 {
+	@Getter
 	private final Reader<CommonPlayerData> reader;
 	private final ParameterizedReadable<CommonPlayerData, Plugin> parameterizedReadable;
 	
@@ -51,11 +53,5 @@ public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 	public CommonPlayerData readReference(Plugin plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(plugin));
-	}
-	
-	@Override
-	protected CommonPlayerData readObject(CommonPlayerData commonPlayerData) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(commonPlayerData);
 	}
 }

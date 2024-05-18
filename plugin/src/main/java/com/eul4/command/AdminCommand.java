@@ -5,6 +5,7 @@ import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.model.player.PluginPlayer;
+import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
@@ -49,12 +50,12 @@ public class AdminCommand implements TabExecutor
 		
 		if(commonPlayer instanceof CommonAdmin)
 		{
-			newCommonPlayer = plugin.getPlayerManager().register(commonPlayer, PluginPlayerType.TOWN_PLAYER);
+			newCommonPlayer = plugin.getPlayerManager().register(commonPlayer, PhysicalPlayerType.TOWN_PLAYER);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, YELLOW, CommonMessage.PLAYER);
 		}
 		else
 		{
-			newCommonPlayer = plugin.getPlayerManager().register(commonPlayer, PluginPlayerType.ADMIN);
+			newCommonPlayer = plugin.getPlayerManager().register(commonPlayer, PhysicalPlayerType.ADMIN);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, RED, CommonMessage.ADMINISTRATOR);
 		}
 		

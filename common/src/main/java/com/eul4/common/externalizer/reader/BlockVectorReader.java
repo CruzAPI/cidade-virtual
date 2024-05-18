@@ -2,16 +2,18 @@ package com.eul4.common.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.type.player.CommonObjectType;
-import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 import org.bukkit.util.BlockVector;
 
 import java.io.IOException;
 
 public class BlockVectorReader extends ObjectReader<BlockVector>
 {
+	@Getter
 	private final Reader<BlockVector> reader;
 	private final Readable<BlockVector> readable;
 	
@@ -36,11 +38,5 @@ public class BlockVectorReader extends ObjectReader<BlockVector>
 	private BlockVector readableVersion0() throws IOException
 	{
 		return new BlockVector(in.readInt(), in.readInt(), in.readInt());
-	}
-	
-	@Override
-	protected BlockVector readObject(BlockVector blockVector) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(blockVector);
 	}
 }

@@ -5,7 +5,7 @@ import com.eul4.model.player.Attacker;
 
 import java.io.IOException;
 
-public class AttackerWriter extends PluginPlayerWriter<Attacker>
+public class AttackerWriter extends SpiritualPlayerWriter<Attacker>
 {
 	public AttackerWriter(Writers writers)
 	{

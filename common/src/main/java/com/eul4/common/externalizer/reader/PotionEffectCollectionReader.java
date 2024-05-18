@@ -7,11 +7,13 @@ import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.PotionEffectCollection;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import lombok.Getter;
 
 import java.io.IOException;
 
 public class PotionEffectCollectionReader extends ObjectReader<PotionEffectCollection>
 {
+	@Getter
 	private final Reader<PotionEffectCollection> reader;
 	private final Readable<PotionEffectCollection> readable;
 	
@@ -50,11 +52,5 @@ public class PotionEffectCollectionReader extends ObjectReader<PotionEffectColle
 	public PotionEffectCollection readReference() throws IOException, ClassNotFoundException
 	{
 		return super.readReference(readable);
-	}
-	
-	@Override
-	protected PotionEffectCollection readObject(PotionEffectCollection potionEffectCollection) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(potionEffectCollection);
 	}
 }

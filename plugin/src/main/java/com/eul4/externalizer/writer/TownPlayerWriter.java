@@ -5,7 +5,7 @@ import com.eul4.model.player.TownPlayer;
 
 import java.io.IOException;
 
-public class TownPlayerWriter extends PluginPlayerWriter<TownPlayer>
+public class TownPlayerWriter extends PhysicalPlayerWriter<TownPlayer>
 {
 	public TownPlayerWriter(Writers writers)
 	{

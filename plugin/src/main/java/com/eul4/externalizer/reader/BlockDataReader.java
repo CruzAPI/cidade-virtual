@@ -8,9 +8,11 @@ import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.service.BlockData;
 import com.eul4.type.player.PluginObjectType;
+import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class BlockDataReader extends ObjectReader<BlockData>
 {
 	private final Reader<BlockData> reader;
@@ -34,7 +36,7 @@ public class BlockDataReader extends ObjectReader<BlockData>
 		}
 	}
 	
-	private BlockData readerVersion0(BlockData blockData) throws IOException
+	private void readerVersion0(BlockData blockData) throws IOException
 	{
 		byte[] main = new byte[1];
 		
@@ -46,8 +48,6 @@ public class BlockDataReader extends ObjectReader<BlockData>
 			
 			blockData.hasHardness((bitmap & 0b10000000) == 0b10000000);
 		}
-		
-		return blockData;
 	}
 	
 	private BlockData readableVersion0()
@@ -60,14 +60,10 @@ public class BlockDataReader extends ObjectReader<BlockData>
 		return super.readReference(readable);
 	}
 	
-	protected BlockData readObject() throws IOException, ClassNotFoundException
+	public BlockData readObject() throws IOException, ClassNotFoundException
 	{
-		return readObject(readable.read());
-	}
-	
-	@Override
-	protected BlockData readObject(BlockData blockData) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(blockData);
+		BlockData blockData = readable.read();
+		reader.readObject(blockData);
+		return blockData;
 	}
 }

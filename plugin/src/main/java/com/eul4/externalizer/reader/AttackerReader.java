@@ -16,10 +16,10 @@ import org.bukkit.entity.Player;
 
 import java.io.IOException;
 
-public class AttackerReader extends PluginPlayerReader<Attacker>
+@Getter
+public class AttackerReader extends SpiritualPlayerReader<Attacker>
 {
 	private final Reader<Attacker> reader;
-	@Getter
 	private final BiParameterizedReadable<Attacker, Player, Main> biParameterizedReadable;
 	
 	public AttackerReader(Readers readers) throws InvalidVersionException
@@ -32,12 +32,17 @@ public class AttackerReader extends PluginPlayerReader<Attacker>
 		switch(version)
 		{
 		case 0:
-			this.reader = Reader.identity();
+			this.reader = this::readerVersion0;
 			this.biParameterizedReadable = this::biParameterizedReadableVersion0;
 			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
+	}
+	
+	private void readerVersion0(Attacker attacker) throws IOException, ClassNotFoundException
+	{
+		super.getReader().readObject(attacker);
 	}
 	
 	private Readable<Attacker> biParameterizedReadableVersion0(Player player, Main plugin)
@@ -49,13 +54,5 @@ public class AttackerReader extends PluginPlayerReader<Attacker>
 	public Attacker readReference(Player player, Common plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(biParameterizedReadable.getReadable(player, (Main) plugin));
-	}
-	
-	@Override
-	protected Attacker readObject(Attacker attacker) throws IOException, ClassNotFoundException
-	{
-		super.readObject(attacker);
-		
-		return reader.readObject(attacker);
 	}
 }

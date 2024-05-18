@@ -5,11 +5,12 @@ import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
-import com.eul4.type.player.PluginPlayerType;
+import com.eul4.type.player.PhysicalPlayerType;
+import com.eul4.type.player.SpiritualPlayerType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
-public class CraftTownPlayer extends CraftPluginPlayer implements TownPlayer
+public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 {
 	public CraftTownPlayer(Player player, Main plugin)
 	{
@@ -70,8 +71,25 @@ public class CraftTownPlayer extends CraftPluginPlayer implements TownPlayer
 	}
 	
 	@Override
-	public PluginPlayerType getPluginPlayerType()
+	public PhysicalPlayerType getPlayerType()
 	{
-		return PluginPlayerType.TOWN_PLAYER;
+		return PhysicalPlayerType.TOWN_PLAYER;
+	}
+	
+	@Override
+	public PluginPlayer load()
+	{
+		if(!hasTown())
+		{
+			return (PluginPlayer) plugin.getPlayerManager().register(this, PhysicalPlayerType.VANILLA_PLAYER);
+		}
+		
+		if(getTown().isUnderAttack())
+		{
+			return (PluginPlayer) plugin.getPlayerManager().register(this, SpiritualPlayerType.RAID_SPECTATOR);
+		}
+		
+		commonPlayerData.getPlayerData().apply(player);
+		return this;
 	}
 }

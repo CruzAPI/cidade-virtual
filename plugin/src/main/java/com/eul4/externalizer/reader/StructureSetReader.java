@@ -10,9 +10,11 @@ import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.wrapper.StructureSet;
+import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class StructureSetReader extends ObjectReader<StructureSet>
 {
 	private final Reader<StructureSet> reader;
@@ -56,11 +58,5 @@ public class StructureSetReader extends ObjectReader<StructureSet>
 	public StructureSet readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
-	}
-	
-	@Override
-	protected StructureSet readObject(StructureSet structureSet) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(structureSet);
 	}
 }

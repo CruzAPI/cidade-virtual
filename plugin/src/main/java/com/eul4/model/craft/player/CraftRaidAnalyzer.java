@@ -6,7 +6,8 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
-import com.eul4.type.player.PluginPlayerType;
+import com.eul4.type.player.PhysicalPlayerType;
+import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.util.MessageUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -30,7 +31,7 @@ import java.util.concurrent.Future;
 import static java.util.function.Predicate.not;
 
 @Getter
-public class CraftRaidAnalyzer extends CraftPluginPlayer implements RaidAnalyzer
+public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnalyzer
 {
 	private static final Random RANDOM = new Random();
 	
@@ -136,7 +137,7 @@ public class CraftRaidAnalyzer extends CraftPluginPlayer implements RaidAnalyzer
 						.execute(() -> optionalTown.ifPresentOrElse(this::analyzeTown, () ->
 						{
 							cancel();
-							player.sendMessage("No towns found.");
+							sendMessage(PluginMessage.NO_TOWNS_FOUND);
 						}));
 			}
 			catch(InterruptedException | ExecutionException ignore)
@@ -170,7 +171,7 @@ public class CraftRaidAnalyzer extends CraftPluginPlayer implements RaidAnalyzer
 	public PluginPlayer load()
 	{
 		commonPlayerData.getPlayerData().apply(player);
-		return (PluginPlayer) plugin.getPlayerManager().register(player, this, PluginPlayerType.TOWN_PLAYER);
+		return (PluginPlayer) plugin.getPlayerManager().register(player, this, PhysicalPlayerType.TOWN_PLAYER);
 	}
 	
 	@Override
@@ -309,8 +310,8 @@ public class CraftRaidAnalyzer extends CraftPluginPlayer implements RaidAnalyzer
 	}
 	
 	@Override
-	public PluginPlayerType getPluginPlayerType()
+	public SpiritualPlayerType getPlayerType()
 	{
-		return PluginPlayerType.RAID_ANALYZER;
+		return SpiritualPlayerType.RAID_ANALYZER;
 	}
 }

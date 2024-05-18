@@ -14,9 +14,11 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.TownTile;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.wrapper.TownTileFields;
+import lombok.Getter;
 
 import java.io.IOException;
 
+@Getter
 public class TownTileReader extends ObjectReader<TownTile>
 {
 	private final Reader<TownTile> reader;
@@ -48,25 +50,17 @@ public class TownTileReader extends ObjectReader<TownTile>
 				.build();
 	}
 	
-	private TownTile readerVersion0(TownTile townTile) throws IOException, ClassNotFoundException
+	private void readerVersion0(TownTile townTile) throws IOException, ClassNotFoundException
 	{
 		townTile.loadFields(TownTileFields.builder()
 				.isInTownBorder(in.readBoolean())
 				.bought(in.readBoolean())
 				.hologram(readers.getReader(HologramReader.class).readReference(townTile.getTown().getPlugin()))
 				.build());
-		
-		return townTile;
 	}
 	
 	public TownTile readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
-	}
-	
-	@Override
-	protected TownTile readObject(TownTile townTile) throws IOException, ClassNotFoundException
-	{
-		return reader.readObject(townTile);
 	}
 }

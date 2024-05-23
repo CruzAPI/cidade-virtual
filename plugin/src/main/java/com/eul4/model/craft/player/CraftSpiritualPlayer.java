@@ -24,4 +24,29 @@ public non-sealed abstract class CraftSpiritualPlayer extends CraftPluginPlayer 
 		super(player, pluginPlayer);
 		this.reincarnationType = pluginPlayer.getReincarnationType();
 	}
+	
+	@Override
+	public final boolean mustSavePlayerData()
+	{
+		return false;
+	}
+	
+	@Override
+	public PluginPlayer reincarnate()
+	{
+		return (PluginPlayer) plugin.getPlayerManager().register(this, reincarnationType);
+	}
+	
+	@Override
+	public void reset()
+	{
+		super.reset();
+		resetPlayerData();
+	}
+	
+	@Override
+	public PluginPlayer load()
+	{
+		return reincarnate();
+	}
 }

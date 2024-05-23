@@ -18,6 +18,7 @@ public enum CommonMessage implements Message
 {
 	ADMINISTRATOR("administrator"),
 	PLAYER("player"),
+	SPECTATOR("spectator"),
 	USAGE("usage", empty().color(RED)),
 	
 	GAME_MODE_CHANGED("player-mode-changed",
@@ -45,7 +46,7 @@ public enum CommonMessage implements Message
 	
 	CONFIRM("confirm"),
 	CANCEL("cancel"),
-	;
+	CAN_NOT_PERFORM("can-not-perform", empty().color(RED));
 	
 	private final BundleBaseName bundleBaseName;
 	private final String key;

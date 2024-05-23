@@ -12,14 +12,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 @RequiredArgsConstructor
 public class RaidCommand implements TabExecutor
 {
 	private final Main plugin;
-	
-	private final Random random = new Random();
 	
 	@Override
 	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
@@ -38,13 +35,12 @@ public class RaidCommand implements TabExecutor
 		
 		if(!townPlayer.hasTown())
 		{
-			player.sendMessage("you do not have a town.");
+			player.sendMessage("you do not have a town."); //TODO message
 			return true;
 		}
 		
 		RaidAnalyzer raidAnalyzer = (RaidAnalyzer) plugin.getPlayerManager().register(townPlayer, SpiritualPlayerType.RAID_ANALYZER);
 		
-		raidAnalyzer.reset();
 		raidAnalyzer.reroll();
 		
 		return false;

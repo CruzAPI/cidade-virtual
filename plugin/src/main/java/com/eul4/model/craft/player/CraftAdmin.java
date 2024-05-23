@@ -4,7 +4,6 @@ import com.eul4.Main;
 import com.eul4.model.player.Admin;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.type.player.PhysicalPlayerType;
-import com.eul4.type.player.PluginPlayerType;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -52,5 +51,17 @@ public class CraftAdmin extends CraftPhysicalPlayer implements Admin
 	public PhysicalPlayerType getPlayerType()
 	{
 		return PhysicalPlayerType.ADMIN;
+	}
+	
+	@Override
+	public PluginPlayer load()
+	{
+		return super.load();
+	}
+	
+	@Override
+	public PluginPlayer reload()
+	{
+		return load(); //TODO Is it?
 	}
 }

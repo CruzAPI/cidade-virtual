@@ -20,6 +20,7 @@ public class PlayerDataWriter extends ObjectWriter<PlayerData>
 		out.writeInt(playerData.getArrowsInBody());
 		writers.getWriter(InventoryWriter.class).writeReference(playerData.getContents());
 		out.writeFloat(playerData.getExhaustion());
+		out.writeFloat(playerData.getExp());
 		out.writeFloat(playerData.getFallDistance());
 		out.writeInt(playerData.getFireTicks());
 		out.writeBoolean(playerData.isFlying());
@@ -30,6 +31,7 @@ public class PlayerDataWriter extends ObjectWriter<PlayerData>
 		out.writeDouble(playerData.getHealth());
 		out.writeDouble(playerData.getHealthScale());
 		writers.getWriter(ItemStackWriter.class).writeReference(playerData.getItemOnCursor());
+		out.writeInt(playerData.getLevel());
 		writers.getWriter(LocationWriter.class).writeReference(playerData.getLocation());
 		out.writeInt(playerData.getMaximumAir());
 		out.writeInt(playerData.getMaximumNoDamageTicks());
@@ -37,7 +39,6 @@ public class PlayerDataWriter extends ObjectWriter<PlayerData>
 		out.writeInt(playerData.getNoDamageTicks());
 		out.writeInt(playerData.getRemainingAir());
 		out.writeFloat(playerData.getSaturation());
-		out.writeInt(playerData.getTotalExperience());
 		out.writeInt(playerData.getUnsaturatedRegenRate());
 		out.writeFloat(playerData.getWalkSpeed());
 	}

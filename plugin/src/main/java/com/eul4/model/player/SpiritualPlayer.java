@@ -6,7 +6,10 @@ import com.eul4.type.player.SpiritualPlayerType;
 public interface SpiritualPlayer extends PluginPlayer
 {
 	void setReincarnationType(PhysicalPlayerType physicalPlayerType);
+	PhysicalPlayerType getReincarnationType();
 	
 	@Override
 	SpiritualPlayerType getPlayerType();
+	
+	PluginPlayer reincarnate();
 }

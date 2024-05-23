@@ -50,6 +50,7 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 			int arrowsInBody = in.readInt();
 			ItemStack[] contents = readers.getReader(InventoryReader.class).readReference();
 			float exhaustion = in.readFloat();
+			float exp = in.readFloat();
 			float fallDistance = in.readFloat();
 			int fireTicks = in.readInt();
 			boolean flying = in.readBoolean();
@@ -60,6 +61,7 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 			double health = in.readDouble();
 			double healthScale = in.readDouble();
 			ItemStack itemOnCursor = readers.getReader(ItemStackReader.class).readReference();
+			int level = in.readInt();
 			Location location = readers.getReader(LocationReader.class).readReference(plugin);
 			int maximumAir = in.readInt();
 			int maximumNoDamageTicks = in.readInt();
@@ -67,7 +69,6 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 			int noDamageTicks = in.readInt();
 			int remainingAir = in.readInt();
 			float saturation = in.readFloat();
-			int totalExperience = in.readInt();
 			int unsaturatedRegenRate = in.readInt();
 			float walkSpeed = in.readFloat();
 			
@@ -77,6 +78,7 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 					.arrowsInBody(arrowsInBody)
 					.contents(contents)
 					.exhaustion(exhaustion)
+					.exp(exp)
 					.fallDistance(fallDistance)
 					.fireTicks(fireTicks)
 					.flying(flying)
@@ -87,6 +89,7 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 					.health(health)
 					.healthScale(healthScale)
 					.itemOnCursor(itemOnCursor)
+					.level(level)
 					.location(location)
 					.maximumAir(maximumAir)
 					.maximumNoDamageTicks(maximumNoDamageTicks)
@@ -94,7 +97,6 @@ public class PlayerDataReader extends ObjectReader<PlayerData>
 					.noDamageTicks(noDamageTicks)
 					.remainingAir(remainingAir)
 					.saturation(saturation)
-					.totalExperience(totalExperience)
 					.unsaturatedRegenRate(unsaturatedRegenRate)
 					.walkSpeed(walkSpeed)
 					.build();

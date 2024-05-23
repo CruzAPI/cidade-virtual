@@ -11,6 +11,7 @@ import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
 import com.eul4.model.craft.town.structure.CraftTownHall;
 import com.eul4.model.player.Attacker;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -20,6 +21,7 @@ import com.eul4.model.town.structure.LikeDeposit;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.wrapper.StructureSet;
+import com.eul4.wrapper.TownAttack;
 import com.eul4.wrapper.TownBlockMap;
 import com.eul4.wrapper.TownTileMap;
 import com.sk89q.worldedit.session.ClipboardHolder;
@@ -32,10 +34,8 @@ import org.bukkit.entity.Player;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.List;
+import java.util.*;
 import java.util.function.Consumer;
 
 @Getter
@@ -72,6 +72,8 @@ public class CraftTown implements Town
 	private Attacker attacker;
 	@Setter
 	private RaidAnalyzer analyzer;
+	
+	private transient TownAttack currentAttack;
 	
 	public CraftTown(UUID ownerUUID, Block block, Main plugin)
 	{
@@ -492,7 +494,7 @@ public class CraftTown implements Town
 	@Override
 	public boolean isUnderAttack()
 	{
-		return attacker != null;
+		return currentAttack != null && !currentAttack.isFinished();
 	}
 	
 	@Override
@@ -511,5 +513,48 @@ public class CraftTown implements Town
 	public void setHardnessField(double hardness)
 	{
 		this.hardness = hardness;
+	}
+	
+	@Override
+	public void setCurrentAttack(TownAttack currentAttack)
+	{
+		if(isUnderAttack())
+		{
+			throw new RuntimeException(); //TODO ...
+		}
+		
+		if(!currentAttack.isStarting())
+		{
+			throw new RuntimeException(); //TODO ...
+		}
+		
+		this.currentAttack = currentAttack;
+	}
+	
+	@Override
+	public TownBlock getUnavailableRandomTownBlock()
+	{
+		List<TownBlock> unavailableTownBlocks = new ArrayList<>(Town.TOWN_FULL_DIAMATER * Town.TOWN_FULL_DIAMATER);
+		
+		for(TownBlock townBlock : townBlockMap.values())
+		{
+			if(!townBlock.isAvailable())
+			{
+				unavailableTownBlocks.add(townBlock);
+			}
+		}
+		
+		return unavailableTownBlocks.isEmpty()
+				? null
+				: unavailableTownBlocks.get(new Random().nextInt(unavailableTownBlocks.size()));
+	}
+	
+	@Override
+	public PluginPlayer getPluginPlayer()
+	{
+		return getPlayer()
+				.map(plugin.getPlayerManager()::get)
+				.map(PluginPlayer.class::cast)
+				.orElse(null);
 	}
 }

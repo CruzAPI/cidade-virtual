@@ -26,7 +26,7 @@ public class PlayerLoaderListener implements Listener
 	@EventHandler
 	public void on(WorldSaveEvent event)
 	{
-		if(plugin.getWorld() == event.getWorld())
+		if(event.getWorld() == plugin.getMainWorldType().getWorld())
 		{
 			plugin.getPlayerDataFiler().saveMemoryPlayers();
 		}

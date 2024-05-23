@@ -8,6 +8,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.Collection;
@@ -22,6 +23,7 @@ public class PlayerData
 	private int arrowsInBody;
 	private ItemStack[] contents;
 	private float exhaustion;
+	private float exp;
 	private float fallDistance;
 	private int fireTicks;
 	private boolean flying;
@@ -32,6 +34,7 @@ public class PlayerData
 	private double health;
 	private double healthScale;
 	private ItemStack itemOnCursor;
+	private int level;
 	private Location location;
 	private int maximumAir;
 	private int maximumNoDamageTicks;
@@ -39,7 +42,6 @@ public class PlayerData
 	private int noDamageTicks;
 	private float saturation;
 	private int remainingAir;
-	private int totalExperience;
 	private int unsaturatedRegenRate;
 	private float walkSpeed;
 	
@@ -50,6 +52,7 @@ public class PlayerData
 		arrowsInBody = player.getArrowsInBody();
 		contents = player.getInventory().getContents();
 		exhaustion = player.getExhaustion();
+		exp = player.getExp();
 		fallDistance = player.getFallDistance();
 		fireTicks = player.getFireTicks();
 		flying = player.isFlying();
@@ -60,6 +63,7 @@ public class PlayerData
 		health = player.getHealth();
 		healthScale = player.getHealthScale();
 		itemOnCursor = player.getItemOnCursor();
+		level = player.getLevel();
 		location = player.getLocation();
 		maximumAir = player.getMaximumAir();
 		maximumNoDamageTicks = player.getMaximumNoDamageTicks();
@@ -67,18 +71,28 @@ public class PlayerData
 		noDamageTicks = player.getNoDamageTicks();
 		remainingAir = player.getRemainingAir();
 		saturation = player.getSaturation();
-		totalExperience = player.getTotalExperience();
 		unsaturatedRegenRate = player.getUnsaturatedRegenRate();
 		walkSpeed = player.getWalkSpeed();
 	}
 	
+	public void applyIgnoringTeleport(Player player)
+	{
+		apply(player, false);
+	}
+	
 	public void apply(Player player)
+	{
+		apply(player, true);
+	}
+	
+	public void apply(Player player, boolean teleport)
 	{
 		applyPotionEffects(player, activePotionEffects);
 		player.setAllowFlight(allowFlight);
 		player.setArrowsInBody(arrowsInBody);
 		player.getInventory().setContents(contents);
 		player.setExhaustion(exhaustion);
+		player.setExp(exp);
 		player.setFallDistance(fallDistance);
 		player.setFireTicks(fireTicks);
 		player.setFlying(flying);
@@ -89,14 +103,14 @@ public class PlayerData
 		player.setHealth(health);
 		player.setHealthScale(healthScale);
 		player.setItemOnCursor(itemOnCursor);
-		player.teleport(location);
+		player.setLevel(level);
+		if(teleport) player.teleport(location);
 		player.setMaximumAir(maximumAir);
 		player.setMaximumNoDamageTicks(maximumNoDamageTicks);
 		player.setNoActionTicks(noActionTicks);
 		player.setNoDamageTicks(noDamageTicks);
 		player.setRemainingAir(remainingAir);
 		player.setSaturation(saturation);
-		player.setTotalExperience(totalExperience);
 		player.setUnsaturatedRegenRate(unsaturatedRegenRate);
 		player.setWalkSpeed(walkSpeed);
 	}

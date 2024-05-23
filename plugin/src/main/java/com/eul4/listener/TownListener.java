@@ -5,6 +5,7 @@ import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
+import com.eul4.type.PluginWorldType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -74,7 +75,7 @@ public class TownListener implements Listener
 		Block block = event.getBlock();
 		
 		if(!(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
-				|| block.getWorld() != plugin.getTownWorld())
+				|| block.getWorld() != PluginWorldType.TOWN_WORLD.getWorld())
 		{
 			return;
 		}
@@ -100,7 +101,7 @@ public class TownListener implements Listener
 		Block block = event.getBlock();
 		
 		if(!(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
-				|| block.getWorld() != plugin.getTownWorld())
+				|| block.getWorld() != PluginWorldType.TOWN_WORLD.getWorld())
 		{
 			return;
 		}

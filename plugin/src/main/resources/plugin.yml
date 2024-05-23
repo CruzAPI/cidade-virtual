@@ -9,6 +9,8 @@ commands:
     aliases: [bal, saldo]
   town:
     aliases: [cidade, home, casa, cv]
+  spawn:
+    aliases: [vanilla, survival]
   test:
   admin:
   build:

@@ -1,14 +1,9 @@
 package com.eul4.common.exception;
 
-import java.io.Serial;
+import lombok.experimental.StandardException;
 
+@StandardException
 public class InvalidCommonPlayerException extends RuntimeException
 {
-	@Serial
-	private static final long serialVersionUID = 1L;
-	
-	public InvalidCommonPlayerException(String message)
-	{
-		super(message);
-	}
+
 }

@@ -29,9 +29,20 @@ public interface PluginPlayer extends CommonPlayer
 	@Override
 	PluginPlayer load();
 	
+	@Override
+	PluginPlayer reload();
+	
 	Class<? extends PluginPlayer> getInterfaceType();
 	
 	void setTownPlayerData(TownPlayerData townPlayerData);
 	
 	PhysicalPlayerType getReincarnationType();
+	
+	void onStartingTownAttack();
+	
+	void onFinishingTownAttack();
+	
+	boolean teleportToTownHall();
+	
+	boolean teleportToHighestTownHall();
 }

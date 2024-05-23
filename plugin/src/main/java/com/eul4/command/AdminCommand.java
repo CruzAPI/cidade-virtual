@@ -4,9 +4,13 @@ import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.type.player.PlayerType;
+import com.eul4.i18n.PluginMessage;
+import com.eul4.model.player.Admin;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
+import com.eul4.world.VanillaWorld;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -35,7 +39,7 @@ public class AdminCommand implements TabExecutor
 	{
 		if(!(commandSender instanceof Player player))
 		{
-			return true;
+			return false;
 		}
 		
 		final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
@@ -43,14 +47,24 @@ public class AdminCommand implements TabExecutor
 		if(!player.isOp())
 		{
 			commonPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
-			return true;
+			return false;
 		}
 		
 		final CommonPlayer newCommonPlayer;
 		
-		if(commonPlayer instanceof CommonAdmin)
+		if(commonPlayer instanceof Admin admin)
 		{
-			newCommonPlayer = plugin.getPlayerManager().register(commonPlayer, PhysicalPlayerType.TOWN_PLAYER);
+			PlayerType playerType = commonPlayer.getCommonWorld() instanceof VanillaWorld
+					? PhysicalPlayerType.VANILLA_PLAYER
+					: PhysicalPlayerType.TOWN_PLAYER;
+			
+			if(playerType == PhysicalPlayerType.TOWN_PLAYER && !admin.hasTown())
+			{
+				admin.sendMessage(PluginMessage.CAN_NOT_LEAVE_ADMIN_WITH_NO_TOWN);
+				return false;
+			}
+			
+			newCommonPlayer = plugin.getPlayerManager().register(commonPlayer, playerType);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, YELLOW, CommonMessage.PLAYER);
 		}
 		else

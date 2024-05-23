@@ -7,10 +7,12 @@ import com.eul4.exception.*;
 import com.eul4.externalizer.writer.TownBlockMapWriter;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.player.Attacker;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.wrapper.StructureSet;
+import com.eul4.wrapper.TownAttack;
 import com.eul4.wrapper.TownBlockMap;
 import com.eul4.wrapper.TownTileMap;
 import org.bukkit.Location;
@@ -131,4 +133,11 @@ public interface Town
 	void setHardnessField(double hardness);
 	
 	Block getBlock();
+	
+	TownAttack getCurrentAttack();
+	
+	void setCurrentAttack(TownAttack currentAttack);
+	
+	TownBlock getUnavailableRandomTownBlock();
+	PluginPlayer getPluginPlayer();
 }

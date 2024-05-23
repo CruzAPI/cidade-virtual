@@ -7,6 +7,7 @@ import com.eul4.common.i18n.Messageable;
 import com.eul4.common.model.data.CommonPlayerData;
 import com.eul4.common.model.inventory.Gui;
 import com.eul4.common.type.player.PlayerType;
+import com.eul4.common.world.CommonWorld;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -17,12 +18,14 @@ import java.util.UUID;
 
 public interface CommonPlayer extends Messageable
 {
-	CommonPlayer getOldInstance();
 	CommonPlayerData getCommonPlayerData();
 	void setCommonPlayerData(CommonPlayerData commonPlayerData);
 	void savePlayerData();
 	Player getPlayer();
 	Common getPlugin();
+	
+	void resetPlayerData();
+	
 	UUID getUniqueId();
 	void reset();
 	Gui getGui();
@@ -39,4 +42,7 @@ public interface CommonPlayer extends Messageable
 	
 	void invalidate();
 	CommonPlayer load();
+	CommonPlayer reload();
+	CommonWorld getCommonWorld();
+	boolean isValid();
 }

@@ -9,19 +9,20 @@ import com.eul4.common.model.data.CommonPlayerData;
 import com.eul4.common.model.data.PlayerData;
 import com.eul4.common.model.inventory.Gui;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.world.CommonWorld;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Getter
@@ -36,7 +37,6 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	private final Locale locale = new Locale("pt", "BR");
 	
 	private Gui gui;
-	protected CommonPlayer oldInstance;
 	protected CommonPlayerData commonPlayerData;
 	
 	public CraftCommonPlayer(Player player, Common plugin)
@@ -52,14 +52,41 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		this.player = player;
 		this.plugin = oldCommonPlayer.getPlugin();
 		
-		this.oldInstance = oldCommonPlayer;
 		this.commonPlayerData = oldCommonPlayer.getCommonPlayerData();
 	}
 	
 	@Override
 	public void reset()
 	{
-		player.getActivePotionEffects().forEach(potionEffect -> player.removePotionEffect(potionEffect.getType()));
+	
+	}
+	
+	@Override
+	public void resetPlayerData()
+	{
+		player.clearActivePotionEffects();
+		player.setArrowsInBody(0);
+		player.getInventory().clear();
+		player.setExhaustion(0.0F);
+		player.setExp(0.0F);
+		player.setFallDistance(0.0F);
+		player.setFireTicks(0);
+		player.setFlying(false);
+		player.setFlySpeed(0.1F);
+		player.setFoodLevel(20);
+		player.setFreezeTicks(0);
+		player.getAttribute(Attribute.GENERIC_MAX_HEALTH)
+				.setBaseValue(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
+		player.setHealth(player.getHealthScale());
+		player.setItemOnCursor(null);
+		player.setLevel(0);
+		player.setMaximumAir(0);
+		player.setMaximumNoDamageTicks(20);
+		player.setNoDamageTicks(0);
+		player.setRemainingAir(0);
+		player.setSaturation(0.0F);
+		player.setUnsaturatedRegenRate(0);
+		player.setWalkSpeed(0.2F);
 	}
 	
 	@Override
@@ -139,12 +166,26 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		if(mustSavePlayerData())
 		{
 			commonPlayerData.setPlayerData(new PlayerData(player));
+			var item = Optional.ofNullable(commonPlayerData.getPlayerData().getContents()[0]).orElse(ItemStack.empty());
+			plugin.getLogger().info("save=" + getPlayerType() + " item=" + item.getType());
 		}
+	}
+	
+	@Override
+	public boolean isValid()
+	{
+		return plugin.getPlayerManager().isValid(this);
 	}
 	
 	@Override
 	public void invalidate()
 	{
-		oldInstance = null;
+		//TODO: ??
+	}
+	
+	@Override
+	public final CommonWorld getCommonWorld()
+	{
+		return plugin.getWorldManager().get(player.getWorld());
 	}
 }

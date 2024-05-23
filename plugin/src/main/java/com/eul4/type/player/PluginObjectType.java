@@ -13,6 +13,7 @@ public enum PluginObjectType implements ObjectType
 	BLOCK_DATA_MAP((byte) 0, PluginExternalizerType.BLOCK_DATA_MAP),
 	BLOCK_DATA((byte) 0, PluginExternalizerType.BLOCK_DATA),
 	DEFENDER((byte) 0, PluginExternalizerType.DEFENDER),
+	DEFENDER_SPECTATOR((byte) 0, PluginExternalizerType.DEFENDER_SPECTATOR),
 	DEPOSIT((byte) 0, null),
 	DISLIKE_DEPOSIT((byte) 0, PluginExternalizerType.DISLIKE_DEPOSIT),
 	DISLIKE_GENERATOR((byte) 0, PluginExternalizerType.DISLIKE_GENERATOR),

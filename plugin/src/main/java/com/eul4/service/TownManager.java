@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.town.Town;
+import com.eul4.type.PluginWorldType;
 import com.eul4.wrapper.TownMap;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
@@ -25,7 +26,6 @@ import org.bukkit.block.Block;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -68,7 +68,7 @@ public class TownManager
 		{
 			File file = new File("plugins/FastAsyncWorldEdit/schematics", "basis.schem");
 			
-			var world = FaweAPI.getWorld(plugin.getTownWorld().getName());
+			var world = FaweAPI.getWorld(PluginWorldType.TOWN_WORLD.getInstance().getWorld().getName());
 			
 			ClipboardFormat format = ClipboardFormats.findByFile(file);
 			ClipboardReader reader = null;
@@ -114,7 +114,7 @@ public class TownManager
 		
 		for(;;)
 		{
-			Block block = plugin.getTownWorld()
+			Block block = PluginWorldType.TOWN_WORLD.getInstance().getWorld()
 					.getBlockAt(x * Town.TOWN_FULL_DIAMATER, Town.Y, z * Town.TOWN_FULL_DIAMATER);
 			
 			if(Town.findStaticTownBlock(block).isEmpty())

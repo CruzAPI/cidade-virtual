@@ -11,6 +11,8 @@ import com.eul4.common.interceptor.HologramTranslatorAdapter;
 import com.eul4.common.interceptor.SpawnEntityInterceptor;
 import com.eul4.common.listener.*;
 import com.eul4.common.service.PlayerManager;
+import com.eul4.common.service.WorldManager;
+import com.eul4.common.type.player.CommonWorldType;
 import lombok.Getter;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
@@ -30,6 +32,7 @@ public abstract class Common extends JavaPlugin
 	private SpawnEntityInterceptor spawnEntityInterceptor;
 	
 	private PlayerManager playerManager;
+	private WorldManager worldManager;
 	
 	@Override
 	public void onEnable()
@@ -49,6 +52,7 @@ public abstract class Common extends JavaPlugin
 	private void loadServices()
 	{
 		playerManager = new PlayerManager(this);
+		worldManager = new WorldManager(this);
 	}
 	
 	private void registerCommand()
@@ -109,5 +113,5 @@ public abstract class Common extends JavaPlugin
 				.isPresent();
 	}
 	
-	public abstract World getWorld();
+	public abstract CommonWorldType getMainWorldType();
 }

@@ -1,6 +1,7 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.type.PluginWorldType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +15,7 @@ public class TownSaveListener implements Listener
 	@EventHandler
 	public void onWorldSave(WorldSaveEvent event)
 	{
-		if(event.getWorld() == plugin.getTownWorld())
+		if(event.getWorld() == PluginWorldType.TOWN_WORLD.getInstance().getWorld())
 		{
 			plugin.getTownsFiler().saveTowns();
 		}

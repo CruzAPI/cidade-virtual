@@ -6,17 +6,27 @@ import com.eul4.command.*;
 import com.eul4.common.Common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.type.player.CommonWorldType;
 import com.eul4.externalizer.filer.BlockDataFiler;
 import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.externalizer.filer.TownsFiler;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
+import com.eul4.listener.hotbar.DefenderSpectatorHotbarListener;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
-import com.eul4.listener.player.RaidAnalyzerListener;
+import com.eul4.listener.hotbar.RaidSpectatorHotbarListener;
+import com.eul4.listener.player.AttackerListener;
+import com.eul4.listener.player.DefenderListener;
+import com.eul4.listener.player.InvincibleListener;
+import com.eul4.listener.player.SpectatorListener;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
-import com.eul4.service.*;
+import com.eul4.service.DataFileManager;
+import com.eul4.service.PurchaseExecutor;
+import com.eul4.service.StructureUpgradeExecutor;
+import com.eul4.service.TownManager;
+import com.eul4.type.PluginWorldType;
 import com.eul4.util.FileUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -34,9 +44,6 @@ import java.util.logging.Level;
 @Getter
 public class Main extends Common
 {
-	private World world;
-	private World townWorld;
-	private World cidadeVirtualWorld;
 	private TownManager townManager;
 	
 	private DataFileManager dataFileManager;
@@ -85,10 +92,10 @@ public class Main extends Common
 	private void enablePlugin()
 	{
 		registerResourceBundles();
-		loadWorlds();
 		
 		super.onEnable();
 		
+		registerWorlds();
 		registerServices();
 		registerFilers();
 		registerRuleSerializers();
@@ -101,6 +108,14 @@ public class Main extends Common
 		townManager.loadTowns();
 		
 		getLogger().info("Plugin enabled.");
+	}
+	
+	private void registerWorlds()
+	{
+		for(PluginWorldType type : PluginWorldType.values())
+		{
+			getWorldManager().register(type);
+		}
 	}
 	
 	@SneakyThrows
@@ -155,7 +170,8 @@ public class Main extends Common
 	{
 		getCommand("admin").setExecutor(new AdminCommand(this));
 		getCommand("balance").setExecutor(new BalanceCommand(this));
-		getCommand("town").setExecutor(new TownCommand(this));
+		getCommand(TownCommand.COMMAND_NAME).setExecutor(new TownCommand(this));
+		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("move").setExecutor(new MoveCommand(this));
 		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
@@ -168,7 +184,13 @@ public class Main extends Common
 		final PluginManager pluginManager = getServer().getPluginManager();
 		
 		pluginManager.registerEvents(new RaidAnalyzerHotbarListener(this), this);
-		pluginManager.registerEvents(new RaidAnalyzerListener(this), this);
+		pluginManager.registerEvents(new RaidSpectatorHotbarListener(this), this);
+		pluginManager.registerEvents(new DefenderSpectatorHotbarListener(this), this);
+		
+		pluginManager.registerEvents(new AttackerListener(this), this);
+		pluginManager.registerEvents(new DefenderListener(this), this);
+		pluginManager.registerEvents(new InvincibleListener(this), this);
+		pluginManager.registerEvents(new SpectatorListener(this), this);
 		
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);
@@ -192,28 +214,6 @@ public class Main extends Common
 		FileUtil.deleteDirectory(new File(worldName));
 	}
 	
-	private void loadWorlds()
-	{
-		WorldCreator wc;
-		
-		wc = new WorldCreator("world");
-		wc.type(WorldType.NORMAL);
-		wc.environment(World.Environment.NORMAL);
-		world = wc.createWorld();
-		
-		wc = new WorldCreator("town_world");
-		wc.type(WorldType.FLAT);
-		wc.environment(World.Environment.NORMAL);
-		wc.generator(new ChunkGenerator() {});
-		townWorld = wc.createWorld();
-		
-		wc = new WorldCreator("cidade_virtual");
-		wc.type(WorldType.FLAT);
-		wc.environment(World.Environment.THE_END);
-		wc.generator(new ChunkGenerator() {});
-		cidadeVirtualWorld = wc.createWorld();
-	}
-	
 	private void registerResourceBundles()
 	{
 		for(Locale locale : ResourceBundleHandler.SUPPORTED_LOCALES)
@@ -234,6 +234,12 @@ public class Main extends Common
 		getServer().getWorlds().forEach(blockDataFiler::saveChunks);
 		
 		getLogger().info("Plugin disabled.");
+	}
+	
+	@Override
+	public CommonWorldType getMainWorldType()
+	{
+		return PluginWorldType.OVER_WORLD;
 	}
 	
 	public File getSchematicsFolder()

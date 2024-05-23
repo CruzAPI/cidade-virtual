@@ -91,6 +91,14 @@ public enum PluginMessage implements Message
 		text(args[0].toString()),
 	}),
 	
+	COMMAND_SPAWN_USAGE("command.spawn.usage",
+	(bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		USAGE.translate(bundle.getLocale()),
+		text(args[0].toString()),
+	}),
+	
 	STRUCTURE_READY_IN("structure.ready-in",
 	(bundle, args) -> new Component[]
 	{
@@ -335,8 +343,36 @@ public enum PluginMessage implements Message
 	
 	RAID_SPECTATOR_HOTBAR_DEFEND("raid-spectator.hotbar.defend", empty().color(GRAY)),
 	
-	RAID_SPECTATOR_HOTBAR_VANILLA("raid-spectator.hotbar.vanilla", empty().color(RED));
+	RAID_SPECTATOR_HOTBAR_VANILLA("raid-spectator.hotbar.vanilla", empty().color(RED)),
 	
+	DEFENDER_SPECTATOR_HOTBAR_QUIT("defender-spectator.hotbar.quit", empty().color(RED)),
+	
+	TOWN_ATTACK_ALERT("town-attack-alert", (bundle, args) -> new Component[]
+	{
+		empty().color(GOLD),
+		((Component) args[0]),
+	}),
+	
+	TYPE_TOWN_TO_DEFEND("type-town-to-defend", (bundle, args) -> new Component[]
+	{
+		empty().color(GOLD),
+		text((String) args[0]).color(AQUA),
+	}),
+	
+	ATTACK_IS_OVER("attack-is-over", empty().color(GOLD)),
+	
+	CAN_NOT_LEAVE_ADMIN_WITH_NO_TOWN("command.admin.can-not-leave-without-town", empty().color(RED)),
+	
+	TITLE_RESPAWNED("title.respawned", empty().color(GREEN)),
+	SUBTITLE_RESPAWNED("subtitle.respawned", empty().color(GRAY)),
+	TITLE_DEFENDER_MODE("title.defender-mode", empty().color(GREEN)),
+	
+	TITLE_RESPAWNING_IN("title.respawning-in", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		text((int) args[0]),
+	}),
+	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;
 	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;

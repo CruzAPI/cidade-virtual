@@ -20,6 +20,59 @@ public class PlayerManager
 	
 	private final Map<UUID, CommonPlayer> commonPlayers = new HashMap<>();
 	
+//	TODO: rethink...
+//	public CommonPlayer tryRegisterInvalidInstance(Player player, CommonPlayer oldInstance, PlayerType playerType)
+//	{
+//		oldInstance.invalidate();
+//
+//		boolean exists = commonPlayers.containsKey(oldInstance.getUniqueId());
+//
+//		CommonPlayer newCommonPlayer = playerType.newInstance(player, oldInstance);
+//		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
+//		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(oldInstance, newCommonPlayer));
+//
+//		try
+//		{
+//			newCommonPlayer = exists ? newCommonPlayer.reload() : newCommonPlayer.load();
+//			return newCommonPlayer;
+//		}
+//		catch(Exception e)
+//		{
+//			newCommonPlayer.invalidate();
+//			commonPlayers.put(newCommonPlayer.getUniqueId(), oldInstance);
+//			plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(newCommonPlayer, oldInstance));
+//			return oldInstance;
+//		}
+//	}
+//
+//	public CommonPlayer tryRegister(Player player, CommonPlayer oldInstance, PlayerType playerType)
+//	{
+//		if(!oldInstance.isValid())
+//		{
+//			throw new InvalidCommonPlayerException();
+//		}
+//
+//		boolean exists = commonPlayers.containsKey(oldInstance.getUniqueId());
+//
+//		CommonPlayer newCommonPlayer = playerType.newInstance(player, oldInstance);
+//		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
+//		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(oldInstance, newCommonPlayer));
+//
+//		try
+//		{
+//			newCommonPlayer = exists ? newCommonPlayer.reload() : newCommonPlayer.load();
+//			oldInstance.invalidate();
+//			return newCommonPlayer;
+//		}
+//		catch(Exception e)
+//		{
+//			newCommonPlayer.invalidate();
+//			commonPlayers.put(newCommonPlayer.getUniqueId(), oldInstance);
+//			plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(newCommonPlayer, oldInstance));
+//			return oldInstance;
+//		}
+//	}
+	
 	public CommonPlayer register(Player player, Common plugin, PlayerType playerType)
 	{
 		if(commonPlayers.containsKey(player.getUniqueId()))
@@ -46,12 +99,14 @@ public class PlayerManager
 	
 	public CommonPlayer register(Player player, CommonPlayer oldInstance, PlayerType playerType)
 	{
+		boolean isJoining = !commonPlayers.containsKey(oldInstance.getUniqueId());
+		
 		oldInstance.invalidate();
 		final CommonPlayer newCommonPlayer = playerType.newInstance(player, oldInstance);
 		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
 		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(oldInstance, newCommonPlayer));
 		
-		return newCommonPlayer.load();
+		return isJoining ? newCommonPlayer.load() : newCommonPlayer.reload();
 	}
 	
 	public CommonPlayer get(Player player)

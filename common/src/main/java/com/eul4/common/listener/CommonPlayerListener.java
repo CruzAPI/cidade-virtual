@@ -38,7 +38,7 @@ public class CommonPlayerListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void on(WorldSaveEvent event)
 	{
-		if(event.getWorld() == plugin.getWorld())
+		if(event.getWorld() == plugin.getMainWorldType().getInstance().getWorld())
 		{
 			for(CommonPlayer commonPlayer : plugin.getPlayerManager().getAll())
 			{

@@ -6,7 +6,6 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
-import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.util.MessageUtil;
 import lombok.Getter;
@@ -14,7 +13,6 @@ import lombok.SneakyThrows;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -69,6 +67,19 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	}
 	
 	@Override
+	public PluginPlayer reload()
+	{
+		if(!hasTown())
+		{
+			reincarnate();
+		}
+		
+		reset();
+		
+		return this;
+	}
+	
+	@Override
 	public void analyzeTown(Town town)
 	{
 		analyzingTown = town;
@@ -83,6 +94,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		
 		scheduleAnalyzeTimer();
 		hotbar.reset();
+		plugin.getLogger().info("[RaidAnalyzerAnalyzingTown] from=" + player.getWorld() + " to=TOWN");//TODO
 		player.teleport(town.getLocation().toHighestLocation());
 		player.showTitle(title);
 	}
@@ -90,9 +102,8 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	@Override
 	public void attack()
 	{
-		//TODO: convert to RaidPlayer
-		Bukkit.broadcastMessage("attak!");
 		cancelAnalysisTask();
+		plugin.getPlayerManager().register(this, SpiritualPlayerType.ATTACKER);
 	}
 	
 	private void cancelAnalysisTask()
@@ -157,7 +168,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		
 		cancelAnalysisTask();
 		player.showTitle(Title.title(Component.empty(), Component.empty()));
-		load();
+		reincarnate();
 	}
 	
 	@Override
@@ -165,13 +176,6 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	{
 		super.invalidate();
 		cancelAnalysisTask();
-	}
-	
-	@Override
-	public PluginPlayer load()
-	{
-		commonPlayerData.getPlayerData().apply(player);
-		return (PluginPlayer) plugin.getPlayerManager().register(player, this, PhysicalPlayerType.TOWN_PLAYER);
 	}
 	
 	@Override
@@ -301,12 +305,6 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 			
 			player.showBossBar(bossBar);
 		}
-	}
-	
-	@Override
-	public boolean mustSavePlayerData()
-	{
-		return false;
 	}
 	
 	@Override

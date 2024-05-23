@@ -1,25 +1,21 @@
 package com.eul4.command;
 
 import com.eul4.Main;
-import com.eul4.StructureType;
-import com.eul4.exception.CannotConstructException;
 import com.eul4.model.player.TownPlayer;
-import com.eul4.model.town.TownBlock;
-import com.eul4.model.town.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
@@ -48,23 +44,7 @@ public class TestCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			if(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
-			{
-				Map<StructureType, Integer> count = new HashMap<>();
-				
-				for(TownBlock townBlock : townPlayer.getTown().getTownBlockMap().values())
-				{
-					StructureType type = Optional.ofNullable(townBlock.getStructure()).map(Structure::getStructureType).orElse(null);
-					count.putIfAbsent(type, 0);
-					count.computeIfPresent(type, (key, value) -> ++value);
-				}
-				
-				plugin.getLogger().info("count=" + count);
-			}
-			else
-			{
-				player.sendMessage("You are not a town player.");
-			}
+			player.sendMessage(plugin.getPlayerManager().get(player).getPlayerType().getInterfaceType().getSimpleName());
 		}
 //		else if(args.length == 1)
 //		{
@@ -118,12 +98,6 @@ public class TestCommand implements TabExecutor
 		}
 		else if(args.length == 3)
 		{
-			long count = plugin.getEntityRegisterListener().getPersistentEntities().values().stream()
-					.filter(entity -> entity.getWorld() == plugin.getTownWorld())
-					.filter(entity -> entity instanceof ArmorStand)
-					.count();
-			
-			player.sendMessage("count: " + count);
 			player.sendMessage(plugin.getTownManager().getTowns().size() + " towns");
 		}
 		

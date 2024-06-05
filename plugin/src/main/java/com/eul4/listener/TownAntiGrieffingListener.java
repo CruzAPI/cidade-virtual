@@ -36,43 +36,46 @@ public class TownAntiGrieffingListener implements Listener
 {
 	private final Main plugin;
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockPlace(BlockCanBuildEvent event)
 	{
-		cancelBlockEventIfIsGriefing(event);
+		if(hasAntiGrief(event.getBlock()))
+		{
+			event.setBuildable(false);
+		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(StructureGrowEvent event)
 	{
 		cancelMultipleBlockStateEventIfIsGriefing(event, event.getBlocks());
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(LeavesDecayEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockSpreadEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event, event.getNewState().getBlock());
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockFormEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onLiquidFlow(BlockFromToEvent event)
 	{
 		Block block = event.getBlock();
@@ -88,7 +91,7 @@ public class TownAntiGrieffingListener implements Listener
 		cancelBlockEventIfIsGriefing(event, event.getToBlock());
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDragonEggTeleport(BlockFromToEvent event)
 	{
 		Block block = event.getBlock();
@@ -112,55 +115,55 @@ public class TownAntiGrieffingListener implements Listener
 		cancelMultipleBlockStateEventIfIsGriefing(event, List.of(fromState, toState));
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(FluidLevelChangeEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(PlayerBucketEmptyEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event, event.getBlock());
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(PlayerBucketFillEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event, event.getBlock());
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockDestroyEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockGrowEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(MoistureChangeEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockFadeEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockMultiPlaceEvent event)
 	{
 		cancelMultipleBlockStateEventIfIsGriefing(event, event.getReplacedBlockStates());
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockPistonExtendEvent event)
 	{
 		final Block pistonBase = event.getBlock();
@@ -214,7 +217,7 @@ public class TownAntiGrieffingListener implements Listener
 		cancelMultipleBlockStateEventIfIsGriefing(event, newBlockStates);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockPistonRetractEvent event)
 	{
 		final Block pistonBase = event.getBlock();
@@ -261,7 +264,7 @@ public class TownAntiGrieffingListener implements Listener
 		cancelMultipleBlockStateEventIfIsGriefing(event, newBlockStates);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDispenseBucket(BlockDispenseEvent event)
 	{
 		Block block = event.getBlock();
@@ -278,7 +281,7 @@ public class TownAntiGrieffingListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDispenseLava(BlockDispenseEvent event)
 	{
 		Block block = event.getBlock();
@@ -295,7 +298,7 @@ public class TownAntiGrieffingListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDispenseWater(BlockDispenseEvent event)
 	{
 		Block block = event.getBlock();
@@ -312,7 +315,7 @@ public class TownAntiGrieffingListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDispensePowderSnow(BlockDispenseEvent event)
 	{
 		Block block = event.getBlock();
@@ -329,37 +332,37 @@ public class TownAntiGrieffingListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(EntityExplodeEvent event)
 	{
 		event.blockList().removeIf(this::hasAntiGrief);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockExplodeEvent event)
 	{
 		event.blockList().removeIf(this::hasAntiGrief);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(EntityChangeBlockEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event, event.getBlock());
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(SpongeAbsorbEvent event)
 	{
 		cancelMultipleBlockStateEventIfIsGriefing(event, event.getBlocks());
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockBurnEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void on(BlockIgniteEvent event)
 	{
 		cancelBlockEventIfIsGriefing(event);

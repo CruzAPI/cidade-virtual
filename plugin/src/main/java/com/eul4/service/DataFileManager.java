@@ -2,6 +2,7 @@ package com.eul4.service;
 
 import com.eul4.StructureType;
 import com.eul4.common.Common;
+import com.eul4.model.town.Town;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Chunk;
 
@@ -60,6 +61,31 @@ public class DataFileManager
 		return createFileIfNotExists(getPlayerDataFile(uuid));
 	}
 	
+	public File[] getTownSchematicFiles()
+	{
+		return new File(plugin.getDataFolder() + "/town_schem").listFiles();
+	}
+	
+	public File getTownSchematicFile(Town town)
+	{
+		return getTownSchematicFile(town.getOwnerUUID());
+	}
+	
+	public File getTownSchematicFile(UUID uuid)
+	{
+		return new File(plugin.getDataFolder() + "/town_schem", uuid.toString() + ".schem");
+	}
+	
+	public File createTownSchematicFile(Town town) throws IOException
+	{
+		return createTownSchematicFile(town.getOwnerUUID());
+	}
+	
+	public File createTownSchematicFile(UUID uuid) throws IOException
+	{
+		return createFileIfNotExists(getTownSchematicFile(uuid));
+	}
+	
 	public File getStructurePricesFile()
 	{
 		return new File(plugin.getDataFolder(), "structure_prices.dat");
@@ -68,6 +94,16 @@ public class DataFileManager
 	public File createStructurePricesFileIfNotExists() throws IOException
 	{
 		return createFileIfNotExists(getStructurePricesFile());
+	}
+	
+	public File getSchematicFile(String schematicName)
+	{
+		return new File(plugin.getSchematicsFolder(), schematicName + ".schem");
+	}
+	
+	public File createSchematicFile(String schematicName) throws IOException
+	{
+		return createFileIfNotExists(getSchematicFile(schematicName));
 	}
 	
 	private File createFileIfNotExists(File file) throws IOException

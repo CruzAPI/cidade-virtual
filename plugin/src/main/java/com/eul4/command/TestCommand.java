@@ -1,14 +1,21 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftArmorStand;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,9 +49,15 @@ public class TestCommand implements TabExecutor
 			return true;
 		}
 		
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		
 		if(args.length == 0)
 		{
 			player.sendMessage(plugin.getPlayerManager().get(player).getPlayerType().getInterfaceType().getSimpleName());
+		}
+		else if(args.length == 1)
+		{
+			player.sendMessage("frozen=" + pluginPlayer.getTown().isFrozen());
 		}
 //		else if(args.length == 1)
 //		{

@@ -6,10 +6,13 @@ import com.eul4.common.i18n.ResourceBundleHandler;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -66,6 +69,14 @@ public class Hologram
 		armorStand.spawnAt(armorStand.getLocation());
 	}
 	
+	public static boolean isHologram(ArmorStand armorStand)
+	{
+		return armorStand.isMarker()
+				&& !armorStand.hasGravity()
+				&& armorStand.isInvisible()
+				&& armorStand.isInvulnerable();
+	}
+	
 	private ArmorStand newArmorStandNotSpawned()
 	{
 		final Location location = this.location.clone().subtract(0.0D, 0.28D * hologramLines.size(), 0.0D);
@@ -78,6 +89,7 @@ public class Hologram
 		
 		final ArmorStand armorStand = (ArmorStand) nmsArmorStand.getBukkitEntity();
 		
+		armorStand.getPersistentDataContainer().set(new NamespacedKey(plugin, "fawe_ignore"), PersistentDataType.BOOLEAN, true);
 		armorStand.setPersistent(true);
 		armorStand.setInvulnerable(true);
 		armorStand.setVisible(false);

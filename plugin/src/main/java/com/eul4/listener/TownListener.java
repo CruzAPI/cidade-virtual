@@ -1,19 +1,27 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.common.hologram.Hologram;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
 import com.eul4.type.PluginWorldType;
+import com.eul4.world.TownWorld;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -23,7 +31,7 @@ public class TownListener implements Listener
 {
 	private final Main plugin;
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBucketFill(PlayerBucketFillEvent event)
 	{
 		Block block = event.getBlock();
@@ -38,7 +46,7 @@ public class TownListener implements Listener
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBucketEmpty(PlayerBucketEmptyEvent event)
 	{
 		Block block = event.getBlock();
@@ -53,7 +61,7 @@ public class TownListener implements Listener
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
 		Block block = event.getClickedBlock();
@@ -68,7 +76,7 @@ public class TownListener implements Listener
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		Player player = event.getPlayer();
@@ -94,7 +102,7 @@ public class TownListener implements Listener
 				.ifPresent(event::setCancelled);
 	}
 	
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		Player player = event.getPlayer();
@@ -155,5 +163,37 @@ public class TownListener implements Listener
 		}
 		
 		tile.buy();
+	}
+	
+	@EventHandler
+	public void on(EntitySpawnEvent event)
+	{
+		Location spawnLocation = event.getLocation();
+		Entity entity = event.getEntity();
+		
+		TownBlock townBlock = Town.getStaticTownBlock(spawnLocation.getBlock());
+		Town town = townBlock == null ? null : townBlock.getTown();
+		
+		if(town == null || !town.isFrozen())
+		{
+			return;
+		}
+		
+		if(entity instanceof ArmorStand armorStand)
+		{
+			plugin.getLogger().warning("armorStand! " + Hologram.isHologram(armorStand));
+		}
+	}
+	
+	@EventHandler
+	public void on(CreatureSpawnEvent event)
+	{
+		if(!(plugin.getWorldManager().get(event.getEntity().getWorld()) instanceof TownWorld)
+				|| event.getEntity() instanceof ArmorStand)
+		{
+			return;
+		}
+		
+		event.setCancelled(true);
 	}
 }

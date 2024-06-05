@@ -19,6 +19,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -111,6 +112,11 @@ public abstract class Common extends JavaPlugin
 				.map(BukkitRunnable::getTaskId)
 				.filter(getServer().getScheduler()::isQueued)
 				.isPresent();
+	}
+	
+	public File getSchematicsFolder()
+	{
+		return new File("plugins/FastAsyncWorldEdit/schematics");
 	}
 	
 	public abstract CommonWorldType getMainWorldType();

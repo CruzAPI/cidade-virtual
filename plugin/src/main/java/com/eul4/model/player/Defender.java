@@ -4,7 +4,7 @@ import com.eul4.wrapper.TownAttack;
 
 import java.util.Optional;
 
-public interface Defender extends PluginPlayer, SpiritualPlayer, Warder
+public interface Defender extends PluginPlayer, SpiritualPlayer, Warder, Fighter
 {
 	Optional<TownAttack> findTownAttack();
 }

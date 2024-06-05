@@ -119,4 +119,10 @@ public class CraftAttacker extends CraftSpiritualPlayer implements Attacker
 	{
 		return SpiritualPlayerType.ATTACKER;
 	}
+	
+	@Override
+	public Town getAttackedTown()
+	{
+		return townAttack == null ? null : townAttack.getTown();
+	}
 }

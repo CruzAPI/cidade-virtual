@@ -8,6 +8,7 @@ import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.util.MessageUtil;
+import com.eul4.wrapper.PreTownAttack;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.kyori.adventure.bossbar.BossBar;
@@ -19,6 +20,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -41,6 +43,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	private Town analyzingTown;
 	
 	private Future<Optional<Town>> rerollFuture;
+	private PreTownAttack preTownAttack;
 	
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 	
@@ -94,7 +97,6 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		
 		scheduleAnalyzeTimer();
 		hotbar.reset();
-		plugin.getLogger().info("[RaidAnalyzerAnalyzingTown] from=" + player.getWorld() + " to=TOWN");//TODO
 		player.teleport(town.getLocation().toHighestLocation());
 		player.showTitle(title);
 	}
@@ -102,8 +104,14 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	@Override
 	public void attack()
 	{
+		if(preTownAttack != null)
+		{
+			return;
+		}
+		
 		cancelAnalysisTask();
-		plugin.getPlayerManager().register(this, SpiritualPlayerType.ATTACKER);
+		preTownAttack = new PreTownAttack(this);
+		preTownAttack.start();
 	}
 	
 	private void cancelAnalysisTask()
@@ -167,6 +175,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		}
 		
 		cancelAnalysisTask();
+		Optional.ofNullable(preTownAttack).ifPresent(PreTownAttack::cancel);
 		player.showTitle(Title.title(Component.empty(), Component.empty()));
 		reincarnate();
 	}
@@ -176,6 +185,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	{
 		super.invalidate();
 		cancelAnalysisTask();
+		Optional.ofNullable(preTownAttack).ifPresent(PreTownAttack::cancel);
 	}
 	
 	@Override

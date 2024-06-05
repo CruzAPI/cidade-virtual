@@ -126,4 +126,10 @@ public class CraftDefender extends CraftSpiritualPlayer implements Defender
 						Duration.ofMillis(1500L),
 						Duration.ofMillis(2000L)));
 	}
+	
+	@Override
+	public Town getAttackedTown()
+	{
+		return getTown();
+	}
 }

@@ -24,19 +24,45 @@ import com.eul4.wrapper.StructureSet;
 import com.eul4.wrapper.TownAttack;
 import com.eul4.wrapper.TownBlockMap;
 import com.eul4.wrapper.TownTileMap;
+import com.fastasyncworldedit.core.FaweAPI;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.entity.BaseEntity;
+import com.sk89q.worldedit.entity.Entity;
+import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.*;
+import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.util.nbt.CompoundBinaryTag;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -67,6 +93,7 @@ public class CraftTown implements Town
 	private transient int dislikeCapacity;
 	
 	private TownHall townHall;
+	private transient boolean frozen;
 	
 	@Setter
 	private Attacker attacker;
@@ -556,5 +583,221 @@ public class CraftTown implements Town
 				.map(plugin.getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
 				.orElse(null);
+	}
+	
+	@Override
+	public Future<Void> copyAndSaveTownSchematic(ExecutorService executorService)
+	{
+		if(frozen)
+		{
+			throw new ConcurrentModificationException("Can't copy/save town schematic in a frozen town.");
+		}
+		
+		frozen = true;
+		return executorService.submit(this::saveSchematic);
+	}
+	
+	@Override
+	public Future<Void> loadAndPasteTownSchematic(ExecutorService executorService)
+	{
+		if(frozen)
+		{
+			throw new ConcurrentModificationException("Can't load/paste town schematic in a frozen town.");
+		}
+		
+		frozen = true;
+		return executorService.submit(this::loadSchematic);
+	}
+	
+	@Override
+	public void loadAndPasteTownSchematic()
+	{
+		if(frozen)
+		{
+			throw new ConcurrentModificationException("Can't load/paste town schematic in a frozen town.");
+		}
+		
+		frozen = true;
+		plugin.getServer()
+				.getScheduler()
+				.getMainThreadExecutor(plugin)
+				.execute(this::loadSchematicSneaky);
+	}
+	
+	@SneakyThrows
+	private void loadSchematicSneaky()
+	{
+		loadSchematic();
+	}
+	
+	private Void loadSchematic() throws Exception
+	{
+		frozen = true;
+		File file = null;
+		
+		try
+		{
+			final Block origin = block;
+			final BlockVector3 to = BlockVector3.at(origin.getX(), origin.getY(), origin.getZ());
+			final World world = origin.getWorld();
+			final var weWorld = FaweAPI.getWorld(world.getName());
+			
+			file = plugin.getDataFileManager().getTownSchematicFile(this);
+			
+			if(!file.exists())
+			{
+				throw new IOException("File " + file.getName() + " not exists.");
+			}
+			
+			ClipboardFormat format = ClipboardFormats.findByFile(file);
+			
+			if(format == null)
+			{
+				throw new IOException("File format not supported.");
+			}
+			
+			try(ClipboardReader reader = format.getReader(new FileInputStream(file));
+					EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld))
+			{
+				editSession.setFastMode(true);
+				Operation operation = new ClipboardHolder(reader.read())
+						.createPaste(editSession)
+						.to(to)
+						.copyEntities(true)
+						.ignoreAirBlocks(false)
+						.build();
+				
+				Operations.complete(operation);
+			}
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().log(Level.SEVERE, MessageFormat.format(
+					"Failed to paste town schematic! uuid={0}",
+					ownerUUID), e);
+			throw e;
+		}
+		finally
+		{
+			frozen = false;
+			
+			if(file != null)
+			{
+				if(!file.delete())
+				{
+					throw new IOException("Failed to delete file.");
+				}
+			}
+		}
+		
+		if(Thread.interrupted())
+		{
+			throw new InterruptedException();
+		}
+		
+		return null;
+	}
+	
+	private Void saveSchematic() throws Exception
+	{
+		Thread.sleep(3000L);
+		frozen = true;
+		
+		try
+		{
+			Block center = block;
+			World world = center.getWorld();
+			var weWorld = FaweAPI.getWorld(world.getName());
+			
+			BlockVector3 originPos = BlockVector3.at(center.getX(), center.getY(), center.getZ());
+			BlockVector3 pos1 = BlockVector3.at(center.getX() - Town.TOWN_FULL_RADIUS, 0, center.getZ() - Town.TOWN_FULL_RADIUS);
+			BlockVector3 pos2 = BlockVector3.at(center.getX() + Town.TOWN_FULL_RADIUS, world.getMaxHeight(), center.getZ() + Town.TOWN_FULL_RADIUS);
+			
+			CuboidRegion region = new CuboidRegion(weWorld, pos1, pos2);
+			BlockArrayClipboard clipboard1 = new BlockArrayClipboard(region);
+			BlockArrayClipboard clipboard2 = new BlockArrayClipboard(region);
+			clipboard1.setOrigin(originPos);
+			clipboard2.setOrigin(originPos);
+			
+			try(EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld))
+			{
+				ForwardExtentCopy operation = new ForwardExtentCopy(editSession, region, clipboard1, region.getMinimumPoint());
+				operation.setCopyingEntities(true);
+				Operations.complete(operation);
+			}
+			
+			List<? extends Entity> weEntitiesToCopy = clipboard1.getEntities()
+					.stream()
+					.filter(Predicate.not(this::hasFaweIgnoreFlag))
+					.toList();
+			
+			try(EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld))
+			{
+				ForwardExtentCopy operation = new ForwardExtentCopy(editSession, region, clipboard2, region.getMinimumPoint());
+				operation.setCopyingEntities(false);
+				Operations.complete(operation);
+			}
+
+			for(var weEntity : weEntitiesToCopy)
+			{
+				clipboard2.createEntity(weEntity.getLocation(), weEntity.getState());
+			}
+			
+			try(FileOutputStream fileOutputStream = new FileOutputStream(plugin.getDataFileManager().createTownSchematicFile(this));
+					ClipboardWriter writer = BuiltInClipboardFormat.FAST.getWriter(fileOutputStream))
+			{
+				writer.write(clipboard2);
+				plugin.getLogger().info("Town schematic saved! uuid=" + ownerUUID);
+			}
+			
+			//TODO: concurrent bug if save occurs here
+			CountDownLatch countDownLatch = new CountDownLatch(1);
+			
+			plugin.getServer().getScheduler().getMainThreadExecutor(plugin).execute(() ->
+			{
+				try
+				{
+					for(var weEntity : clipboard2.getEntities())
+					{
+						plugin.getEntityRegisterListener()
+								.getEntityByUuid(weEntity.getState().getNbtData().getUUID())
+								.remove();
+					}
+				}
+				finally
+				{
+					countDownLatch.countDown();
+				}
+			});
+			
+			countDownLatch.await();
+		}
+		catch(Exception e)
+		{
+			plugin.getLogger().log(Level.SEVERE, MessageFormat.format(
+					"Failed to save town schematic! uuid={0}",
+					ownerUUID), e);
+			throw e;
+		}
+		finally
+		{
+			frozen = false;
+		}
+		
+		if(Thread.interrupted())
+		{
+			throw new InterruptedException();
+		}
+		
+		return null;
+	}
+	
+	private boolean hasFaweIgnoreFlag(Entity entity)
+	{
+		return Optional.ofNullable(entity.getState())
+				.map(BaseEntity::getNbt)
+				.map(nbt -> nbt.getCompound("BukkitValues"))
+				.map(nbt -> nbt.getBoolean("plugin:fawe_ignore", false)) //TODO nameSpace?
+				.orElse(false);
 	}
 }

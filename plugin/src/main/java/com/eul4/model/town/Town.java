@@ -4,7 +4,6 @@ import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.exception.*;
-import com.eul4.externalizer.writer.TownBlockMapWriter;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.player.Attacker;
 import com.eul4.model.player.PluginPlayer;
@@ -22,10 +21,11 @@ import org.bukkit.entity.Player;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 public interface Town
 {
@@ -140,4 +140,11 @@ public interface Town
 	
 	TownBlock getUnavailableRandomTownBlock();
 	PluginPlayer getPluginPlayer();
+	
+	boolean isFrozen();
+	
+	Future<Void> copyAndSaveTownSchematic(ExecutorService executorService);
+	
+	Future<Void> loadAndPasteTownSchematic(ExecutorService executorService);
+	void loadAndPasteTownSchematic();
 }

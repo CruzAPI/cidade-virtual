@@ -35,10 +35,15 @@ import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginManager;
+import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 @Getter
@@ -106,6 +111,8 @@ public class Main extends Common
 		
 		reloadRules();
 		townManager.loadTowns();
+		
+		pasteCorruptedTowns();
 		
 		getLogger().info("Plugin enabled.");
 	}
@@ -199,6 +206,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new StructureShopGuiListener(this), this);
 		pluginManager.registerEvents(new GeneratorGuiListener(this), this);
 		pluginManager.registerEvents(new StructureMoveListener(this), this);
+		pluginManager.registerEvents(new TownAttackListener(this), this);
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
@@ -207,6 +215,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);
+		pluginManager.registerEvents(new FrozenTownListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)
@@ -221,6 +230,30 @@ public class Main extends Common
 			for(BundleBaseName bundleBaseName : PluginBundleBaseName.values())
 			{
 				ResourceBundleHandler.registerBundle(ResourceBundle.getBundle(bundleBaseName.getName(), locale));
+			}
+		}
+	}
+	
+	private void pasteCorruptedTowns()
+	{
+		File[] files = dataFileManager.getTownSchematicFiles();
+		
+		if(files == null)
+		{
+			return;
+		}
+		
+		for(File file : files)
+		{
+			try
+			{
+				UUID uuid = UUID.fromString(FileUtils.removeExtension(file.getName()));
+				townManager.getTown(uuid).loadAndPasteTownSchematic();
+				getLogger().info(MessageFormat.format("Corrupted town {0} restored!", uuid));
+			}
+			catch(Exception e)
+			{
+				getLogger().log(Level.WARNING, "Error while trying to paste corrupted town! File: " + file.getName(), e);
 			}
 		}
 	}
@@ -240,10 +273,5 @@ public class Main extends Common
 	public CommonWorldType getMainWorldType()
 	{
 		return PluginWorldType.OVER_WORLD;
-	}
-	
-	public File getSchematicsFolder()
-	{
-		return new File("plugins/FastAsyncWorldEdit/schematics");
 	}
 }

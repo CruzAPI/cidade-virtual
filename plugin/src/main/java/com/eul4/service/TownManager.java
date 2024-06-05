@@ -92,8 +92,12 @@ public class TownManager
 			}
 			try(EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1))
 			{
-				Operation operation = new ClipboardHolder(clipboard).createPaste(editSession).to(to)
-						.ignoreAirBlocks(false).build();
+				Operation operation = new ClipboardHolder(clipboard)
+						.createPaste(editSession)
+						.to(to)
+						.ignoreAirBlocks(false)
+						.build();
+				
 				Operations.complete(operation);
 			}
 		}

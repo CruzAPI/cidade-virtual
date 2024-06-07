@@ -12,6 +12,7 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.swing.*;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Optional;
@@ -142,7 +143,7 @@ public class TownAttack
 		private final int maxTicks = ticks;
 		
 		private final BossBar bossBar = BossBar.bossBar(
-				Component.text("attak"), //TODO message
+				Component.empty(),
 				1.0F,
 				BossBar.Color.RED,
 				BossBar.Overlay.PROGRESS);
@@ -161,10 +162,20 @@ public class TownAttack
 		
 		private void updateBars()
 		{
+			PluginPlayer defender = town.getPluginPlayer();
+
+			if(defender == null)
+			{
+				bossBar.name(Component.empty());
+			}
+			else
+			{
+				bossBar.name(PluginMessage.TOWN_UNDER_ATTACK.translate(defender, attacker.getPlayer().displayName()));
+			}
+
 			bossBar.progress((float) ticks / maxTicks);
-			
 			CommonPlayer commonPlayer = town.getPlugin().getPlayerManager().get(town.getOwnerUUID());
-			
+
 			if(commonPlayer instanceof Defender
 					|| commonPlayer instanceof DefenderSpectator
 					|| commonPlayer instanceof RaidSpectator)

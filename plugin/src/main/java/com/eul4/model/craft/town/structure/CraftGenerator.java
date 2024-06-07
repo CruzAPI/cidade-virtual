@@ -10,6 +10,7 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Generator;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.GeneratorAttribute;
+import com.eul4.util.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -68,7 +69,7 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 	
 	private void generateIncome()
 	{
-		if(isFull() || status != StructureStatus.BUILT)
+		if(isFull() || status != StructureStatus.BUILT || town.isUnderAttack())
 		{
 			return;
 		}
@@ -105,17 +106,33 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 	
 	public void updateHologram()
 	{
+		town.getPlugin().getLogger().info("A"); //TODO
+		
 		if(status != StructureStatus.BUILT)
 		{
 			super.updateHologram();
+			return;
+		}
+		
+		if(town.isUnderAttack())
+		{
+			town.getPlugin().getLogger().info("B"); //TODO
+			hologram.setSize(4);
+			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
+			hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(), balance);
+			hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS, getHealth(), getMaxHealth());
+			hologram.getLine(3).setCustomName(MessageUtil.getPercentageProgressBar(getHealthPercentage()));
 		}
 		else
 		{
+			town.getPlugin().getLogger().info("C"); //TODO
 			hologram.setSize(2);
 			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
 			hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, getCapacity());
 		}
 	}
+	
+	protected abstract PluginMessage getStructureBalanceMessageUnderAttack();
 	
 	@Override
 	public void collect()

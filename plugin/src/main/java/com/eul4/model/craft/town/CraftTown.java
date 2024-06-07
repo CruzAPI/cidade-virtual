@@ -800,4 +800,21 @@ public class CraftTown implements Town
 				.map(nbt -> nbt.getBoolean("plugin:fawe_ignore", false)) //TODO nameSpace?
 				.orElse(false);
 	}
+	
+	public void updateTileHolograms()
+	{
+		townTileMap.values().forEach(TownTile::updateHologram);
+	}
+	
+	public void updateStructureHolograms()
+	{
+		structureSet.forEach(Structure::updateHologram);
+	}
+	
+	@Override
+	public void updateHolograms()
+	{
+		updateTileHolograms();
+		updateStructureHolograms();
+	}
 }

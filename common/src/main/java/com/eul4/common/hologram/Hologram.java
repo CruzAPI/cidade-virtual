@@ -79,7 +79,7 @@ public class Hologram
 	
 	private ArmorStand newArmorStandNotSpawned()
 	{
-		final Location location = this.location.clone().subtract(0.0D, 0.28D * hologramLines.size(), 0.0D);
+		final Location location = this.location.clone().add(0.0D, 0.28D * hologramLines.size(), 0.0D); //TODO strategy
 		
 		ServerLevel serverLevel = ((CraftWorld) location.getWorld()).getHandle();
 		var nmsArmorStand = new net.minecraft.world.entity.decoration.ArmorStand(serverLevel,

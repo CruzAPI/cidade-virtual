@@ -16,6 +16,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.OfflinePlayer;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 
@@ -372,6 +374,55 @@ public enum PluginMessage implements Message
 		empty().color(GREEN),
 		text((int) args[0]),
 	}),
+	
+	STRUCTURE_HEALTH_POINTS("structure.health-points", (bundle, args) ->
+	{
+		DecimalFormat decimalFormat = new DecimalFormat("0.#", new DecimalFormatSymbols(bundle.getLocale()));
+		
+		return new Component[]
+		{
+			empty().color(WHITE).decorate(BOLD),
+			text(decimalFormat.format(args[0])),
+			text(decimalFormat.format(args[1])),
+		};
+	}),
+	
+	STRUCTURE_LIKE_GENERATOR_BALANCE("structure.like-generator.balance", (bundle, args) -> new Component[]
+	{
+		empty().color(WHITE).decorate(BOLD),
+		text((int) args[0]),
+	}),
+	
+	STRUCTURE_DISLIKE_GENERATOR_BALANCE("structure.dislike-generator.balance", (bundle, args) -> new Component[]
+	{
+		empty().color(WHITE).decorate(BOLD),
+		text((int) args[0]),
+	}),
+	
+	STRUCTURE_LIKE_DEPOSIT_BALANCE("structure.like-deposit.balance", (bundle, args) -> new Component[]
+	{
+		empty().color(WHITE).decorate(BOLD),
+		text((int) args[0]),
+	}),
+	
+	STRUCTURE_DISLIKE_DEPOSIT_BALANCE("structure.dislike-deposit.balance", (bundle, args) -> new Component[]
+	{
+		empty().color(WHITE).decorate(BOLD),
+		text((int) args[0]),
+	}),
+	
+	STRUCTURE_TOWN_HALL_VIRTUAL_LIKES("structure.town-hall.virtual-likes", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN).decorate(BOLD),
+		text((int) args[0]),
+	}),
+	
+	STRUCTURE_TOWN_HALL_VIRTUAL_DISLIKES("structure.town-hall.virtual-dislikes", (bundle, args) -> new Component[]
+	{
+		empty().color(RED).decorate(BOLD),
+		text((int) args[0]),
+	}),
+	
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;

@@ -13,6 +13,7 @@ import com.eul4.model.town.structure.Generator;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.DepositAttribute;
 import com.eul4.rule.attribute.GeneratorAttribute;
+import com.eul4.util.MessageUtil;
 import lombok.Getter;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -43,6 +44,16 @@ public abstract class CraftDeposit extends CraftStructure implements Deposit
 		if(status != StructureStatus.BUILT)
 		{
 			super.updateHologram();
+			return;
+		}
+		
+		if(town.isUnderAttack())
+		{
+			hologram.setSize(4);
+			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
+			hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(), getVirtualBalance());
+			hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS, getHealth(), getMaxHealth());
+			hologram.getLine(3).setCustomName(MessageUtil.getPercentageProgressBar(getHealthPercentage()));
 		}
 		else
 		{
@@ -51,6 +62,8 @@ public abstract class CraftDeposit extends CraftStructure implements Deposit
 			hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_DEPOSIT_CAPACITY_HOLOGRAM, getCapacity(), getCurrency());
 		}
 	}
+	
+	protected abstract PluginMessage getStructureBalanceMessageUnderAttack();
 	
 	public abstract Rule<? extends DepositAttribute> getRule();
 	
@@ -63,4 +76,12 @@ public abstract class CraftDeposit extends CraftStructure implements Deposit
 		
 		capacity = getRule().getAttributeOrDefault(getLevelStatus()).getCapacity();
 	}
+	
+	@Override
+	public int getVirtualBalance()
+	{
+		return Math.min(capacity, getTotalTownBalance());
+	}
+	
+	protected abstract int getTotalTownBalance();
 }

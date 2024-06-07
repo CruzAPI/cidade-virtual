@@ -2,6 +2,7 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.DislikeGenerator;
@@ -56,5 +57,11 @@ public class CraftDislikeGenerator extends CraftGenerator implements DislikeGene
 	public Rule<DislikeGeneratorAttribute> getRule()
 	{
 		return (Rule<DislikeGeneratorAttribute>) getStructureType().getRule(town.getPlugin());
+	}
+	
+	@Override
+	protected PluginMessage getStructureBalanceMessageUnderAttack()
+	{
+		return PluginMessage.STRUCTURE_DISLIKE_GENERATOR_BALANCE;
 	}
 }

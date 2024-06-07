@@ -78,6 +78,8 @@ public abstract class CraftStructure implements Structure
 	private BukkitRunnable buildTask;
 	
 	private transient Vector hologramRelativePosition;
+	private transient double health;
+	private final double maxHealth = 200.0D; //TODO generic attribute
 	
 	public CraftStructure(Town town)
 	{
@@ -409,13 +411,13 @@ public abstract class CraftStructure implements Structure
 	
 	public void updateHologram()
 	{
-		if(status == StructureStatus.UNREADY)
+		if(status == StructureStatus.UNREADY && !town.isUnderAttack())
 		{
 			hologram.setSize(2);
 			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_READY_IN, buildTicks);
 			hologram.getLine(1).setCustomName(getProgressBarComponent());
 		}
-		else if(status == StructureStatus.READY)
+		else if(status == StructureStatus.READY && town.isUnderAttack())
 		{
 			hologram.setSize(1);
 			hologram.getLine(0).setMessageAndArgs(PluginMessage.CLICK_TO_FINISH_BUILD);
@@ -521,5 +523,12 @@ public abstract class CraftStructure implements Structure
 		GenericAttribute nextAttribute = getRule().getAttribute(level + 1);
 		
 		return nextAttribute != null && town.getTownHall().getLevelStatus() >= nextAttribute.getRequiresTownHallLevel();
+	}
+	
+	@Override
+	public final int getHealthPercentage()
+	{
+		final int percentage = (int) (100 * health / maxHealth);
+		return Math.max(0, Math.min(100, percentage));
 	}
 }

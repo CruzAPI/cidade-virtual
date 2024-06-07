@@ -2,6 +2,7 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.LikeGenerator;
@@ -56,5 +57,11 @@ public class CraftLikeGenerator extends CraftGenerator implements LikeGenerator
 	public Rule<LikeGeneratorAttribute> getRule()
 	{
 		return (Rule<LikeGeneratorAttribute>) getStructureType().getRule(town.getPlugin());
+	}
+	
+	@Override
+	protected PluginMessage getStructureBalanceMessageUnderAttack()
+	{
+		return PluginMessage.STRUCTURE_LIKE_GENERATOR_BALANCE;
 	}
 }

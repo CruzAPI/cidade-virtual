@@ -167,4 +167,23 @@ public class CraftTownTile implements TownTile
 	{
 		return new CraftTownTile(town, block);
 	}
+	
+	@Override
+	public void updateHologram()
+	{
+		if(hologram == null)
+		{
+			return;
+		}
+		
+		if(!town.isUnderAttack() && isInTownBorder)
+		{
+			hologram.setSize(1);
+			hologram.getLine(0).setMessageAndArgs(PluginMessage.CLICK_TO_BUY_THIS_TILE);
+		}
+		else
+		{
+			hologram.remove();
+		}
+	}
 }

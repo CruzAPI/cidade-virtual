@@ -28,4 +28,6 @@ public interface TownTile
 	void loadFields(TownTileFields fields);
 	
 	Town getTown();
+	
+	void updateHologram();
 }

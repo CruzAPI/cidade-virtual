@@ -147,4 +147,6 @@ public interface Town
 	
 	Future<Void> loadAndPasteTownSchematic(ExecutorService executorService);
 	void loadAndPasteTownSchematic();
+	
+	void updateHolograms();
 }

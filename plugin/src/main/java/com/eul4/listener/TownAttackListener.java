@@ -2,9 +2,11 @@ package com.eul4.listener;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import com.eul4.Main;
+import com.eul4.model.player.Attacker;
 import com.eul4.model.player.Fighter;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.Structure;
 import com.eul4.wrapper.TownAttack;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.block.Block;
@@ -12,9 +14,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 //TODO: if server restart dropped items in attack will persist and can be "dupped"
 @RequiredArgsConstructor
@@ -96,5 +101,37 @@ public class TownAttackListener implements Listener
 		
 		event.getDrops().clear();
 		event.setDroppedExp(0);
+	}
+	
+	@EventHandler
+	public void onAttackerHitStructure(PlayerInteractEvent event)
+	{
+		Block clickedBlock = event.getClickedBlock();
+		
+		if(event.getAction() != Action.LEFT_CLICK_BLOCK
+				|| clickedBlock == null
+				|| event.getHand() != EquipmentSlot.HAND)
+		{
+			return;
+		}
+		
+		Player player = event.getPlayer();
+		
+		if(!(plugin.getPlayerManager().get(player) instanceof Attacker attacker))
+		{
+			return;
+		}
+		
+		TownBlock townBlock = Town.getStaticTownBlock(clickedBlock);
+		Town town = townBlock == null ? null : townBlock.getTown();
+		TownAttack townAttack = town == null ? null : town.getCurrentAttack();
+		Structure structure = townBlock == null ? null : townBlock.getStructure();
+		
+		if(townAttack == null || structure == null || townAttack.getAttacker() != attacker)
+		{
+			return;
+		}
+		
+		structure.damage(5.0D, clickedBlock); //TODO calculate damage.
 	}
 }

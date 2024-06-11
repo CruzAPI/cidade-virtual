@@ -106,7 +106,7 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 	
 	public void updateHologram()
 	{
-		town.getPlugin().getLogger().info("A"); //TODO
+		town.getPlugin().getLogger().info("A"); //TODO investigate hologram inversion on rule reload
 		
 		if(status != StructureStatus.BUILT)
 		{
@@ -117,11 +117,22 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 		if(town.isUnderAttack())
 		{
 			town.getPlugin().getLogger().info("B"); //TODO
-			hologram.setSize(4);
-			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
-			hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(), balance);
-			hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS, getHealth(), getMaxHealth());
-			hologram.getLine(3).setCustomName(MessageUtil.getPercentageProgressBar(getHealthPercentage()));
+			
+			if(isDestroyed())
+			{
+				teleportHologram();
+				hologram.setSize(2);
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
+				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(), balance);
+			}
+			else
+			{
+				hologram.setSize(4);
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
+				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(), balance);
+				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS, getHealth(), getMaxHealth());
+				hologram.getLine(3).setCustomName(MessageUtil.getPercentageProgressBar(getHealthPercentage()));
+			}
 		}
 		else
 		{

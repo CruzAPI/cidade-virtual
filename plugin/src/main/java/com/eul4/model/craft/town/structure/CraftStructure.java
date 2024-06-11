@@ -2,6 +2,7 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.wrapper.Pitch;
 import com.eul4.enums.StructureStatus;
 import com.eul4.event.StructureConstructEvent;
 import com.eul4.exception.*;
@@ -32,10 +33,15 @@ import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -45,6 +51,8 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Setter
@@ -78,8 +86,14 @@ public abstract class CraftStructure implements Structure
 	private BukkitRunnable buildTask;
 	
 	private transient Vector hologramRelativePosition;
-	private transient double health;
 	private final double maxHealth = 200.0D; //TODO generic attribute
+	private transient double health = maxHealth;
+	
+	private transient boolean destroyed;
+	private transient final int maxNoDamageTicks = 20;
+	private transient int noDamageTicks;
+	private transient double lastDamage;
+	private transient int lastTickDamaged;
 	
 	public CraftStructure(Town town)
 	{
@@ -530,5 +544,162 @@ public abstract class CraftStructure implements Structure
 	{
 		final int percentage = (int) (100 * health / maxHealth);
 		return Math.max(0, Math.min(100, percentage));
+	}
+	
+	@Override
+	public void damage(double originalDamage, Block hitBlock)
+	{
+		if(!town.isUnderAttack() || destroyed)
+		{
+			return;
+		}
+		
+		double damage = originalDamage;
+		
+		if(isInNoDamageTicks())
+		{
+			if(damage > lastDamage)
+			{
+				damage -= lastDamage;
+			}
+			else
+			{
+				return;
+			}
+		}
+		else
+		{
+			playHurtEffect(hitBlock);
+			lastTickDamaged = town.getPlugin().getServer().getCurrentTick();
+		}
+		
+		lastDamage = originalDamage;
+		
+		if(health - damage <= 0.0D)
+		{
+			destroy();
+		}
+		else
+		{
+			health -= damage;
+		}
+		
+		updateHologram();
+	}
+	
+	private void playHurtEffect(Block hitBlock)
+	{
+		if(!town.isUnderAttack())
+		{
+			return;
+		}
+		
+		Location centerLocation = hitBlock.getLocation().toCenterLocation();
+		World world = centerLocation.getWorld();
+		
+		world.spawnParticle(Particle.EXPLOSION_LARGE, centerLocation, 1);
+		world.playSound(centerLocation, Sound.ENTITY_GENERIC_HURT, 1.0F, Pitch.getPitch(5));
+	}
+	
+	private void playDestroyEffect()
+	{
+		Location centerLocation = centerTownBlock.getBlock().getLocation().toCenterLocation();
+		World world = centerLocation.getWorld();
+		
+		world.playSound(centerLocation, Sound.ENTITY_GENERIC_EXPLODE, 1.0F, Pitch.getPitch(7));
+		world.spawnParticle(Particle.EXPLOSION_HUGE, centerLocation, 1);
+		
+		List<BlockState> removedBlockStates = removeAllSurfaceBlocks();
+		
+		explodeBlocks(removedBlockStates);
+	}
+	
+	private List<BlockState> removeAllSurfaceBlocks()
+	{
+		List<BlockState> blockStates = new ArrayList<>(townBlockSet.size() * 8);
+		
+		for(TownBlock townBlock : townBlockSet)
+		{
+			for(Block block = townBlock.getBlock().getRelative(BlockFace.UP);
+					block.getY() < block.getWorld().getMaxHeight();
+					block = block.getRelative(BlockFace.UP))
+			{
+				if(!block.isEmpty())
+				{
+					blockStates.add(block.getState());
+					block.setType(Material.AIR);
+				}
+			}
+		}
+		
+		return blockStates;
+	}
+	
+	private void explodeBlocks(List<BlockState> blockStates)
+	{
+		blockStates.forEach(this::explodeBlock);
+	}
+	
+	private void explodeBlock(BlockState blockState)
+	{
+		if(blockState.getType() == Material.AIR)
+		{
+			return;
+		}
+		
+		Location centerLocation = blockState.getLocation().toCenterLocation();
+		
+		blockState.getWorld().spawnEntity(centerLocation,
+				EntityType.FALLING_BLOCK,
+				CreatureSpawnEvent.SpawnReason.EXPLOSION,
+				entity -> onSpawnFallingBlock((FallingBlock) entity, blockState));
+	}
+	
+	private void onSpawnFallingBlock(FallingBlock fallingBlock, BlockState blockState)
+	{
+		fallingBlock.setBlockData(blockState.getBlockData());
+		fallingBlock.setCancelDrop(true);
+		
+		Vector vector = fallingBlock.getLocation().toVector().subtract(centerTownBlock
+				.getBlock()
+				.getLocation()
+				.toCenterLocation()
+				.toVector()).normalize();
+		
+		vector.setX(vector.getX() * 0.5D);
+		vector.setY(Math.abs(vector.getY()) * (1.0D + Math.random()));
+		vector.setZ(vector.getZ() * 0.5D);
+		
+		fallingBlock.setVelocity(vector);
+	}
+	
+	private boolean destroy()
+	{
+		if(destroyed)
+		{
+			return false;
+		}
+		
+		destroyed = true;
+		health = 0.0D;
+		
+		playDestroyEffect();
+		return true;
+	}
+	
+	private boolean isInNoDamageTicks()
+	{
+		return getNoDamageTicks() > maxNoDamageTicks / 2;
+	}
+	
+	private int getNoDamageTicks()
+	{
+		final int currentTick = town.getPlugin().getServer().getCurrentTick();
+		return Math.max(0, Math.min(maxNoDamageTicks, maxNoDamageTicks - (currentTick - lastTickDamaged)));
+	}
+	
+	protected boolean isDestroyed()
+	{
+		return destroyed;
 	}
 }

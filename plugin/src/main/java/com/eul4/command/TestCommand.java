@@ -54,10 +54,15 @@ public class TestCommand implements TabExecutor
 		if(args.length == 0)
 		{
 			player.sendMessage(plugin.getPlayerManager().get(player).getPlayerType().getInterfaceType().getSimpleName());
+			player.sendMessage("frozen=" + pluginPlayer.getTown().isFrozen());
 		}
 		else if(args.length == 1)
 		{
-			player.sendMessage("frozen=" + pluginPlayer.getTown().isFrozen());
+			int tick = Integer.parseInt(args[0]);
+			
+			player.setNoDamageTicks(tick);
+			player.damage(2.0D);
+			player.sendMessage("damage! tick=" + tick);
 		}
 //		else if(args.length == 1)
 //		{

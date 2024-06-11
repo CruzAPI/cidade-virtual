@@ -14,6 +14,7 @@ import com.eul4.wrapper.TownBlockSet;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -105,4 +106,6 @@ public interface Structure
 	int getHealthPercentage();
 	double getHealth();
 	double getMaxHealth();
+	
+	void damage(double damage, Block hitBlock);
 }

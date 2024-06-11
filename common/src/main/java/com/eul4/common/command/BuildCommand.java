@@ -29,7 +29,7 @@ public class BuildCommand implements TabExecutor
 	{
 		if(!(commandSender instanceof Player player))
 		{
-			return true;
+			return false;
 		}
 		
 		final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
@@ -37,13 +37,13 @@ public class BuildCommand implements TabExecutor
 		if(!player.isOp())
 		{
 			commonPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
-			return true;
+			return false;
 		}
 		
 		if(!(commonPlayer instanceof CommonAdmin commonAdmin))
 		{
 			commonPlayer.sendMessage(CommonMessage.COMMAND_BUILD_NEED_ADMIN);
-			return true;
+			return false;
 		}
 		
 		commonPlayer.sendMessage(commonAdmin.toggleBuild()

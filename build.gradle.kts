@@ -31,7 +31,8 @@ task("deployk")
     dependsOn("plugin:remap")
 
     doLast {
-        val process = ProcessBuilder("./stop.sh").start()
+        val bashPath = "C:/Program Files/Git/bin/bash.exe"
+        val process = ProcessBuilder(bashPath, "-c", "./stop.sh").start()
 
         if(process.waitFor() != 0)
         {
@@ -41,7 +42,7 @@ task("deployk")
         println("Sleeping 3s...")
         Thread.sleep(3000L)
 
-        val scpProcess = ProcessBuilder("./scp.sh").start()
+        val scpProcess = ProcessBuilder(bashPath, "-c", "./scp.sh").start()
 
         if(scpProcess.waitFor() != 0)
         {

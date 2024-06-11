@@ -422,7 +422,19 @@ public enum PluginMessage implements Message
 		empty().color(RED).decorate(BOLD),
 		text((int) args[0]),
 	}),
-	
+
+	TOWN_UNDER_ATTACK("town-under-attack", (bundle, args) -> new Component[]
+	{
+		empty().color(RED).decorate(BOLD),
+		(Component) args[0],
+	}),
+
+	YOU_ATTACKING_TOW("you-attacking-town", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN).decorate(BOLD),
+		(Component) args[0],
+	}),
+
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;

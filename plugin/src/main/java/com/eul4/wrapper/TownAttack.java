@@ -1,9 +1,11 @@
 package com.eul4.wrapper;
 
+import com.eul4.StructureType;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.*;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.structure.Structure;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.bossbar.BossBar;
@@ -47,6 +49,7 @@ public class TownAttack
 		town.setCurrentAttack(this);
 		townAttackTask = new TownAttackTask();
 		townAttackTask.runTaskTimer(town.getPlugin(), 0L, 1L);
+
 		
 		starting = false;
 		started = true;
@@ -55,6 +58,10 @@ public class TownAttack
 	
 	private void onStartAttack()
 	{
+		for(Structure structure : town.getStructureSet())
+		{
+			structure.onStartAttack();
+		}
 		town.updateHolograms();
 		town.getPlayer().map(town.getPlugin().getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
@@ -147,6 +154,12 @@ public class TownAttack
 				1.0F,
 				BossBar.Color.RED,
 				BossBar.Overlay.PROGRESS);
+
+		private final BossBar attackerBossBar = BossBar.bossBar(
+				PluginMessage.YOU_ATTACKING_TOW.translate(attacker, town.getOwner().getName()),
+				1.0F,
+				BossBar.Color.GREEN,
+				BossBar.Overlay.PROGRESS); //TODO bossbar no reseat on finish attack
 		
 		@Override
 		public void run()
@@ -173,6 +186,7 @@ public class TownAttack
 				bossBar.name(PluginMessage.TOWN_UNDER_ATTACK.translate(defender, attacker.getPlayer().displayName()));
 			}
 
+			attackerBossBar.progress((float) ticks / maxTicks);
 			bossBar.progress((float) ticks / maxTicks);
 			CommonPlayer commonPlayer = town.getPlugin().getPlayerManager().get(town.getOwnerUUID());
 
@@ -186,6 +200,8 @@ public class TownAttack
 			{
 				commonPlayer.getPlayer().hideBossBar(bossBar);
 			}
+
+			attacker.getPlayer().showBossBar(attackerBossBar);
 		}
 		
 		private void clearBars()

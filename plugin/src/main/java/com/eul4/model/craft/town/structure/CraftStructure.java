@@ -702,4 +702,10 @@ public abstract class CraftStructure implements Structure
 	{
 		return destroyed;
 	}
+
+	public void onStartAttack()
+	{
+		destroyed = false;
+		health = maxHealth;
+	}
 }

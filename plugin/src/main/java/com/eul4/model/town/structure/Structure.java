@@ -82,7 +82,9 @@ public interface Structure
 	Rule<? extends GenericAttribute> getRule();
 	
 	void resetAttributes();
-	
+
+	void onStartAttack();
+
 	void reloadAttributes();
 	
 	void reloadAttributesAndReloadTownAttributes();

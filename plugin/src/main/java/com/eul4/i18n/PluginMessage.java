@@ -432,7 +432,7 @@ public enum PluginMessage implements Message
 	YOU_ATTACKING_TOW("you-attacking-town", (bundle, args) -> new Component[]
 	{
 		empty().color(GREEN).decorate(BOLD),
-		(Component) args[0],
+		text((String) args[0]),
 	}),
 
 	;

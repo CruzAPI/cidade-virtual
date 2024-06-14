@@ -78,8 +78,13 @@ public class CraftDefender extends CraftSpiritualPlayer implements Defender
 		{
 			return reincarnate();
 		}
-		
+
 		if(!townAttack.canDefenderRespawn())
+		{
+			return (PluginPlayer) plugin.getPlayerManager().register(this, SpiritualPlayerType.RAID_SPECTATOR);
+		}
+
+		if(!townAttack.isNotDefenderRespawnInCooldown())
 		{
 			return (PluginPlayer) plugin.getPlayerManager().register(this, SpiritualPlayerType.DEFENDER_SPECTATOR);
 		}

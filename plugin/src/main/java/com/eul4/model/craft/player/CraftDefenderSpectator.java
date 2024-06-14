@@ -1,26 +1,17 @@
 package com.eul4.model.craft.player;
 
 import com.eul4.Main;
-import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.hotbar.DefenderSpectatorHotbar;
-import com.eul4.i18n.PluginMessage;
-import com.eul4.model.player.Defender;
 import com.eul4.model.player.DefenderSpectator;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.VanillaPlayer;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.wrapper.TownAttack;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.title.Title;
 import org.bukkit.GameMode;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.time.Duration;
 
 @Getter
 public class CraftDefenderSpectator extends CraftSpiritualPlayer implements DefenderSpectator
@@ -65,12 +56,12 @@ public class CraftDefenderSpectator extends CraftSpiritualPlayer implements Defe
 		}
 		
 		TownAttack townAttack = getTown().getCurrentAttack();
-		
-		if(townAttack.canDefenderRespawn())
+
+		if(townAttack.isNotDefenderRespawnInCooldown())
 		{
 			return (PluginPlayer) plugin.getPlayerManager().register(this, SpiritualPlayerType.DEFENDER);
 		}
-		
+
 		reset();
 		return this;
 	}

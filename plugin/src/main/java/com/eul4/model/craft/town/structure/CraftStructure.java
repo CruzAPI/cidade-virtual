@@ -86,7 +86,7 @@ public abstract class CraftStructure implements Structure
 	private BukkitRunnable buildTask;
 	
 	private transient Vector hologramRelativePosition;
-	private final double maxHealth = 200.0D; //TODO generic attribute
+	private final double maxHealth = 10.0D; //TODO generic attribute
 	private transient double health = maxHealth;
 	
 	private transient boolean destroyed;
@@ -697,8 +697,9 @@ public abstract class CraftStructure implements Structure
 		final int currentTick = town.getPlugin().getServer().getCurrentTick();
 		return Math.max(0, Math.min(maxNoDamageTicks, maxNoDamageTicks - (currentTick - lastTickDamaged)));
 	}
-	
-	protected boolean isDestroyed()
+
+	@Override
+	public boolean isDestroyed()
 	{
 		return destroyed;
 	}

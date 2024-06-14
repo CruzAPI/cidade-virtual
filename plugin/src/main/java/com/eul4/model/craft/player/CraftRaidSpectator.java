@@ -6,6 +6,7 @@ import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidSpectator;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.SpiritualPlayerType;
+import com.eul4.wrapper.TownAttack;
 import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -61,6 +62,11 @@ public class CraftRaidSpectator extends CraftSpiritualPlayer implements RaidSpec
 	@Override
 	public void defend()
 	{
+		if(!getTown().getCurrentAttack().canDefenderRespawn())
+		{
+			player.sendMessage("message"); //TODO create message
+			return;
+		}
 		plugin.getPlayerManager().register(this, SpiritualPlayerType.DEFENDER);
 	}
 	

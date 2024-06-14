@@ -38,7 +38,11 @@ public class DefenderListener implements Listener
 		
 		defender.findTownAttack().ifPresentOrElse(townAttack ->
 		{
-			if(townAttack.canDefenderRespawn())
+			if(!townAttack.canDefenderRespawn())
+			{
+				plugin.getPlayerManager().register(defender, SpiritualPlayerType.RAID_SPECTATOR);
+			}
+			else if(townAttack.isNotDefenderRespawnInCooldown())
 			{
 				defender.reset();
 			}
@@ -56,7 +60,12 @@ public class DefenderListener implements Listener
 		{
 			return;
 		}
-		
+
+		if(defender.getTownAttack() != null)
+		{
+			defender.getTownAttack().canDefenderRespawn(!defender.getTown().getTownHall().isDestroyed());
+		}
+
 		defender.findTownAttack().ifPresent(TownAttack::onDefenderDeath);
 	}
 	

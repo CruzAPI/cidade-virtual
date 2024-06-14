@@ -1,6 +1,5 @@
 package com.eul4.wrapper;
 
-import com.eul4.StructureType;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.*;
@@ -8,13 +7,14 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.swing.*;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Optional;
@@ -37,6 +37,9 @@ public class TownAttack
 	private DefenderCooldownTask defenderCooldownTask;
 	private boolean onFinishCalled;
 	private int defenderDeathCount;
+	@Setter
+	@Accessors(fluent = true)
+    private boolean canDefenderRespawn = true;
 	
 	public void start()
 	{
@@ -101,7 +104,7 @@ public class TownAttack
 		return started && townAttackTask.isCancelled();
 	}
 	
-	public boolean canDefenderRespawn()
+	public boolean isNotDefenderRespawnInCooldown()
 	{
 		return defenderCooldownTask == null || defenderCooldownTask.isCancelled();
 	}
@@ -218,7 +221,7 @@ public class TownAttack
 			onFinishAttack();
 		}
 	}
-	
+
 	private class DefenderCooldownTask extends BukkitRunnable
 	{
 		private final int maxTicks = 10 * 20;

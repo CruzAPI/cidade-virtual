@@ -108,6 +108,7 @@ public interface Structure
 	int getHealthPercentage();
 	double getHealth();
 	double getMaxHealth();
+	boolean isDestroyed();
 	
 	void damage(double damage, Block hitBlock);
 }

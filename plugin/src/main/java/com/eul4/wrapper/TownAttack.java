@@ -159,7 +159,7 @@ public class TownAttack
 				PluginMessage.YOU_ATTACKING_TOW.translate(attacker, town.getOwner().getName()),
 				1.0F,
 				BossBar.Color.GREEN,
-				BossBar.Overlay.PROGRESS); //TODO bossbar no reseat on finish attack
+				BossBar.Overlay.PROGRESS);
 		
 		@Override
 		public void run()
@@ -207,7 +207,7 @@ public class TownAttack
 		private void clearBars()
 		{
 			town.getPlayer().ifPresent(player -> player.hideBossBar(bossBar));
-			attacker.getPlayer().hideBossBar(bossBar);
+			attacker.getPlayer().hideBossBar(attackerBossBar);
 		}
 		
 		@Override

@@ -30,7 +30,6 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.entity.BaseEntity;
 import com.sk89q.worldedit.entity.Entity;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.*;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operation;
@@ -38,7 +37,6 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
-import com.sk89q.worldedit.util.nbt.CompoundBinaryTag;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -62,7 +60,6 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -264,7 +261,7 @@ public class CraftTown implements Town
 		}
 		
 		movingStructure.construct(movingStructureClipboardHolder, centerTownBlock, rotation);
-		movingStructure.teleportHologram();
+		movingStructure.teleportHologramToDefaultLocation();
 		
 		getPlayer().ifPresent(removeMovingStructureItem);
 		
@@ -355,6 +352,36 @@ public class CraftTown implements Town
 	{
 		this.likes -= price.getLikes();
 		this.dislikes -= price.getDislikes();
+	}
+	
+	private int subtractCount(int[] counter, int value)
+	{
+		if(value < 0)
+		{
+			throw new UnsupportedOperationException("subtracted value can't be negative.");
+		}
+		
+		if(value > counter[0])
+		{
+			int currentCount = counter[0];
+			counter[0] = 0;
+			return currentCount;
+		}
+		
+		counter[0] -= value;
+		return value;
+	}
+	
+	@Override
+	public int subtractDislikes(int dislikes)
+	{
+		return subtractCount(new int[] { this.dislikes }, dislikes);
+	}
+	
+	@Override
+	public int subtractLikes(int likes)
+	{
+		return subtractCount(new int[] { this.likes }, likes);
 	}
 	
 	@Override

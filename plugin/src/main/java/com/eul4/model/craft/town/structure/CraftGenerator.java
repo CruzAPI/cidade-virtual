@@ -13,6 +13,7 @@ import com.eul4.rule.attribute.GeneratorAttribute;
 import com.eul4.util.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
-public abstract class CraftGenerator extends CraftStructure implements Generator
+public abstract class CraftGenerator extends CraftResourceStructure implements Generator
 {
 	@Getter
 	protected int balance;
@@ -106,8 +107,6 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 	
 	public void updateHologram()
 	{
-		town.getPlugin().getLogger().info("A"); //TODO investigate hologram inversion on rule reload
-		
 		if(status != StructureStatus.BUILT)
 		{
 			super.updateHologram();
@@ -116,17 +115,16 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 		
 		if(town.isUnderAttack())
 		{
-			town.getPlugin().getLogger().info("B"); //TODO
-			
 			if(isDestroyed())
 			{
-				teleportHologram();
+				teleportHologram(getLocation().toHighestLocation().getBlock().getRelative(BlockFace.UP).getLocation().toCenterLocation());
 				hologram.setSize(2);
 				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
 				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(), balance);
 			}
 			else
 			{
+				teleportHologramToDefaultLocation();
 				hologram.setSize(4);
 				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
 				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(), balance);
@@ -136,7 +134,7 @@ public abstract class CraftGenerator extends CraftStructure implements Generator
 		}
 		else
 		{
-			town.getPlugin().getLogger().info("C"); //TODO
+			teleportHologramToDefaultLocation();
 			hologram.setSize(2);
 			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
 			hologram.getLine(1).setMessageAndArgs(PluginMessage.HOLOGRAM_LIKE_FARM_LINE2, balance, getCapacity());

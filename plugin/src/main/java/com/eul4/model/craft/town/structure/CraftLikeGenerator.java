@@ -8,11 +8,22 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.LikeGenerator;
 import com.eul4.rule.attribute.LikeGeneratorAttribute;
 import com.eul4.rule.Rule;
+import com.eul4.wrapper.Resource;
+import com.sk89q.worldedit.math.BlockVector3;
+import lombok.Getter;
 
 import java.io.IOException;
+import java.util.Set;
 
 public class CraftLikeGenerator extends CraftGenerator implements LikeGenerator
 {
+	@Getter
+	private final Set<Resource> resources = Set.of(Resource.builder()
+			.type(Resource.Type.LIKE)
+			.relativePosition(BlockVector3.at(0, 1, 0))
+			//			.subtractOperation() TODO
+			.build());
+	
 	public CraftLikeGenerator(Town town)
 	{
 		super(town);

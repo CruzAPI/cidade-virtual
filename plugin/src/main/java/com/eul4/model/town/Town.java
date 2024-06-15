@@ -83,7 +83,8 @@ public interface Town
 	void addStructure(Structure structure);
 	
 	void subtract(Price price);
-	
+	int subtractDislikes(int dislikes);
+	int subtractLikes(int likes);
 	void checkIfAffordable(Price price) throws InsufficientBalanceException;
 	
 	Price buyNewStructure(StructureType structureType, TownBlock townBlock)

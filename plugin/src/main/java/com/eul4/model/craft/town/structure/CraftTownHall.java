@@ -10,17 +10,31 @@ import com.eul4.model.town.structure.TownHall;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.TownHallAttribute;
 import com.eul4.util.MessageUtil;
+import com.eul4.wrapper.Resource;
+import com.sk89q.worldedit.math.BlockVector3;
 import lombok.Getter;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 @Getter
-public class CraftTownHall extends CraftStructure implements TownHall
+public class CraftTownHall extends CraftResourceStructure implements TownHall
 {
 	private int likeCapacity;
 	private int dislikeCapacity;
 	private Map<StructureType, Integer> structureLimitMap;
+	private final Resource likeResource = Resource.builder()
+			.type(Resource.Type.LIKE)
+			.relativePosition(BlockVector3.at(-1, 1, 0))
+//			.subtractOperation() TODO
+			.build();
+	private final Resource dislikeResource = Resource.builder()
+			.type(Resource.Type.DISLIKE)
+			.relativePosition(BlockVector3.at(1, 1, 0))
+//			.subtractOperation() TODO
+			.build();
+	private final Set<Resource> resources = Set.of(likeResource, dislikeResource);
 	
 	public CraftTownHall(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{

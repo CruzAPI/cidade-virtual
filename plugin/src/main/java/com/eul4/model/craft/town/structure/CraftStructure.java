@@ -37,7 +37,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
@@ -86,7 +85,7 @@ public abstract class CraftStructure implements Structure
 	private BukkitRunnable buildTask;
 	
 	private transient Vector hologramRelativePosition;
-	private final double maxHealth = 10.0D; //TODO generic attribute
+	private final double maxHealth = 30.0D; //TODO generic attribute
 	private transient double health = maxHealth;
 	
 	private transient boolean destroyed;
@@ -398,9 +397,26 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
-	public void teleportHologram()
+	public void teleportHologramToDefaultLocation()
 	{
 		hologram.teleport(getLocation().add(getHologramRelativePosition()));
+	}
+	
+	@Override
+	public void teleportHologramRelative(Vector3 vector3)
+	{
+		hologram.teleport(getLocation().add(toBukkitVector(vector3)));
+	}
+	
+	@Override
+	public void teleportHologram(Location location)
+	{
+		hologram.teleport(location);
+	}
+	
+	private Vector toBukkitVector(Vector3 vector3)
+	{
+		return new Vector(vector3.getX(), vector3.getY(), vector3.getZ());
 	}
 	
 	protected void onBuildStart()
@@ -427,12 +443,14 @@ public abstract class CraftStructure implements Structure
 	{
 		if(status == StructureStatus.UNREADY && !town.isUnderAttack())
 		{
+			teleportHologramToDefaultLocation();
 			hologram.setSize(2);
 			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_READY_IN, buildTicks);
 			hologram.getLine(1).setCustomName(getProgressBarComponent());
 		}
-		else if(status == StructureStatus.READY && town.isUnderAttack())
+		else if(status == StructureStatus.READY && !town.isUnderAttack())
 		{
+			teleportHologramToDefaultLocation();
 			hologram.setSize(1);
 			hologram.getLine(0).setMessageAndArgs(PluginMessage.CLICK_TO_FINISH_BUILD);
 		}
@@ -521,7 +539,7 @@ public abstract class CraftStructure implements Structure
 	{
 		resetAttributes();
 		updateHologram();
-		teleportHologram();
+		teleportHologramToDefaultLocation();
 	}
 	
 	@Override
@@ -683,8 +701,13 @@ public abstract class CraftStructure implements Structure
 		destroyed = true;
 		health = 0.0D;
 		
-		playDestroyEffect();
+		onDestroy();
 		return true;
+	}
+	
+	protected void onDestroy()
+	{
+		playDestroyEffect();
 	}
 	
 	private boolean isInNoDamageTicks()

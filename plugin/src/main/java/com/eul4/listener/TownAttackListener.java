@@ -2,6 +2,7 @@ package com.eul4.listener;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import com.eul4.Main;
+import com.eul4.model.craft.town.structure.ResourceStructure;
 import com.eul4.model.player.Attacker;
 import com.eul4.model.player.Fighter;
 import com.eul4.model.town.Town;
@@ -9,12 +10,14 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.wrapper.TownAttack;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -133,5 +136,30 @@ public class TownAttackListener implements Listener
 		}
 		
 		structure.damage(5.0D, clickedBlock); //TODO calculate damage.
+	}
+	
+	@EventHandler
+	public void onAttackerStealResources(BlockBreakEvent event)
+	{
+		Block block = event.getBlock();
+		TownBlock townBlock = Town.getStaticTownBlock(block);
+		Town town = townBlock == null ? null : townBlock.getTown();
+		TownAttack townAttack = town == null ? null : town.getCurrentAttack();
+		
+		if(townAttack == null)
+		{
+			return;
+		}
+		
+		Player player = event.getPlayer();
+		
+		if(!(plugin.getPlayerManager().get(player) instanceof Attacker attacker)
+				|| attacker != townAttack.getAttacker()
+				|| !(townBlock.getStructure() instanceof ResourceStructure resourceStructure))
+		{
+			return;
+		}
+		
+		resourceStructure.findResource(block).ifPresent(resource -> Bukkit.broadcastMessage("resource: " + resource.getType()));
 	}
 }

@@ -11,6 +11,7 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.GenericAttribute;
 import com.eul4.wrapper.TownBlockSet;
+import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -69,7 +70,8 @@ public interface Structure
 	
 	Hologram getHologram();
 	Vector getHologramRelativePosition();
-	void teleportHologram();
+	void teleportHologramToDefaultLocation();
+	void teleportHologramRelative(Vector3 vector3);
 	
 	Component getProgressBarComponent();
 	
@@ -94,6 +96,8 @@ public interface Structure
 	TownBlockSet getTownBlockSet();
 	TownBlock getCenterTownBlock();
 	int getRotation();
+	
+	void teleportHologram(Location location);
 	
 	void updateHologram();
 	

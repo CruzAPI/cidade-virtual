@@ -1,6 +1,8 @@
 package com.eul4.model.town.structure;
 
-public interface Generator extends Structure
+import com.eul4.model.craft.town.structure.ResourceStructure;
+
+public interface Generator extends ResourceStructure
 {
 	int getBalance();
 	int getCapacity();

@@ -1,6 +1,8 @@
 package com.eul4.model.town.structure;
 
-public interface Deposit extends Structure
+import com.eul4.model.craft.town.structure.ResourceStructure;
+
+public interface Deposit extends ResourceStructure
 {
 	int getCapacity();
 	int getVirtualBalance();

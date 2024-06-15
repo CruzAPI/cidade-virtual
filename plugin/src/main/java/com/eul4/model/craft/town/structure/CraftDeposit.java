@@ -4,29 +4,21 @@ import com.eul4.enums.Currency;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
-import com.eul4.model.inventory.StructureGui;
-import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Deposit;
-import com.eul4.model.town.structure.Generator;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.DepositAttribute;
-import com.eul4.rule.attribute.GeneratorAttribute;
 import com.eul4.util.MessageUtil;
 import lombok.Getter;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serial;
-import java.util.Optional;
 
 @Getter
-public abstract class CraftDeposit extends CraftStructure implements Deposit
+public abstract class CraftDeposit extends CraftResourceStructure implements Deposit
 {
 	private transient int capacity;
+	protected transient int capacityToSteal;
 	
 	public CraftDeposit(Town town)
 	{
@@ -84,4 +76,18 @@ public abstract class CraftDeposit extends CraftStructure implements Deposit
 	}
 	
 	protected abstract int getTotalTownBalance();
+	
+	protected abstract int subtract(int balance);
+	
+	@Override
+	public void onStartAttack()
+	{
+		super.onStartAttack();
+		capacityToSteal = capacity;
+	}
+	
+	protected int getVirtualCapacity()
+	{
+		return Math.min(getTotalTownBalance(), capacityToSteal);
+	}
 }

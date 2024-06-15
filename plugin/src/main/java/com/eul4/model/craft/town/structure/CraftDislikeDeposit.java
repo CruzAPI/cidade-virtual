@@ -9,11 +9,24 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.DislikeDeposit;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.DislikeDepositAttribute;
+import com.eul4.wrapper.Resource;
+import com.sk89q.worldedit.math.BlockVector3;
+import lombok.Getter;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CraftDislikeDeposit extends CraftDeposit implements DislikeDeposit
 {
+	@Getter
+	private final Set<Resource> resources = Collections.singleton(Resource.builder()
+			.type(Resource.Type.DISLIKE)
+			.relativePosition(BlockVector3.at(0, 1, 0))
+			.subtractOperation(this::subtract)
+			.build());
+	
 	public CraftDislikeDeposit(Town town)
 	{
 		super(town);
@@ -58,5 +71,18 @@ public class CraftDislikeDeposit extends CraftDeposit implements DislikeDeposit
 	protected int getTotalTownBalance()
 	{
 		return town.getDislikes();
+	}
+	
+	@Override
+	protected int subtract(int dislikes)
+	{
+		if(dislikes < 0)
+		{
+			throw new UnsupportedOperationException("subtracted value can't be negative.");
+		}
+		
+		final int subtract = Math.min(getVirtualCapacity(), dislikes);
+		capacityToSteal -= subtract;
+		return town.subtractDislikes(dislikes);
 	}
 }

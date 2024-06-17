@@ -62,8 +62,14 @@ public class CraftTownTile implements TownTile
 			Bukkit.broadcastMessage("Cannot buy this tile yet.");
 			return;
 		}
+
+		if(town.isFrozen())
+		{
+			town.getPlayer().ifPresent(player -> player.sendMessage("It is not possible to buy the tile.")); //TODO translate message.
+			return;
+		}
+
 		bought = true;
-		
 		getNeighboringTiles().forEach(neighborTile -> neighborTile.setInTownBorder(true));
 		makeBlocksAvailable();
 		

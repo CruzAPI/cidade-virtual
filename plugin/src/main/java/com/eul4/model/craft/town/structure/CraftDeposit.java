@@ -13,6 +13,7 @@ import com.eul4.util.MessageUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 
 import java.io.IOException;
@@ -88,7 +89,7 @@ public abstract class CraftDeposit extends CraftResourceStructure implements Dep
 	@Override
 	public int getVirtualBalance()
 	{
-		return Math.min(capacity, getTotalTownBalance());
+		return Math.min(remainingCapacity, getTotalTownBalance());
 	}
 	
 	protected abstract int getTotalTownBalance();

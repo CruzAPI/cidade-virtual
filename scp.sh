@@ -1,3 +1,3 @@
 #!/bin/bash
 echo "Running scp.sh..."
-scp ./plugin/build/libs/*.jar cruzapi@45.233.112.53:~/cidade-virtual/server/plugins
+scp ./plugin/build/libs/*.jar cruzapi@192.168.1.37:~/cidade-virtual/server/plugins

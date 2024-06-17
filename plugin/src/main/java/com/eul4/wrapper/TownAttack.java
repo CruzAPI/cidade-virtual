@@ -16,6 +16,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -80,6 +81,7 @@ public class TownAttack
 		
 		onFinishCalled = true;
 		
+		town.updateLastAttackFinishDate();
 		town.updateHolograms();
 		tempEntities.forEach(Entity::remove);
 		tempEntities.clear();

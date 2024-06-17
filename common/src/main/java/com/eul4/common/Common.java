@@ -10,10 +10,13 @@ import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.interceptor.HologramTranslatorAdapter;
 import com.eul4.common.interceptor.SpawnEntityInterceptor;
 import com.eul4.common.listener.*;
+import com.eul4.common.service.CommonDataFileManager;
 import com.eul4.common.service.PlayerManager;
+import com.eul4.common.service.ServerTickCounter;
 import com.eul4.common.service.WorldManager;
 import com.eul4.common.type.player.CommonWorldType;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,6 +37,8 @@ public abstract class Common extends JavaPlugin
 	
 	private PlayerManager playerManager;
 	private WorldManager worldManager;
+	private CommonDataFileManager commonDataFileManager;
+	private ServerTickCounter serverTickCounter;
 	
 	@Override
 	public void onEnable()
@@ -50,10 +55,13 @@ public abstract class Common extends JavaPlugin
 		getLogger().info("Commons enabled!");
 	}
 	
+	@SneakyThrows
 	private void loadServices()
 	{
 		playerManager = new PlayerManager(this);
 		worldManager = new WorldManager(this);
+		commonDataFileManager = new CommonDataFileManager(this);
+		serverTickCounter = new ServerTickCounter(this);
 	}
 	
 	private void registerCommand()
@@ -103,6 +111,7 @@ public abstract class Common extends JavaPlugin
 			getServer().getPluginManager().callEvent(new WorldSaveOrStopEvent(world));
 		}
 		
+		serverTickCounter.saveOrLogError();
 		getLogger().info("Commons disabled!");
 	}
 	
@@ -117,6 +126,11 @@ public abstract class Common extends JavaPlugin
 	public File getSchematicsFolder()
 	{
 		return new File("plugins/FastAsyncWorldEdit/schematics");
+	}
+	
+	public long getTotalTick()
+	{
+		return serverTickCounter.getTotalTick();
 	}
 	
 	public abstract CommonWorldType getMainWorldType();

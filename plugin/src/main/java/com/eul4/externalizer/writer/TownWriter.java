@@ -29,5 +29,6 @@ public class TownWriter extends ObjectWriter<Town>
 		out.writeInt(town.getLikes());
 		out.writeInt(town.getDislikes());
 		out.writeDouble(town.getHardness());
+		out.writeLong(town.getLastAttackFinishTick());
 	}
 }

@@ -40,6 +40,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -99,6 +100,9 @@ public class CraftTown implements Town
 	private RaidAnalyzer analyzer;
 	
 	private transient TownAttack currentAttack;
+	
+	@Setter
+	private long lastAttackFinishTick;
 	
 	public CraftTown(UUID ownerUUID, Block block, Main plugin)
 	{
@@ -574,7 +578,13 @@ public class CraftTown implements Town
 	@Override
 	public boolean canBeAnalyzed()
 	{
-		return !isUnderAttack() && !isUnderAnalysis();
+		return !isUnderAttack() && !isUnderAnalysis() && !isInCooldown();
+	}
+	
+	private boolean isInCooldown()
+	{
+		return lastAttackFinishTick > 0L
+				&& plugin.getTotalTick() - lastAttackFinishTick < 20L * 20L; //TODO: increase cooldown later
 	}
 	
 	@Override
@@ -885,5 +895,11 @@ public class CraftTown implements Town
 	public Optional<PluginPlayer> findPluginPlayer()
 	{
 		return Optional.ofNullable(getPluginPlayer());
+	}
+	
+	@Override
+	public void updateLastAttackFinishDate()
+	{
+		this.lastAttackFinishTick = plugin.getTotalTick();
 	}
 }

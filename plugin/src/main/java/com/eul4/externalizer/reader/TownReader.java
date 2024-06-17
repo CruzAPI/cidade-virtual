@@ -58,6 +58,7 @@ public class TownReader extends ObjectReader<Town>
 		town.setLikes(in.readInt());
 		town.setDislikes(in.readInt());
 		town.setHardnessField(in.readDouble());
+		town.setLastAttackFinishTick(in.readLong());
 	}
 	
 	public Town readReference(Main plugin) throws IOException, ClassNotFoundException

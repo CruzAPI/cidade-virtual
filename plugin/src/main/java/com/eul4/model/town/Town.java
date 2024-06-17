@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import java.awt.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -127,6 +128,7 @@ public interface Town
 	TownBlockMap getTownBlockMap();
 	StructureSet getStructureSet();
 	
+	//TODO: remove set methods, create an unique method, like in TownTile#loadFields
 	void setTownBlockMap(TownBlockMap townBlockMap);
 	void setTownTileMap(TownTileMap townTileMap);
 	void setStructureSet(StructureSet structureSet);
@@ -134,6 +136,7 @@ public interface Town
 	void setLikes(int likes);
 	void setDislikes(int dislike);
 	void setHardnessField(double hardness);
+	void setLastAttackFinishTick(long lastAttackFinishTick);
 	
 	Block getBlock();
 	
@@ -154,4 +157,6 @@ public interface Town
 	void updateHolograms();
 	
 	Optional<PluginPlayer> findPluginPlayer();
+	void updateLastAttackFinishDate();
+	long getLastAttackFinishTick();
 }

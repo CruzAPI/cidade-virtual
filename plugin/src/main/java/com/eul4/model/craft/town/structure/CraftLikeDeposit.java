@@ -22,7 +22,8 @@ public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
 	private final Set<Resource> resources = Set.of(Resource.builder()
 			.type(Resource.Type.LIKE)
 			.relativePosition(BlockVector3.at(0, 1, 0))
-			//			.subtractOperation() TODO
+			.emptyChecker(this::isEmpty)
+			.subtractOperation(this::subtract)
 			.build());
 	
 	public CraftLikeDeposit(Town town)
@@ -74,7 +75,17 @@ public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
 	@Override
 	protected int subtract(int balance)
 	{
-//TODO....
-		return 0;
+		return subtractVirtualBalance(this::setRemainingCapacity,
+				town::subtractLikes,
+				this::getVirtualBalance,
+				this::getRemainingCapacity,
+				balance);
+	}
+	
+	@Override
+	public void onTownLikeBalanceChange()
+	{
+		super.onTownLikeBalanceChange();
+		ifUnderAttackUpdateResources();
 	}
 }

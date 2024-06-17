@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface ResourceStructure extends Structure
 {
 	Optional<Resource> findResource(Block block);
+	
+	void steal(Resource resource);
 }

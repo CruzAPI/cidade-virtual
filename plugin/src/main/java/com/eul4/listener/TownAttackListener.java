@@ -138,7 +138,7 @@ public class TownAttackListener implements Listener
 		structure.damage(5.0D, clickedBlock); //TODO calculate damage.
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onAttackerStealResources(BlockBreakEvent event)
 	{
 		Block block = event.getBlock();
@@ -160,6 +160,8 @@ public class TownAttackListener implements Listener
 			return;
 		}
 		
-		resourceStructure.findResource(block).ifPresent(resource -> Bukkit.broadcastMessage("resource: " + resource.getType()));
+		event.setCancelled(false);
+		event.setDropItems(false);
+		resourceStructure.findResource(block).ifPresent(resourceStructure::steal);
 	}
 }

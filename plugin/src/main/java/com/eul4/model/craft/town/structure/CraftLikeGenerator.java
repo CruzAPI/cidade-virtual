@@ -21,7 +21,8 @@ public class CraftLikeGenerator extends CraftGenerator implements LikeGenerator
 	private final Set<Resource> resources = Set.of(Resource.builder()
 			.type(Resource.Type.LIKE)
 			.relativePosition(BlockVector3.at(0, 1, 0))
-			//			.subtractOperation() TODO
+			.subtractOperation(this::subtract)
+			.emptyChecker(this::isEmpty)
 			.build());
 	
 	public CraftLikeGenerator(Town town)

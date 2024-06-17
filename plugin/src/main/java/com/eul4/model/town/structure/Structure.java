@@ -115,4 +115,7 @@ public interface Structure
 	boolean isDestroyed();
 	
 	void damage(double damage, Block hitBlock);
+	
+	void onTownLikeBalanceChange();
+	void onTownDislikeBalanceChange();
 }

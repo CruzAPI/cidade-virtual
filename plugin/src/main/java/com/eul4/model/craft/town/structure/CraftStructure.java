@@ -732,4 +732,16 @@ public abstract class CraftStructure implements Structure
 		destroyed = false;
 		health = maxHealth;
 	}
+	
+	@Override
+	public void onTownLikeBalanceChange()
+	{
+	
+	}
+	
+	@Override
+	public void onTownDislikeBalanceChange()
+	{
+	
+	}
 }

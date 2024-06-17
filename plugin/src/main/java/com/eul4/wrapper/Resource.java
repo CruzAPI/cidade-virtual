@@ -1,5 +1,7 @@
 package com.eul4.wrapper;
 
+import com.eul4.enums.Currency;
+import com.eul4.model.town.Town;
 import com.sk89q.worldedit.math.BlockVector3;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 
+import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import java.util.function.IntUnaryOperator;
 
 @Builder
@@ -16,17 +20,21 @@ import java.util.function.IntUnaryOperator;
 public class Resource
 {
 	@RequiredArgsConstructor
+	@Getter
 	public enum Type
 	{
-		LIKE(Material.LIME_CONCRETE.createBlockData()),
-		DISLIKE(Material.RED_CONCRETE.createBlockData());
+		LIKE(Material.LIME_CONCRETE.createBlockData(), Town::addLikes, Currency.LIKE),
+		DISLIKE(Material.RED_CONCRETE.createBlockData(), Town::addDislikes, Currency.DISLIKE);
 		
 		private final BlockData blockData;
+		private final BiConsumer<Town, Integer> addOperation;
+		private final Currency currency;
 	}
 	
 	private final BlockVector3 relativePosition;
 	private final Type type;
 	private final IntUnaryOperator subtractOperation;
+	private final BooleanSupplier emptyChecker;
 	
 	public BlockData getBlockData()
 	{
@@ -36,5 +44,24 @@ public class Resource
 	public Block getRelative(Block centerBlock)
 	{
 		return centerBlock.getRelative(relativePosition.getX(), relativePosition.getY(), relativePosition.getZ());
+	}
+	
+	public boolean isEmpty()
+	{
+		return emptyChecker.getAsBoolean();
+	}
+	
+	public void placeRelative(Block centerBlock)
+	{
+		Block relative = getRelative(centerBlock);
+		
+		if(isEmpty())
+		{
+			relative.setType(Material.AIR);
+		}
+		else
+		{
+			relative.setBlockData(type.getBlockData());
+		}
 	}
 }

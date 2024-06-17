@@ -58,6 +58,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
@@ -333,12 +334,14 @@ public class CraftTown implements Town
 	public void setCappedLikes(int likes)
 	{
 		this.likes = Math.min(likeCapacity, likes);
+		onLikesChanged();
 	}
 	
 	@Override
 	public void setCappedDislikes(int dislikes)
 	{
 		this.dislikes = Math.min(dislikeCapacity, dislikes);
+		onDislikesChanged();
 	}
 	
 	@Override
@@ -354,34 +357,45 @@ public class CraftTown implements Town
 		this.dislikes -= price.getDislikes();
 	}
 	
-	private int subtractCount(int[] counter, int value)
+	private int subtractCount(int currentValue, int subtractedValue, IntConsumer setBalanceOperation)
 	{
-		if(value < 0)
+		if(subtractedValue < 0)
 		{
 			throw new UnsupportedOperationException("subtracted value can't be negative.");
 		}
 		
-		if(value > counter[0])
+		if(subtractedValue > currentValue)
 		{
-			int currentCount = counter[0];
-			counter[0] = 0;
-			return currentCount;
+			setBalanceOperation.accept(0);
+			return currentValue;
 		}
 		
-		counter[0] -= value;
-		return value;
+		setBalanceOperation.accept(currentValue - subtractedValue);
+		return subtractedValue;
 	}
 	
 	@Override
 	public int subtractDislikes(int dislikes)
 	{
-		return subtractCount(new int[] { this.dislikes }, dislikes);
+		return subtractCount(this.dislikes, dislikes, this::setCappedDislikes);
 	}
 	
 	@Override
 	public int subtractLikes(int likes)
 	{
-		return subtractCount(new int[] { this.likes }, likes);
+		return subtractCount(this.likes, likes, this::setCappedLikes);
+	}
+	
+	@Override
+	public void addLikes(int likes)
+	{
+		setCappedLikes(this.likes + likes);
+	}
+	
+	@Override
+	public void addDislikes(int dislikes)
+	{
+		setCappedDislikes(this.dislikes + dislikes);
 	}
 	
 	@Override
@@ -843,5 +857,33 @@ public class CraftTown implements Town
 	{
 		updateTileHolograms();
 		updateStructureHolograms();
+	}
+	
+	public void setLikes(int likes)
+	{
+		this.likes = likes;
+		onLikesChanged();
+	}
+	
+	public void setDislikes(int dislikes)
+	{
+		this.dislikes = dislikes;
+		onDislikesChanged();
+	}
+	
+	private void onLikesChanged()
+	{
+		structureSet.forEach(Structure::onTownLikeBalanceChange);
+	}
+	
+	private void onDislikesChanged()
+	{
+		structureSet.forEach(Structure::onTownDislikeBalanceChange);
+	}
+	
+	@Override
+	public Optional<PluginPlayer> findPluginPlayer()
+	{
+		return Optional.ofNullable(getPluginPlayer());
 	}
 }

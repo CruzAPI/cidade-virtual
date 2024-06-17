@@ -21,8 +21,10 @@ public class CraftDislikeGenerator extends CraftGenerator implements DislikeGene
 	private final Set<Resource> resources = Set.of(Resource.builder()
 			.type(Resource.Type.DISLIKE)
 			.relativePosition(BlockVector3.at(0, 1, 0))
-			//			.subtractOperation() TODO
+			.subtractOperation(this::subtract)
+			.emptyChecker(this::isEmpty)
 			.build());
+	
 	public CraftDislikeGenerator(Town town)
 	{
 		super(town);

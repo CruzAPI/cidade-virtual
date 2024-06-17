@@ -196,4 +196,34 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 		capacity = getRule().getAttributeOrDefault(getLevelStatus()).getCapacity();
 		delay = getRule().getAttributeOrDefault(getLevelStatus()).getDelay();
 	}
+	
+	protected int subtract(int value)
+	{
+		if(value < 0)
+		{
+			throw new UnsupportedOperationException("subtracted value can't be negative.");
+		}
+		
+		if(value > balance)
+		{
+			int currentCount = balance;
+			balance = 0;
+			onSubtractBalance();
+			return currentCount;
+		}
+		
+		balance -= value;
+		onSubtractBalance();
+		return value;
+	}
+	
+	private void onSubtractBalance()
+	{
+		updateHologram();
+	}
+	
+	public boolean isEmpty()
+	{
+		return balance == 0;
+	}
 }

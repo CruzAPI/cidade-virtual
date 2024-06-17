@@ -85,6 +85,8 @@ public interface Town
 	void subtract(Price price);
 	int subtractDislikes(int dislikes);
 	int subtractLikes(int likes);
+	void addLikes(int likes);
+	void addDislikes(int dislikes);
 	void checkIfAffordable(Price price) throws InsufficientBalanceException;
 	
 	Price buyNewStructure(StructureType structureType, TownBlock townBlock)
@@ -150,4 +152,6 @@ public interface Town
 	void loadAndPasteTownSchematic();
 	
 	void updateHolograms();
+	
+	Optional<PluginPlayer> findPluginPlayer();
 }

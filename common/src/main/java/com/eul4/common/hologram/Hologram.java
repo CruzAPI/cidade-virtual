@@ -108,7 +108,7 @@ public class Hologram
 		for(int i = 0; i < hologramLines.size(); i++)
 		{
 			hologramLines.get(i).armorStand.teleport(location.clone()
-					.subtract(0.0D, 0.28D * i, 0.0D));
+					.add(0.0D, 0.28D * i, 0.0D));
 		}
 	}
 	

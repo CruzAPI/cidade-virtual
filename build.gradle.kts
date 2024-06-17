@@ -31,8 +31,8 @@ task("deployk")
     dependsOn("plugin:remap")
 
     doLast {
-//        val bashPath = "C:/Program Files/Git/bin/bash.exe"
-        val bashPath = "/bin/bash"
+        val bashPath = "C:/Program Files/Git/bin/bash.exe"
+//        val bashPath = "/bin/bash"
         val process = ProcessBuilder(bashPath, "-c", "./stop.sh").start()
 
         if(process.waitFor() != 0)

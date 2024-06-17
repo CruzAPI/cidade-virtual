@@ -159,9 +159,12 @@ public class TownAttackListener implements Listener
 		{
 			return;
 		}
-		
-		event.setCancelled(false);
-		event.setDropItems(false);
-		resourceStructure.findResource(block).ifPresent(resourceStructure::steal);
+
+		resourceStructure.findResource(block).ifPresent(resource ->
+		{
+			event.setCancelled(false);
+			resourceStructure.steal(resource);
+			event.setDropItems(false);
+		});
 	}
 }

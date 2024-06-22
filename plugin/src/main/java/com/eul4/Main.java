@@ -15,6 +15,9 @@ import com.eul4.listener.*;
 import com.eul4.listener.hotbar.DefenderSpectatorHotbarListener;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
 import com.eul4.listener.hotbar.RaidSpectatorHotbarListener;
+import com.eul4.listener.inventory.ArmoryGuiListener;
+import com.eul4.listener.inventory.ArmoryMenuGuiListener;
+import com.eul4.listener.inventory.ArmoryWeaponShopGuiListener;
 import com.eul4.listener.player.AttackerListener;
 import com.eul4.listener.player.DefenderListener;
 import com.eul4.listener.player.InvincibleListener;
@@ -30,11 +33,6 @@ import com.eul4.type.PluginWorldType;
 import com.eul4.util.FileUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginManager;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -43,8 +41,6 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 @Getter
@@ -61,12 +57,14 @@ public class Main extends Common
 	private DislikeGeneratorRuleSerializer dislikeGeneratorRuleSerializer;
 	private LikeDepositRuleSerializer likeDepositRuleSerializer;
 	private DislikeDepositRuleSerializer dislikeDepositRuleSerializer;
+	private ArmoryRuleSerializer armoryRuleSerializer;
 	
 	private Rule<TownHallAttribute> townHallRule;
 	private Rule<LikeGeneratorAttribute> likeGeneratorRule;
 	private Rule<DislikeGeneratorAttribute> dislikeGeneratorRule;
 	private Rule<LikeDepositAttribute> likeDepositRule;
 	private Rule<DislikeDepositAttribute> dislikeDepositRule;
+	private Rule<ArmoryAttribute> armoryRule;
 	
 	private BuyStructureCommand buyStructureCommand;
 	private RaidCommand	raidCommand;
@@ -134,12 +132,14 @@ public class Main extends Common
 		var dislikeGeneratorRule = dislikeGeneratorRuleSerializer.load();
 		var likeDepositRule = likeDepositRuleSerializer.load();
 		var dislikeDepositRule = dislikeDepositRuleSerializer.load();
+		var armoryRule = armoryRuleSerializer.load();
 		
 		this.townHallRule = townHallRule;
 		this.likeGeneratorRule = likeGeneratorRule;
 		this.dislikeGeneratorRule = dislikeGeneratorRule;
 		this.likeDepositRule = likeDepositRule;
 		this.dislikeDepositRule = dislikeDepositRule;
+		this.armoryRule = armoryRule;
 		
 		townManager.reloadTowns();
 	}
@@ -167,6 +167,7 @@ public class Main extends Common
 		dislikeGeneratorRuleSerializer = new DislikeGeneratorRuleSerializer(this);
 		likeDepositRuleSerializer = new LikeDepositRuleSerializer(this);
 		dislikeDepositRuleSerializer = new DislikeDepositRuleSerializer(this);
+		armoryRuleSerializer = new ArmoryRuleSerializer(this);
 	}
 	
 	private void registerPacketInterceptors()
@@ -199,6 +200,10 @@ public class Main extends Common
 		pluginManager.registerEvents(new DefenderListener(this), this);
 		pluginManager.registerEvents(new InvincibleListener(this), this);
 		pluginManager.registerEvents(new SpectatorListener(this), this);
+		
+		pluginManager.registerEvents(new ArmoryGuiListener(this), this);
+		pluginManager.registerEvents(new ArmoryMenuGuiListener(this), this);
+		pluginManager.registerEvents(new ArmoryWeaponShopGuiListener(this), this);
 		
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);

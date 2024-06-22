@@ -21,73 +21,97 @@ import net.kyori.adventure.text.format.TextColor;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * A ordem dos enums importa, ao criar um novo enum sempre deixar ele por ultimo.
+ *
+ * //TODO: create ID in enum instead of use ordinal.
+ */
 @Getter
 @RequiredArgsConstructor
 public enum StructureType
 {
-	TOWN_HALL(
-			CraftTownHall.class,
-			CraftTownHall::new,
-			CraftTownHall::new,
-			TownHallWriter.class,
-			TownHallReader.class,
-			CraftTownHallGui::new,
-			Main::getTownHallRule,
-			NamedTextColor.YELLOW,
-			PluginMessage.STRUCTURE_TOWN_HALL_NAME,
-			PluginMessage.STRUCTURE_TOWN_HALL_UPGRADE_PREVIEW_LORE
+	TOWN_HALL
+	(
+		CraftTownHall.class,
+		CraftTownHall::new,
+		CraftTownHall::new,
+		TownHallWriter.class,
+		TownHallReader.class,
+		CraftTownHallGui::new,
+		Main::getTownHallRule,
+		NamedTextColor.YELLOW,
+		PluginMessage.STRUCTURE_TOWN_HALL_NAME,
+		PluginMessage.STRUCTURE_TOWN_HALL_UPGRADE_PREVIEW_LORE
 	),
 	
-	LIKE_GENERATOR(
-			CraftLikeGenerator.class,
-			CraftLikeGenerator::new,
-			CraftLikeGenerator::new,
-			LikeGeneratorWriter.class,
-			LikeGeneratorReader.class,
-			CraftLikeGeneratorGui::new,
-			Main::getLikeGeneratorRule,
-			NamedTextColor.GREEN,
-			PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
-			PluginMessage.STRUCTURE_LIKE_GENERATOR_UPGRADE_PREVIEW_LORE
+	LIKE_GENERATOR
+	(
+		CraftLikeGenerator.class,
+		CraftLikeGenerator::new,
+		CraftLikeGenerator::new,
+		LikeGeneratorWriter.class,
+		LikeGeneratorReader.class,
+		CraftLikeGeneratorGui::new,
+		Main::getLikeGeneratorRule,
+		NamedTextColor.GREEN,
+		PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
+		PluginMessage.STRUCTURE_LIKE_GENERATOR_UPGRADE_PREVIEW_LORE
 	),
 	
-	DISLIKE_GENERATOR(
-			CraftDislikeGenerator.class,
-			CraftDislikeGenerator::new,
-			CraftDislikeGenerator::new,
-			DislikeGeneratorWriter.class,
-			DislikeGeneratorReader.class,
-			CraftDislikeGeneratorGui::new,
-			Main::getDislikeGeneratorRule,
-			NamedTextColor.RED,
-			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME,
-			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_UPGRADE_PREVIEW_LORE
+	DISLIKE_GENERATOR
+	(
+		CraftDislikeGenerator.class,
+		CraftDislikeGenerator::new,
+		CraftDislikeGenerator::new,
+		DislikeGeneratorWriter.class,
+		DislikeGeneratorReader.class,
+		CraftDislikeGeneratorGui::new,
+		Main::getDislikeGeneratorRule,
+		NamedTextColor.RED,
+		PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME,
+		PluginMessage.STRUCTURE_DISLIKE_GENERATOR_UPGRADE_PREVIEW_LORE
 	),
 	
-	DISLIKE_DEPOSIT(
-			CraftDislikeDeposit.class,
-			CraftDislikeDeposit::new,
-			CraftDislikeDeposit::new,
-			DislikeDepositWriter.class,
-			DislikeDepositReader.class,
-			CraftDislikeDepositGui::new,
-			Main::getDislikeDepositRule,
-			NamedTextColor.RED,
-			PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_NAME,
-			PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
+	DISLIKE_DEPOSIT
+	(
+		CraftDislikeDeposit.class,
+		CraftDislikeDeposit::new,
+		CraftDislikeDeposit::new,
+		DislikeDepositWriter.class,
+		DislikeDepositReader.class,
+		CraftDislikeDepositGui::new,
+		Main::getDislikeDepositRule,
+		NamedTextColor.RED,
+		PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_NAME,
+		PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
 	),
 	
-	LIKE_DEPOSIT(
-			CraftLikeDeposit.class,
-			CraftLikeDeposit::new,
-			CraftLikeDeposit::new,
-			LikeDepositWriter.class,
-			LikeDepositReader.class,
-			CraftLikeDepositGui::new,
-			Main::getLikeDepositRule,
-			NamedTextColor.RED,
-			PluginMessage.STRUCTURE_LIKE_DEPOSIT_NAME,
-			PluginMessage.STRUCTURE_LIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
+	LIKE_DEPOSIT
+	(
+		CraftLikeDeposit.class,
+		CraftLikeDeposit::new,
+		CraftLikeDeposit::new,
+		LikeDepositWriter.class,
+		LikeDepositReader.class,
+		CraftLikeDepositGui::new,
+		Main::getLikeDepositRule,
+		NamedTextColor.RED,
+		PluginMessage.STRUCTURE_LIKE_DEPOSIT_NAME,
+		PluginMessage.STRUCTURE_LIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
+	),
+	
+	ARMORY
+	(
+		CraftArmory.class,
+		CraftArmory::new,
+		CraftArmory::new,
+		ArmoryWriter.class,
+		ArmoryReader.class,
+		CraftArmoryGui::new,
+		Main::getArmoryRule,
+		NamedTextColor.GOLD,
+		PluginMessage.STRUCTURE_ARMORY_NAME,
+		PluginMessage.STRUCTURE_ARMORY_UPGRADE_PREVIEW_LORE
 	);
 	
 	private final Class<? extends Structure> structureClass;

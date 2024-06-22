@@ -302,8 +302,8 @@ public abstract class CraftStructure implements Structure
 	{
 		ItemStack item = new ItemStack(Material.STONE);
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(Component.text("ttext"));
-		meta.addEnchant(Enchantment.DURABILITY, 1, true);
+		meta.displayName(Component.text("ttext")); //TODO
+		meta.addEnchant(Enchantment.UNBREAKING, 1, true);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(meta);
 		
@@ -615,7 +615,7 @@ public abstract class CraftStructure implements Structure
 		Location centerLocation = hitBlock.getLocation().toCenterLocation();
 		World world = centerLocation.getWorld();
 		
-		world.spawnParticle(Particle.EXPLOSION_LARGE, centerLocation, 1);
+		world.spawnParticle(Particle.EXPLOSION, centerLocation, 1);
 		world.playSound(centerLocation, Sound.ENTITY_GENERIC_HURT, 1.0F, Pitch.getPitch(5));
 	}
 	
@@ -625,7 +625,7 @@ public abstract class CraftStructure implements Structure
 		World world = centerLocation.getWorld();
 		
 		world.playSound(centerLocation, Sound.ENTITY_GENERIC_EXPLODE, 1.0F, Pitch.getPitch(7));
-		world.spawnParticle(Particle.EXPLOSION_HUGE, centerLocation, 1);
+		world.spawnParticle(Particle.EXPLOSION_EMITTER, centerLocation, 1);
 		
 		List<BlockState> removedBlockStates = removeAllSurfaceBlocks();
 		

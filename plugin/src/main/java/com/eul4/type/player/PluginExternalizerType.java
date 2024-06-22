@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 public enum PluginExternalizerType implements ExternalizerType
 {
 	ADMIN(AdminReader::new, AdminReader.class, AdminWriter::new, AdminWriter.class),
+	ARMORY(ArmoryReader::new, ArmoryReader.class, ArmoryWriter::new, ArmoryWriter.class),
 	ATTACKER(AttackerReader::new, AttackerReader.class, AttackerWriter::new, AttackerWriter.class),
 	BLOCK_DATA_MAP(BlockDataMapReader::new, BlockDataMapReader.class, BlockDataMapWriter::new, BlockDataMapWriter.class),
 	BLOCK_DATA(BlockDataReader::new, BlockDataReader.class, BlockDataWriter::new, BlockDataWriter.class),

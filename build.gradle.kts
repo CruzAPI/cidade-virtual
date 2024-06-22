@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("io.github.patrick.remapper") version "1.4.0"
+    id("io.github.patrick.remapper") version "1.4.2"
 }
 
 group = "com.eul4"
@@ -13,11 +13,11 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 tasks.withType<JavaCompile> {

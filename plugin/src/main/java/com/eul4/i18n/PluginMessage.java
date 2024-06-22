@@ -1,16 +1,15 @@
 package com.eul4.i18n;
 
+import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.wrapper.TimerTranslater;
 import com.eul4.enums.Currency;
-import com.eul4.rule.attribute.DislikeDepositAttribute;
-import com.eul4.rule.attribute.DislikeGeneratorAttribute;
-import com.eul4.rule.attribute.LikeGeneratorAttribute;
-import com.eul4.rule.attribute.TownHallAttribute;
+import com.eul4.rule.attribute.*;
 import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
+import com.eul4.wrapper.Cost;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -32,7 +31,10 @@ public enum PluginMessage implements Message
 {
 	LEVEL("level"),
 	UPGRADE("upgrade"),
+	DURABILITY("durability"),
+	PRICE("price"),
 	ABBREVIATION_LEVEL("abbreviation.level"),
+	STRUCTURE_ARMORY_NAME ("structure.armory.name"),
 	STRUCTURE_TOWN_HALL_NAME ("structure.town-hall.name"),
 	STRUCTURE_LIKE_GENERATOR_NAME("structure.like-generator.name"),
 	STRUCTURE_DISLIKE_GENERATOR_NAME("structure.dislike-generator.name"),
@@ -40,6 +42,12 @@ public enum PluginMessage implements Message
 	STRUCTURE_DISLIKE_DEPOSIT_NAME("structure.like-deposit.name"),
 	COLLECT_LIKES("collect-likes", empty().color(GREEN)),
 	CLICK_TO_BUY_THIS_TILE("click-to-buy-this-tile", empty().decorate(BOLD)),
+	
+	INVENTORY_ARMORY_MENU_TITLE("inventory.armory-menu.title", empty().color(BLACK).decorate(BOLD)),
+	INVENTORY_ARMORY_MENU_SHOP("inventory.armory-menu.shop", empty().color(GREEN)),
+	INVENTORY_ARMORY_MENU_MY_INVENTORY("inventory.armory-menu.my-inventory", empty().color(GOLD)),
+	
+	INVENTORY_ARMORY_WEAPON_SHOP_TITLE("inventory.armory-weapon-shop.title", empty().color(BLACK).decorate(BOLD)),
 	
 	STRUCTURE_GENERATOR_TITLE("structure.generator.title",
 	(bundle, args) -> new Component[]
@@ -164,9 +172,9 @@ public enum PluginMessage implements Message
 	
 	DECORATED_VALUE_CURRENCY("decorated-value-currency", (bundle, args) -> new Component[]
 	{
-		(Component) args[0],
+		((Currency) args[0]).getBaseComponent(),
 		text((int) args[1]),
-		((Currency) args[2]).getPluralWord().translateWord(bundle),
+		((Currency) args[0]).getPluralWord().translateWord(bundle),
 	}),
 	
 	LIKES("likes"),
@@ -219,6 +227,21 @@ public enum PluginMessage implements Message
 			text(nextLevelAttributes.getLikeCapacity()),
 			text(currentLevelAttributes.getDislikeCapacity()),
 			text(nextLevelAttributes.getDislikeCapacity()),
+			TimerTranslater.translate(buildTicks, bundle),
+		};
+	}),
+	
+	STRUCTURE_ARMORY_UPGRADE_PREVIEW_LORE("structure.armory.upgrade-preview-lore", (bundle, args) ->
+	{
+		ArmoryAttribute currentLevelAttributes = (ArmoryAttribute) args[0];
+		ArmoryAttribute nextLevelAttributes = (ArmoryAttribute) args[1];
+		
+		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			//TODO ...
 			TimerTranslater.translate(buildTicks, bundle),
 		};
 	}),
@@ -434,8 +457,21 @@ public enum PluginMessage implements Message
 		empty().color(GREEN).decorate(BOLD),
 		text((String) args[0]),
 	}),
-
+	
+//	COST_LORE("?", (bundle, args) ->
+//	{
+//		Cost cost = (Cost) args[0];
+//		Price price = cost.getPrice();
+//		MessageUtil.getPriceLore()
+//		return new Component[]
+//		{
+//			empty().color(GREEN).decorate(BOLD),
+//			text((String) args[0]),
+//		};
+//	}),
+	
 	;
+	
 	private final String key;
 	private final BundleBaseName bundleBaseName;
 	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;

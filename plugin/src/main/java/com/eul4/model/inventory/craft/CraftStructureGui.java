@@ -105,7 +105,7 @@ public abstract class CraftStructureGui extends CraftGui implements StructureGui
 				meta.displayName(PluginMessage.UPGRADE_LOCKED
 						.translate(commonPlayer, nextAttribute.getRequiresTownHallLevel()));
 			}
-		
+			
 			List<Component> lore = MessageUtil.getPriceLore(price, commonPlayer);
 			
 			lore.add(Component.empty());

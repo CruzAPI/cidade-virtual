@@ -28,6 +28,7 @@ public class TownsFiler extends Filer
 		CommonObjectType.LOCATION,
 		CommonObjectType.OBJECT,
 		CommonObjectType.TRANSLATED_HOLOGRAM_LINE,
+		PluginObjectType.ARMORY,
 		PluginObjectType.DEPOSIT,
 		PluginObjectType.DISLIKE_DEPOSIT,
 		PluginObjectType.DISLIKE_GENERATOR,

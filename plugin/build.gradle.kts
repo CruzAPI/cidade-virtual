@@ -3,7 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.github.patrick.remapper") version "1.4.0"
+    id("io.github.patrick.remapper") version "1.4.2"
 }
 
 group = "com.eul4"
@@ -27,7 +27,7 @@ dependencies {
 
 tasks.remap {
     shouldRunAfter(tasks.shadowJar)
-    version.set("1.20.4")
+    version.set("1.20.6")
 }
 
 tasks.shadowJar {

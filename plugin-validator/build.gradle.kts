@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("io.github.patrick.remapper") version "1.4.0"
+    id("io.github.patrick.remapper") version "1.4.2"
 }
 
 group = "com.eul4"
@@ -14,15 +14,15 @@ repositories {
 }
 
 dependencies {
-    implementation("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot:1.20.4-R0.1-SNAPSHOT:remapped-mojang")
+    implementation("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot:1.20.6-R0.1-SNAPSHOT:remapped-mojang")
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 }
 
 tasks.remap {
     shouldRunAfter(tasks.build)
-    version.set("1.20.4")
+    version.set("1.20.6")
 }
 
 task("deploy")

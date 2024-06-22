@@ -49,6 +49,13 @@ public enum ItemBuilder
 		return item;
 	}, StructureType.DISLIKE_DEPOSIT),
 	
+	ARMORY((itemBuilder, commonPlayer) ->
+	{
+		ItemStack item = new ItemStack(Material.DIAMOND_BLOCK);
+		setItemBuilderTag(item, itemBuilder, commonPlayer);
+		return item;
+	}, StructureType.ARMORY),
+	
 	;
 	
 	private final BiFunction<ItemBuilder, CommonPlayer, ItemStack> itemStackFunction;
@@ -87,7 +94,7 @@ public enum ItemBuilder
 		meta.displayName(PluginMessage.STRUCTURE_CONSTRUCTOR
 				.translate(commonPlayer, itemBuilder.getStructureType().getNameMessage()));
 		meta.lore(PluginMessage.STRUCTURE_CONSTRUCTOR_LORE.translateLore(commonPlayer));
-		meta.addEnchant(Enchantment.DURABILITY, 1, true);
+		meta.addEnchant(Enchantment.UNBREAKING, 1, true);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		
 		var container = meta.getPersistentDataContainer();

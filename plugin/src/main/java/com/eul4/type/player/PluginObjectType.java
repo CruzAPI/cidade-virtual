@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 public enum PluginObjectType implements ObjectType
 {
 	ADMIN((byte) 0, PluginExternalizerType.ADMIN),
+	ARMORY((byte) 0, PluginExternalizerType.ARMORY),
 	ATTACKER((byte) 0, PluginExternalizerType.ATTACKER),
 	BLOCK_DATA_MAP((byte) 0, PluginExternalizerType.BLOCK_DATA_MAP),
 	BLOCK_DATA((byte) 0, PluginExternalizerType.BLOCK_DATA),

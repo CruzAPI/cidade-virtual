@@ -51,6 +51,11 @@ public class DataFileManager
 		return new File(plugin.getDataFolder(), "town_hall_rule.yml");
 	}
 	
+	public File getArmoryRuleFile()
+	{
+		return new File(plugin.getDataFolder(), "armory_rule.yml");
+	}
+	
 	public File getPlayerDataFile(UUID uuid)
 	{
 		return new File(plugin.getDataFolder() + "/player_data", uuid.toString() + ".dat");

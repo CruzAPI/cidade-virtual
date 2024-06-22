@@ -32,6 +32,7 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 	private ItemStack dislikeGenerator;
 	private ItemStack likeDeposit;
 	private ItemStack dislikeDeposit;
+	private ItemStack armory;
 	
 	public CraftStructureShopGui(CommonPlayer commonPlayer)
 	{
@@ -48,6 +49,9 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		
 		dislikeDeposit = new ItemStack(Material.REDSTONE_BLOCK);
 		setDisplayNameAndPriceInLore(dislikeDeposit, ItemBuilder.DISLIKE_DEPOSIT);
+		
+		armory = new ItemStack(Material.DIAMOND_BLOCK); //TODO: duplicated Material in ItemBuilder??
+		setDisplayNameAndPriceInLore(armory, ItemBuilder.ARMORY);
 		
 		itemStructureMap.keySet().forEach(getInventory()::addItem);
 	}

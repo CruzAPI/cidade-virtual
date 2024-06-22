@@ -4,18 +4,22 @@ import com.eul4.Main;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
-import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftArmorStand;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.ToolComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +27,8 @@ import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import static org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
@@ -56,13 +62,48 @@ public class TestCommand implements TabExecutor
 			player.sendMessage(plugin.getPlayerManager().get(player).getPlayerType().getInterfaceType().getSimpleName());
 			player.sendMessage("frozen=" + pluginPlayer.getTown().isFrozen());
 		}
+		else if(args.length == 2)
+		{
+			int damage = Integer.parseInt(args[0]);
+			int maxDamage = Integer.parseInt(args[1]);
+			
+			ItemStack item = player.getInventory().getItemInMainHand();
+			
+			Bukkit.broadcastMessage("maxItemUseDuration: " + item.getMaxItemUseDuration());
+			Bukkit.broadcastMessage("durability: " + item.getDurability());
+			
+			ItemMeta meta = item.getItemMeta();
+			if(meta instanceof Damageable damageable)
+			{
+				Bukkit.broadcastMessage("damage: "
+						+ (damageable.hasDamage() ? damageable.getDamage() : null)
+						+ " maxdamage: " + (damageable.hasMaxDamage() ? damageable.getMaxDamage() : null));
+				damageable.setDamage(damage);
+				damageable.setMaxDamage(maxDamage);
+			}
+			
+			item.setItemMeta(meta);
+			
+//			int i = Integer.parseInt(args[0]);
+//
+//			ItemStack item = new ItemStack(Material.LEATHER_HELMET);
+//			ItemMeta meta = item.getItemMeta();
+//			meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "", i, ADD_NUMBER, EquipmentSlot.HEAD));
+//			item.setItemMeta(meta);
+//			player.getInventory().addItem(item);
+			
+//			ItemStack goldenPickaxe = new ItemStack(Material.GOLDEN_PICKAXE);
+//			ItemMeta meta = goldenPickaxe.getItemMeta();
+//			ToolComponent tool = meta.getTool();
+//
+//			tool.addRule(Tag.MINEABLE_PICKAXE, 0.1F, true);
+//			meta.setTool(tool);
+//			goldenPickaxe.setItemMeta(meta);
+//			player.getInventory().addItem(goldenPickaxe);
+		}
 		else if(args.length == 1)
 		{
-			int tick = Integer.parseInt(args[0]);
-			
-			player.setNoDamageTicks(tick);
-			player.damage(2.0D);
-			player.sendMessage("damage! tick=" + tick);
+			player.teleport(new Location(Bukkit.getWorld("cidade_virtual"), -169.0D, 24.0d, -50.0d));
 		}
 //		else if(args.length == 1)
 //		{

@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
+import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
@@ -103,7 +105,15 @@ public class TestCommand implements TabExecutor
 		}
 		else if(args.length == 1)
 		{
-			player.teleport(new Location(Bukkit.getWorld("cidade_virtual"), -169.0D, 24.0d, -50.0d));
+			Location location = player.getLocation();
+			
+			ServerLevel serverLevel = ((CraftWorld) location.getWorld()).getHandle();
+			var nmsArmorStand = new net.minecraft.world.entity.decoration.ArmorStand(serverLevel,
+					location.getX(),
+					location.getY(),
+					location.getZ());
+			
+			serverLevel.addFreshEntity(nmsArmorStand);
 		}
 //		else if(args.length == 1)
 //		{

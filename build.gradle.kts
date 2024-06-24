@@ -1,19 +1,20 @@
 plugins {
     id("java")
-    id("io.github.patrick.remapper") version "1.4.2"
+    id("io.papermc.paperweight.userdev") version "1.7.1"
 }
 
 group = "com.eul4"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    gradlePluginPortal()
     mavenCentral()
     mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
 }
 
 java {
@@ -22,32 +23,4 @@ java {
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-}
-
-task("deployk")
-{
-    dependsOn("plugin:clean")
-    dependsOn("plugin:shadowJar")
-    dependsOn("plugin:remap")
-
-    doLast {
-//        val bashPath = "C:/Program Files/Git/bin/bash.exe"
-        val bashPath = "/bin/bash"
-        val process = ProcessBuilder(bashPath, "-c", "./stop.sh").start()
-
-        if(process.waitFor() != 0)
-        {
-            throw GradleException("Failed to stop server! (exit code: ${process.exitValue()})")
-        }
-
-        println("Sleeping 3s...")
-        Thread.sleep(3000L)
-
-        val scpProcess = ProcessBuilder(bashPath, "-c", "./scp.sh").start()
-
-        if(scpProcess.waitFor() != 0)
-        {
-            throw GradleException("Failed to deploy: Plugin (exit code: ${scpProcess.exitValue()})")
-        }
-    }
 }

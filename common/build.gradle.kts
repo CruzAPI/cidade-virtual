@@ -1,12 +1,14 @@
 plugins {
     id("java")
     id("java-library")
+    id("io.papermc.paperweight.userdev") version "1.7.1"
 }
 
 group = "com.eul4"
 version = "1.0-SNAPSHOT"
 
 repositories {
+    gradlePluginPortal()
     mavenCentral()
     mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/")
@@ -14,9 +16,8 @@ repositories {
 }
 
 dependencies {
-    api("io.papermc.paper:paper-api:1.20.6-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.6-R0.1-SNAPSHOT")
     compileOnlyApi("com.comphenix.protocol:ProtocolLib:5.1.0")
-    compileOnlyApi("org.spigotmc:spigot:1.20.6-R0.1-SNAPSHOT:remapped-mojang")
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 }

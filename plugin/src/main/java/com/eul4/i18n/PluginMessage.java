@@ -38,8 +38,8 @@ public enum PluginMessage implements Message
 	STRUCTURE_TOWN_HALL_NAME ("structure.town-hall.name"),
 	STRUCTURE_LIKE_GENERATOR_NAME("structure.like-generator.name"),
 	STRUCTURE_DISLIKE_GENERATOR_NAME("structure.dislike-generator.name"),
-	STRUCTURE_LIKE_DEPOSIT_NAME("structure.dislike-deposit.name"),
-	STRUCTURE_DISLIKE_DEPOSIT_NAME("structure.like-deposit.name"),
+	STRUCTURE_LIKE_DEPOSIT_NAME("structure.like-deposit.name"),
+	STRUCTURE_DISLIKE_DEPOSIT_NAME("structure.dislike-deposit.name"),
 	COLLECT_LIKES("collect-likes", empty().color(GREEN)),
 	CLICK_TO_BUY_THIS_TILE("click-to-buy-this-tile", empty().decorate(BOLD)),
 	
@@ -284,8 +284,8 @@ public enum PluginMessage implements Message
 	
 	STRUCTURE_LIKE_DEPOSIT_UPGRADE_PREVIEW_LORE("structure.like-deposit.upgrade-preview-lore", (bundle, args) ->
 	{
-		DislikeDepositAttribute currentLevelAttributes = (DislikeDepositAttribute) args[0];
-		DislikeDepositAttribute nextLevelAttributes = (DislikeDepositAttribute) args[1];
+		LikeDepositAttribute currentLevelAttributes = (LikeDepositAttribute) args[0];
+		LikeDepositAttribute nextLevelAttributes = (LikeDepositAttribute) args[1];
 		
 		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
 		

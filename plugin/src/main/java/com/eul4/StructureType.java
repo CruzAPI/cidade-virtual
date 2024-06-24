@@ -95,7 +95,7 @@ public enum StructureType
 		LikeDepositReader.class,
 		CraftLikeDepositGui::new,
 		Main::getLikeDepositRule,
-		NamedTextColor.RED,
+		NamedTextColor.GREEN,
 		PluginMessage.STRUCTURE_LIKE_DEPOSIT_NAME,
 		PluginMessage.STRUCTURE_LIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
 	),

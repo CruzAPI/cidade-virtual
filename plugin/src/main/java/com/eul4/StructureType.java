@@ -112,7 +112,23 @@ public enum StructureType
 		NamedTextColor.GOLD,
 		PluginMessage.STRUCTURE_ARMORY_NAME,
 		PluginMessage.STRUCTURE_ARMORY_UPGRADE_PREVIEW_LORE
-	);
+	),
+	
+	CANNON
+	(
+		CraftCannon.class,
+		CraftCannon::new,
+		CraftCannon::new,
+		CannonWriter.class,
+		CannonReader.class,
+		CraftCannonGui::new,
+		Main::getCannonRule,
+		NamedTextColor.GRAY,
+		PluginMessage.STRUCTURE_CANNON_NAME,
+		PluginMessage.STRUCTURE_CANNON_UPGRADE_PREVIEW_LORE
+	),
+	
+	;
 	
 	private final Class<? extends Structure> structureClass;
 	private final StructureInstantiation instantiation;

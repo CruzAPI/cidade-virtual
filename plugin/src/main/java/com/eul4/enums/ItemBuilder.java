@@ -56,6 +56,13 @@ public enum ItemBuilder
 		return item;
 	}, StructureType.ARMORY),
 	
+	CANNON((itemBuilder, commonPlayer) ->
+	{
+		ItemStack item = new ItemStack(Material.DISPENSER);
+		setItemBuilderTag(item, itemBuilder, commonPlayer);
+		return item;
+	}, StructureType.CANNON),
+	
 	;
 	
 	private final BiFunction<ItemBuilder, CommonPlayer, ItemStack> itemStackFunction;

@@ -34,7 +34,8 @@ public enum PluginMessage implements Message
 	DURABILITY("durability"),
 	PRICE("price"),
 	ABBREVIATION_LEVEL("abbreviation.level"),
-	STRUCTURE_ARMORY_NAME ("structure.armory.name"),
+	STRUCTURE_ARMORY_NAME("structure.armory.name"),
+	STRUCTURE_CANNON_NAME("structure.cannon.name"),
 	STRUCTURE_TOWN_HALL_NAME ("structure.town-hall.name"),
 	STRUCTURE_LIKE_GENERATOR_NAME("structure.like-generator.name"),
 	STRUCTURE_DISLIKE_GENERATOR_NAME("structure.dislike-generator.name"),
@@ -235,6 +236,21 @@ public enum PluginMessage implements Message
 	{
 		ArmoryAttribute currentLevelAttributes = (ArmoryAttribute) args[0];
 		ArmoryAttribute nextLevelAttributes = (ArmoryAttribute) args[1];
+		
+		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			//TODO ...
+			TimerTranslater.translate(buildTicks, bundle),
+		};
+	}),
+	
+	STRUCTURE_CANNON_UPGRADE_PREVIEW_LORE("structure.cannon.upgrade-preview-lore", (bundle, args) ->
+	{
+		CannonAttribute currentLevelAttributes = (CannonAttribute) args[0];
+		CannonAttribute nextLevelAttributes = (CannonAttribute) args[1];
 		
 		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
 		

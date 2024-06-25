@@ -18,6 +18,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	ATTACKER(AttackerReader::new, AttackerReader.class, AttackerWriter::new, AttackerWriter.class),
 	BLOCK_DATA_MAP(BlockDataMapReader::new, BlockDataMapReader.class, BlockDataMapWriter::new, BlockDataMapWriter.class),
 	BLOCK_DATA(BlockDataReader::new, BlockDataReader.class, BlockDataWriter::new, BlockDataWriter.class),
+	CANNON(CannonReader::new, CannonReader.class, CannonWriter::new, CannonWriter.class),
 	DEFENDER(DefenderReader::new, DefenderReader.class, DefenderWriter::new, DefenderWriter.class),
 	DEFENDER_SPECTATOR(DefenderSpectatorReader::new, DefenderSpectatorReader.class, DefenderSpectatorWriter::new, DefenderSpectatorWriter.class),
 	DISLIKE_DEPOSIT(DislikeDepositReader::new, DislikeDepositReader.class, DislikeDepositWriter::new, DislikeDepositWriter.class),

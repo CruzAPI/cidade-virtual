@@ -33,6 +33,7 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 	private ItemStack likeDeposit;
 	private ItemStack dislikeDeposit;
 	private ItemStack armory;
+	private ItemStack cannon;
 	
 	public CraftStructureShopGui(CommonPlayer commonPlayer)
 	{
@@ -50,8 +51,11 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		dislikeDeposit = new ItemStack(Material.REDSTONE_BLOCK);
 		setDisplayNameAndPriceInLore(dislikeDeposit, ItemBuilder.DISLIKE_DEPOSIT);
 		
-		armory = new ItemStack(Material.DIAMOND_BLOCK); //TODO: duplicated Material in ItemBuilder??
+		armory = new ItemStack(Material.DIAMOND_BLOCK); //TODO: duplicated Material in ItemBuilder?? Probably one for icon and the other for be placed in ground.
 		setDisplayNameAndPriceInLore(armory, ItemBuilder.ARMORY);
+		
+		cannon = new ItemStack(Material.DISPENSER);
+		setDisplayNameAndPriceInLore(cannon, ItemBuilder.CANNON);
 		
 		itemStructureMap.keySet().forEach(getInventory()::addItem);
 	}

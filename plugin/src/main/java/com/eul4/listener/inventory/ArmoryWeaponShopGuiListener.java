@@ -1,11 +1,13 @@
 package com.eul4.listener.inventory;
 
 import com.eul4.Main;
+import com.eul4.common.wrapper.Pitch;
 import com.eul4.model.inventory.ArmoryMenuGui;
 import com.eul4.model.inventory.ArmoryWeaponShopGui;
 import com.eul4.model.inventory.craft.CraftArmoryWeaponShopGui;
 import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -51,6 +53,18 @@ public class ArmoryWeaponShopGuiListener implements Listener
 			return;
 		}
 		
+		CraftArmoryWeaponShopGui.Icon icon = armoryWeaponShopGui.getBySlot(event.getSlot());
+		
+		if(icon == null)
+		{
+			return;
+		}
+		
+		if(armoryWeaponShopGui.isLocked(icon))
+		{
+			player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, Pitch.getPitch(3));
+			return;
+		}
 		//TODO...
 	}
 }

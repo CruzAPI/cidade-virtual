@@ -1,5 +1,6 @@
 package com.eul4.externalizer.writer;
 
+import com.eul4.common.externalizer.writer.InventoryWriter;
 import com.eul4.common.type.player.Writers;
 import com.eul4.model.town.structure.Armory;
 
@@ -13,8 +14,11 @@ public class ArmoryWriter extends StructureWriter<Armory>
 	}
 	
 	@Override
-	protected void writeObject(Armory Armory) throws IOException
+	protected void writeObject(Armory armory) throws IOException
 	{
-		super.writeObject(Armory);
+		super.writeObject(armory);
+		
+		writers.getWriter(InventoryWriter.class).writeReferenceNotNull(armory.getInventoryContents());
+		writers.getWriter(InventoryWriter.class).writeReferenceNotNull(armory.getBattleInventoryContents());
 	}
 }

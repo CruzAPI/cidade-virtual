@@ -52,12 +52,12 @@ public class ArmoryMenuGuiListener implements Listener
 		
 		if(currentItem.equals(armoryMenuGui.getShopIcon()))
 		{
-			townPlayer.openGui(new CraftArmoryWeaponShopGui(townPlayer));
+			townPlayer.openGui(new CraftArmoryWeaponShopGui(townPlayer, armoryMenuGui.getArmory()));
 		}
 		else if(currentItem.equals(armoryMenuGui.getMyInventoryIcon()))
 		{
 			player.closeInventory();
-			player.sendMessage("//TODO: myInventory"); //TODO
+			player.sendMessage("//TODO: myInventory."); //TODO
 		}
 	}
 }

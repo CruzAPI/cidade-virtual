@@ -458,17 +458,11 @@ public enum PluginMessage implements Message
 		text((String) args[0]),
 	}),
 	
-//	COST_LORE("?", (bundle, args) ->
-//	{
-//		Cost cost = (Cost) args[0];
-//		Price price = cost.getPrice();
-//		MessageUtil.getPriceLore()
-//		return new Component[]
-//		{
-//			empty().color(GREEN).decorate(BOLD),
-//			text((String) args[0]),
-//		};
-//	}),
+	UNLOCKS_AT_LEVEL("unlocks-at-level", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text((int) args[0]),
+	}),
 	
 	;
 	

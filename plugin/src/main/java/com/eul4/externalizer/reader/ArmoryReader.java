@@ -1,6 +1,7 @@
 package com.eul4.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
+import com.eul4.common.externalizer.reader.InventoryReader;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
@@ -41,6 +42,9 @@ public class ArmoryReader extends StructureReader<Armory>
 	private void readerVersion0(Armory armory) throws IOException, ClassNotFoundException
 	{
 		super.getReader().readObject(armory);
+		
+		armory.setInventoryContents(readers.getReader(InventoryReader.class).readReference());
+		armory.setBattleInventoryContents(readers.getReader(InventoryReader.class).readReference());
 	}
 	
 	private Readable<Armory> parameterizedReadableVersion0(Town town)

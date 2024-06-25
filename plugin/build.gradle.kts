@@ -63,8 +63,8 @@ task("deployk")
             throw GradleException("Failed to stop server$errorMessage (exit code: ${process.exitValue()})")
         }
 
-        println("Sleeping 3s...")
-        Thread.sleep(3000L)
+        println("Sleeping 1s...")
+        Thread.sleep(1000L)
 
         val scpProcess = ProcessBuilder(bashPath, "-c", "./scp.sh $jarFileAbsolutPath").start()
 

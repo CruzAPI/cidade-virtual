@@ -9,12 +9,18 @@ import com.eul4.model.town.structure.Armory;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.ArmoryAttribute;
 import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 
 @Getter
+@Setter
 public class CraftArmory extends CraftStructure implements Armory
 {
+	private ItemStack[] inventoryContents = new ItemStack[9 * 6];
+	private ItemStack[] battleInventoryContents = new ItemStack[41];
+	
 	public CraftArmory(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, false);

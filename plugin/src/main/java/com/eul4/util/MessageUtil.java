@@ -99,8 +99,8 @@ public class MessageUtil
 		
 		if(!components.isEmpty())
 		{
-			components.add(0, PluginMessage.PRICE
-					.translateWord(commonPlayer, WordUtils::capitalizeFully)
+			components.add(0, getBlankComponent()
+					.append(PluginMessage.PRICE.translateWord(commonPlayer, WordUtils::capitalizeFully))
 					.append(Component.text(":")));
 		}
 		
@@ -145,6 +145,6 @@ public class MessageUtil
 	
 	private static Component getPontuatedComponent()
 	{
-		return getBlankComponent().append(Component.text("* "));
+		return getBlankComponent().append(Component.text("- "));
 	}
 }

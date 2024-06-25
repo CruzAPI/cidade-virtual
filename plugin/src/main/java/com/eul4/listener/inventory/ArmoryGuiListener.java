@@ -42,7 +42,7 @@ public class ArmoryGuiListener implements Listener
 		
 		if(currentItem.equals(armoryGui.getMenuIcon()))
 		{
-			townPlayer.openGui(new CraftArmoryMenuGui(townPlayer));
+			townPlayer.openGui(new CraftArmoryMenuGui(townPlayer, armoryGui.getArmory()));
 		}
 	}
 }

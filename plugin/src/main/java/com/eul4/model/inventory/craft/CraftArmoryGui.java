@@ -3,6 +3,7 @@ package com.eul4.model.inventory.craft;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.ArmoryGui;
+import com.eul4.model.town.structure.Armory;
 import com.eul4.model.town.structure.Structure;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -18,10 +19,15 @@ public class CraftArmoryGui extends CraftStructureGui implements ArmoryGui
 	
 	public CraftArmoryGui(CommonPlayer commonPlayer, Structure structure)
 	{
-		super(commonPlayer, structure, commonPlayer.createInventory(InventoryType.HOPPER,
+		this(commonPlayer, (Armory) structure);
+	}
+	
+	public CraftArmoryGui(CommonPlayer commonPlayer, Armory armory)
+	{
+		super(commonPlayer, armory, commonPlayer.createInventory(InventoryType.HOPPER,
 				PluginMessage.STRUCTURE_TITLE,
 				PluginMessage.STRUCTURE_ARMORY_NAME,
-				structure.getLevel()));
+				armory.getLevel()));
 		
 		ItemMeta meta;
 		
@@ -45,5 +51,11 @@ public class CraftArmoryGui extends CraftStructureGui implements ArmoryGui
 	public ItemStack getMenuIcon()
 	{
 		return menu;
+	}
+	
+	@Override
+	public Armory getArmory()
+	{
+		return (Armory) structure;
 	}
 }

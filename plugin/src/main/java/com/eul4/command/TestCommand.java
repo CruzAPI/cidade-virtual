@@ -3,6 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
+import com.eul4.util.AttributeModifierUtil;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -61,8 +63,8 @@ public class TestCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			player.sendMessage(plugin.getPlayerManager().get(player).getPlayerType().getInterfaceType().getSimpleName());
-			player.sendMessage("frozen=" + pluginPlayer.getTown().isFrozen());
+			Bukkit.broadcastMessage("size: " + player.getInventory().getSize());
+			Bukkit.broadcastMessage("length: " + player.getInventory().getContents().length);
 		}
 		else if(args.length == 2)
 		{
@@ -106,7 +108,7 @@ public class TestCommand implements TabExecutor
 		else if(args.length == 1)
 		{
 			Location location = player.getLocation();
-			
+			player.getLocation().getDirection();
 			ServerLevel serverLevel = ((CraftWorld) location.getWorld()).getHandle();
 			var nmsArmorStand = new net.minecraft.world.entity.decoration.ArmorStand(serverLevel,
 					location.getX(),

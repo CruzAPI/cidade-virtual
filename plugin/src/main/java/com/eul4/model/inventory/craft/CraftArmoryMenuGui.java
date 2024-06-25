@@ -4,6 +4,8 @@ import com.eul4.common.model.inventory.craft.CraftGui;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.ArmoryMenuGui;
+import com.eul4.model.town.structure.Armory;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
@@ -15,9 +17,14 @@ public class CraftArmoryMenuGui extends CraftGui implements ArmoryMenuGui
 	private final ItemStack shop;
 	private final ItemStack myInventory;
 	
-	public CraftArmoryMenuGui(CommonPlayer commonPlayer)
+	@Getter
+	private final Armory armory;
+	
+	public CraftArmoryMenuGui(CommonPlayer commonPlayer, Armory armory)
 	{
 		super(commonPlayer, () -> commonPlayer.createInventory(InventoryType.HOPPER, PluginMessage.INVENTORY_ARMORY_MENU_TITLE));
+		
+		this.armory = armory;
 		
 		ItemMeta meta;
 		

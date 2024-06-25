@@ -3,6 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
+import com.eul4.type.PluginWorldType;
 import com.eul4.util.AttributeModifierUtil;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
@@ -63,8 +64,8 @@ public class TestCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			Bukkit.broadcastMessage("size: " + player.getInventory().getSize());
-			Bukkit.broadcastMessage("length: " + player.getInventory().getContents().length);
+			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D)
+					.toHighestLocation());
 		}
 		else if(args.length == 2)
 		{

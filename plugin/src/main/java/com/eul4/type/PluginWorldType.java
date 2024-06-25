@@ -39,10 +39,10 @@ public enum PluginWorldType implements CommonWorldType
 			.createWorld())),
 	
 	//TODO: Remove
-//	CIDADE_VIRTUAL(new CraftTownWorld(WorldCreator.name("cidade_virtual")
-//			.environment(World.Environment.THE_END)
-//			.generator(new ChunkGenerator() {})
-//			.createWorld())),
+	CIDADE_VIRTUAL(new CraftTownWorld(WorldCreator.name("old_cidade_virtual")
+			.environment(World.Environment.NORMAL)
+			.generator(new ChunkGenerator() {})
+			.createWorld())),
 	;
 	
 	private final CommonWorld instance;

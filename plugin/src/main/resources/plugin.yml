@@ -17,5 +17,6 @@ commands:
   move:
   buystructure:
   rulereload:
+  macroid:
   raid:
     aliases: [ataque, attack, atacar]

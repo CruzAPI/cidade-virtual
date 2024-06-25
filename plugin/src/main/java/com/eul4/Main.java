@@ -25,10 +25,7 @@ import com.eul4.listener.player.SpectatorListener;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
-import com.eul4.service.DataFileManager;
-import com.eul4.service.PurchaseExecutor;
-import com.eul4.service.StructureUpgradeExecutor;
-import com.eul4.service.TownManager;
+import com.eul4.service.*;
 import com.eul4.type.PluginWorldType;
 import com.eul4.util.FileUtil;
 import lombok.Getter;
@@ -74,6 +71,8 @@ public class Main extends Common
 	private BlockDataFiler blockDataFiler;
 	private PlayerDataFiler playerDataFiler;
 	private TownsFiler townsFiler;
+	
+	private MacroidService macroidService;
 	
 	@Override
 	public void onEnable()
@@ -162,6 +161,8 @@ public class Main extends Common
 		townManager = new TownManager(this);
 		structureUpgradeExecutor = new StructureUpgradeExecutor(this);
 		purchaseExecutor = new PurchaseExecutor(this);
+		
+		macroidService = new MacroidService(this);
 	}
 	
 	private void registerRuleSerializers()
@@ -190,6 +191,7 @@ public class Main extends Common
 		getCommand("move").setExecutor(new MoveCommand(this));
 		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
+		getCommand("macroid").setExecutor(new MacroidCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
 	}
 	
@@ -221,6 +223,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
+		pluginManager.registerEvents(new MacroidListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);

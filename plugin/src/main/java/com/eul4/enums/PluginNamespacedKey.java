@@ -9,4 +9,5 @@ public class PluginNamespacedKey
 	private static final String NAMESPACE = "town";
 	
 	public static final NamespacedKey ITEM_BUILDER_ORDINAL = new NamespacedKey(NAMESPACE, "item_builder_ordinal");
+	public static final NamespacedKey MACROID_WAND_UUID = new NamespacedKey(NAMESPACE, "macroid_wand_uuid");
 }

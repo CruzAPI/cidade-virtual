@@ -6,6 +6,7 @@ import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.Armory;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.wrapper.TownAttack;
@@ -77,8 +78,7 @@ public class CraftAttacker extends CraftSpiritualPlayer implements Attacker
 			player.teleport(spawnLocation);
 		}
 		
-		player.sendMessage("reset() attack"); //TODO ...
-		player.getInventory().addItem(new ItemStack(Material.WOODEN_SWORD));
+		equipBattleInventory();
 	}
 	
 	private PluginPlayer startAttack()
@@ -118,6 +118,13 @@ public class CraftAttacker extends CraftSpiritualPlayer implements Attacker
 	public SpiritualPlayerType getPlayerType()
 	{
 		return SpiritualPlayerType.ATTACKER;
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		cleanAndSaveBattleInventory();
 	}
 	
 	@Override

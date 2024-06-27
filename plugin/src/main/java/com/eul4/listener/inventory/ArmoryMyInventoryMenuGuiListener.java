@@ -2,6 +2,8 @@ package com.eul4.listener.inventory;
 
 import com.eul4.Main;
 import com.eul4.common.event.GuiClickEvent;
+import com.eul4.common.wrapper.Pitch;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.craft.player.CraftInventoryOrganizerPlayer;
 import com.eul4.model.inventory.ArmoryMyInventoryMenuGui;
 import com.eul4.model.inventory.craft.CraftArmorySelectOrStorageItemsGui;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,6 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.time.Duration;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 public class ArmoryMyInventoryMenuGuiListener implements Listener
@@ -68,7 +73,16 @@ public class ArmoryMyInventoryMenuGuiListener implements Listener
 		{
 			player.closeInventory();
 			ItemStack[] contents = armory.getBattleInventoryContents();
-			if(plugin.getPlayerManager().register(new CraftInventoryOrganizerPlayer(townPlayer, contents, armory::setBattleInventory))
+			
+			BiConsumer<InventoryOrganizerPlayer, PlayerInventory> closeAction = (commonPlayer, playerInventory) ->
+			{
+				armory.setBattleInventory(playerInventory);
+				Player localPlayer = commonPlayer.getPlayer();
+				commonPlayer.sendMessage(PluginMessage.BATTLE_INVENTORY_UPDATED);
+				localPlayer.playSound(localPlayer, Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, Pitch.max());
+			};
+			
+			if(plugin.getPlayerManager().register(new CraftInventoryOrganizerPlayer(townPlayer, contents, closeAction))
 					instanceof InventoryOrganizerPlayer inventoryOrganizerPlayer)
 			{
 				//TODO translated title

@@ -9,34 +9,34 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 @Getter
 public class CraftInventoryOrganizerPlayer extends CraftSpiritualPlayer implements InventoryOrganizerPlayer
 {
 	private final ItemStack[] contents;
-	private final Consumer<PlayerInventory> onCloseAction;
+	private final BiConsumer<InventoryOrganizerPlayer, PlayerInventory> onCloseAction;
 	
 	public CraftInventoryOrganizerPlayer(Player player, Main plugin)
 	{
 		super(player, plugin);
 		this.contents = null;
-		this.onCloseAction = x -> {};
+		this.onCloseAction = (x, y) -> {};
 	}
 	
 	public CraftInventoryOrganizerPlayer(Player player, PluginPlayer pluginPlayer)
 	{
 		super(player, pluginPlayer);
 		this.contents = null;
-		this.onCloseAction = x -> {};
+		this.onCloseAction = (x, y) -> {};
 	}
 	
 	public CraftInventoryOrganizerPlayer(PluginPlayer pluginPlayer, ItemStack[] contents)
 	{
-		this(pluginPlayer, contents, x -> {});
+		this(pluginPlayer, contents, (x, y) -> {});
 	}
 	
-	public CraftInventoryOrganizerPlayer(PluginPlayer pluginPlayer, ItemStack[] contents, Consumer<PlayerInventory> onCloseAction)
+	public CraftInventoryOrganizerPlayer(PluginPlayer pluginPlayer, ItemStack[] contents, BiConsumer<InventoryOrganizerPlayer, PlayerInventory> onCloseAction)
 	{
 		super(pluginPlayer.getPlayer(), pluginPlayer);
 		this.contents = contents;
@@ -77,6 +77,6 @@ public class CraftInventoryOrganizerPlayer extends CraftSpiritualPlayer implemen
 	@Override
 	public void onCloseInventory()
 	{
-		this.onCloseAction.accept(player.getInventory());
+		this.onCloseAction.accept(this, player.getInventory());
 	}
 }

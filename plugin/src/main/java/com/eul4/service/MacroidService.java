@@ -1,6 +1,7 @@
 package com.eul4.service;
 
 import com.eul4.Main;
+import com.eul4.common.wrapper.UUIDUtil;
 import com.eul4.wrapper.Macroid;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -58,15 +59,10 @@ public class MacroidService
 		ItemStack item = new ItemStack(Material.STONE_AXE);
 		ItemMeta meta = item.getItemMeta();
 		var container = meta.getPersistentDataContainer();
-		container.set(MACROID_WAND_UUID, LONG_ARRAY, uuidToLongArray(uuid));
+		container.set(MACROID_WAND_UUID, LONG_ARRAY, UUIDUtil.uuidToLongArray(uuid));
 		item.setItemMeta(meta);
 		
 		macroid.getPlayer().getInventory().addItem(item);
-	}
-	
-	private long[] uuidToLongArray(UUID uuid)
-	{
-		return new long[] { uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() };
 	}
 	
 	public void saveStructureSchematics(Macroid macroid)

@@ -16,10 +16,7 @@ import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
-import com.eul4.model.town.structure.DislikeDeposit;
-import com.eul4.model.town.structure.LikeDeposit;
-import com.eul4.model.town.structure.Structure;
-import com.eul4.model.town.structure.TownHall;
+import com.eul4.model.town.structure.*;
 import com.eul4.wrapper.StructureSet;
 import com.eul4.wrapper.TownAttack;
 import com.eul4.wrapper.TownBlockMap;
@@ -92,6 +89,7 @@ public class CraftTown implements Town
 	private transient int dislikeCapacity;
 	
 	private TownHall townHall;
+	private Armory armory;
 	private transient boolean frozen;
 	
 	@Setter
@@ -901,5 +899,11 @@ public class CraftTown implements Town
 	public void updateLastAttackFinishDate()
 	{
 		this.lastAttackFinishTick = plugin.getTotalTick();
+	}
+	
+	@Override
+	public Optional<Armory> findArmory()
+	{
+		return Optional.ofNullable(armory);
 	}
 }

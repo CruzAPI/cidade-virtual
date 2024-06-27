@@ -3,6 +3,7 @@ package com.eul4.listener.player;
 import com.eul4.Main;
 import com.eul4.common.event.GuiClickEvent;
 import com.eul4.common.event.GuiCloseEvent;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.InventoryOrganizerPlayer;
 import com.eul4.model.player.Spectator;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,6 @@ public class InventoryOrganizerPlayerListener implements Listener
 		
 		if(event.isSneaking())
 		{
-			Bukkit.broadcastMessage("sneak reincarnate!");
 			inventoryOrganizerPlayer.reincarnate();
 		}
 	}

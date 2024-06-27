@@ -489,7 +489,9 @@ public enum PluginMessage implements Message
 	
 	INVENTORY_ARMORY_MY_INVENTORY_MENU_ARRANGE("inventory-armory-my-inventory-menu.arrange", Component.empty().color(YELLOW)),
 	
-	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR("inventory-armory-my-inventory-menu.selector", Component.empty().color(GOLD));
+	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR("inventory-armory-my-inventory-menu.selector", Component.empty().color(GOLD)),
+	
+	BATTLE_INVENTORY_UPDATED("battle-inventory-updated", Component.empty().color(GREEN));
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

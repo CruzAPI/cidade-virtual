@@ -54,6 +54,8 @@ public class CraftDefender extends CraftSpiritualPlayer implements Defender
 		{
 			player.showTitle(getDefenderModeTitle());
 		}
+		
+		equipBattleInventory();
 	}
 	
 	@Override
@@ -136,5 +138,12 @@ public class CraftDefender extends CraftSpiritualPlayer implements Defender
 	public Town getAttackedTown()
 	{
 		return getTown();
+	}
+	
+	@Override
+	public void invalidate()
+	{
+		super.invalidate();
+		cleanAndSaveBattleInventory();
 	}
 }

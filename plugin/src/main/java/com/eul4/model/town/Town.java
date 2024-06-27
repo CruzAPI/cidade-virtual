@@ -8,6 +8,7 @@ import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.player.Attacker;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
+import com.eul4.model.town.structure.Armory;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.wrapper.StructureSet;
@@ -133,6 +134,7 @@ public interface Town
 	void setTownTileMap(TownTileMap townTileMap);
 	void setStructureSet(StructureSet structureSet);
 	void setTownHall(TownHall townHall);
+	void setArmory(Armory armory);
 	void setLikes(int likes);
 	void setDislikes(int dislike);
 	void setHardnessField(double hardness);
@@ -159,4 +161,6 @@ public interface Town
 	Optional<PluginPlayer> findPluginPlayer();
 	void updateLastAttackFinishDate();
 	long getLastAttackFinishTick();
+	Armory getArmory();
+	Optional<Armory> findArmory();
 }

@@ -31,6 +31,7 @@ public class AttackerListener implements Listener
 		
 		event.setRespawnLocation(attacker.getPlayer().getLocation());
 	}
+	
 	@EventHandler
 	public void on(PlayerPostRespawnEvent event)
 	{

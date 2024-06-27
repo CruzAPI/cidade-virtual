@@ -25,12 +25,13 @@ public class CraftArmory extends CraftStructure implements Armory
 	
 	public CraftArmory(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		super(town, centerTownBlock, false);
+		this(town, centerTownBlock, false);
 	}
 	
 	public CraftArmory(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
+		town.setArmory(this);
 	}
 	
 	public CraftArmory(Town town)

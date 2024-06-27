@@ -55,6 +55,7 @@ public class TownReader extends ObjectReader<Town>
 		town.setStructureSet(readers.getReader(StructureSetReader.class).readReference(town));
 		town.setMovingStructure(readers.getReader(GenericStructureReader.class).readReference(town));
 		town.setTownHall(readers.getReader(TownHallReader.class).readReference(town));
+		town.setArmory(readers.getReader(ArmoryReader.class).readReference(town));
 		town.setLikes(in.readInt());
 		town.setDislikes(in.readInt());
 		town.setHardnessField(in.readDouble());

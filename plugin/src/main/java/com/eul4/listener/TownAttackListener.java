@@ -102,6 +102,7 @@ public class TownAttackListener implements Listener
 			return;
 		}
 		
+		event.setKeepInventory(true);
 		event.getDrops().clear();
 		event.setDroppedExp(0);
 	}

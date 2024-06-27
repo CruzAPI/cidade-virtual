@@ -4,6 +4,7 @@ import com.eul4.common.externalizer.writer.BlockWriter;
 import com.eul4.common.externalizer.writer.ObjectWriter;
 import com.eul4.common.type.player.Writers;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.structure.Armory;
 
 import java.io.IOException;
 
@@ -26,6 +27,7 @@ public class TownWriter extends ObjectWriter<Town>
 		writers.getWriter(StructureSetWriter.class).writeReference(town.getStructureSet());
 		writers.getWriter(GenericStructureWriter.class).writeReference(town.getMovingStructure());
 		writers.getWriter(TownHallWriter.class).writeReference(town.getTownHall());
+		writers.getWriter(ArmoryWriter.class).writeReference(town.getArmory());
 		out.writeInt(town.getLikes());
 		out.writeInt(town.getDislikes());
 		out.writeDouble(town.getHardness());

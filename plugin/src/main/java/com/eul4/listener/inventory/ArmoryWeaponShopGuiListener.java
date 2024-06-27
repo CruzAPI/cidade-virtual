@@ -1,11 +1,12 @@
 package com.eul4.listener.inventory;
 
 import com.eul4.Main;
+import com.eul4.common.event.GuiClickEvent;
 import com.eul4.common.wrapper.Pitch;
-import com.eul4.model.inventory.ArmoryMenuGui;
 import com.eul4.model.inventory.ArmoryWeaponShopGui;
 import com.eul4.model.inventory.craft.CraftArmoryWeaponShopGui;
 import com.eul4.model.player.TownPlayer;
+import com.eul4.service.PurchaseV2;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -35,11 +36,13 @@ public class ArmoryWeaponShopGuiListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onInventoryClick(InventoryClickEvent event)
+	public void onGuiClick(GuiClickEvent guiEvent)
 	{
+		InventoryClickEvent event = guiEvent.getInventoryClickEvent();
+		
 		if(!(event.getWhoClicked() instanceof Player player)
 				|| !(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
-				|| !(townPlayer.getGui() instanceof ArmoryWeaponShopGui armoryWeaponShopGui))
+				|| !(guiEvent.getGui() instanceof ArmoryWeaponShopGui armoryWeaponShopGui))
 		{
 			return;
 		}
@@ -65,6 +68,14 @@ public class ArmoryWeaponShopGuiListener implements Listener
 			player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, Pitch.getPitch(3));
 			return;
 		}
-		//TODO...
+		
+		//TODO confirm operation
+		PurchaseV2 purchase = new PurchaseV2(townPlayer, icon.getCost(), () -> armoryWeaponShopGui
+				.getArmory()
+				.addItemToStorage(icon.getWeapon())
+				.isEmpty());
+		
+		boolean wasExecuted = purchase.tryExecutePurchase();
+		player.closeInventory();
 	}
 }

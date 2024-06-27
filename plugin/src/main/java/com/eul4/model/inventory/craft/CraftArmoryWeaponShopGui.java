@@ -2,6 +2,7 @@ package com.eul4.model.inventory.craft;
 
 import com.eul4.Price;
 import com.eul4.common.model.inventory.craft.CraftGui;
+import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.ArmoryWeaponShopGui;
 import com.eul4.model.player.PluginPlayer;
@@ -11,6 +12,7 @@ import com.eul4.util.MessageUtil;
 import com.eul4.wrapper.Cost;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,7 +23,9 @@ import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +50,7 @@ public class CraftArmoryWeaponShopGui extends CraftGui implements ArmoryWeaponSh
 		GLASS.setItemMeta(meta);
 	}
 	
+	@Getter
 	private final Armory armory;
 	
 	public enum ItemAttribute
@@ -399,6 +404,7 @@ public class CraftArmoryWeaponShopGui extends CraftGui implements ArmoryWeaponSh
 	}
 	
 	@RequiredArgsConstructor
+	@Getter
 	public enum Icon
 	{
 		LEATHER_HELMET(ItemAttribute.LEATHER_HELMET,
@@ -680,6 +686,27 @@ public class CraftArmoryWeaponShopGui extends CraftGui implements ArmoryWeaponSh
 			icon.setItemMeta(meta);
 			
 			return icon;
+		}
+		
+		public ItemStack getWeapon()
+		{
+			ItemStack weapon = new ItemStack(type);
+			ItemMeta meta = weapon.getItemMeta();
+			
+			meta.setAttributeModifiers(itemAttribute.attributeModifiers);
+			
+			var container = meta.getPersistentDataContainer();
+			container.set(PluginNamespacedKey.WEAPON_ITEM_ATTRIBUTE, PersistentDataType.STRING, itemAttribute.name());
+			
+			if(meta instanceof Damageable damageable)
+			{
+				damageable.setMaxDamage(itemAttribute.durability);
+				damageable.setDamage(0);
+			}
+			
+			weapon.setItemMeta(meta);
+			
+			return weapon;
 		}
 		
 		public boolean isUnlocked(Armory armory)

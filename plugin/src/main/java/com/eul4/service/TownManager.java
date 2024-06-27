@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.event.inventory.InventoryDragEvent;
 
 import java.io.File;
 import java.io.FileInputStream;

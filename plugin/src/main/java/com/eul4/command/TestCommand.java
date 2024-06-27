@@ -67,6 +67,10 @@ public class TestCommand implements TabExecutor
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D)
 					.toHighestLocation());
 		}
+		else if(args.length == 1)
+		{
+			player.openInventory(player.getInventory());
+		}
 		else if(args.length == 2)
 		{
 			int damage = Integer.parseInt(args[0]);

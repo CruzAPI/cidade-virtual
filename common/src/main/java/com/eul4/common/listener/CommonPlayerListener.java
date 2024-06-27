@@ -27,7 +27,7 @@ public class CommonPlayerListener implements Listener
 	@EventHandler
 	public void on(CommonPlayerRegisterEvent event)
 	{
-		CommonPlayer oldCommonPlayer = event.getOldCommonPlayer();
+		CommonPlayer oldCommonPlayer = event.getCommonPlayer().getOldInstance();
 		
 		if(oldCommonPlayer != null)
 		{

@@ -43,7 +43,7 @@ public class ArmoryReader extends StructureReader<Armory>
 	{
 		super.getReader().readObject(armory);
 		
-		armory.setInventoryContents(readers.getReader(InventoryReader.class).readReference());
+		armory.setStorageContents(readers.getReader(InventoryReader.class).readReference());
 		armory.setBattleInventoryContents(readers.getReader(InventoryReader.class).readReference());
 	}
 	

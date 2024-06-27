@@ -35,6 +35,7 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 	@Override
 	public void reset()
 	{
+		super.reset();
 		player.setGameMode(GameMode.SURVIVAL);
 		
 		if(!(getCommonWorld() instanceof TownWorld) && hasTown())

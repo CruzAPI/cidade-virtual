@@ -6,10 +6,13 @@ import com.eul4.common.model.player.craft.CraftCommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
+import com.eul4.model.town.Town;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -69,5 +72,11 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	private Location getTownHallSpawnLocation()
 	{
 		return getTown().getTownHall().getCenterTownBlock().getBlock().getLocation().add(0.5D, 1.0D, 0.5D);
+	}
+	
+	@Override
+	public Optional<Town> findTown()
+	{
+		return Optional.ofNullable(getTown());
 	}
 }

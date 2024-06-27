@@ -8,10 +8,7 @@ import com.eul4.common.type.player.PlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class PlayerManager
@@ -73,18 +70,32 @@ public class PlayerManager
 //		}
 //	}
 	
-	public CommonPlayer register(Player player, Common plugin, PlayerType playerType)
+	public CommonPlayer register(CommonPlayer newCommonPlayer)
 	{
-		if(commonPlayers.containsKey(player.getUniqueId()))
+		boolean isJoining = !commonPlayers.containsKey(newCommonPlayer.getUniqueId());
+		CommonPlayer oldInstance = newCommonPlayer.getOldInstance();
+		
+		if(oldInstance == null && commonPlayers.containsKey(newCommonPlayer.getUniqueId())
+				|| newCommonPlayer.isRegistered())
 		{
-			throw new InvalidCommonPlayerException("Player already registered");
+			throw new InvalidCommonPlayerException("Player already registered!");
 		}
 		
-		final CommonPlayer newCommonPlayer = playerType.newInstance(player, plugin);
-		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
-		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(null, newCommonPlayer));
+		if(!newCommonPlayer.isValid())
+		{
+			throw new InvalidCommonPlayerException("This CommonPlayer instance is invalid!");
+		}
 		
-		return newCommonPlayer.load();
+		newCommonPlayer.findOldInstance().ifPresent(CommonPlayer::invalidate);
+		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
+		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(newCommonPlayer));
+		
+		return isJoining ? newCommonPlayer.load() : newCommonPlayer.reload();
+	}
+	
+	public CommonPlayer register(Player player, Common plugin, PlayerType playerType)
+	{
+		return register(playerType.newInstance(player, plugin));
 	}
 	
 	public CommonPlayer register(CommonPlayer oldInstance, PlayerType playerType)
@@ -99,14 +110,7 @@ public class PlayerManager
 	
 	public CommonPlayer register(Player player, CommonPlayer oldInstance, PlayerType playerType)
 	{
-		boolean isJoining = !commonPlayers.containsKey(oldInstance.getUniqueId());
-		
-		oldInstance.invalidate();
-		final CommonPlayer newCommonPlayer = playerType.newInstance(player, oldInstance);
-		commonPlayers.put(newCommonPlayer.getUniqueId(), newCommonPlayer);
-		plugin.getServer().getPluginManager().callEvent(new CommonPlayerRegisterEvent(oldInstance, newCommonPlayer));
-		
-		return isJoining ? newCommonPlayer.load() : newCommonPlayer.reload();
+		return register(playerType.newInstance(player, oldInstance));
 	}
 	
 	public CommonPlayer get(Player player)
@@ -134,7 +138,7 @@ public class PlayerManager
 		commonPlayers.remove(uuid);
 	}
 	
-	public boolean isValid(CommonPlayer commonPlayer)
+	public boolean isRegistered(CommonPlayer commonPlayer)
 	{
 		return commonPlayers.get(commonPlayer.getUniqueId()) == commonPlayer;
 	}

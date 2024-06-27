@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -34,16 +35,20 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	protected final Player player;
 	protected final Common plugin;
 	
-	private final Locale locale = new Locale("pt", "BR");
+	private CommonPlayer oldInstance;
 	
+	private final Locale locale = new Locale("pt", "BR");
 	private Gui gui;
 	protected CommonPlayerData commonPlayerData;
+	
+	private boolean valid = true;
 	
 	public CraftCommonPlayer(Player player, Common plugin)
 	{
 		this.player = player;
 		this.plugin = plugin;
 		
+		this.oldInstance = null;
 		this.commonPlayerData = new CommonPlayerData();
 	}
 	
@@ -52,13 +57,14 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		this.player = player;
 		this.plugin = oldCommonPlayer.getPlugin();
 		
+		this.oldInstance = oldCommonPlayer;
 		this.commonPlayerData = oldCommonPlayer.getCommonPlayerData();
 	}
 	
 	@Override
 	public void reset()
 	{
-	
+		player.resetTitle();
 	}
 	
 	@Override
@@ -132,7 +138,6 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public void nullifyGui()
 	{
-		plugin.getServer().getPluginManager().callEvent(new GuiCloseEvent(gui));
 		this.gui = null;
 	}
 	
@@ -172,14 +177,22 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	}
 	
 	@Override
+	public boolean isRegistered()
+	{
+		return plugin.getPlayerManager().isRegistered(this);
+	}
+	
+	@Override
 	public boolean isValid()
 	{
-		return plugin.getPlayerManager().isValid(this);
+		return valid;
 	}
 	
 	@Override
 	public void invalidate()
 	{
+		this.valid = false;
+		this.oldInstance = null;
 		//TODO: ??
 	}
 	
@@ -187,5 +200,11 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	public final CommonWorld getCommonWorld()
 	{
 		return plugin.getWorldManager().get(player.getWorld());
+	}
+	
+	@Override
+	public Optional<CommonPlayer> findOldInstance()
+	{
+		return Optional.ofNullable(oldInstance);
 	}
 }

@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface CommonPlayer extends Messageable
@@ -45,4 +46,7 @@ public interface CommonPlayer extends Messageable
 	CommonPlayer reload();
 	CommonWorld getCommonWorld();
 	boolean isValid();
+	boolean isRegistered();
+	Optional<CommonPlayer> findOldInstance();
+	CommonPlayer getOldInstance();
 }

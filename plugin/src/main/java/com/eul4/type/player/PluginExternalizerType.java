@@ -25,6 +25,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	DISLIKE_GENERATOR(DislikeGeneratorReader::new, DislikeGeneratorReader.class, DislikeGeneratorWriter::new, DislikeGeneratorWriter.class),
 	GENERIC_PLUGIN_PLAYER(GenericPluginPlayerReader::new, GenericPluginPlayerReader.class, GenericPluginPlayerWriter::new, GenericPluginPlayerWriter.class),
 	GENERIC_STRUCTURE(GenericStructureReader::new, GenericStructureReader.class, GenericStructureWriter::new, GenericStructureWriter.class),
+	INVENTORY_ORGANIZER_PLAYER(InventoryOrganizerPlayerReader::new, InventoryOrganizerPlayerReader.class, InventoryOrganizerPlayerWriter::new, InventoryOrganizerPlayerWriter.class),
 	LIKE_DEPOSIT(LikeDepositReader::new, LikeDepositReader.class, LikeDepositWriter::new, LikeDepositWriter.class),
 	LIKE_GENERATOR(LikeGeneratorReader::new, LikeGeneratorReader.class, LikeGeneratorWriter::new, LikeGeneratorWriter.class),
 	RAID_ANALYZER(RaidAnalyzerReader::new, RaidAnalyzerReader.class, RaidAnalyzerWriter::new, RaidAnalyzerWriter.class),

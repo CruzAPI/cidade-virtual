@@ -5,16 +5,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 @RequiredArgsConstructor
 @Getter
-public class GuiCloseEvent extends Event
+public class GuiClickEvent extends Event
 {
 	private static final HandlerList HANDLER = new HandlerList();
 	
+	private final InventoryClickEvent inventoryClickEvent;
 	private final Gui gui;
-	private final InventoryCloseEvent inventoryCloseEvent;
 	
 	public static HandlerList getHandlerList()
 	{

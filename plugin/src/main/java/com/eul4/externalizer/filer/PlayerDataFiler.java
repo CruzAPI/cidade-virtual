@@ -67,7 +67,7 @@ public class PlayerDataFiler extends Filer
 			
 			save(pluginPlayer);
 			
-			if(!plugin.getPlayerManager().isValid(pluginPlayer))
+			if(!plugin.getPlayerManager().isRegistered(pluginPlayer))
 			{
 				iterator.remove();
 			}

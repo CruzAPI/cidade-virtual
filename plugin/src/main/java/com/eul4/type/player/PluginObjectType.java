@@ -22,6 +22,7 @@ public enum PluginObjectType implements ObjectType
 	GENERATOR((byte) 0, null),
 	GENERIC_PLUGIN_PLAYER((byte) 0, PluginExternalizerType.GENERIC_PLUGIN_PLAYER),
 	GENERIC_STRUCTURE((byte) 0, PluginExternalizerType.GENERIC_STRUCTURE),
+	INVENTORY_ORGANIZER_PLAYER((byte) 0, PluginExternalizerType.INVENTORY_ORGANIZER_PLAYER),
 	LIKE_DEPOSIT((byte) 0, PluginExternalizerType.LIKE_DEPOSIT),
 	LIKE_GENERATOR((byte) 0, PluginExternalizerType.LIKE_GENERATOR),
 	PHYSICAL_PLAYER((byte) 0, null),

@@ -1,6 +1,7 @@
 package com.eul4.listener.player;
 
 import com.eul4.Main;
+import com.eul4.common.event.GuiClickEvent;
 import com.eul4.model.player.Spectator;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
@@ -19,8 +20,10 @@ public class SpectatorListener implements Listener
 	private final Main plugin;
 	
 	@EventHandler
-	public void on(InventoryClickEvent event)
+	public void on(GuiClickEvent guiEvent)
 	{
+		InventoryClickEvent event = guiEvent.getInventoryClickEvent();
+		
 		if(!(event.getWhoClicked() instanceof Player player)
 				|| !(plugin.getPlayerManager().get(player) instanceof Spectator))
 		{

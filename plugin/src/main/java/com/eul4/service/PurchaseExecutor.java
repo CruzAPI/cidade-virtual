@@ -8,6 +8,8 @@ import com.eul4.model.town.Town;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 
+import java.util.concurrent.locks.Condition;
+
 @RequiredArgsConstructor
 public class PurchaseExecutor
 {

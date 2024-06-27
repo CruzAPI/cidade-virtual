@@ -18,7 +18,7 @@ public class ArmoryWriter extends StructureWriter<Armory>
 	{
 		super.writeObject(armory);
 		
-		writers.getWriter(InventoryWriter.class).writeReferenceNotNull(armory.getInventoryContents());
+		writers.getWriter(InventoryWriter.class).writeReferenceNotNull(armory.getStorageContents());
 		writers.getWriter(InventoryWriter.class).writeReferenceNotNull(armory.getBattleInventoryContents());
 	}
 }

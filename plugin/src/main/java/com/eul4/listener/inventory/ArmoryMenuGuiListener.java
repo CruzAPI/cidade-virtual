@@ -1,10 +1,13 @@
 package com.eul4.listener.inventory;
 
 import com.eul4.Main;
+import com.eul4.common.event.GuiClickEvent;
 import com.eul4.model.inventory.ArmoryMenuGui;
+import com.eul4.model.inventory.craft.CraftArmoryMyInventoryMenuGui;
 import com.eul4.model.inventory.craft.CraftArmoryWeaponShopGui;
 import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,11 +35,13 @@ public class ArmoryMenuGuiListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onInventoryClick(InventoryClickEvent event)
+	public void onInventoryClick(GuiClickEvent guiEvent)
 	{
+		InventoryClickEvent event = guiEvent.getInventoryClickEvent();
+		
 		if(!(event.getWhoClicked() instanceof Player player)
 				|| !(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
-				|| !(townPlayer.getGui() instanceof ArmoryMenuGui armoryMenuGui))
+				|| !(guiEvent.getGui() instanceof ArmoryMenuGui armoryMenuGui))
 		{
 			return;
 		}
@@ -56,8 +61,7 @@ public class ArmoryMenuGuiListener implements Listener
 		}
 		else if(currentItem.equals(armoryMenuGui.getMyInventoryIcon()))
 		{
-			player.closeInventory();
-			player.sendMessage("//TODO: myInventory."); //TODO
+			townPlayer.openGui(new CraftArmoryMyInventoryMenuGui(townPlayer, armoryMenuGui.getArmory()));
 		}
 	}
 }

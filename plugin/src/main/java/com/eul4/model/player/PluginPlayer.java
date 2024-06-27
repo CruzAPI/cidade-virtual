@@ -7,6 +7,8 @@ import com.eul4.model.town.Town;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 
+import java.util.Optional;
+
 public interface PluginPlayer extends CommonPlayer
 {
 	Main getPlugin();
@@ -45,4 +47,6 @@ public interface PluginPlayer extends CommonPlayer
 	boolean teleportToTownHall();
 	
 	boolean teleportToHighestTownHall();
+	
+	Optional<Town> findTown();
 }

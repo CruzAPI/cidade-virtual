@@ -13,6 +13,7 @@ import com.eul4.wrapper.Cost;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
 import java.text.DecimalFormat;
@@ -21,8 +22,7 @@ import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 
 import static com.eul4.common.i18n.CommonMessage.USAGE;
-import static net.kyori.adventure.text.Component.empty;
-import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
@@ -164,6 +164,13 @@ public enum PluginMessage implements Message
 	{
 		empty().color(RED),
 		text((int) args[0]),
+	}),
+	
+	MISSING_RESOURCES("missing-resources", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text((int) args[0]),
+		translatable(((Material) args[1]).translationKey()),
 	}),
 	
 	STRUCTURE_NOT_FOR_SALE("structure-not-for-sale", empty().color(RED)),
@@ -480,7 +487,9 @@ public enum PluginMessage implements Message
 		text((int) args[0]),
 	}),
 	
-	;
+	INVENTORY_ARMORY_MY_INVENTORY_MENU_ARRANGE("inventory-armory-my-inventory-menu.arrange", Component.empty().color(YELLOW)),
+	
+	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR("inventory-armory-my-inventory-menu.selector", Component.empty().color(GOLD));
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

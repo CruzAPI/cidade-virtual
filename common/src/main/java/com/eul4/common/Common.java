@@ -96,6 +96,7 @@ public abstract class Common extends JavaPlugin
 		pluginManager.registerEvents(new CommonPlayerListener(this), this);
 		pluginManager.registerEvents(new GuiListener(this), this);
 		pluginManager.registerEvents(new FixInventoryVisualBugListener(this), this);
+		pluginManager.registerEvents(new GuiClickEventCallListener(this), this);
 		pluginManager.registerEvents(new CancelItemDropListener(this), this);
 		pluginManager.registerEvents(new CancelItemMoveListener(this), this);
 		pluginManager.registerEvents(new RemoveOnDropItemListener(this), this);

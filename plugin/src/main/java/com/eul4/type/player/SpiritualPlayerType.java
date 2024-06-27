@@ -20,6 +20,8 @@ public enum SpiritualPlayerType implements PluginPlayerType
 	RAID_SPECTATOR(RaidSpectator.class, CraftRaidSpectator::new, CraftRaidSpectator::new, RaidSpectatorWriter.class, RaidSpectatorReader.class),
 	DEFENDER(Defender.class, CraftDefender::new, CraftDefender::new, DefenderWriter.class, DefenderReader.class),
 	DEFENDER_SPECTATOR(DefenderSpectator.class, CraftDefenderSpectator::new, CraftDefenderSpectator::new, DefenderSpectatorWriter.class, DefenderSpectatorReader.class),
+	INVENTORY_ORGANIZER_PLAYER(InventoryOrganizerPlayer.class, CraftInventoryOrganizerPlayer::new, CraftInventoryOrganizerPlayer::new, InventoryOrganizerPlayerWriter.class, InventoryOrganizerPlayerReader.class),
+	
 	;
 	
 	private final Class<? extends PluginPlayer> interfaceType;

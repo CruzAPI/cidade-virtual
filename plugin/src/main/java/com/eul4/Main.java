@@ -15,13 +15,8 @@ import com.eul4.listener.*;
 import com.eul4.listener.hotbar.DefenderSpectatorHotbarListener;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
 import com.eul4.listener.hotbar.RaidSpectatorHotbarListener;
-import com.eul4.listener.inventory.ArmoryGuiListener;
-import com.eul4.listener.inventory.ArmoryMenuGuiListener;
-import com.eul4.listener.inventory.ArmoryWeaponShopGuiListener;
-import com.eul4.listener.player.AttackerListener;
-import com.eul4.listener.player.DefenderListener;
-import com.eul4.listener.player.InvincibleListener;
-import com.eul4.listener.player.SpectatorListener;
+import com.eul4.listener.inventory.*;
+import com.eul4.listener.player.*;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
@@ -205,11 +200,14 @@ public class Main extends Common
 		
 		pluginManager.registerEvents(new AttackerListener(this), this);
 		pluginManager.registerEvents(new DefenderListener(this), this);
+		pluginManager.registerEvents(new InventoryOrganizerPlayerListener(this), this);
 		pluginManager.registerEvents(new InvincibleListener(this), this);
 		pluginManager.registerEvents(new SpectatorListener(this), this);
 		
 		pluginManager.registerEvents(new ArmoryGuiListener(this), this);
 		pluginManager.registerEvents(new ArmoryMenuGuiListener(this), this);
+		pluginManager.registerEvents(new ArmoryMyInventoryMenuGuiListener(this), this);
+		pluginManager.registerEvents(new ArmorySelectOrStorageItemsGuiListener(this), this);
 		pluginManager.registerEvents(new ArmoryWeaponShopGuiListener(this), this);
 		
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);

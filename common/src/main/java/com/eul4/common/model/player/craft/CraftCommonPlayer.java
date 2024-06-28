@@ -100,7 +100,7 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	{
 		try
 		{
-			player.sendMessage(message.translate(locale, args));
+			message.translateLore(locale, args).forEach(player::sendMessage);
 		}
 		catch(MissingResourceException e)
 		{

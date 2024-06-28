@@ -6,6 +6,7 @@ import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.wrapper.TimerTranslater;
 import com.eul4.enums.Currency;
+import com.eul4.model.town.Town;
 import com.eul4.rule.attribute.*;
 import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
@@ -13,6 +14,7 @@ import com.eul4.wrapper.Cost;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
@@ -25,6 +27,7 @@ import static com.eul4.common.i18n.CommonMessage.USAGE;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+import static net.kyori.adventure.text.format.TextDecoration.STRIKETHROUGH;
 
 @Getter
 public enum PluginMessage implements Message
@@ -43,6 +46,8 @@ public enum PluginMessage implements Message
 	STRUCTURE_DISLIKE_DEPOSIT_NAME("structure.dislike-deposit.name"),
 	COLLECT_LIKES("collect-likes", empty().color(GREEN)),
 	CLICK_TO_BUY_THIS_TILE("click-to-buy-this-tile", empty().decorate(BOLD)),
+	
+	TOWN_COMMAND_NAME("town.command.name"),
 	
 	INVENTORY_ARMORY_MENU_TITLE("inventory.armory-menu.title", empty().color(BLACK).decorate(BOLD)),
 	INVENTORY_ARMORY_MENU_SHOP("inventory.armory-menu.shop", empty().color(GREEN)),
@@ -491,7 +496,39 @@ public enum PluginMessage implements Message
 	
 	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR("inventory-armory-my-inventory-menu.selector", Component.empty().color(GOLD)),
 	
-	BATTLE_INVENTORY_UPDATED("battle-inventory-updated", Component.empty().color(GREEN));
+	BATTLE_INVENTORY_UPDATED("battle-inventory-updated", Component.empty().color(GREEN)),
+	
+	COMMAND_BALANCE_YOUR_RESOURCES("command.balance.your-resources", Component.empty().color(WHITE).decorate(BOLD)),
+	
+	COMMAND_BALANCE_TRY_TOWN_COMMAND("command.balance.try-town-command", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		TOWN_COMMAND_NAME.translateWord(bundle),
+	}),
+	
+	COMMAND_BALANCE_FOOTER("command.balance.footer", Component.empty().color(GRAY).decorate(STRIKETHROUGH)),
+	
+	COMMAND_BALANCE("command.balance", (bundle, args) ->
+	{
+		Town town = (Town) args[0];
+		
+		return new Component[]
+		{
+			empty().color(WHITE),
+			text(" ]   ").color(GRAY).decorate(STRIKETHROUGH),
+			COMMAND_BALANCE_YOUR_RESOURCES.translate(bundle),
+			text("   [ ").color(GRAY).decorate(STRIKETHROUGH),
+			LIKES.translateWord(bundle, String::toUpperCase).color(GREEN).decorate(BOLD).append(text(":")),
+			text(town.getLikes()),
+			text(town.getLikeCapacity()),
+			DISLIKES.translateWord(bundle, String::toUpperCase).color(RED).decorate(BOLD).append(text(":")),
+			text(town.getDislikes()),
+			text(town.getDislikeCapacity()),
+			COMMAND_BALANCE_FOOTER.translate(bundle),
+		};
+	}),
+	
+	;
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

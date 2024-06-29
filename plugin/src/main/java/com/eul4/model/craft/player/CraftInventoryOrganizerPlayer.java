@@ -79,4 +79,10 @@ public class CraftInventoryOrganizerPlayer extends CraftSpiritualPlayer implemen
 	{
 		this.onCloseAction.accept(this, player.getInventory());
 	}
+	
+	@Override
+	public void onSneak()
+	{
+	
+	}
 }

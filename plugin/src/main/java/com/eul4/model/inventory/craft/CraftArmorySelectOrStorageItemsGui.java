@@ -1,10 +1,13 @@
 package com.eul4.model.inventory.craft;
 
 import com.eul4.common.model.inventory.craft.CraftGui;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.ArmorySelectOrStorageItemsGui;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.structure.Armory;
 import lombok.Getter;
+
+import static com.eul4.i18n.PluginMessage.INVENTORY_ARMORY_STORAGE_TITLE;
 
 public class CraftArmorySelectOrStorageItemsGui extends CraftGui implements ArmorySelectOrStorageItemsGui
 {
@@ -13,8 +16,7 @@ public class CraftArmorySelectOrStorageItemsGui extends CraftGui implements Armo
 	
 	public CraftArmorySelectOrStorageItemsGui(PluginPlayer pluginPlayer, Armory armory)
 	{
-		//TODO title
-		super(pluginPlayer, armory.getStorageInventoryClone());
+		super(pluginPlayer, armory.getStorageInventoryClone(INVENTORY_ARMORY_STORAGE_TITLE.translate(pluginPlayer)));
 		
 		this.armory = armory;
 	}

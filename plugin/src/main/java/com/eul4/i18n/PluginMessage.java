@@ -1,6 +1,5 @@
 package com.eul4.i18n;
 
-import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
@@ -10,11 +9,9 @@ import com.eul4.model.town.Town;
 import com.eul4.rule.attribute.*;
 import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
-import com.eul4.wrapper.Cost;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
@@ -493,10 +490,10 @@ public enum PluginMessage implements Message
 	}),
 	
 	INVENTORY_ARMORY_MY_INVENTORY_MENU_ARRANGE("inventory-armory-my-inventory-menu.arrange", Component.empty().color(YELLOW)),
+	INVENTORY_ARMORY_MY_INVENTORY_MENU_ARRANGE_LORE("inventory-armory-my-inventory-menu.arrange.lore", Component.empty().color(GRAY)),
 	
 	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR("inventory-armory-my-inventory-menu.selector", Component.empty().color(GOLD)),
-	
-	BATTLE_INVENTORY_UPDATED("battle-inventory-updated", Component.empty().color(GREEN)),
+	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR_LORE("inventory-armory-my-inventory-menu.selector.lore", Component.empty().color(GRAY)),
 	
 	COMMAND_BALANCE_YOUR_RESOURCES("command.balance.your-resources", Component.empty().color(WHITE).decorate(BOLD)),
 	
@@ -526,6 +523,40 @@ public enum PluginMessage implements Message
 			text(town.getDislikeCapacity()),
 			COMMAND_BALANCE_FOOTER.translate(bundle),
 		};
+	}),
+	
+	INVENTORY_ARMORY_STORAGE_TITLE("inventory-armory-storage.title"),
+	
+	TITLE_OPEN_YOUR_INVENTORY("title.open-your-inventory", empty().color(WHITE)),
+	SUBTITLE_OPEN_YOUR_INVENTORY("subtitle.open-your-inventory", empty().color(GRAY)),
+	
+	YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK("you-received-your-vanilla-inventory-back"),
+	
+	BATTLE_INVENTORY_UPDATED("battle-inventory-updated", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translate(bundle),
+	}),
+	
+	BATTLE_INVENTORY_UNCHANGED("battle-inventory-unchanged", (bundle, args) -> new Component[]
+	{
+		empty().color(YELLOW),
+		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translate(bundle),
+	}),
+	
+	STORAGE_AND_BATTLE_INVENTORY_UPDATED("storage-and-battle-inventory-updated", empty().color(GREEN)),
+	EMPTY_STORAGE_AND_BATTLE_INVENTORY("empty-storage-and-battle-inventory", empty().color(RED)),
+	ORGANIZE_EMPTY_BATTLE_INVENTORY("organize-empty-battle-inventory", empty().color(RED)),
+	FAILED_TO_OPEN_STORAGE_AND_BATTLE_INVENTORY("failed-to-open-storage-and-battle-inventory", empty().color(RED)),
+	
+	WEAPON_PURCHASE_FAILED_STORAGE_FULL("weapon-purchase-failed-storage-full", empty().color(RED)),
+	
+	WEAPON_PURCHASE("weapon-purchase", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		text("*").color(YELLOW)
+				.append((Component) args[0])
+				.append(text("*"))
 	}),
 	
 	;

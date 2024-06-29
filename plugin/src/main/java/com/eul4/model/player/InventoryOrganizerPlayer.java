@@ -6,4 +6,5 @@ public interface InventoryOrganizerPlayer extends PluginPlayer, SpiritualPlayer,
 {
 	ItemStack[] getContents();
 	void onCloseInventory();
+	void onSneak();
 }

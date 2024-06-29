@@ -3,11 +3,14 @@ package com.eul4.listener.inventory;
 import com.eul4.Main;
 import com.eul4.common.event.GuiClickEvent;
 import com.eul4.common.wrapper.Pitch;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.ArmoryWeaponShopGui;
 import com.eul4.model.inventory.craft.CraftArmoryWeaponShopGui;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.service.PurchaseV2;
+import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +20,10 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
+
+import static com.eul4.i18n.PluginMessage.WEAPON_PURCHASE;
+import static com.eul4.i18n.PluginMessage.WEAPON_PURCHASE_FAILED_STORAGE_FULL;
+import static net.kyori.adventure.text.Component.translatable;
 
 @RequiredArgsConstructor
 public class ArmoryWeaponShopGuiListener implements Listener
@@ -70,12 +77,28 @@ public class ArmoryWeaponShopGuiListener implements Listener
 		}
 		
 		//TODO confirm operation
-		PurchaseV2 purchase = new PurchaseV2(townPlayer, icon.getCost(), () -> armoryWeaponShopGui
-				.getArmory()
-				.addItemToStorage(icon.getWeapon())
-				.isEmpty());
+		PurchaseV2 purchase = new PurchaseV2(townPlayer, icon.getCost(), () ->
+		{
+			if(armoryWeaponShopGui
+					.getArmory()
+					.addItemToStorage(icon.getWeapon())
+					.isEmpty())
+			{
+				return true;
+			}
+			
+			SoundUtil.playPlong(player);
+			townPlayer.sendMessage(WEAPON_PURCHASE_FAILED_STORAGE_FULL);
+			return false;
+		});
 		
 		boolean wasExecuted = purchase.tryExecutePurchase();
 		player.closeInventory();
+		
+		if(wasExecuted)
+		{
+			townPlayer.sendMessage(WEAPON_PURCHASE, translatable(icon.getType().translationKey()));
+			SoundUtil.playPlingPlong(player, plugin);
+		}
 	}
 }

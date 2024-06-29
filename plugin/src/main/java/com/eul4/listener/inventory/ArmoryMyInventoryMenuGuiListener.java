@@ -8,26 +8,25 @@ import com.eul4.model.craft.player.CraftInventoryOrganizerPlayer;
 import com.eul4.model.inventory.ArmoryMyInventoryMenuGui;
 import com.eul4.model.inventory.craft.CraftArmorySelectOrStorageItemsGui;
 import com.eul4.model.player.InventoryOrganizerPlayer;
-import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.structure.Armory;
+import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.time.Duration;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+
+import static com.eul4.i18n.PluginMessage.*;
 
 @RequiredArgsConstructor
 public class ArmoryMyInventoryMenuGuiListener implements Listener
@@ -71,6 +70,14 @@ public class ArmoryMyInventoryMenuGuiListener implements Listener
 		
 		if(currentItem.equals(armoryMyInventoryMenuGui.getOrganizeBattleInventoryIcon()))
 		{
+			if(armory.isBattleInventoryEmpty())
+			{
+				player.closeInventory();
+				SoundUtil.playPlong(player);
+				townPlayer.sendMessage(PluginMessage.ORGANIZE_EMPTY_BATTLE_INVENTORY);
+				return;
+			}
+			
 			player.closeInventory();
 			ItemStack[] contents = armory.getBattleInventoryContents();
 			
@@ -82,12 +89,20 @@ public class ArmoryMyInventoryMenuGuiListener implements Listener
 				localPlayer.playSound(localPlayer, Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, Pitch.max());
 			};
 			
-			if(plugin.getPlayerManager().register(new CraftInventoryOrganizerPlayer(townPlayer, contents, closeAction))
-					instanceof InventoryOrganizerPlayer inventoryOrganizerPlayer)
+			InventoryOrganizerPlayer newInstnace = new CraftInventoryOrganizerPlayer(townPlayer, contents, closeAction)
 			{
-				//TODO translated title
-				Component mainTitle = Component.text("Abra seu inventário");
-				Component subTitle = Component.text("Pressione SHIFT para cancelar");
+				@Override
+				public void onSneak()
+				{
+					SoundUtil.playPiano(this.player);
+					this.sendMessage(BATTLE_INVENTORY_UNCHANGED);
+				}
+			};
+			
+			if(plugin.getPlayerManager().register(newInstnace) instanceof InventoryOrganizerPlayer inventoryOrganizerPlayer)
+			{
+				Component mainTitle = PluginMessage.TITLE_OPEN_YOUR_INVENTORY.translate(inventoryOrganizerPlayer);
+				Component subTitle = PluginMessage.SUBTITLE_OPEN_YOUR_INVENTORY.translate(inventoryOrganizerPlayer);
 				
 				Title.Times times = Title.Times.times(
 						Duration.ZERO,
@@ -106,12 +121,32 @@ public class ArmoryMyInventoryMenuGuiListener implements Listener
 		else if(currentItem.equals(armoryMyInventoryMenuGui.getSelectOrStorageItemsIcon()))
 		{
 			player.closeInventory();
-			ItemStack[] contents = armoryMyInventoryMenuGui.getArmory().getBattleInventoryContents();
 			
-			if(plugin.getPlayerManager().register(new CraftInventoryOrganizerPlayer(townPlayer, contents))
-					instanceof InventoryOrganizerPlayer inventoryOrganizerPlayer)
+			if(armory.isEmpty())
 			{
-				inventoryOrganizerPlayer.openGui(new CraftArmorySelectOrStorageItemsGui(inventoryOrganizerPlayer, armoryMyInventoryMenuGui.getArmory()));
+				SoundUtil.playPlong(player);
+				townPlayer.sendMessage(PluginMessage.EMPTY_STORAGE_AND_BATTLE_INVENTORY);
+				return;
+			}
+			
+			if(armory.isEmptyExcludingExtraSlots())
+			{
+				SoundUtil.playPlong(player);
+				townPlayer.sendMessage(PluginMessage.FAILED_TO_OPEN_STORAGE_AND_BATTLE_INVENTORY);
+				return;
+			}
+			
+			ItemStack[] contents = armory.getBattleInventoryContents();
+			
+			InventoryOrganizerPlayer newInstance = new CraftInventoryOrganizerPlayer(townPlayer,
+					contents,
+					(commonPlayer, x) -> commonPlayer.sendMessage(STORAGE_AND_BATTLE_INVENTORY_UPDATED));
+			
+			if(plugin.getPlayerManager().register(newInstance) instanceof InventoryOrganizerPlayer inventoryOrganizerPlayer)
+			{
+				inventoryOrganizerPlayer.openGui(new CraftArmorySelectOrStorageItemsGui(
+						inventoryOrganizerPlayer,
+						armory));
 			}
 		}
 	}

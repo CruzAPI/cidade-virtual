@@ -1,5 +1,6 @@
 package com.eul4.model.town.structure;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -12,9 +13,17 @@ public interface Armory extends Structure
 	void setStorageContents(ItemStack[] contents);
 	ItemStack[] getBattleInventoryContents();
 	void setBattleInventoryContents(ItemStack[] contents);
+	
+	Inventory getStorageInventoryClone(Component title);
+	Inventory getStorageInventoryClone();
+	
 	void setBattleInventory(PlayerInventory playerInventory);
 	
-	Inventory getStorageInventoryClone();
+	boolean isEmptyExcludingExtraSlots();
+	
+	boolean isEmpty();
+	boolean isBattleInventoryEmpty();
+	boolean isStorageInventoryEmpty();
 	
 	default HashMap<Integer, ItemStack> addItemToStorage(ItemStack... itemStacks)
 	{

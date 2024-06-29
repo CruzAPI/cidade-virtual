@@ -10,11 +10,14 @@ import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.ArmoryAttribute;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Getter
 @Setter
@@ -65,7 +68,13 @@ public class CraftArmory extends CraftStructure implements Armory
 	@Override
 	public Inventory getStorageInventoryClone()
 	{
-		Inventory inventory = town.getPlugin().getServer().createInventory(null, 9 * 6);
+		return getStorageInventoryClone(InventoryType.CHEST.defaultTitle());
+	}
+	
+	@Override
+	public Inventory getStorageInventoryClone(Component title)
+	{
+		Inventory inventory = town.getPlugin().getServer().createInventory(null, 9 * 6, title);
 		inventory.setContents(storageContents);
 		return inventory;
 	}
@@ -74,5 +83,47 @@ public class CraftArmory extends CraftStructure implements Armory
 	public void setBattleInventory(PlayerInventory playerInventory)
 	{
 		setBattleInventoryContents(playerInventory.getContents());
+	}
+	
+	@Override
+	public boolean isEmptyExcludingExtraSlots()
+	{
+		return isBattleInventoryEmptyExcludingExtraSlots() && isStorageInventoryEmpty();
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		return isBattleInventoryEmpty() && isStorageInventoryEmpty();
+	}
+	
+	@Override
+	public boolean isBattleInventoryEmpty()
+	{
+		return isEmpty(battleInventoryContents);
+	}
+	
+	private boolean isBattleInventoryEmptyExcludingExtraSlots()
+	{
+		return isEmpty(Arrays.copyOf(battleInventoryContents, 9 * 4));
+	}
+	
+	@Override
+	public boolean isStorageInventoryEmpty()
+	{
+		return isEmpty(storageContents);
+	}
+	
+	private boolean isEmpty(ItemStack[] contents)
+	{
+		for(ItemStack content : contents)
+		{
+			if(content != null && !content.isEmpty())
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }

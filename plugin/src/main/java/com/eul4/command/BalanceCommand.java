@@ -1,7 +1,8 @@
 package com.eul4.command;
 
 import com.eul4.Main;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.PluginPlayer;
+import com.eul4.model.town.Town;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,6 +11,9 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.eul4.i18n.PluginMessage.COMMAND_BALANCE;
+import static com.eul4.i18n.PluginMessage.COMMAND_BALANCE_TRY_TOWN_COMMAND;
 
 @RequiredArgsConstructor
 public class BalanceCommand implements TabExecutor
@@ -25,26 +29,21 @@ public class BalanceCommand implements TabExecutor
 	@Override
 	public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args)
 	{
-		if(!(commandSender instanceof Player player)
-				|| !(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer))
+		if(!(commandSender instanceof Player player))
 		{
-			return true;
+			return false;
 		}
 		
-		if(!townPlayer.hasTown())
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		Town town = pluginPlayer.getTown();
+		
+		if(town == null)
 		{
-			player.sendMessage("you do not have a town.");
-			return true;
+			pluginPlayer.sendMessage(COMMAND_BALANCE_TRY_TOWN_COMMAND);
+			return false;
 		}
 		
-		int likes = townPlayer.getTown().getLikes();
-		int likeLimit = townPlayer.getTown().getLikeCapacity();
-		int dislikes = townPlayer.getTown().getDislikes();
-		int dislikeLimit = townPlayer.getTown().getDislikeCapacity();
-		
-		player.sendMessage(String.format("likes: %d/%d", likes, likeLimit));
-		player.sendMessage(String.format("dislikes: %d/%d", dislikes, dislikeLimit));
-		
-		return false;
+		pluginPlayer.sendMessage(COMMAND_BALANCE, town);
+		return true;
 	}
 }

@@ -61,8 +61,8 @@ public class ConfirmationGuiListener implements Listener
 		}
 		else if(currentItem.equals(gui.getCancel()))
 		{
-			gui.cancel();
 			player.closeInventory();
+			gui.cancel();
 		}
 	}
 }

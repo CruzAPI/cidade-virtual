@@ -25,6 +25,11 @@ public class CraftConfirmationGui extends CraftGui implements ConfirmationGui
 	private final ItemStack confirm;
 	private final ItemStack cancel;
 	
+	public CraftConfirmationGui(CommonPlayer commonPlayer)
+	{
+		this(commonPlayer, () -> {});
+	}
+	
 	public CraftConfirmationGui(CommonPlayer commonPlayer, Runnable confirmRunnable)
 	{
 		this(commonPlayer, confirmRunnable, () -> {});

@@ -6,6 +6,7 @@ import com.eul4.common.wrapper.Pitch;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.ArmoryWeaponShopGui;
 import com.eul4.model.inventory.craft.CraftArmoryWeaponShopGui;
+import com.eul4.model.inventory.craft.CraftConfirmationGui;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.service.PurchaseV2;
 import com.eul4.util.SoundUtil;
@@ -72,11 +73,10 @@ public class ArmoryWeaponShopGuiListener implements Listener
 		
 		if(armoryWeaponShopGui.isLocked(icon))
 		{
-			player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, Pitch.getPitch(3));
+			SoundUtil.playPlong(player);
 			return;
 		}
 		
-		//TODO confirm operation
 		PurchaseV2 purchase = new PurchaseV2(townPlayer, icon.getCost(), () ->
 		{
 			if(armoryWeaponShopGui
@@ -92,13 +92,32 @@ public class ArmoryWeaponShopGuiListener implements Listener
 			return false;
 		});
 		
-		boolean wasExecuted = purchase.tryExecutePurchase();
-		player.closeInventory();
-		
-		if(wasExecuted)
+		if(!purchase.isAffordable(true))
 		{
-			townPlayer.sendMessage(WEAPON_PURCHASE, translatable(icon.getType().translationKey()));
-			SoundUtil.playPlingPlong(player, plugin);
+			player.closeInventory();
+			return;
 		}
+		
+		townPlayer.openGui(new CraftConfirmationGui(townPlayer)
+		{
+			@Override
+			public void confirm()
+			{
+				boolean wasExecuted = purchase.tryExecutePurchase();
+				
+				if(wasExecuted)
+				{
+					townPlayer.sendMessage(WEAPON_PURCHASE, translatable(icon.getType().translationKey()));
+					SoundUtil.playPlingPlong(player, plugin);
+				}
+			}
+			
+			@Override
+			public void cancel()
+			{
+				SoundUtil.playPlong(player);
+				townPlayer.openGui(armoryWeaponShopGui);
+			}
+		});
 	}
 }

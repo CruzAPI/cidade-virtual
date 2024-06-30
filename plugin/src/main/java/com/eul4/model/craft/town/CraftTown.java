@@ -37,12 +37,15 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.enginehub.linbus.tree.LinByteTag;
+import org.enginehub.linbus.tree.LinCompoundTag;
+import org.enginehub.linbus.tree.LinTag;
+import org.enginehub.linbus.tree.LinTagType;
 
 import java.awt.*;
 import java.io.File;
@@ -845,8 +848,10 @@ public class CraftTown implements Town
 	{
 		return Optional.ofNullable(entity.getState())
 				.map(BaseEntity::getNbt)
-				.map(nbt -> nbt.getCompound("BukkitValues"))
-				.map(nbt -> nbt.getBoolean("plugin:fawe_ignore", false)) //TODO nameSpace?
+				.map(nbt -> nbt.findTag("BukkitValues", LinTagType.compoundTag()))
+				.map(nbt -> nbt.findTag("plugin:fawe_ignore", LinTagType.byteTag()))
+				.map(LinByteTag::value)
+				.map(value -> value != 0)
 				.orElse(false);
 	}
 	

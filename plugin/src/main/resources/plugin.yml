@@ -2,7 +2,7 @@ name: Plugin
 main: com.eul4.Main
 version: 1.4
 author: CruzAPI
-api-version: '1.20'
+api-version: '1.21'
 depend: [ProtocolLib]
 commands:
   balance:

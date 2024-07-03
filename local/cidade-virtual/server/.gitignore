@@ -1,0 +1,22 @@
+# Ignorar todos os diretórios de mundo
+world/
+world_nether/
+world_the_end/
+
+# Ignorar o diretório de bibliotecas
+libraries/
+
+# Ignorar o diretório de logs
+logs/
+
+# Ignorar o diretório de versões
+versions/
+
+# Ignorar o diretório de cache
+cache/
+
+# Ignorar o diretório de paper remapped
+plugins/.paper-remapped/
+
+# Ignorar o arquivo paper.jar
+paper.jar

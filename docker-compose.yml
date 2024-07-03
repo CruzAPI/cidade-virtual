@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  kitpvp:
+    image: openjdk:21
+    container_name: cidade-virtual
+    volumes:
+      - ./local/cidade-virtual/server:/cidade-virtual/server
+    working_dir: /cidade-virtual/server
+    command: /bin/sh -c "./run.sh"
+    network_mode: host
+    environment:
+      - TZ=America/Sao_Paulo
+      - GID=268741144
+    restart: unless-stopped
+    stop_signal: SIGKILL
+    user: "268741144:268741144"
+    stdin_open: true
+    tty: true

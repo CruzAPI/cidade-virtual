@@ -1,0 +1,71 @@
+1:
+  price:
+    like: 10
+    dislike: 10
+  hp: 100.0
+  requires_town_hall_level: 1
+  total_build_ticks: 20
+  hologram_vector:
+    x: 0.5
+    y: 4.5
+    z: 0.5
+
+2:
+  price:
+    like: 20
+    dislike: 20
+  hp: 200.0
+  requires_town_hall_level: 2
+  total_build_ticks: 40
+  hologram_vector:
+    x: 0.5
+    y: 4.5
+    z: 0.5
+
+3:
+  price:
+    like: 30
+    dislike: 30
+  hp: 300.0
+  requires_town_hall_level: 4
+  total_build_ticks: 60
+  hologram_vector:
+    x: 0.5
+    y: 4.5
+    z: 0.5
+
+4:
+  price:
+    like: 40
+    dislike: 40
+  hp: 400.0
+  requires_town_hall_level: 6
+  total_build_ticks: 80
+  hologram_vector:
+    x: 0.5
+    y: 4.5
+    z: 0.5
+
+5:
+  price:
+    like: 50
+    dislike: 50
+  hp: 500.0
+  requires_town_hall_level: 8
+  total_build_ticks: 100
+  hologram_vector:
+    x: 0.5
+    y: 4.5
+    z: 0.5
+
+6:
+  price:
+    like: 60
+    dislike: 60
+  hp: 600.0
+  requires_town_hall_level: 10
+  total_build_ticks: 120
+  hologram_vector:
+    x: 0.5
+    y: 4.5
+    z: 0.5

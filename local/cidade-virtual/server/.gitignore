@@ -2,6 +2,8 @@
 world/
 world_nether/
 world_the_end/
+town_world/
+old_cidade_virtual/
 
 # Ignorar o diretório de bibliotecas
 libraries/
@@ -15,8 +17,11 @@ versions/
 # Ignorar o diretório de cache
 cache/
 
-# Ignorar o diretório de paper remapped
-plugins/.paper-remapped/
+# Ignorar o diretório de plugins
+plugins/
 
 # Ignorar o arquivo paper.jar
 paper.jar
+
+# Outros
+.console_history

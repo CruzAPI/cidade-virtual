@@ -30,11 +30,6 @@ tasks.assemble {
     dependsOn(tasks.reobfJar)
 }
 
-fun getFinalJarAbsolutePath(): String {
-    val shadowJarTask = tasks.reobfJar
-    return shadowJarTask.get().outputJar.get().asFile.absolutePath
-}
-
 tasks.shadowJar {
     shouldRunAfter(tasks.clean)
     mergeServiceFiles()
@@ -46,32 +41,78 @@ tasks.shadowJar {
     }
 }
 
-task("deployk")
+task("cpLocal")
 {
-//    dependsOn("plugin:clean")
-    dependsOn("build")
+    val bashPath = project.property("bash.path") as String
 
     doLast {
-//        val bashPath = "C:/Program Files/Git/bin/bash.exe"
-        val bashPath = "/bin/bash"
-        val process = ProcessBuilder(bashPath, "-c", "../stop.sh").start()
-        val jarFileAbsolutPath = getFinalJarAbsolutePath()
+        val buildPath = getFinalJarAbsolutePath()
+        val cpProcess = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/cp.sh $buildPath ${rootDir.absolutePath}").start()
 
-        if (process.waitFor() != 0)
+        if(cpProcess.waitFor() != 0)
         {
-            val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
-            throw GradleException("Failed to stop server$errorMessage (exit code: ${process.exitValue()})")
+            val errorMessage = cpProcess.errorStream.bufferedReader().use { it.readText() }
+            throw GradleException("Failed to cp Plugin!\n" +
+                    "$errorMessage\n" +
+                    "(exit code: ${cpProcess.exitValue()})")
         }
+    }
+}
 
-        println("Sleeping 1s...")
-        Thread.sleep(1000L)
+task("scpRemote")
+{
+    val bashPath = project.property("bash.path") as String
+    val user = project.property("remote.user") as String
+    val hostname = project.property("remote.hostname") as String
 
-        val scpProcess = ProcessBuilder(bashPath, "-c", "./scp.sh $jarFileAbsolutPath").start()
+    doLast {
+        val scpProcess = ProcessBuilder(bashPath, "-c", "./scp.sh ${getFinalJarAbsolutePath()} $user $hostname").start()
 
         if (scpProcess.waitFor() != 0)
         {
             val errorMessage = scpProcess.errorStream.bufferedReader().use { it.readText() }
-            throw GradleException("Failed to scp: Plugin$errorMessage (exit code: ${scpProcess.exitValue()})")
+            throw GradleException("Failed to scp Plugin!\n" +
+                    "$errorMessage\n" +
+                    "(exit code: ${scpProcess.exitValue()})")
         }
     }
+}
+
+task("deployLocal")
+{
+    dependsOn(tasks.clean, tasks.build, rootProject.tasks.named("stopLocal"), tasks.named("cpLocal"))
+
+    tasks.build.configure {
+        mustRunAfter(tasks.clean)
+    }
+
+    rootProject.tasks.named("stopLocal").configure {
+        mustRunAfter(tasks.build)
+    }
+
+    tasks.named("cpLocal").configure {
+        mustRunAfter(rootProject.tasks.named("stopLocal"))
+    }
+}
+
+task("deployRemote")
+{
+    dependsOn(tasks.clean, tasks.build, rootProject.tasks.named("stopRemote"), tasks.named("scpRemote"))
+
+    tasks.build.configure {
+        mustRunAfter(tasks.clean)
+    }
+
+    rootProject.tasks.named("stopRemote").configure {
+        mustRunAfter(tasks.build)
+    }
+
+    tasks.named("scpRemote").configure {
+        mustRunAfter(rootProject.tasks.named("stopRemote"))
+    }
+}
+
+fun getFinalJarAbsolutePath(): String {
+    val shadowJarTask = tasks.reobfJar
+    return shadowJarTask.get().outputJar.get().asFile.absolutePath
 }

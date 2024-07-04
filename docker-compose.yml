@@ -12,7 +12,7 @@ services:
     environment:
       - TZ=America/Sao_Paulo
       - GID=268741144
-    restart: unless-stopped
+    restart: on-failure:5
     stop_signal: SIGKILL
     user: "268741144:268741144"
     stdin_open: true

@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "uuid": "ddaab154-8c44-47fb-861c-5f5d798d1225",
+    "name": "CruzAPI",
+    "level": 4,
+    "bypassesPlayerLimit": false
+  }
+]

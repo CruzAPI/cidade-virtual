@@ -25,3 +25,8 @@ paper.jar
 
 # Outros
 .console_history
+crash-reports/
+banned-ips.json
+banned-players.json
+whitelist.json
+usercache.json

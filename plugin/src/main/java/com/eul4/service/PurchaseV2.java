@@ -188,6 +188,7 @@ public class PurchaseV2
 			if(content.getAmount() > amount)
 			{
 				content.setAmount(content.getAmount() - amount);
+				amount = 0;
 			}
 			else
 			{

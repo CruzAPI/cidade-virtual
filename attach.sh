@@ -1,4 +1,4 @@
 while true; do
-    docker attach cidade-virtual
-    sleep 2
+    docker attach cidade-virtual || exit
+    sleep 2s
 done

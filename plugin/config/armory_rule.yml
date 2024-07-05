@@ -5,7 +5,7 @@
   hp: 100.0
   requires_town_hall_level: 1
   total_build_ticks: 20
-  hologram_vector:
+  hologram_pos:
     x: 0.5
     y: 4.5
     z: 0.5
@@ -17,7 +17,7 @@
   hp: 200.0
   requires_town_hall_level: 2
   total_build_ticks: 40
-  hologram_vector:
+  hologram_pos:
     x: 0.5
     y: 4.5
     z: 0.5
@@ -29,7 +29,7 @@
   hp: 300.0
   requires_town_hall_level: 4
   total_build_ticks: 60
-  hologram_vector:
+  hologram_pos:
     x: 0.5
     y: 4.5
     z: 0.5
@@ -41,7 +41,7 @@
   hp: 400.0
   requires_town_hall_level: 6
   total_build_ticks: 80
-  hologram_vector:
+  hologram_pos:
     x: 0.5
     y: 4.5
     z: 0.5
@@ -53,7 +53,7 @@
   hp: 500.0
   requires_town_hall_level: 8
   total_build_ticks: 100
-  hologram_vector:
+  hologram_pos:
     x: 0.5
     y: 4.5
     z: 0.5
@@ -65,7 +65,7 @@
   hp: 600.0
   requires_town_hall_level: 10
   total_build_ticks: 120
-  hologram_vector:
+  hologram_pos:
     x: 0.5
     y: 4.5
     z: 0.5

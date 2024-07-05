@@ -4,7 +4,7 @@
     dislike: 10
   hp: 100.0
   total_build_ticks: 1200
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5
@@ -24,7 +24,7 @@
     dislike: 20
   hp: 200.0
   total_build_ticks: 2400
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5
@@ -44,7 +44,7 @@
     dislike: 30
   hp: 300.0
   total_build_ticks: 3600
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5
@@ -64,7 +64,7 @@
     dislike: 40
   hp: 400.0
   total_build_ticks: 4800
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5
@@ -84,7 +84,7 @@
     dislike: 50
   hp: 500.0
   total_build_ticks: 6000
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5
@@ -104,7 +104,7 @@
     dislike: 60
   hp: 600.0
   total_build_ticks: 7200
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5
@@ -124,7 +124,7 @@
     dislike: 70
   hp: 700.0
   total_build_ticks: 8400
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5
@@ -144,7 +144,7 @@
     dislike: 80
   hp: 800.0
   total_build_ticks: 9600
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5
@@ -164,7 +164,7 @@
     dislike: 90
   hp: 900.0
   total_build_ticks: 10800
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5
@@ -184,7 +184,7 @@
     dislike: 100
   hp: 1000.0
   total_build_ticks: 12000
-  hologram_vector:
+  hologram_pos:
     x: -5.5
     y: 2.0
     z: 0.5

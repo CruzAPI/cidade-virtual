@@ -4,11 +4,13 @@ import com.eul4.StructureType;
 import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Armory;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.ArmoryAttribute;
+import com.eul4.util.MessageUtil;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -95,6 +97,35 @@ public class CraftArmory extends CraftStructure implements Armory
 		{
 			super.updateHologram();
 			return;
+		}
+		
+		if(town.isUnderAttack())
+		{
+			if(isDestroyed())
+			{
+				teleportHologram(getLocation()
+						.toHighestLocation()
+						.getBlock()
+						.getRelative(BlockFace.UP)
+						.getLocation()
+						.toCenterLocation());
+				hologram.setSize(1);
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
+			}
+			else
+			{
+				hologram.setSize(3);
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
+				hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS, getHealth(), getMaxHealth());
+				hologram.getLine(2).setCustomName(MessageUtil.getPercentageProgressBar(getHealthPercentage()));
+				teleportHologramToDefaultLocation();
+			}
+		}
+		else
+		{
+			hologram.setSize(1);
+			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
+			teleportHologramToDefaultLocation();
 		}
 	}
 	

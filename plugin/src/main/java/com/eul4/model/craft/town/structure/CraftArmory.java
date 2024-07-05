@@ -1,6 +1,7 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.model.town.Town;
@@ -19,12 +20,15 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import static com.eul4.enums.PluginNamespacedKey.FAKE_VILLAGER;
 import static org.bukkit.entity.EntityType.VILLAGER;
 import static org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CUSTOM;
+import static org.bukkit.persistence.PersistentDataType.BOOLEAN;
 
 @Getter
 @Setter
@@ -65,6 +69,10 @@ public class CraftArmory extends CraftStructure implements Armory
 		villager.setGravity(false);
 		villager.setCollidable(false);
 		villager.setProfession(Villager.Profession.WEAPONSMITH);
+		villager.setSilent(true);
+		
+		var container = villager.getPersistentDataContainer();
+		container.set(FAKE_VILLAGER, BOOLEAN, true);
 	}
 	
 	@Override

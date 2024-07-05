@@ -12,6 +12,7 @@ import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.externalizer.filer.TownsFiler;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
+import com.eul4.listener.container.entity.FakeVillagerListener;
 import com.eul4.listener.hotbar.DefenderSpectatorHotbarListener;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
 import com.eul4.listener.hotbar.RaidSpectatorHotbarListener;
@@ -70,6 +71,8 @@ public class Main extends Common
 	
 	private MacroidService macroidService;
 	
+	private PluginManager pluginManager;
+	
 	@Override
 	public void onEnable()
 	{
@@ -92,6 +95,8 @@ public class Main extends Common
 	@SneakyThrows
 	private void enablePlugin()
 	{
+		pluginManager = getServer().getPluginManager();
+		
 		registerResourceBundles();
 		
 		super.onEnable();
@@ -193,25 +198,11 @@ public class Main extends Common
 	
 	private void registerListeners()
 	{
-		final PluginManager pluginManager = getServer().getPluginManager();
-		
-		pluginManager.registerEvents(new RaidAnalyzerHotbarListener(this), this);
-		pluginManager.registerEvents(new RaidSpectatorHotbarListener(this), this);
-		pluginManager.registerEvents(new DefenderSpectatorHotbarListener(this), this);
-		
-		pluginManager.registerEvents(new AttackerListener(this), this);
-		pluginManager.registerEvents(new DefenderListener(this), this);
-		pluginManager.registerEvents(new InventoryOrganizerPlayerListener(this), this);
-		pluginManager.registerEvents(new InvincibleListener(this), this);
-		pluginManager.registerEvents(new SpectatorListener(this), this);
-		
-		pluginManager.registerEvents(new ArmoryGuiListener(this), this);
-		pluginManager.registerEvents(new ArmoryMenuGuiListener(this), this);
-		pluginManager.registerEvents(new ArmoryMyInventoryMenuGuiListener(this), this);
-		pluginManager.registerEvents(new ArmorySelectOrStorageItemsGuiListener(this), this);
-		pluginManager.registerEvents(new ArmoryWeaponShopGuiListener(this), this);
-		
-		pluginManager.registerEvents(new ArmoryListener(this), this);
+		registerContainerListeners();
+		registerHotbarListeners();
+		registerInventoryListeners();
+		registerPlayerListeners();
+		registerStructureListeners();
 		
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);
@@ -231,6 +222,41 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);
 		pluginManager.registerEvents(new FrozenTownListener(this), this);
+	}
+	
+	private void registerContainerListeners()
+	{
+		pluginManager.registerEvents(new FakeVillagerListener(this), this);
+	}
+	
+	private void registerHotbarListeners()
+	{
+		pluginManager.registerEvents(new RaidAnalyzerHotbarListener(this), this);
+		pluginManager.registerEvents(new RaidSpectatorHotbarListener(this), this);
+		pluginManager.registerEvents(new DefenderSpectatorHotbarListener(this), this);
+	}
+	
+	private void registerInventoryListeners()
+	{
+		pluginManager.registerEvents(new ArmoryGuiListener(this), this);
+		pluginManager.registerEvents(new ArmoryMenuGuiListener(this), this);
+		pluginManager.registerEvents(new ArmoryMyInventoryMenuGuiListener(this), this);
+		pluginManager.registerEvents(new ArmorySelectOrStorageItemsGuiListener(this), this);
+		pluginManager.registerEvents(new ArmoryWeaponShopGuiListener(this), this);
+	}
+	
+	private void registerPlayerListeners()
+	{
+		pluginManager.registerEvents(new AttackerListener(this), this);
+		pluginManager.registerEvents(new DefenderListener(this), this);
+		pluginManager.registerEvents(new InventoryOrganizerPlayerListener(this), this);
+		pluginManager.registerEvents(new InvincibleListener(this), this);
+		pluginManager.registerEvents(new SpectatorListener(this), this);
+	}
+	
+	private void registerStructureListeners()
+	{
+		pluginManager.registerEvents(new ArmoryListener(this), this);
 	}
 	
 	private void deleteWorld(String worldName)

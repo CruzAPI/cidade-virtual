@@ -3,6 +3,8 @@ package com.eul4.enums;
 import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
 
+import javax.print.attribute.standard.MediaSize;
+
 @UtilityClass
 public class PluginNamespacedKey
 {
@@ -12,4 +14,5 @@ public class PluginNamespacedKey
 	public static final NamespacedKey MACROID_WAND_UUID = new NamespacedKey(NAMESPACE, "macroid_wand_uuid");
 	public static final NamespacedKey WEAPON_ITEM_ATTRIBUTE = new NamespacedKey(NAMESPACE, "weapon_item_attribute");
 	public static final NamespacedKey BATTLE_INVENTORY_OWNER = new NamespacedKey(NAMESPACE, "battle_inventory_owner");
+	public static final NamespacedKey FAKE_VILLAGER = new NamespacedKey(NAMESPACE, "fake_villager");
 }

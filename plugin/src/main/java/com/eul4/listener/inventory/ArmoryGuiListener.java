@@ -2,9 +2,6 @@ package com.eul4.listener.inventory;
 
 import com.eul4.Main;
 import com.eul4.model.inventory.ArmoryGui;
-import com.eul4.model.inventory.ArmoryMenuGui;
-import com.eul4.model.inventory.craft.CraftArmoryMenuGui;
-import com.eul4.model.inventory.craft.CraftArmoryWeaponShopGui;
 import com.eul4.model.player.TownPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
@@ -13,7 +10,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 
 @RequiredArgsConstructor
@@ -38,11 +34,6 @@ public class ArmoryGuiListener implements Listener
 		if(currentItem == null || event.getClick() != ClickType.LEFT)
 		{
 			return;
-		}
-		
-		if(currentItem.equals(armoryGui.getMenuIcon()))
-		{
-			townPlayer.openGui(new CraftArmoryMenuGui(townPlayer, armoryGui.getArmory()));
 		}
 	}
 }

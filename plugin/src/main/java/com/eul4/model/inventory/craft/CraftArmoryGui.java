@@ -15,8 +15,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 @Getter
 public class CraftArmoryGui extends CraftStructureGui implements ArmoryGui
 {
-	private final ItemStack menu;
-	
 	public CraftArmoryGui(CommonPlayer commonPlayer, Structure structure)
 	{
 		this(commonPlayer, (Armory) structure);
@@ -28,15 +26,6 @@ public class CraftArmoryGui extends CraftStructureGui implements ArmoryGui
 				PluginMessage.STRUCTURE_TITLE,
 				PluginMessage.STRUCTURE_ARMORY_NAME,
 				armory.getLevel()));
-		
-		ItemMeta meta;
-		
-		menu = new ItemStack(Material.SPRUCE_HANGING_SIGN);
-		meta = menu.getItemMeta();
-		meta.displayName(Component.empty());
-		menu.setItemMeta(meta);
-		
-		inventory.setItem(4, menu);
 	}
 	
 	@Override
@@ -45,12 +34,6 @@ public class CraftArmoryGui extends CraftStructureGui implements ArmoryGui
 		return PluginMessage.STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
 				PluginMessage.STRUCTURE_ARMORY_NAME,
 				structure.getLevel());
-	}
-	
-	@Override
-	public ItemStack getMenuIcon()
-	{
-		return menu;
 	}
 	
 	@Override

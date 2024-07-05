@@ -5,7 +5,5 @@ import org.bukkit.inventory.ItemStack;
 
 public interface ArmoryGui extends StructureGui
 {
-	ItemStack getMenuIcon();
-	
 	Armory getArmory();
 }

@@ -193,8 +193,8 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 	{
 		super.resetAttributes();
 		
-		capacity = getRule().getAttributeOrDefault(getLevelStatus()).getCapacity();
-		delay = getRule().getAttributeOrDefault(getLevelStatus()).getDelay();
+		capacity = getRule().getAttributeOrDefault(getBuiltLevel()).getCapacity();
+		delay = getRule().getAttributeOrDefault(getBuiltLevel()).getDelay();
 	}
 	
 	protected int subtract(int value)

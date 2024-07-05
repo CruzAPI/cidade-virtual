@@ -81,9 +81,9 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	{
 		super.resetAttributes();
 		
-		likeCapacity = getRule().getAttribute(getLevelStatus()).getLikeCapacity();
-		dislikeCapacity = getRule().getAttribute(getLevelStatus()).getDislikeCapacity();
-		structureLimitMap = getRule().getAttribute(getLevelStatus()).getStructureLimit();
+		likeCapacity = getRule().getAttribute(getBuiltLevel()).getLikeCapacity();
+		dislikeCapacity = getRule().getAttribute(getBuiltLevel()).getDislikeCapacity();
+		structureLimitMap = getRule().getAttribute(getBuiltLevel()).getStructureLimit();
 	}
 	
 	@Override

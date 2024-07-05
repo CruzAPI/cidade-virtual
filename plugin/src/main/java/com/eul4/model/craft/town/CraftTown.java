@@ -271,6 +271,8 @@ public class CraftTown implements Town
 		
 		getPlayer().ifPresent(removeMovingStructureItem);
 		
+		movingStructure.onFinishMove();
+		
 		this.movingStructure = null;
 		this.movingStructureClipboardHolder = null;
 	}
@@ -279,6 +281,11 @@ public class CraftTown implements Town
 	public boolean isMovingStructure()
 	{
 		return movingStructure != null;
+	}
+	
+	protected void onFinishMove()
+	{
+	
 	}
 	
 	private boolean isInTownBorder(int spiralCount, int x, int z)

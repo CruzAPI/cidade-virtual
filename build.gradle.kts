@@ -29,6 +29,22 @@ val bashPath = project.property("bash.path") as String
 val user = project.property("remote.user") as String
 val hostname = project.property("remote.hostname") as String
 
+task("resetTownsLocal")
+{
+    doLast {
+        val process = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/reset-towns-local.sh").start()
+        val exitCode = process.waitFor()
+        val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
+
+        if(exitCode != 0)
+        {
+            throw GradleException("Failed to reset towns!\n" +
+                    "$errorMessage\n" +
+                    "(exit code: ${process.exitValue()})")
+        }
+    }
+}
+
 task("stopLocal")
 {
     doLast {
@@ -149,25 +165,46 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
 
         task("deployLocal")
         {
+            val resetTown: Boolean = project.findProperty("resetTowns")?.toString()?.toBoolean() ?: false
+
             val stopLocalTask = rootProject.tasks.named("stopLocal")
             val cpLocalTask = tasks.named("cpLocal")
             val startLocalTask = rootProject.tasks.named("startLocal")
+            val resetTownsLocalTask = rootProject.tasks.named("resetTownsLocal")
 
             dependsOn(tasks.clean, tasks.build, stopLocalTask, cpLocalTask, startLocalTask)
 
-            tasks.build.configure {
+            if(resetTown)
+            {
+                dependsOn(resetTownsLocalTask)
+            }
+
+            tasks.build {
                 mustRunAfter(tasks.clean)
             }
 
-            stopLocalTask.configure {
+            stopLocalTask {
                 mustRunAfter(tasks.build)
             }
 
-            cpLocalTask.configure {
-                mustRunAfter(stopLocalTask)
+            if(resetTown)
+            {
+                resetTownsLocalTask {
+                    mustRunAfter(stopLocalTask)
+                }
+
+                cpLocalTask {
+                    mustRunAfter(resetTownsLocalTask)
+                }
+            }
+            else
+            {
+                cpLocalTask {
+                    mustRunAfter(stopLocalTask)
+                }
             }
 
-            startLocalTask.configure {
+            startLocalTask {
                 mustRunAfter(cpLocalTask)
             }
         }

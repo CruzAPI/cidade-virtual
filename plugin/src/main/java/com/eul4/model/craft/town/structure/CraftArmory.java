@@ -65,6 +65,7 @@ public class CraftArmory extends CraftStructure implements Armory
 		villager.setGravity(false);
 		villager.setCollidable(false);
 		villager.setProfession(Villager.Profession.WEAPONSMITH);
+		villager.setSilent(true);
 	}
 	
 	@Override

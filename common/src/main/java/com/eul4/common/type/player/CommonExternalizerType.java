@@ -12,7 +12,9 @@ public enum CommonExternalizerType implements ExternalizerType
 {
 	BLOCK_VECTOR(BlockVectorReader::new, BlockVectorReader.class, BlockVectorWriter::new, BlockVectorWriter.class),
 	BLOCK(BlockReader::new, BlockReader.class, BlockWriter::new, BlockWriter.class),
+	CHUNK(ChunkReader::new, ChunkReader.class, ChunkWriter::new, ChunkWriter.class),
 	COMMON_PLAYER_DATA(CommonPlayerDataReader::new, CommonPlayerDataReader.class, CommonPlayerDataWriter::new, CommonPlayerDataWriter.class),
+	ENTITY(EntityReader::new, EntityReader.class, EntityWriter::new, EntityWriter.class),
 	HOLOGRAM(HologramReader::new, HologramReader.class, HologramWriter::new, HologramWriter.class),
 	INVENTORY(InventoryReader::new, InventoryReader.class, InventoryWriter::new, InventoryWriter.class),
 	ITEM_STACK(ItemStackReader::new, ItemStackReader.class, ItemStackWriter::new, ItemStackWriter.class),

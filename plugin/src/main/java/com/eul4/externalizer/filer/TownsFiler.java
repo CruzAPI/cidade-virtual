@@ -24,9 +24,11 @@ public class TownsFiler extends Filer
 	private static final ObjectType[] OBJECT_TYPES_V0 = new ObjectType[]
 	{
 		CommonObjectType.BLOCK,
+		CommonObjectType.CHUNK,
+		CommonObjectType.ENTITY,
+		CommonObjectType.HOLOGRAM,
 		CommonObjectType.INVENTORY,
 		CommonObjectType.ITEM_STACK,
-		CommonObjectType.HOLOGRAM,
 		CommonObjectType.LOCATION,
 		CommonObjectType.OBJECT,
 		CommonObjectType.TRANSLATED_HOLOGRAM_LINE,

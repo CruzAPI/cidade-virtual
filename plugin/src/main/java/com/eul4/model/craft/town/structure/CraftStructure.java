@@ -146,6 +146,12 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
+	public void onFinishMove()
+	{
+	
+	}
+	
+	@Override
 	public void cancelMove() throws CannotConstructException
 	{
 		town.cancelMovingStructure();
@@ -505,7 +511,7 @@ public abstract class CraftStructure implements Structure
 			throw new UpgradeNotFoundException();
 		}
 		
-		int townHallLevel = town.getTownHall().getLevelStatus();
+		int townHallLevel = town.getTownHall().getBuiltLevel();
 		int levelRequired = rule.getAttribute(nextLevel).getRequiresTownHallLevel();
 		
 		if(townHallLevel < levelRequired)
@@ -521,7 +527,7 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
-	public int getLevelStatus()
+	public int getBuiltLevel()
 	{
 		return status == StructureStatus.BUILT ? level : level - 1;
 	}
@@ -554,7 +560,7 @@ public abstract class CraftStructure implements Structure
 	{
 		GenericAttribute nextAttribute = getRule().getAttribute(level + 1);
 		
-		return nextAttribute != null && town.getTownHall().getLevelStatus() >= nextAttribute.getRequiresTownHallLevel();
+		return nextAttribute != null && town.getTownHall().getBuiltLevel() >= nextAttribute.getRequiresTownHallLevel();
 	}
 	
 	@Override

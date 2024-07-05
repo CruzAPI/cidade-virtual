@@ -13,7 +13,6 @@ import com.eul4.util.MessageUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 
 import java.io.IOException;
@@ -83,7 +82,7 @@ public abstract class CraftDeposit extends CraftResourceStructure implements Dep
 	{
 		super.resetAttributes();
 		
-		capacity = getRule().getAttributeOrDefault(getLevelStatus()).getCapacity();
+		capacity = getRule().getAttributeOrDefault(getBuiltLevel()).getCapacity();
 	}
 	
 	@Override

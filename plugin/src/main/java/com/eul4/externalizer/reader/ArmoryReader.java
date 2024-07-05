@@ -1,6 +1,7 @@
 package com.eul4.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
+import com.eul4.common.externalizer.reader.EntityReader;
 import com.eul4.common.externalizer.reader.InventoryReader;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
@@ -12,6 +13,7 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Armory;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
+import org.bukkit.entity.Villager;
 
 import java.io.IOException;
 
@@ -45,6 +47,8 @@ public class ArmoryReader extends StructureReader<Armory>
 		
 		armory.setStorageContents(readers.getReader(InventoryReader.class).readReference());
 		armory.setBattleInventoryContents(readers.getReader(InventoryReader.class).readReference());
+		
+		armory.setNPC((Villager) readers.getReader(EntityReader.class).readReference(armory.getTown().getPlugin()));
 	}
 	
 	private Readable<Armory> parameterizedReadableVersion0(Town town)

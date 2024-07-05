@@ -711,7 +711,7 @@ public class CraftArmoryWeaponShopGui extends CraftGui implements ArmoryWeaponSh
 		
 		public boolean isUnlocked(Armory armory)
 		{
-			return armory.getLevel() >= getUnlockLevel();
+			return armory.getBuiltLevel() >= getUnlockLevel();
 		}
 		
 		public int getUnlockLevel()

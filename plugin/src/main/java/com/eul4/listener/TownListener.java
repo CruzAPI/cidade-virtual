@@ -26,6 +26,8 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import static org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CUSTOM;
+
 @RequiredArgsConstructor
 public class TownListener implements Listener
 {
@@ -189,7 +191,8 @@ public class TownListener implements Listener
 	public void on(CreatureSpawnEvent event)
 	{
 		if(!(plugin.getWorldManager().get(event.getEntity().getWorld()) instanceof TownWorld)
-				|| event.getEntity() instanceof ArmorStand)
+				|| event.getEntity() instanceof ArmorStand
+				|| event.getSpawnReason() == CUSTOM)
 		{
 			return;
 		}

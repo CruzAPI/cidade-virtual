@@ -1,6 +1,8 @@
 package com.eul4.model.town.structure;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -9,6 +11,7 @@ import java.util.HashMap;
 
 public interface Armory extends Structure
 {
+	Villager getNPC();
 	ItemStack[] getStorageContents();
 	void setStorageContents(ItemStack[] contents);
 	ItemStack[] getBattleInventoryContents();
@@ -32,4 +35,7 @@ public interface Armory extends Structure
 		setStorageContents(clone.getContents());
 		return remainedItems;
 	}
+	
+	//TODO set fields like in TownTile
+	void setNPC(Villager npc);
 }

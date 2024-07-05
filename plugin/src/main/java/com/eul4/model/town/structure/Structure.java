@@ -79,7 +79,7 @@ public interface Structure
 			throws IOException, CannotConstructException,
 			StructureIllegalStatusException, UpgradeLockedException, UpgradeNotFoundException;
 	
-	int getLevelStatus();
+	int getBuiltLevel();
 	
 	Rule<? extends GenericAttribute> getRule();
 	
@@ -118,4 +118,6 @@ public interface Structure
 	
 	void onTownLikeBalanceChange();
 	void onTownDislikeBalanceChange();
+	
+	void onFinishMove();
 }

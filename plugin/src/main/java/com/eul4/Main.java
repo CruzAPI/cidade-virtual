@@ -19,6 +19,8 @@ import com.eul4.listener.hotbar.RaidSpectatorHotbarListener;
 import com.eul4.listener.inventory.*;
 import com.eul4.listener.player.*;
 import com.eul4.listener.structure.ArmoryListener;
+import com.eul4.model.town.Town;
+import com.eul4.model.town.structure.Structure;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
@@ -289,7 +291,9 @@ public class Main extends Common
 			try
 			{
 				UUID uuid = UUID.fromString(FileUtils.removeExtension(file.getName()));
-				townManager.getTown(uuid).loadAndPasteTownSchematic();
+				Town town = townManager.getTown(uuid);
+				town.loadAndPasteTownSchematic();
+				town.getStructureSet().forEach(Structure::onBuildCorruptedTown);
 				getLogger().info(MessageFormat.format("Corrupted town {0} restored!", uuid));
 			}
 			catch(Exception e)

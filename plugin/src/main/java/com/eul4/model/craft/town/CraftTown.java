@@ -3,6 +3,8 @@ package com.eul4.model.craft.town;
 import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
+import com.eul4.common.constant.CommonNamespacedKey;
+import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
@@ -62,6 +64,8 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+
+import static com.eul4.common.constant.CommonNamespacedKey.FAWE_IGNORE;
 
 @Getter
 @Setter
@@ -856,7 +860,7 @@ public class CraftTown implements Town
 		return Optional.ofNullable(entity.getState())
 				.map(BaseEntity::getNbt)
 				.map(nbt -> nbt.findTag("BukkitValues", LinTagType.compoundTag()))
-				.map(nbt -> nbt.findTag("plugin:fawe_ignore", LinTagType.byteTag()))
+				.map(nbt -> nbt.findTag(FAWE_IGNORE.toString(), LinTagType.byteTag()))
 				.map(LinByteTag::value)
 				.map(value -> value != 0)
 				.orElse(false);

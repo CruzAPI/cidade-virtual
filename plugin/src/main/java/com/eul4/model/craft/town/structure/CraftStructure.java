@@ -732,7 +732,8 @@ public abstract class CraftStructure implements Structure
 	{
 		return destroyed;
 	}
-
+	
+	@Override
 	public void onStartAttack()
 	{
 		destroyed = false;
@@ -740,7 +741,19 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
+	public void onFinishAttack()
+	{
+	
+	}
+	
+	@Override
 	public void onTownLikeBalanceChange()
+	{
+	
+	}
+	
+	@Override
+	public void onBuildCorruptedTown()
 	{
 	
 	}

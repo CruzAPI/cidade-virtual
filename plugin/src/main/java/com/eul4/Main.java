@@ -47,6 +47,7 @@ public class Main extends Common
 	private DataFileManager dataFileManager;
 	private StructureUpgradeExecutor structureUpgradeExecutor;
 	private PurchaseExecutor purchaseExecutor;
+	private StructureDamageCalculator structureDamageCalculator;
 	
 	private TownHallRuleSerializer townHallRuleSerializer;
 	private LikeGeneratorRuleSerializer likeGeneratorRuleSerializer;
@@ -164,6 +165,7 @@ public class Main extends Common
 		townManager = new TownManager(this);
 		structureUpgradeExecutor = new StructureUpgradeExecutor(this);
 		purchaseExecutor = new PurchaseExecutor(this);
+		structureDamageCalculator = new StructureDamageCalculator(this);
 		
 		macroidService = new MacroidService(this);
 	}
@@ -253,6 +255,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new DefenderListener(this), this);
 		pluginManager.registerEvents(new InventoryOrganizerPlayerListener(this), this);
 		pluginManager.registerEvents(new InvincibleListener(this), this);
+		pluginManager.registerEvents(new PluginPlayerListener(this), this);
 		pluginManager.registerEvents(new SpectatorListener(this), this);
 	}
 	

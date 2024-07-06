@@ -9,7 +9,10 @@ import com.eul4.model.playerdata.TownPlayerData;
 import com.eul4.model.town.Town;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffects;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
@@ -22,6 +25,8 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	protected final Main plugin;
 	
 	protected TownPlayerData townPlayerData;
+	
+	private transient int lastAttackCooldownTick;
 	
 	protected CraftPluginPlayer(Player player, Main plugin)
 	{
@@ -78,5 +83,31 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	public Optional<Town> findTown()
 	{
 		return Optional.ofNullable(getTown());
+	}
+	
+	@Override
+	public void resetAttackCooldown()
+	{
+		this.lastAttackCooldownTick = plugin.getServer().getCurrentTick();
+	}
+	
+	@Override
+	public int getAttackCooldown()
+	{
+		return plugin.getServer().getCurrentTick() - lastAttackCooldownTick;
+	}
+	
+	@Override
+	public boolean isCritical()
+	{
+		ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+		
+		return serverPlayer.fallDistance > 0.0F
+				&& !serverPlayer.onGround()
+				&& !serverPlayer.onClimbable()
+				&& !serverPlayer.isInWater()
+				&& !serverPlayer.hasEffect(MobEffects.BLINDNESS)
+				&& !serverPlayer.isPassenger()
+				&& !serverPlayer.isSprinting();
 	}
 }

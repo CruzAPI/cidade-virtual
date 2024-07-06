@@ -136,7 +136,9 @@ public class TownAttackListener implements Listener
 			return;
 		}
 		
-		structure.damage(5.0D, clickedBlock); //TODO calculate damage.
+		double damage = plugin.getStructureDamageCalculator().calculateDamage(attacker);
+		
+		structure.damage(attacker, damage, clickedBlock);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)

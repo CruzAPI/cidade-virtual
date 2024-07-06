@@ -62,10 +62,8 @@ public class TownAttack
 	
 	private void onStartAttack()
 	{
-		for(Structure structure : town.getStructureSet())
-		{
-			structure.onStartAttack();
-		}
+		town.getStructureSet().forEach(Structure::onStartAttack);
+		
 		town.updateHolograms();
 		town.getPlayer().map(town.getPlugin().getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
@@ -78,6 +76,8 @@ public class TownAttack
 		{
 			return;
 		}
+		
+		town.getStructureSet().forEach(Structure::onFinishAttack);
 		
 		onFinishCalled = true;
 		

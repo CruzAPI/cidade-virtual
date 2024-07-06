@@ -86,7 +86,8 @@ public interface Structure
 	void resetAttributes();
 
 	void onStartAttack();
-
+	void onFinishAttack();
+	void onBuildCorruptedTown();
 	void reloadAttributes();
 	
 	void reloadAttributesAndReloadTownAttributes();

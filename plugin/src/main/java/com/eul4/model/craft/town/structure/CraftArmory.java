@@ -1,6 +1,7 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.common.constant.CommonNamespacedKey;
 import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
@@ -22,11 +23,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import static com.eul4.common.constant.CommonNamespacedKey.FAWE_IGNORE;
 import static com.eul4.enums.PluginNamespacedKey.FAKE_VILLAGER;
 import static org.bukkit.entity.EntityType.VILLAGER;
 import static org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CUSTOM;
@@ -51,7 +52,7 @@ public class CraftArmory extends CraftStructure implements Armory
 		super(town, centerTownBlock, isBuilt);
 		town.setArmory(this);
 		
-		this.npc = (Villager) centerTownBlock.getBlock().getWorld().spawnEntity(createNpcLocation(), VILLAGER, CUSTOM, this::setupNCP);
+		this.npc = (Villager) centerTownBlock.getBlock().getWorld().spawnEntity(getDefaultNpcLocation(), VILLAGER, CUSTOM, this::setupNCP);
 	}
 	
 	public CraftArmory(Town town)
@@ -75,6 +76,7 @@ public class CraftArmory extends CraftStructure implements Armory
 		
 		var container = villager.getPersistentDataContainer();
 		container.set(FAKE_VILLAGER, BOOLEAN, true);
+		container.set(FAWE_IGNORE, BOOLEAN, true);
 	}
 	
 	@Override
@@ -203,7 +205,7 @@ public class CraftArmory extends CraftStructure implements Armory
 		this.npc = npc;
 	}
 	
-	private Location createNpcLocation()
+	private Location getDefaultNpcLocation()
 	{
 		Location npcLocation = getCenterTownBlock().getBlock()
 				.getRelative(BlockFace.UP)
@@ -219,6 +221,41 @@ public class CraftArmory extends CraftStructure implements Armory
 	public void onFinishMove()
 	{
 		super.onFinishMove();
-		npc.teleport(createNpcLocation());
+		
+		npc.teleport(getDefaultNpcLocation());
+	}
+	
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		
+		Villager copy = (Villager) npc.copy(npc.getLocation());
+		this.npc.setInvisible(true);
+		this.npc.teleport(this.npc.getLocation().add(0.0D, 1000.0D, 0.0D));
+		copy.setSilent(false);
+		copy.setHealth(0.0D);
+	}
+	
+	@Override
+	public void onFinishAttack()
+	{
+		super.onFinishAttack();
+		
+		resetNpc();
+	}
+	
+	@Override
+	public void onBuildCorruptedTown()
+	{
+		super.onBuildCorruptedTown();
+		
+		resetNpc();
+	}
+	
+	private void resetNpc()
+	{
+		this.npc.setInvisible(false);
+		this.npc.teleport(getDefaultNpcLocation());
 	}
 }

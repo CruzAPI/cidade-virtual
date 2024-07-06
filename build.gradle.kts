@@ -28,11 +28,28 @@ tasks.withType<JavaCompile> {
 val bashPath = project.property("bash.path") as String
 val user = project.property("remote.user") as String
 val hostname = project.property("remote.hostname") as String
+val resetTown: Boolean = project.findProperty("resetTowns")?.toString()?.toBoolean() ?: false
 
 task("resetTownsLocal")
 {
     doLast {
         val process = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/reset-towns-local.sh").start()
+        val exitCode = process.waitFor()
+        val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
+
+        if(exitCode != 0)
+        {
+            throw GradleException("Failed to reset towns!\n" +
+                    "$errorMessage\n" +
+                    "(exit code: ${process.exitValue()})")
+        }
+    }
+}
+
+task("resetTownsRemote")
+{
+    doLast {
+        val process = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/reset-towns-remote.sh $user $hostname").start()
         val exitCode = process.waitFor()
         val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
 
@@ -64,7 +81,7 @@ task("stopLocal")
         }
         else
         {
-            while(!isContainerStopped())
+            while(!isLocalContainerStopped())
             {
                 println("Sleeping 1s... Waiting container to stop.")
                 Thread.sleep(1000L)
@@ -94,22 +111,30 @@ task("stopRemote")
 {
     doLast {
         val process = ProcessBuilder(bashPath, "-c", "${buildFile.parent}/stop-remote.sh $user $hostname").start()
+        val exitCode = process.waitFor()
+        val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
 
-        if(process.waitFor() != 0)
+        if(exitCode == 1)
+        {
+            println("WARN: $errorMessage")
+        }
+        else if(exitCode != 0)
         {
             val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
             throw GradleException("Failed to stop server!\n" +
                     "$errorMessage\n" +
                     "(exit code: ${process.exitValue()})")
         }
-
-        while(!isContainerStopped())
+        else
         {
-            println("Sleeping 1s... Waiting container to stop.")
-            Thread.sleep(1000L)
-        }
+            while(!isRemoteContainerStopped())
+            {
+                println("Sleeping 1s... Waiting container to stop.")
+                Thread.sleep(1000L)
+            }
 
-        println("Container stopped!")
+            println("Container stopped!")
+        }
     }
 }
 
@@ -165,8 +190,6 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
 
         task("deployLocal")
         {
-            val resetTown: Boolean = project.findProperty("resetTowns")?.toString()?.toBoolean() ?: false
-
             val stopLocalTask = rootProject.tasks.named("stopLocal")
             val cpLocalTask = tasks.named("cpLocal")
             val startLocalTask = rootProject.tasks.named("startLocal")
@@ -214,8 +237,14 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
             val stopRemoteTask = rootProject.tasks.named("stopRemote")
             val scpRemoteTask = tasks.named("scpRemote")
             val startRemoteTask = rootProject.tasks.named("startRemote")
+            val resetTownsRemoteTask = rootProject.tasks.named("resetTownsRemote")
 
             dependsOn(tasks.clean, tasks.build, stopRemoteTask, scpRemoteTask, startRemoteTask)
+
+            if(resetTown)
+            {
+                dependsOn(resetTownsRemoteTask)
+            }
 
             tasks.build.configure {
                 mustRunAfter(tasks.clean)
@@ -229,6 +258,23 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
                 mustRunAfter(stopRemoteTask)
             }
 
+            if(resetTown)
+            {
+                resetTownsRemoteTask {
+                    mustRunAfter(stopRemoteTask)
+                }
+
+                scpRemoteTask {
+                    mustRunAfter(resetTownsRemoteTask)
+                }
+            }
+            else
+            {
+                scpRemoteTask {
+                    mustRunAfter(stopRemoteTask)
+                }
+            }
+
             startRemoteTask.configure {
                 mustRunAfter(scpRemoteTask)
             }
@@ -236,7 +282,15 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
     }
 }
 
-fun isContainerStopped(): Boolean
+fun isRemoteContainerStopped(): Boolean
+{
+    val bashPath = project.property("bash.path") as String
+    val process = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/check-remote-container.sh $user $hostname").start()
+
+    return process.waitFor() != 0
+}
+
+fun isLocalContainerStopped(): Boolean
 {
     val bashPath = project.property("bash.path") as String
     val process = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/check-container.sh").start()

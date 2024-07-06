@@ -12,12 +12,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
@@ -31,9 +34,12 @@ import org.jetbrains.annotations.Nullable;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER;
+import static org.bukkit.entity.EntityType.VILLAGER;
+import static org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CUSTOM;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
@@ -67,10 +73,6 @@ public class TestCommand implements TabExecutor
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D)
 					.toHighestLocation());
 		}
-		else if(args.length == 1)
-		{
-			player.openInventory(player.getInventory());
-		}
 		else if(args.length == 2)
 		{
 			int damage = Integer.parseInt(args[0]);
@@ -78,7 +80,6 @@ public class TestCommand implements TabExecutor
 			
 			ItemStack item = player.getInventory().getItemInMainHand();
 			
-			Bukkit.broadcastMessage("maxItemUseDuration: " + item.getMaxItemUseDuration());
 			Bukkit.broadcastMessage("durability: " + item.getDurability());
 			
 			ItemMeta meta = item.getItemMeta();

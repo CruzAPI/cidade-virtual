@@ -8,6 +8,7 @@ import com.eul4.event.StructureConstructEvent;
 import com.eul4.exception.*;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
+import com.eul4.model.player.Attacker;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
@@ -40,7 +41,10 @@ import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -93,6 +97,8 @@ public abstract class CraftStructure implements Structure
 	private transient int noDamageTicks;
 	private transient double lastDamage;
 	private transient int lastTickDamaged;
+	
+	private transient Villager fakeStructureDamageCalculator;
 	
 	public CraftStructure(Town town)
 	{
@@ -422,7 +428,7 @@ public abstract class CraftStructure implements Structure
 	
 	private Vector toBukkitVector(Vector3 vector3)
 	{
-		return new Vector(vector3.getX(), vector3.getY(), vector3.getZ());
+		return new Vector(vector3.x(), vector3.y(), vector3.z());
 	}
 	
 	protected void onBuildStart()
@@ -571,7 +577,7 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
-	public void damage(double originalDamage, Block hitBlock)
+	public void damage(Attacker attacker, double originalDamage, Block hitBlock)
 	{
 		if(!town.isUnderAttack() || destroyed)
 		{
@@ -606,6 +612,20 @@ public abstract class CraftStructure implements Structure
 		else
 		{
 			health -= damage;
+		}
+		
+		Player player = attacker.getPlayer();
+		Material type = player.getInventory().getItem(EquipmentSlot.HAND).getType();
+		
+		if(Tag.ITEMS_SWORDS.isTagged(type))
+		{
+			player.damageItemStack(EquipmentSlot.HAND, 1);
+		}
+		else if(Tag.ITEMS_AXES.isTagged(type)
+				|| Tag.ITEMS_PICKAXES.isTagged(type)
+				|| Tag.ITEMS_SHOVELS.isTagged(type))
+		{
+			player.damageItemStack(EquipmentSlot.HAND, 2);
 		}
 		
 		updateHologram();

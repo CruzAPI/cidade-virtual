@@ -43,7 +43,7 @@ public class Resource
 	
 	public Block getRelative(Block centerBlock)
 	{
-		return centerBlock.getRelative(relativePosition.getX(), relativePosition.getY(), relativePosition.getZ());
+		return centerBlock.getRelative(relativePosition.x(), relativePosition.y(), relativePosition.z());
 	}
 	
 	public boolean isEmpty()

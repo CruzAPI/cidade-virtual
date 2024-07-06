@@ -49,4 +49,10 @@ public interface PluginPlayer extends CommonPlayer
 	boolean teleportToHighestTownHall();
 	
 	Optional<Town> findTown();
+	
+	int getAttackCooldown();
+	
+	void resetAttackCooldown();
+	
+	boolean isCritical();
 }

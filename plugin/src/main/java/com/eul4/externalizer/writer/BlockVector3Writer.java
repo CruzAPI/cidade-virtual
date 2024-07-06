@@ -18,8 +18,8 @@ public class BlockVector3Writer extends ObjectWriter<BlockVector3>
 	@Override
 	protected void writeObject(BlockVector3 blockVector3) throws IOException
 	{
-		out.writeInt(blockVector3.getBlockX());
-		out.writeInt(blockVector3.getBlockY());
-		out.writeInt(blockVector3.getBlockZ());
+		out.writeInt(blockVector3.x());
+		out.writeInt(blockVector3.y());
+		out.writeInt(blockVector3.z());
 	}
 }

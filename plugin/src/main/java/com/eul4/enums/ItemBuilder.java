@@ -63,6 +63,13 @@ public enum ItemBuilder
 		return item;
 	}, StructureType.CANNON),
 	
+	TURRET((itemBuilder, commonPlayer) ->
+	{
+		ItemStack item = new ItemStack(Material.SMOOTH_STONE);
+		setItemBuilderTag(item, itemBuilder, commonPlayer);
+		return item;
+	}, StructureType.TURRET),
+	
 	;
 	
 	private final BiFunction<ItemBuilder, CommonPlayer, ItemStack> itemStackFunction;

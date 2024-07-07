@@ -42,6 +42,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	TOWN_TILE_MAP(TownTileMapReader::new, TownTileMapReader.class, TownTileMapWriter::new, TownTileMapWriter.class),
 	TOWN_TILE(TownTileReader::new, TownTileReader.class, TownTileWriter::new, TownTileWriter.class),
 	TOWN(TownReader::new, TownReader.class, TownWriter::new, TownWriter.class),
+	TURRET(TurretReader::new, TurretReader.class, TurretWriter::new, TurretWriter.class),
 	VANILLA_PLAYER(VanillaPlayerReader::new, VanillaPlayerReader.class, VanillaPlayerWriter::new, VanillaPlayerWriter.class),
 	;
 	private final ReaderConstructor readerConstructor;

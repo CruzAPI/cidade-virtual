@@ -43,6 +43,7 @@ public enum PluginObjectType implements ObjectType
 	TOWN((byte) 0, PluginExternalizerType.TOWN),
 	TOWN_TILE_MAP((byte) 0, PluginExternalizerType.TOWN_TILE_MAP),
 	TOWN_TILE((byte) 0, PluginExternalizerType.TOWN_TILE),
+	TURRET((byte) 0, PluginExternalizerType.TURRET),
 	VANILLA_PLAYER((byte) 0, PluginExternalizerType.VANILLA_PLAYER),
 	;
 	

@@ -36,6 +36,7 @@ public enum PluginMessage implements Message
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
 	STRUCTURE_CANNON_NAME("structure.cannon.name"),
+	STRUCTURE_TURRET_NAME("structure.turret.name"),
 	STRUCTURE_TOWN_HALL_NAME ("structure.town-hall.name"),
 	STRUCTURE_LIKE_GENERATOR_NAME("structure.like-generator.name"),
 	STRUCTURE_DISLIKE_GENERATOR_NAME("structure.dislike-generator.name"),
@@ -268,6 +269,29 @@ public enum PluginMessage implements Message
 			empty().color(GRAY),
 			//TODO ...
 			TimerTranslater.translate(buildTicks, bundle),
+		};
+	}),
+	
+	STRUCTURE_TURRET_UPGRADE_PREVIEW_LORE("structure.turret.upgrade-preview-lore", (bundle, args) ->
+	{
+		TurretAttribute currentLevelAttributes = (TurretAttribute) args[0];
+		TurretAttribute nextLevelAttributes = (TurretAttribute) args[1];
+		
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(bundle.getLocale());
+		DecimalFormat decimalFormat = new DecimalFormat("0.0", symbols);
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(decimalFormat.format(currentLevelAttributes.getAttackDamage())),
+			text(decimalFormat.format(nextLevelAttributes.getAttackDamage())),
+			text(decimalFormat.format(currentLevelAttributes.getAttackSpeedPerSecond())),
+			text(decimalFormat.format(nextLevelAttributes.getAttackSpeedPerSecond())),
+			text(decimalFormat.format(currentLevelAttributes.getMissileSpeedPerSecond())),
+			text(decimalFormat.format(nextLevelAttributes.getMissileSpeedPerSecond())),
+			text(decimalFormat.format(currentLevelAttributes.getRange())),
+			text(decimalFormat.format(nextLevelAttributes.getRange())),
+			TimerTranslater.translate(nextLevelAttributes.getTotalBuildTicks(), bundle),
 		};
 	}),
 	

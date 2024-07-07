@@ -51,6 +51,7 @@ public class TownsFiler extends Filer
 		PluginObjectType.TOWN,
 		PluginObjectType.TOWN_TILE_MAP,
 		PluginObjectType.TOWN_TILE,
+		PluginObjectType.TURRET,
 	};
 
 	public TownsFiler(Main plugin)

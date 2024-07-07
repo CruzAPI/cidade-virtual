@@ -34,6 +34,7 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 	private ItemStack dislikeDeposit;
 	private ItemStack armory;
 	private ItemStack cannon;
+	private ItemStack turret;
 	
 	public CraftStructureShopGui(CommonPlayer commonPlayer)
 	{
@@ -56,6 +57,9 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		
 		cannon = new ItemStack(Material.DISPENSER);
 		setDisplayNameAndPriceInLore(cannon, ItemBuilder.CANNON);
+		
+		turret = new ItemStack(Material.SMOOTH_STONE);
+		setDisplayNameAndPriceInLore(turret, ItemBuilder.TURRET);
 		
 		itemStructureMap.keySet().forEach(getInventory()::addItem);
 	}

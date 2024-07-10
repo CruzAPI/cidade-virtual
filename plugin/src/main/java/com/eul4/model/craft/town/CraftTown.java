@@ -241,6 +241,8 @@ public class CraftTown implements Town
 		movingStructureClipboardHolder = structure.loadSchematic();
 		structure.demolishStructureConstruction(movingStructureClipboardHolder);
 		movingStructure = structure;
+		
+		movingStructure.onStartMove();
 	}
 	
 	@Override
@@ -260,6 +262,7 @@ public class CraftTown implements Town
 		this.movingStructureClipboardHolder = null;
 		
 		movingStructure.construct(movingStructureClipboardHolder);
+		movingStructure.onCancelMove();
 	}
 	
 	@Override
@@ -681,10 +684,7 @@ public class CraftTown implements Town
 		}
 		
 		frozen = true;
-		plugin.getServer()
-				.getScheduler()
-				.getMainThreadExecutor(plugin)
-				.execute(this::loadSchematicSneaky);
+		loadSchematicSneaky();
 	}
 	
 	@SneakyThrows
@@ -822,9 +822,8 @@ public class CraftTown implements Town
 				{
 					for(var weEntity : clipboard2.getEntities())
 					{
-						plugin.getEntityRegisterListener()
-								.getEntityByUuid(weEntity.getState().getNbtData().getUUID())
-								.remove();
+						//TODO test possible NPE with unloaded chunk
+						world.getEntity(weEntity.getState().getNbtData().getUUID()).remove();
 					}
 				}
 				finally

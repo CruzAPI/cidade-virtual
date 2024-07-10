@@ -1,6 +1,7 @@
 package com.eul4.externalizer.reader;
 
 import com.eul4.common.exception.InvalidVersionException;
+import com.eul4.common.externalizer.reader.EntityReader;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
@@ -11,6 +12,8 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Turret;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
+import org.bukkit.entity.Evoker;
+import org.bukkit.entity.Villager;
 
 import java.io.IOException;
 
@@ -41,6 +44,8 @@ public class TurretReader extends StructureReader<Turret>
 	private void readerVersion0(Turret turret) throws IOException, ClassNotFoundException
 	{
 		super.getReader().readObject(turret);
+		
+		turret.setEvoker((Evoker) readers.getReader(EntityReader.class).readReference(turret.getTown().getPlugin()));
 	}
 	
 	private Readable<Turret> parameterizedReadableVersion0(Town town)

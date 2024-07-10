@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -169,5 +170,53 @@ public class TownAttackListener implements Listener
 			resourceStructure.steal(resource);
 			event.setDropItems(false);
 		});
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void resetBlockHealthOnBlockBreak(BlockBreakEvent event)
+	{
+		Block block = event.getBlock();
+		TownBlock townBlock = Town.getStaticTownBlock(block);
+		Town town = townBlock == null ? null : townBlock.getTown();
+		TownAttack townAttack = town == null ? null : town.getCurrentAttack();
+		
+		if(townAttack == null)
+		{
+			return;
+		}
+		
+		townAttack.resetBlockHealth(block);
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void resetBlockHealthOnBlockPlace(BlockPlaceEvent event)
+	{
+		Block block = event.getBlock();
+		TownBlock townBlock = Town.getStaticTownBlock(block);
+		Town town = townBlock == null ? null : townBlock.getTown();
+		TownAttack townAttack = town == null ? null : town.getCurrentAttack();
+		
+		if(townAttack == null)
+		{
+			return;
+		}
+		
+		townAttack.resetBlockHealth(block);
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void resetBlockHealthOnBlockDestroy(BlockDestroyEvent event)
+	{
+		Block block = event.getBlock();
+		TownBlock townBlock = Town.getStaticTownBlock(block);
+		Town town = townBlock == null ? null : townBlock.getTown();
+		TownAttack townAttack = town == null ? null : town.getCurrentAttack();
+		
+		if(townAttack == null)
+		{
+			return;
+		}
+		
+		townAttack.resetBlockHealth(block);
 	}
 }

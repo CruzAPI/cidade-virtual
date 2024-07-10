@@ -12,7 +12,7 @@ public class TurretAttribute extends GenericAttribute
 	public static final TurretAttribute DEFAULT = new TurretAttribute();
 	
 	private double attackDamage;
-	private int attackSpeed;
+	private int attackSpeed = Integer.MAX_VALUE;
 	private double missileSpeed;
 	private double range;
 	

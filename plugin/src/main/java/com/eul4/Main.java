@@ -12,6 +12,8 @@ import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.externalizer.filer.TownsFiler;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
+import com.eul4.listener.container.entity.CancelDropOnDeathListener;
+import com.eul4.listener.container.entity.FakeShulkerBulletListener;
 import com.eul4.listener.container.entity.FakeVillagerListener;
 import com.eul4.listener.hotbar.DefenderSpectatorHotbarListener;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
@@ -235,6 +237,8 @@ public class Main extends Common
 	
 	private void registerContainerListeners()
 	{
+		pluginManager.registerEvents(new CancelDropOnDeathListener(this), this);
+		pluginManager.registerEvents(new FakeShulkerBulletListener(this), this);
 		pluginManager.registerEvents(new FakeVillagerListener(this), this);
 	}
 	

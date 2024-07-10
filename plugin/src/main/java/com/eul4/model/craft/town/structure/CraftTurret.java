@@ -23,6 +23,8 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
@@ -515,7 +517,7 @@ public class CraftTurret extends CraftStructure implements Turret
 			cancelAndRemoveFromList();
 			
 			target.setNoDamageTicks(0);
-			target.damage(attackDamage);
+			target.damage(attackDamage, DamageSource.builder(DamageType.PLAYER_ATTACK).build());
 			
 			displayDetonationEffects();
 		}

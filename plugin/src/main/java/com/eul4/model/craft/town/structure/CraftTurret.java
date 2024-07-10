@@ -387,8 +387,10 @@ public class CraftTurret extends CraftStructure implements Turret
 				for(int z = minZ; z <= maxZ; z++)
 				{
 					final Block block = world.getBlockAt(x, y, z);
+					final TownBlock townBlock = town.getTownBlock(block);
 					
-					if(block.isEmpty() || !block.getType().isCollidable())
+					if(block.isEmpty() || !block.getType().isCollidable()
+							|| townBlock != null && townBlock.hasStructure())
 					{
 						continue;
 					}

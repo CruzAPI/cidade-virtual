@@ -121,5 +121,7 @@ public interface Structure
 	void onTownLikeBalanceChange();
 	void onTownDislikeBalanceChange();
 	
+	void onStartMove();
 	void onFinishMove();
+	void onCancelMove();
 }

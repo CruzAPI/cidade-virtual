@@ -128,6 +128,20 @@ public enum StructureType
 		PluginMessage.STRUCTURE_CANNON_UPGRADE_PREVIEW_LORE
 	),
 	
+	TURRET
+	(
+		CraftTurret.class,
+		CraftTurret::new,
+		CraftTurret::new,
+		TurretWriter.class,
+		TurretReader.class,
+		CraftTurretGui::new,
+		Main::getTurretRule,
+		NamedTextColor.GRAY,
+		PluginMessage.STRUCTURE_TURRET_NAME,
+		PluginMessage.STRUCTURE_TURRET_UPGRADE_PREVIEW_LORE
+	),
+	
 	;
 	
 	private final Class<? extends Structure> structureClass;

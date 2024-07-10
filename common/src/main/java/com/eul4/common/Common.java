@@ -10,6 +10,7 @@ import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.interceptor.HologramTranslatorAdapter;
 import com.eul4.common.interceptor.SpawnEntityInterceptor;
 import com.eul4.common.listener.*;
+import com.eul4.common.listener.container.RemoveOnChunkLoadListener;
 import com.eul4.common.service.CommonDataFileManager;
 import com.eul4.common.service.PlayerManager;
 import com.eul4.common.service.ServerTickCounter;
@@ -90,6 +91,8 @@ public abstract class Common extends JavaPlugin
 	private void registerListeners()
 	{
 		final PluginManager pluginManager = getServer().getPluginManager();
+		
+		pluginManager.registerEvents(new RemoveOnChunkLoadListener(this), this);
 		
 		pluginManager.registerEvents(entityRegisterListener = new EntityRegisterListener(this), this);
 		pluginManager.registerEvents(new CommonAdminListener(this), this);

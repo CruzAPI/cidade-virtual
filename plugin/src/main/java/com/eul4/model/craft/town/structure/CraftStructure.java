@@ -152,7 +152,19 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
+	public void onStartMove()
+	{
+	
+	}
+	
+	@Override
 	public void onFinishMove()
+	{
+	
+	}
+	
+	@Override
+	public void onCancelMove()
 	{
 	
 	}

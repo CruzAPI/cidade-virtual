@@ -4,6 +4,7 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.*;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,14 +13,13 @@ import lombok.experimental.Accessors;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
@@ -30,6 +30,7 @@ public class TownAttack
 	private final Town town;
 	private final Attacker attacker;
 	private final Set<Entity> tempEntities = new HashSet<>();
+	private final Map<Block, Float> blockHealth = new HashMap<>();
 	
 	private boolean started;
 	private boolean starting;
@@ -261,5 +262,51 @@ public class TownAttack
 				action.accept(defenderSpectator);
 			}
 		}
+	}
+	
+	public void damageBlocks(List<Block> blocks, float totalDamage)
+	{
+		if(blocks.isEmpty())
+		{
+			return;
+		}
+		
+		float damage = totalDamage / blocks.size();
+		
+		blocks.forEach(block -> damageBlock(block, damage));
+	}
+	
+	public void damageBlock(Block block, float damage)
+	{
+		TownBlock townBlock = town.getTownBlock(block);
+		
+		if(townBlock == null || townBlock.hasProtection() || block.getType().getHardness() == -1)
+		{
+			return;
+		}
+		
+		blockHealth.putIfAbsent(block, block.getType().getHardness());
+		float newHealth = blockHealth.computeIfPresent(block, (key, health) -> health - damage);
+		
+		if(newHealth <= 0.0F)
+		{
+			destroyBlock(block);
+		}
+	}
+	
+	public float getBlockHealth(Block block)
+	{
+		return blockHealth.computeIfAbsent(block, key -> key.getType().getHardness());
+	}
+	
+	public void resetBlockHealth(Block block)
+	{
+		blockHealth.remove(block);
+	}
+	
+	private void destroyBlock(Block block)
+	{
+		block.breakNaturally(true, false);
+		blockHealth.remove(block);
 	}
 }

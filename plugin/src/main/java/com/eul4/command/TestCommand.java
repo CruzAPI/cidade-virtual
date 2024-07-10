@@ -1,16 +1,14 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.common.wrapper.Pitch;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.type.PluginWorldType;
 import com.eul4.util.AttributeModifierUtil;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
@@ -18,9 +16,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemFlag;
@@ -70,8 +66,13 @@ public class TestCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D)
-					.toHighestLocation());
+			Evoker evoker = (Evoker) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.EVOKER);
+			
+			evoker.setCelebrating(true);
+		}
+		else if(args.length == 2)
+		{
+			player.playSound(player.getLocation(), Sound.valueOf(args[0]), 1.0f, Pitch.getPitch(Integer.parseInt(args[1])));
 		}
 		else if(args.length == 2)
 		{
@@ -101,7 +102,7 @@ public class TestCommand implements TabExecutor
 //			meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "", i, ADD_NUMBER, EquipmentSlot.HEAD));
 //			item.setItemMeta(meta);
 //			player.getInventory().addItem(item);
-			
+
 //			ItemStack goldenPickaxe = new ItemStack(Material.GOLDEN_PICKAXE);
 //			ItemMeta meta = goldenPickaxe.getItemMeta();
 //			ToolComponent tool = meta.getTool();

@@ -1,8 +1,6 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
-import com.eul4.common.constant.CommonNamespacedKey;
-import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
@@ -52,7 +50,7 @@ public class CraftArmory extends CraftStructure implements Armory
 		super(town, centerTownBlock, isBuilt);
 		town.setArmory(this);
 		
-		this.npc = (Villager) centerTownBlock.getBlock().getWorld().spawnEntity(getDefaultNpcLocation(), VILLAGER, CUSTOM, this::setupNCP);
+		this.npc = (Villager) centerTownBlock.getBlock().getWorld().spawnEntity(getDefaultNpcLocation(), VILLAGER, CUSTOM, this::setupNPC);
 	}
 	
 	public CraftArmory(Town town)
@@ -60,12 +58,12 @@ public class CraftArmory extends CraftStructure implements Armory
 		super(town);
 	}
 	
-	private void setupNCP(Entity villager)
+	private void setupNPC(Entity villager)
 	{
-		this.setupNCP((Villager) villager);
+		this.setupNPC((Villager) villager);
 	}
 	
-	private void setupNCP(Villager villager)
+	private void setupNPC(Villager villager)
 	{
 		villager.setAI(false);
 		villager.setInvulnerable(true);

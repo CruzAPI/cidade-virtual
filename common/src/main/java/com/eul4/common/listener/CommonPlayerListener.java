@@ -4,10 +4,15 @@ import com.eul4.common.Common;
 import com.eul4.common.event.CommonPlayerRegisterEvent;
 import com.eul4.common.model.player.CommonPlayer;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Illager;
+import org.bukkit.entity.Mob;
+import org.bukkit.entity.Pillager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 

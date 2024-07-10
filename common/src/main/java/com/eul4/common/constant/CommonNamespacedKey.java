@@ -13,5 +13,6 @@ public class CommonNamespacedKey
 	CANCEL_MOVE = new NamespacedKey(NAMESPACE, "cancel_move"),
 	CANCEL_SPAWN = new NamespacedKey(NAMESPACE, "remove_on_drop"),
 	CANCEL_INTERACTION = new NamespacedKey(NAMESPACE, "cancel_interaction"),
+	REMOVE_ON_CHUNK_LOAD = new NamespacedKey(NAMESPACE, "remove_on_chunk_load"),
 	FAWE_IGNORE = new NamespacedKey(NAMESPACE, "fawe_ignore");
 }

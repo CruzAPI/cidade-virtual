@@ -14,5 +14,6 @@ public class PluginNamespacedKey
 	MACROID_WAND_UUID = new NamespacedKey(NAMESPACE, "macroid_wand_uuid"),
 	WEAPON_ITEM_ATTRIBUTE = new NamespacedKey(NAMESPACE, "weapon_item_attribute"),
 	BATTLE_INVENTORY_OWNER = new NamespacedKey(NAMESPACE, "battle_inventory_owner"),
-	FAKE_VILLAGER = new NamespacedKey(NAMESPACE, "fake_villager");
+	FAKE_VILLAGER = new NamespacedKey(NAMESPACE, "fake_villager"),
+	FAKE_SHULKER_BULLET = new NamespacedKey(NAMESPACE, "fake_shulker_bullet");
 }

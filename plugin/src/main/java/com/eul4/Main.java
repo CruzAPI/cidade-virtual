@@ -12,6 +12,8 @@ import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.externalizer.filer.TownsFiler;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.listener.*;
+import com.eul4.listener.container.entity.CancelDropOnDeathListener;
+import com.eul4.listener.container.entity.FakeShulkerBulletListener;
 import com.eul4.listener.container.entity.FakeVillagerListener;
 import com.eul4.listener.hotbar.DefenderSpectatorHotbarListener;
 import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
@@ -56,6 +58,7 @@ public class Main extends Common
 	private DislikeDepositRuleSerializer dislikeDepositRuleSerializer;
 	private ArmoryRuleSerializer armoryRuleSerializer;
 	private CannonRuleSerializer cannonRuleSerializer;
+	private TurretRuleSerializer turretRuleSerializer;
 	
 	private Rule<TownHallAttribute> townHallRule;
 	private Rule<LikeGeneratorAttribute> likeGeneratorRule;
@@ -64,6 +67,7 @@ public class Main extends Common
 	private Rule<DislikeDepositAttribute> dislikeDepositRule;
 	private Rule<ArmoryAttribute> armoryRule;
 	private Rule<CannonAttribute> cannonRule;
+	private Rule<TurretAttribute> turretRule;
 	
 	private BuyStructureCommand buyStructureCommand;
 	private RaidCommand	raidCommand;
@@ -139,6 +143,7 @@ public class Main extends Common
 		var dislikeDepositRule = dislikeDepositRuleSerializer.load();
 		var armoryRule = armoryRuleSerializer.load();
 		var cannonRule = cannonRuleSerializer.load();
+		var turretRule = turretRuleSerializer.load();
 		
 		this.townHallRule = townHallRule;
 		this.likeGeneratorRule = likeGeneratorRule;
@@ -147,6 +152,7 @@ public class Main extends Common
 		this.dislikeDepositRule = dislikeDepositRule;
 		this.armoryRule = armoryRule;
 		this.cannonRule = cannonRule;
+		this.turretRule = turretRule;
 		
 		townManager.reloadTowns();
 	}
@@ -179,6 +185,7 @@ public class Main extends Common
 		dislikeDepositRuleSerializer = new DislikeDepositRuleSerializer(this);
 		armoryRuleSerializer = new ArmoryRuleSerializer(this);
 		cannonRuleSerializer = new CannonRuleSerializer(this);
+		turretRuleSerializer = new TurretRuleSerializer(this);
 	}
 	
 	private void registerPacketInterceptors()
@@ -230,6 +237,8 @@ public class Main extends Common
 	
 	private void registerContainerListeners()
 	{
+		pluginManager.registerEvents(new CancelDropOnDeathListener(this), this);
+		pluginManager.registerEvents(new FakeShulkerBulletListener(this), this);
 		pluginManager.registerEvents(new FakeVillagerListener(this), this);
 	}
 	

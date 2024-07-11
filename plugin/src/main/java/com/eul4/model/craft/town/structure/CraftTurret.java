@@ -23,6 +23,8 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
@@ -387,8 +389,10 @@ public class CraftTurret extends CraftStructure implements Turret
 				for(int z = minZ; z <= maxZ; z++)
 				{
 					final Block block = world.getBlockAt(x, y, z);
+					final TownBlock townBlock = town.getTownBlock(block);
 					
-					if(block.isEmpty() || !block.getType().isCollidable())
+					if(block.isEmpty() || !block.getType().isCollidable()
+							|| townBlock != null && townBlock.hasStructure())
 					{
 						continue;
 					}
@@ -513,7 +517,7 @@ public class CraftTurret extends CraftStructure implements Turret
 			cancelAndRemoveFromList();
 			
 			target.setNoDamageTicks(0);
-			target.damage(attackDamage);
+			target.damage(attackDamage, DamageSource.builder(DamageType.PLAYER_ATTACK).build());
 			
 			displayDetonationEffects();
 		}

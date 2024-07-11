@@ -46,6 +46,7 @@ public enum PluginMessage implements Message
 	CLICK_TO_BUY_THIS_TILE("click-to-buy-this-tile", empty().decorate(BOLD)),
 	
 	TOWN_COMMAND_NAME("town.command.name"),
+	COMMAND_BUY_STRUCTURE_ALIASES("command.buy-structure.aliases"),
 	
 	INVENTORY_ARMORY_MENU_TITLE("inventory.armory-menu.title", empty().color(BLACK).decorate(BOLD)),
 	INVENTORY_ARMORY_MENU_SHOP("inventory.armory-menu.shop", empty().color(GREEN)),
@@ -554,6 +555,15 @@ public enum PluginMessage implements Message
 	TITLE_OPEN_YOUR_INVENTORY("title.open-your-inventory", empty().color(WHITE)),
 	SUBTITLE_OPEN_YOUR_INVENTORY("subtitle.open-your-inventory", empty().color(GRAY)),
 	
+	TITLE_CREATING_TOWN("title.creating-town", empty().color(WHITE)),
+	SUBTITLE_CREATING_TOWN("subtitle.creating-town", empty().color(GRAY)),
+	
+	TITLE_TOWN_WELCOME("title.town.welcome", (bundle, args) -> new Component[]
+	{
+		empty().color(GOLD),
+		(Component) args[0],
+	}),
+	
 	YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK("you-received-your-vanilla-inventory-back"),
 	
 	BATTLE_INVENTORY_UPDATED("battle-inventory-updated", (bundle, args) -> new Component[]
@@ -582,6 +592,20 @@ public enum PluginMessage implements Message
 				.append((Component) args[0])
 				.append(text("*"))
 	}),
+	
+	TOWN_WELCOME("town.welcome", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		(Component) args[0],
+	}),
+	
+	TOWN_HINT_BUY_STRUCTURE_COMMAND("town.hint.buy-structure-command", (bundle, args) -> new Component[]
+	{
+		empty().color(GRAY),
+		COMMAND_BUY_STRUCTURE_ALIASES.translateWord(bundle, string -> "/" + string).color(WHITE),
+	}),
+	
+	COMMAND_TOWN_FAILED_TO_CREATE_TOWN("command.town.failed-to-create-town", empty().color(RED)),
 	
 	;
 	

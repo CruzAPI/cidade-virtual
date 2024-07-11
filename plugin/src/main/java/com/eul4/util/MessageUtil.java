@@ -9,7 +9,6 @@ import com.eul4.wrapper.Cost;
 import com.google.common.collect.Multimap;
 import joptsimple.internal.Strings;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.lang.WordUtils;
@@ -17,13 +16,12 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
 import static com.eul4.i18n.PluginMessage.DECORATED_VALUE_CURRENCY;
-import static net.kyori.adventure.text.Component.empty;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public class MessageUtil
 {

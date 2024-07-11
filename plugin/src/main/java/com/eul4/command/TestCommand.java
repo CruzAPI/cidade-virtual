@@ -137,24 +137,6 @@ public class TestCommand implements TabExecutor
 //				player.sendMessage("You are not a town player.");
 //			}
 //		}
-		else if(args.length == 1)
-		{
-			final int amount = Integer.parseInt(args[0]);
-			
-			for(int i = 0; i < amount; i++)
-			{
-				try
-				{
-					plugin.getTownManager().getOrCreateNewTown(UUID.randomUUID());
-				}
-				catch(Exception e)
-				{
-					throw new RuntimeException(e);
-				}
-			}
-			
-			player.sendMessage("Towns created: " + amount);
-		}
 		else if(args.length == 2)
 		{
 			TownPlayer townPlayer = (TownPlayer) plugin.getPlayerManager().get(player);

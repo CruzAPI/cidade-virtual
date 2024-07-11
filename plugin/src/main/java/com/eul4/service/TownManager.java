@@ -2,6 +2,7 @@ package com.eul4.service;
 
 import com.eul4.Main;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.exception.TownAlreadyExistsException;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.town.Town;
 import com.eul4.type.PluginWorldType;
@@ -9,7 +10,6 @@ import com.eul4.wrapper.TownMap;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
@@ -22,12 +22,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.event.inventory.InventoryDragEvent;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @RequiredArgsConstructor
 public class TownManager
@@ -36,6 +40,8 @@ public class TownManager
 	
 	@Getter
 	private TownMap towns;
+	
+	private Set<UUID> waitingCreation = new HashSet<>();
 	
 	public void loadTowns() throws Exception
 	{
@@ -48,20 +54,20 @@ public class TownManager
 		this.towns.values().forEach(Town::load);
 	}
 	
-	public Town getOrCreateNewTown(UUID uuid) throws CannotConstructException, IOException
+	public Future<Town> createNewTownAsync(UUID uuid)
+	{
+		waitingCreation.add(uuid);
+		ExecutorService executorService = Executors.newSingleThreadExecutor();
+		return executorService.submit(() -> createNewTown(uuid));
+	}
+	
+	private synchronized Town createNewTown(UUID uuid) throws CannotConstructException, IOException
 	{
 		if(towns.containsKey(uuid))
 		{
-			return towns.get(uuid);
+			throw new TownAlreadyExistsException();
 		}
 		
-		Town town = createNewTown(uuid);
-		towns.put(uuid, town);
-		return town;
-	}
-	
-	private Town createNewTown(UUID uuid) throws CannotConstructException, IOException
-	{
 		Location location = findNextEmptyTown();
 		BlockVector3 to = BlockVector3.at(location.getX(), location.getY() + 1, location.getZ());
 		
@@ -72,26 +78,10 @@ public class TownManager
 			var world = FaweAPI.getWorld(PluginWorldType.TOWN_WORLD.getInstance().getWorld().getName());
 			
 			ClipboardFormat format = ClipboardFormats.findByFile(file);
-			ClipboardReader reader = null;
-			try
-			{
-				reader = format.getReader(new FileInputStream(file));
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
-			Clipboard clipboard = null;
 			
-			try
-			{
-				clipboard = reader.read();
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
-			try(EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1))
+			try(ClipboardReader reader = format.getReader(new FileInputStream(file));
+					Clipboard clipboard = reader.read();
+					EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1))
 			{
 				Operation operation = new ClipboardHolder(clipboard)
 						.createPaste(editSession)
@@ -101,13 +91,16 @@ public class TownManager
 				
 				Operations.complete(operation);
 			}
+			
+			Town town = new CraftTown(plugin.getServer().getOfflinePlayer(uuid), location.getBlock(), plugin);
+			
+			towns.put(uuid, town);
+			return town;
 		}
-		catch(WorldEditException e)
+		finally
 		{
-			throw new RuntimeException(e);
+			waitingCreation.remove(uuid);
 		}
-		
-		return new CraftTown(plugin.getServer().getOfflinePlayer(uuid), location.getBlock(), plugin);
 	}
 	
 	public Location findNextEmptyTown()
@@ -152,5 +145,10 @@ public class TownManager
 		}
 		
 		towns.values().forEach(Town::reloadAllStructureAttributes);
+	}
+	
+	public boolean isCreating(UUID uuid)
+	{
+		return waitingCreation.contains(uuid);
 	}
 }

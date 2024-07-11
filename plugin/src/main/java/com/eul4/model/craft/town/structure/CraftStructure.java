@@ -2,6 +2,7 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.util.ThreadUtil;
 import com.eul4.common.wrapper.Pitch;
 import com.eul4.enums.StructureStatus;
 import com.eul4.event.StructureConstructEvent;
@@ -127,7 +128,8 @@ public abstract class CraftStructure implements Structure
 				centerTownBlock.getBlock().getLocation().add(hologramRelativePosition));
 		
 		construct(loadSchematic(), centerTownBlock, 0);
-		updateHologram();
+		
+		ThreadUtil.runSynchronouslyUntilTerminate(town.getPlugin(), this::updateHologram);
 		
 		town.addStructure(this);
 		scheduleBuildTaskIfPossible();

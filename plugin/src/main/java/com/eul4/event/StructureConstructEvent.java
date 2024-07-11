@@ -4,6 +4,7 @@ import com.eul4.model.town.structure.Structure;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.Plugin;
 
 @Getter
 public class StructureConstructEvent extends Event
@@ -12,9 +13,14 @@ public class StructureConstructEvent extends Event
 	
 	private final Structure structure;
 	
-	public StructureConstructEvent(Structure structure)
+	public StructureConstructEvent(Plugin plugin, Structure structure)
 	{
-		super(true);
+		this(!plugin.getServer().isPrimaryThread(), structure);
+	}
+	
+	public StructureConstructEvent(boolean async, Structure structure)
+	{
+		super(async);
 		this.structure = structure;
 	}
 	

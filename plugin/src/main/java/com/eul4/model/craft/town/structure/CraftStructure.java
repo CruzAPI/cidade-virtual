@@ -90,7 +90,7 @@ public abstract class CraftStructure implements Structure
 	private BukkitRunnable buildTask;
 	
 	private transient Vector hologramRelativePosition;
-	private final double maxHealth = 30.0D; //TODO generic attribute
+	private transient double maxHealth;
 	private transient double health = maxHealth;
 	
 	private transient boolean destroyed;
@@ -267,7 +267,7 @@ public abstract class CraftStructure implements Structure
 		this.townBlockSet = townBlockSet;
 		this.townBlockSet.forEach(townBlock -> townBlock.setStructure(this));
 		
-		town.getPlugin().getServer().getPluginManager().callEvent(new StructureConstructEvent(this));
+		town.getPlugin().getServer().getPluginManager().callEvent(new StructureConstructEvent(town.getPlugin(), this));
 		
 		var world = FaweAPI.getWorld(centerTownBlock.getBlock().getWorld().getName());
 		
@@ -557,6 +557,7 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public void resetAttributes()
 	{
+		maxHealth = getRule().getAttributeOrDefault(getBuiltLevel()).getHp();
 		hologramRelativePosition = getRule().getAttribute(level).getHologramVector();
 	}
 	

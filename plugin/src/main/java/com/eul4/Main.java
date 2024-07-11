@@ -262,6 +262,7 @@ public class Main extends Common
 	{
 		pluginManager.registerEvents(new AttackerListener(this), this);
 		pluginManager.registerEvents(new DefenderListener(this), this);
+		pluginManager.registerEvents(new FighterListener(this), this);
 		pluginManager.registerEvents(new InventoryOrganizerPlayerListener(this), this);
 		pluginManager.registerEvents(new InvincibleListener(this), this);
 		pluginManager.registerEvents(new PluginPlayerListener(this), this);

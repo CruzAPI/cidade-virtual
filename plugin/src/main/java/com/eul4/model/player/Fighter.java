@@ -3,10 +3,9 @@ package com.eul4.model.player;
 import com.eul4.common.wrapper.UUIDUtil;
 import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.model.town.Town;
-import com.eul4.model.town.structure.Armory;
 import com.eul4.wrapper.TownAttack;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,6 +16,21 @@ import java.util.Optional;
 public interface Fighter extends PluginPlayer, SpiritualPlayer
 {
 	Town getAttackedTown();
+	
+	void setLastValidLocation(Location location);
+	Location getLastValidLocation();
+	
+	default boolean isOutside()
+	{
+		Town town = getAttackedTown();
+		
+		if(town == null)
+		{
+			return false;
+		}
+		
+		return !town.getBoundingBoxExcludingWalls().contains(getPlayer().getBoundingBox());
+	}
 	
 	default TownAttack getTownAttack()
 	{

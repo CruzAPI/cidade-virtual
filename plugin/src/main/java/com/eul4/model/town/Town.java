@@ -19,6 +19,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 
 import java.awt.*;
 import java.io.IOException;
@@ -33,6 +34,7 @@ public interface Town
 {
 	int TOWN_RADIUS = 49;
 	int TOWN_FULL_RADIUS = 55;
+	int TOWN_FULL_RADIUS_EXCLUDING_WALLS = TOWN_FULL_RADIUS - 1;
 	int TOWN_FULL_DIAMATER = 55 * 2 + 1;
 	int INITIAL_AVAILABLE_RADIUS = 13;
 	int Y = 49;
@@ -163,4 +165,8 @@ public interface Town
 	long getLastAttackFinishTick();
 	Armory getArmory();
 	Optional<Armory> findArmory();
+	
+	BoundingBox getBoundingBoxExcludingWalls();
+	
+	Location getRandomSpawnLocation();
 }

@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 
-public class CraftAttacker extends CraftSpiritualPlayer implements Attacker
+public class CraftAttacker extends CraftFighter implements Attacker
 {
 	private final Town town;
 	@Getter
@@ -56,26 +56,7 @@ public class CraftAttacker extends CraftSpiritualPlayer implements Attacker
 		if(town.findTownBlock(player.getLocation().getBlock())
 				.filter(Predicate.not(TownBlock::isAvailable)).isEmpty())
 		{
-			Location spawnLocation = town.getUnavailableRandomTownBlock()
-					.getBlock()
-					.getRelative(BlockFace.UP)
-					.getLocation()
-					.toCenterLocation();
-			
-			Location townHallLocation = town.getTownHall()
-					.getCenterTownBlock()
-					.getBlock()
-					.getLocation()
-					.toCenterLocation();
-			
-			double dx = townHallLocation.getX() - spawnLocation.getX();
-			double dz = townHallLocation.getZ() - spawnLocation.getZ();
-			
-			float yaw = (float) Math.toDegrees(Math.atan2(dz, dx)) - 90;
-			
-			spawnLocation.setYaw(yaw);
-			
-			player.teleport(spawnLocation);
+			player.teleport(town.getRandomSpawnLocation());
 		}
 		
 		equipBattleInventory();

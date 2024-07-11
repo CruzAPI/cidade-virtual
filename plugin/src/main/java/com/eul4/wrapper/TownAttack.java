@@ -14,6 +14,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -43,6 +44,8 @@ public class TownAttack
 	@Accessors(fluent = true)
     private boolean canDefenderRespawn = true;
 	
+	private WallTask wallTask;
+	
 	public void start()
 	{
 		if(started)
@@ -63,6 +66,8 @@ public class TownAttack
 	
 	private void onStartAttack()
 	{
+		schedulerWallTask();
+		
 		town.getStructureSet().forEach(Structure::onStartAttack);
 		
 		town.updateHolograms();
@@ -71,12 +76,22 @@ public class TownAttack
 				.ifPresent(PluginPlayer::onStartingTownAttack);
 	}
 	
+	private void schedulerWallTask()
+	{
+		Optional.ofNullable(wallTask).ifPresent(WallTask::cancel);
+		
+		wallTask = new WallTask();
+		wallTask.runTaskTimer(town.getPlugin(), 0L, 1L);
+	}
+	
 	private void onFinishAttack()
 	{
 		if(onFinishCalled)
 		{
 			return;
 		}
+		
+		Optional.ofNullable(wallTask).ifPresent(WallTask::cancel);
 		
 		town.getStructureSet().forEach(Structure::onFinishAttack);
 		
@@ -308,5 +323,53 @@ public class TownAttack
 	{
 		block.breakNaturally(true, false);
 		blockHealth.remove(block);
+	}
+	
+	private class WallTask extends BukkitRunnable
+	{
+		final int maxHeight = town.getBlock().getWorld().getMaxHeight();
+		
+		int layer = 1;
+		
+		@Override
+		public void run()
+		{
+			if(layer + Town.Y >= maxHeight)
+			{
+				cancel();
+				return;
+			}
+			
+			buildLayer();
+			layer++;
+		}
+		
+		private void buildLayer()
+		{
+			int x = Town.TOWN_FULL_RADIUS - 1;
+			int z = -Town.TOWN_FULL_RADIUS + 1;
+			int dx = 1;
+			int dz = 0;
+			
+			for(;;)
+			{
+				if(x == z || x < 0 && x == -z || x > 0 && x == 1 - z)
+				{
+					int temp = dx;
+					dx = -dz;
+					dz = temp;
+				}
+				
+				x += dx;
+				z += dz;
+				
+				if(Math.abs(x) > Town.TOWN_FULL_RADIUS || Math.abs(z) > Town.TOWN_FULL_RADIUS)
+				{
+					return;
+				}
+				
+				town.getBlock().getRelative(x, layer, z).setType(Material.RED_STAINED_GLASS_PANE);
+			}
+		}
 	}
 }

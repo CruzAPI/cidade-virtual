@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 @Getter
-public class CraftDefender extends CraftSpiritualPlayer implements Defender
+public class CraftDefender extends CraftFighter implements Defender
 {
 	public CraftDefender(Player player, Main plugin)
 	{

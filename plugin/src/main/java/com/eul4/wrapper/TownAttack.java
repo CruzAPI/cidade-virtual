@@ -14,6 +14,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -45,6 +46,7 @@ public class TownAttack
     private boolean canDefenderRespawn = true;
 	
 	private WallTask wallTask;
+	private ForceFieldTask forceFieldTask;
 	
 	public void start()
 	{
@@ -67,6 +69,7 @@ public class TownAttack
 	private void onStartAttack()
 	{
 		schedulerWallTask();
+		scheduleForceFieldTask();
 		
 		town.getStructureSet().forEach(Structure::onStartAttack);
 		
@@ -74,6 +77,14 @@ public class TownAttack
 		town.getPlayer().map(town.getPlugin().getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
 				.ifPresent(PluginPlayer::onStartingTownAttack);
+	}
+	
+	private void scheduleForceFieldTask()
+	{
+		Optional.ofNullable(forceFieldTask).ifPresent(ForceFieldTask::cancel);
+		
+		forceFieldTask = new ForceFieldTask();
+		forceFieldTask.runTaskTimer(town.getPlugin(), 0L, 1L);
 	}
 	
 	private void schedulerWallTask()
@@ -92,6 +103,7 @@ public class TownAttack
 		}
 		
 		Optional.ofNullable(wallTask).ifPresent(WallTask::cancel);
+		Optional.ofNullable(forceFieldTask).ifPresent(ForceFieldTask::cancel);
 		
 		town.getStructureSet().forEach(Structure::onFinishAttack);
 		
@@ -147,6 +159,16 @@ public class TownAttack
 		{
 			action.accept(pluginPlayer);
 		}
+	}
+	
+	private Fighter[] getFighters()
+	{
+		if(town.getPluginPlayer() instanceof Defender defender)
+		{
+			return new Fighter[] { attacker, defender };
+		}
+		
+		return new Fighter[] { attacker };
 	}
 	
 	private PluginPlayer[] getInvolvedPlayers()
@@ -323,6 +345,34 @@ public class TownAttack
 	{
 		block.breakNaturally(true, false);
 		blockHealth.remove(block);
+	}
+	
+	private class ForceFieldTask extends BukkitRunnable
+	{
+		@Override
+		public void run()
+		{
+			for(Fighter fighter : getFighters())
+			{
+				if(fighter.isOutside())
+				{
+					Location lastValidLocation = fighter.getLastValidLocation();
+					
+					if(lastValidLocation == null)
+					{
+						fighter.getPlayer().teleport(town.getRandomSpawnLocation());
+					}
+					else
+					{
+						fighter.getPlayer().teleport(lastValidLocation);
+					}
+				}
+				else
+				{
+					fighter.setLastValidLocation(fighter.getPlayer().getLocation());
+				}
+			}
+		}
 	}
 	
 	private class WallTask extends BukkitRunnable

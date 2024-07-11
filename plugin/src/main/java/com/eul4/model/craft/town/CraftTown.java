@@ -43,7 +43,9 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 import org.enginehub.linbus.tree.LinByteTag;
 import org.enginehub.linbus.tree.LinCompoundTag;
 import org.enginehub.linbus.tree.LinTag;
@@ -920,5 +922,42 @@ public class CraftTown implements Town
 	public Optional<Armory> findArmory()
 	{
 		return Optional.ofNullable(armory);
+	}
+	
+	@Override
+	public BoundingBox getBoundingBoxExcludingWalls()
+	{
+		Location min = block.getRelative(-Town.TOWN_FULL_RADIUS_EXCLUDING_WALLS, 0, -Town.TOWN_FULL_RADIUS_EXCLUDING_WALLS).getLocation();
+		min.setY(-99999.0D);
+		
+		Location max = block.getRelative(Town.TOWN_FULL_RADIUS_EXCLUDING_WALLS, 0, Town.TOWN_FULL_RADIUS_EXCLUDING_WALLS).getLocation();
+		max.setY(block.getWorld().getMaxHeight());
+		
+		return BoundingBox.of(min.getBlock(), max.getBlock());
+	}
+	
+	@Override
+	public Location getRandomSpawnLocation()
+	{
+		Location randomSpawnLocation = getUnavailableRandomTownBlock()
+				.getBlock()
+				.getRelative(BlockFace.UP)
+				.getLocation()
+				.toCenterLocation();
+		
+		Location townHallLocation = townHall
+				.getCenterTownBlock()
+				.getBlock()
+				.getLocation()
+				.toCenterLocation();
+		
+		double dx = townHallLocation.getX() - randomSpawnLocation.getX();
+		double dz = townHallLocation.getZ() - randomSpawnLocation.getZ();
+		
+		float yaw = (float) Math.toDegrees(Math.atan2(dz, dx)) - 90;
+		
+		randomSpawnLocation.setYaw(yaw);
+		
+		return randomSpawnLocation;
 	}
 }

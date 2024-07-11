@@ -3,6 +3,7 @@ package com.eul4.common.hologram;
 import com.eul4.common.Common;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.util.ThreadUtil;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -66,7 +67,12 @@ public class Hologram
 		plugin.getHologramTranslatorAdapter().getHolograms().put(armorStand, line);
 		setTextFunction.accept(line);
 		
-		armorStand.spawnAt(armorStand.getLocation());
+		spawnArmorStandSynchronously(armorStand);
+	}
+	
+	private void spawnArmorStandSynchronously(ArmorStand armorStand)
+	{
+		ThreadUtil.runSynchronouslyUntilTerminate(plugin, () -> armorStand.spawnAt(armorStand.getLocation()));
 	}
 	
 	public static boolean isHologram(ArmorStand armorStand)

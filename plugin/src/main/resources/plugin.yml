@@ -16,6 +16,7 @@ commands:
   build:
   move:
   buystructure:
+    aliases: [loja]
   rulereload:
   macroid:
   raid:

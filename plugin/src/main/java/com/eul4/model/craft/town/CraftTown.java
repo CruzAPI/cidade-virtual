@@ -3,8 +3,7 @@ package com.eul4.model.craft.town;
 import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
-import com.eul4.common.constant.CommonNamespacedKey;
-import com.eul4.enums.PluginNamespacedKey;
+import com.eul4.common.util.ThreadUtil;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
@@ -47,8 +46,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.enginehub.linbus.tree.LinByteTag;
-import org.enginehub.linbus.tree.LinCompoundTag;
-import org.enginehub.linbus.tree.LinTag;
 import org.enginehub.linbus.tree.LinTagType;
 
 import java.awt.*;
@@ -129,7 +126,7 @@ public class CraftTown implements Town
 		this.structureSet = new StructureSet();
 		
 		createInitialStructures();
-		reloadAllStructureAttributes();
+		ThreadUtil.runSynchronouslyUntilTerminate(plugin, this::reloadAllStructureAttributes);
 		
 		TOWN_BLOCKS.putAll(townBlockMap);
 	}

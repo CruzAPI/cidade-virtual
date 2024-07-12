@@ -163,7 +163,12 @@ public class TownAttackListener implements Listener
 		{
 			return;
 		}
-
+		
+		if(!resourceStructure.isDestroyed())
+		{
+			return;
+		}
+		
 		resourceStructure.findResource(block).ifPresent(resource ->
 		{
 			event.setCancelled(false);

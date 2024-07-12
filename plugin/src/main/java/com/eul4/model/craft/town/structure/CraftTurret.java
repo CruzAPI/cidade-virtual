@@ -52,10 +52,8 @@ public class CraftTurret extends CraftStructure implements Turret
 	private transient double missileSpeed;
 	private transient double range;
 	
-	private transient Player target;
-	
 	private transient TurretTask turretTask;
-	private transient List<MissileTask> missileTasks = new ArrayList<>();
+	private transient List<TurretTask.MissileTask> missileTasks = new ArrayList<>();
 	
 	private Evoker evoker;
 	
@@ -170,9 +168,16 @@ public class CraftTurret extends CraftStructure implements Turret
 	{
 		super.onStartAttack();
 		
-		TownAttack townAttack = town.getCurrentAttack();
-		target = townAttack == null ? null : townAttack.getAttacker().getPlayer();
+		if(status != StructureStatus.BUILT)
+		{
+			return;
+		}
 		
+		scheduleTurretTask();
+	}
+	
+	private void scheduleTurretTask()
+	{
 		Optional.ofNullable(turretTask).ifPresent(BukkitRunnable::cancel);
 		turretTask = new TurretTask();
 		turretTask.runTaskTimer(getTown().getPlugin(), 0L, 1L);
@@ -269,19 +274,8 @@ public class CraftTurret extends CraftStructure implements Turret
 	
 	private void cancelAndClearMissileTasks()
 	{
-		missileTasks.forEach(MissileTask::cancel);
+		missileTasks.forEach(TurretTask.MissileTask::cancel);
 		missileTasks.clear();
-	}
-	
-	private void alertTurretRange()
-	{
-		if(target == null)
-		{
-			return;
-		}
-		
-		target.playSound(getMissileSpawnLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, Pitch.getPitch(17));
-		target.playSound(getMissileSpawnLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, Pitch.getPitch(24));
 	}
 	
 	private class TurretTask extends BukkitRunnable
@@ -290,6 +284,14 @@ public class CraftTurret extends CraftStructure implements Turret
 		private int lastShotTick;
 		
 		private boolean isInRange;
+		
+		private Player target;
+		
+		private TurretTask()
+		{
+			TownAttack townAttack = town.getCurrentAttack();
+			this.target = townAttack == null ? null : townAttack.getAttacker().getPlayer();
+		}
 		
 		@Override
 		public void run()
@@ -333,6 +335,17 @@ public class CraftTurret extends CraftStructure implements Turret
 			shot();
 		}
 		
+		private void alertTurretRange()
+		{
+			if(target == null)
+			{
+				return;
+			}
+			
+			target.playSound(getMissileSpawnLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, Pitch.getPitch(17));
+			target.playSound(getMissileSpawnLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, Pitch.getPitch(24));
+		}
+		
 		private void shot()
 		{
 			lastShotTick = ticks;
@@ -360,6 +373,154 @@ public class CraftTurret extends CraftStructure implements Turret
 			turretLocation.setY(0.0D);
 			
 			return turretLocation.distance(targetLocation) <= range;
+		}
+		
+		private class MissileTask extends BukkitRunnable
+		{
+			private final Location missileSpawnLocation = getMissileSpawnLocation();
+			private final ArmorStand marker = (ArmorStand) missileSpawnLocation
+					.getWorld()
+					.spawnEntity(missileSpawnLocation, ARMOR_STAND, CUSTOM, this::setupMarker);
+			private final ShulkerBullet missile = (ShulkerBullet) missileSpawnLocation
+					.getWorld()
+					.spawnEntity(missileSpawnLocation, SHULKER_BULLET, CUSTOM, this::setupMissile);
+			
+			private int ticks;
+			
+			@Override
+			public void run()
+			{
+				if(marker.isDead() || missile.isDead())
+				{
+					cancel();
+					return;
+				}
+				
+				final Location currentMissileLocation = marker.getLocation();
+				final Location targetLoc = target.getEyeLocation();
+				boolean isMissileInsideTarget = target.getBoundingBox().contains(currentMissileLocation.toVector());
+				
+				if(isMissileInsideTarget)
+				{
+					caught();
+					return;
+				}
+				
+				List<Block> collidingBlocks = getCollidingBlocks(missile);
+				
+				if(!collidingBlocks.isEmpty())
+				{
+					explode(collidingBlocks);
+					return;
+				}
+				
+				final Location subtract = targetLoc.clone().subtract(currentMissileLocation);
+				final Vector direction = subtract.toVector().normalize();
+				
+				direction.multiply(missileSpeed);
+				
+				double currentDistance = currentMissileLocation.distance(targetLoc);
+				final Location nextMissileLocation = currentMissileLocation.clone().add(direction);
+				double nextDistance = nextMissileLocation.distance(targetLoc);
+				
+				if(nextDistance > currentDistance)
+				{
+					caught();
+					return;
+				}
+				
+				marker.teleport(nextMissileLocation, TeleportFlag.EntityState.RETAIN_PASSENGERS);
+				ticks++;
+			}
+			
+			@Override
+			public synchronized void cancel() throws IllegalStateException
+			{
+				super.cancel();
+				marker.remove();
+				missile.remove();
+			}
+			
+			private void cancelAndRemoveFromList()
+			{
+				cancel();
+				missileTasks.remove(this);
+			}
+			
+			private void setupMissile(Entity shulkerBullet)
+			{
+				setupMissile((ShulkerBullet) shulkerBullet);
+			}
+			
+			private void setupMarker(Entity missile)
+			{
+				setupMarker((ArmorStand) missile);
+			}
+			
+			private void setupMissile(ShulkerBullet shulkerBullet)
+			{
+				shulkerBullet.setTarget(null);
+				shulkerBullet.setGravity(false);
+				shulkerBullet.setPersistent(false);
+				
+				var container = shulkerBullet.getPersistentDataContainer();
+				container.set(PluginNamespacedKey.FAKE_SHULKER_BULLET, BOOLEAN, true);
+				container.set(CommonNamespacedKey.REMOVE_ON_CHUNK_LOAD, BOOLEAN, true);
+				
+				marker.addPassenger(shulkerBullet);
+			}
+			
+			private void setupMarker(ArmorStand marker)
+			{
+				marker.setGravity(false);
+				marker.setPersistent(false);
+				marker.setInvulnerable(true);
+				marker.setInvisible(true);
+				marker.setMarker(true);
+				
+				var container = marker.getPersistentDataContainer();
+				container.set(CommonNamespacedKey.REMOVE_ON_CHUNK_LOAD, BOOLEAN, true);
+			}
+			
+			private void caught()
+			{
+				cancelAndRemoveFromList();
+				
+				target.setNoDamageTicks(0);
+				target.damage(attackDamage, DamageSource.builder(DamageType.PLAYER_ATTACK).build());
+				
+				displayDetonationEffects();
+			}
+			
+			private void explode(List<Block> collidingBlocks)
+			{
+				cancelAndRemoveFromList();
+				
+				TownAttack townAttack = getTown().getCurrentAttack();
+				
+				if(townAttack != null)
+				{
+					townAttack.damageBlocks(collidingBlocks, (float) attackDamage);
+				}
+				
+				displayDetonationEffects();
+			}
+			
+			private void displayDetonationEffects()
+			{
+				playDetonationParticle();
+				playDetonationSound();
+			}
+			
+			private void playDetonationParticle()
+			{
+				missile.getWorld().spawnParticle(Particle.EXPLOSION, missile.getLocation(), 0);
+			}
+			
+			private void playDetonationSound()
+			{
+				target.getWorld().playSound(missile.getLocation(), ENTITY_FIREWORK_ROCKET_BLAST, 1.0F, F1);
+			}
 		}
 	}
 	
@@ -403,153 +564,5 @@ public class CraftTurret extends CraftStructure implements Turret
 		}
 		
 		return collidingBlocks;
-	}
-	
-	private class MissileTask extends BukkitRunnable
-	{
-		private final Location missileSpawnLocation = getMissileSpawnLocation();
-		private final ArmorStand marker = (ArmorStand) missileSpawnLocation
-				.getWorld()
-				.spawnEntity(missileSpawnLocation, ARMOR_STAND, CUSTOM, this::setupMarker);
-		private final ShulkerBullet missile = (ShulkerBullet) missileSpawnLocation
-				.getWorld()
-				.spawnEntity(missileSpawnLocation, SHULKER_BULLET, CUSTOM, this::setupMissile);
-		
-		private int ticks;
-		
-		@Override
-		public void run()
-		{
-			if(marker.isDead() || missile.isDead())
-			{
-				cancel();
-				return;
-			}
-			
-			final Location currentMissileLocation = marker.getLocation();
-			final Location targetLoc = target.getEyeLocation();
-			boolean isMissileInsideTarget = target.getBoundingBox().contains(currentMissileLocation.toVector());
-			
-			if(isMissileInsideTarget)
-			{
-				caught();
-				return;
-			}
-			
-			List<Block> collidingBlocks = getCollidingBlocks(missile);
-			
-			if(!collidingBlocks.isEmpty())
-			{
-				explode(collidingBlocks);
-				return;
-			}
-			
-			final Location subtract = targetLoc.clone().subtract(currentMissileLocation);
-			final Vector direction = subtract.toVector().normalize();
-			
-			direction.multiply(missileSpeed);
-			
-			double currentDistance = currentMissileLocation.distance(targetLoc);
-			final Location nextMissileLocation = currentMissileLocation.clone().add(direction);
-			double nextDistance = nextMissileLocation.distance(targetLoc);
-			
-			if(nextDistance > currentDistance)
-			{
-				caught();
-				return;
-			}
-			
-			marker.teleport(nextMissileLocation, TeleportFlag.EntityState.RETAIN_PASSENGERS);
-			ticks++;
-		}
-		
-		@Override
-		public synchronized void cancel() throws IllegalStateException
-		{
-			super.cancel();
-			marker.remove();
-			missile.remove();
-		}
-		
-		private void cancelAndRemoveFromList()
-		{
-			cancel();
-			missileTasks.remove(this);
-		}
-		
-		private void setupMissile(Entity shulkerBullet)
-		{
-			setupMissile((ShulkerBullet) shulkerBullet);
-		}
-		
-		private void setupMarker(Entity missile)
-		{
-			setupMarker((ArmorStand) missile);
-		}
-		
-		private void setupMissile(ShulkerBullet shulkerBullet)
-		{
-			shulkerBullet.setTarget(null);
-			shulkerBullet.setGravity(false);
-			shulkerBullet.setPersistent(false);
-			
-			var container = shulkerBullet.getPersistentDataContainer();
-			container.set(PluginNamespacedKey.FAKE_SHULKER_BULLET, BOOLEAN, true);
-			container.set(CommonNamespacedKey.REMOVE_ON_CHUNK_LOAD, BOOLEAN, true);
-			
-			marker.addPassenger(shulkerBullet);
-		}
-		
-		private void setupMarker(ArmorStand marker)
-		{
-			marker.setGravity(false);
-			marker.setPersistent(false);
-			marker.setInvulnerable(true);
-			marker.setInvisible(true);
-			marker.setMarker(true);
-			
-			var container = marker.getPersistentDataContainer();
-			container.set(CommonNamespacedKey.REMOVE_ON_CHUNK_LOAD, BOOLEAN, true);
-		}
-		
-		private void caught()
-		{
-			cancelAndRemoveFromList();
-			
-			target.setNoDamageTicks(0);
-			target.damage(attackDamage, DamageSource.builder(DamageType.PLAYER_ATTACK).build());
-			
-			displayDetonationEffects();
-		}
-		
-		private void explode(List<Block> collidingBlocks)
-		{
-			cancelAndRemoveFromList();
-			
-			TownAttack townAttack = getTown().getCurrentAttack();
-			
-			if(townAttack != null)
-			{
-				townAttack.damageBlocks(collidingBlocks, (float) attackDamage);
-			}
-			
-			displayDetonationEffects();
-		}
-		
-		private void displayDetonationEffects()
-		{
-			playDetonationParticle();
-			playDetonationSound();
-		}
-		
-		private void playDetonationParticle()
-		{
-			missile.getWorld().spawnParticle(Particle.EXPLOSION, missile.getLocation(), 0);
-		}
-		
-		private void playDetonationSound()
-		{
-			target.getWorld().playSound(missile.getLocation(), ENTITY_FIREWORK_ROCKET_BLAST, 1.0F, F1);
-		}
 	}
 }

@@ -29,8 +29,6 @@ public interface Structure
 	UUID getUUID();
 	String getName();
 	
-	void demolishStructureConstruction(ClipboardHolder clipboardHolder);
-	
 	void construct(ClipboardHolder clipboardHolder, TownBlock centerTownBlock, int rotation)
 			throws CannotConstructException;
 	
@@ -42,13 +40,14 @@ public interface Structure
 	
 	void startMove() throws IOException, CannotConstructException;
 	
-	void cancelMove() throws CannotConstructException;
+	void cancelMove();
 	
 	void finishMove(TownBlock centerTownBlock, int rotation) throws CannotConstructException;
 	
 	ItemStack getItem();
 	
 	void finishMove(TownBlock centerTownBlock) throws CannotConstructException;
+	void finishMoveAsync(TownBlock centerTownBlock) throws CannotConstructException;
 	Location getLocation();
 	
 	void construct(ClipboardHolder movingStructureClipboardHolder) throws CannotConstructException;

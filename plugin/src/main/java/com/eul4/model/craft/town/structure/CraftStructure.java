@@ -59,6 +59,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.eul4.common.util.ThreadUtil.runSynchronouslyUntilTerminate;
+
 @Setter
 @Getter
 public abstract class CraftStructure implements Structure
@@ -129,7 +131,7 @@ public abstract class CraftStructure implements Structure
 		
 		construct(loadSchematic(), centerTownBlock, 0);
 		
-		ThreadUtil.runSynchronouslyUntilTerminate(town.getPlugin(), this::updateHologram);
+		runSynchronouslyUntilTerminate(town.getPlugin(), this::updateHologram);
 		
 		town.addStructure(this);
 		scheduleBuildTaskIfPossible();
@@ -153,6 +155,17 @@ public abstract class CraftStructure implements Structure
 		finishMove(centerTownBlock, rotation);
 	}
 	
+	private void finishMoveAsync(TownBlock centerTownBlock, int rotation)
+	{
+		town.finishMovingStructure(centerTownBlock, rotation);
+	}
+	
+	@Override
+	public void finishMoveAsync(TownBlock centerTownBlock)
+	{
+		finishMoveAsync(centerTownBlock, rotation);
+	}
+	
 	@Override
 	public void onStartMove()
 	{
@@ -172,44 +185,9 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
-	public void cancelMove() throws CannotConstructException
+	public void cancelMove()
 	{
 		town.cancelMovingStructure();
-	}
-	
-	@Override
-	public void demolishStructureConstruction(ClipboardHolder clipboardHolder)
-	{
-		clipboardHolder.setTransform(new AffineTransform().rotateY(rotation));
-		Clipboard clipboard = clipboardHolder.getClipboard();
-		
-		final Vector3 rotatedMin = clipboardHolder.getTransform().apply(clipboard.getMinimumPoint().toVector3());
-		final Vector3 rotatedMax = clipboardHolder.getTransform().apply(clipboard.getMaximumPoint().toVector3());
-		final Vector3 origin = clipboardHolder.getTransform().apply(clipboard.getOrigin().toVector3());
-		
-		final int minX = Math.min(rotatedMin.getBlockX(), rotatedMax.getBlockX());
-		final int minZ = Math.min(rotatedMin.getBlockZ(), rotatedMax.getBlockZ());
-		final int maxX = Math.max(rotatedMin.getBlockX(), rotatedMax.getBlockX());
-		final int maxZ = Math.max(rotatedMin.getBlockZ(), rotatedMax.getBlockZ());
-		final int originX = origin.getBlockX();
-		final int originZ = origin.getBlockZ();
-		final int relativeMinX = minX - originX;
-		final int relativeMaxX = maxX - originX;
-		final int relativeMinZ = minZ - originZ;
-		final int relativeMaxZ = maxZ - originZ;
-		
-		final Block centerBlock = centerTownBlock.getBlock();
-		
-		for(int x = relativeMinX; x <= relativeMaxX; x++)
-		{
-			for(int z = relativeMinZ; z <= relativeMaxZ; z++)
-			{
-				for(int y = 0; y < 20; y++)
-				{
-					centerBlock.getRelative(x, y, z).setType(y == 0 ? Material.RED_CONCRETE : Material.AIR);
-				}
-			}
-		}
 	}
 	
 	@Override
@@ -222,6 +200,19 @@ public abstract class CraftStructure implements Structure
 	public void construct(ClipboardHolder clipboardHolder, TownBlock centerTownBlock, int rotation)
 			throws CannotConstructException
 	{
+		if(town.getPlugin().getServer().isPrimaryThread())
+		{
+			throw new RuntimeException("Structure construction must be async");
+		}
+//TODO
+//		try
+//		{
+//			Thread.sleep(5000L);
+//		}
+//		catch(InterruptedException e)
+//		{
+//			throw new RuntimeException(e);
+//		}
 		Block center = centerTownBlock.getBlock();
 		BlockVector3 to = BlockVector3.at(center.getX(), center.getY() + 1, center.getZ());
 		
@@ -262,8 +253,7 @@ public abstract class CraftStructure implements Structure
 		}
 		
 		this.townBlockSet.removeAll(townBlockSet);
-		this.townBlockSet.forEach(TownBlock::reset);
-		
+		this.townBlockSet.forEach(townBlock -> runSynchronouslyUntilTerminate(town.getPlugin(), townBlock::reset));
 		this.townBlockSet = townBlockSet;
 		this.townBlockSet.forEach(townBlock -> townBlock.setStructure(this));
 		

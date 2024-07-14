@@ -11,6 +11,8 @@ import com.eul4.model.player.PluginPlayer;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import com.eul4.world.VanillaWorld;
+import com.fastasyncworldedit.core.FaweAPI;
+import com.sk89q.worldedit.function.operation.Operation;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

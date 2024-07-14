@@ -8,6 +8,7 @@ import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
 import com.eul4.exception.TownHardnessLimitException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
 import com.eul4.model.craft.town.structure.CraftTownHall;
@@ -34,10 +35,12 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -58,6 +61,7 @@ import java.util.List;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
@@ -65,6 +69,8 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 
 import static com.eul4.common.constant.CommonNamespacedKey.FAWE_IGNORE;
+import static com.eul4.common.util.ThreadUtil.runSynchronouslyUntilTerminate;
+import static com.eul4.i18n.PluginMessage.STRUCTURE_CAN_NOT_CONSTRUCT_HERE;
 
 @Getter
 @Setter
@@ -126,7 +132,7 @@ public class CraftTown implements Town
 		this.structureSet = new StructureSet();
 		
 		createInitialStructures();
-		ThreadUtil.runSynchronouslyUntilTerminate(plugin, this::reloadAllStructureAttributes);
+		runSynchronouslyUntilTerminate(plugin, this::reloadAllStructureAttributes);
 		
 		TOWN_BLOCKS.putAll(townBlockMap);
 	}
@@ -238,14 +244,14 @@ public class CraftTown implements Town
 		}
 		
 		movingStructureClipboardHolder = structure.loadSchematic();
-		structure.demolishStructureConstruction(movingStructureClipboardHolder);
 		movingStructure = structure;
+		movingStructure.getTownBlockSet().forEach(townBlock -> runSynchronouslyUntilTerminate(plugin, townBlock::cut));
 		
 		movingStructure.onStartMove();
 	}
 	
 	@Override
-	public void cancelMovingStructure() throws CannotConstructException
+	public void cancelMovingStructure()
 	{
 		if(!isMovingStructure())
 		{
@@ -260,27 +266,56 @@ public class CraftTown implements Town
 		this.movingStructure = null;
 		this.movingStructureClipboardHolder = null;
 		
-		movingStructure.construct(movingStructureClipboardHolder);
-		movingStructure.onCancelMove();
+		Executors.newSingleThreadExecutor().execute(() ->
+		{
+			try
+			{
+				movingStructure.construct(movingStructureClipboardHolder);
+			}
+			catch(CannotConstructException e)
+			{
+				throw new RuntimeException(e);//TODO message and log
+			}
+			
+			plugin.getServer()
+					.getScheduler()
+					.getMainThreadExecutor(plugin)
+					.execute(movingStructure::onCancelMove);
+		});
 	}
 	
 	@Override
-	public void finishMovingStructure(TownBlock centerTownBlock, int rotation) throws CannotConstructException
+	public void finishMovingStructure(TownBlock centerTownBlock, int rotation)
 	{
 		if(!isMovingStructure())
 		{
 			return;
 		}
 		
-		movingStructure.construct(movingStructureClipboardHolder, centerTownBlock, rotation);
-		movingStructure.teleportHologramToDefaultLocation();
-		
-		getPlayer().ifPresent(removeMovingStructureItem);
-		
-		movingStructure.onFinishMove();
-		
-		this.movingStructure = null;
-		this.movingStructureClipboardHolder = null;
+		Executors.newSingleThreadExecutor().execute(() ->
+		{
+			try
+			{
+				movingStructure.construct(movingStructureClipboardHolder, centerTownBlock, rotation);
+			}
+			catch(CannotConstructException e)
+			{
+				findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer.sendMessage(STRUCTURE_CAN_NOT_CONSTRUCT_HERE));
+				return;
+			}
+			
+			plugin.getServer().getScheduler().getMainThreadExecutor(plugin).execute(() ->
+			{
+				movingStructure.teleportHologramToDefaultLocation();
+				
+				getPlayer().ifPresent(removeMovingStructureItem);
+				
+				movingStructure.onFinishMove();
+				
+				this.movingStructure = null;
+				this.movingStructureClipboardHolder = null;
+			});
+		});
 	}
 	
 	@Override

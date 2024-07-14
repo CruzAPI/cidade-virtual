@@ -200,7 +200,6 @@ public class Main extends Common
 		getCommand(TownCommand.COMMAND_NAME).setExecutor(new TownCommand(this));
 		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
-		getCommand("move").setExecutor(new MoveCommand(this));
 		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("macroid").setExecutor(new MacroidCommand(this));

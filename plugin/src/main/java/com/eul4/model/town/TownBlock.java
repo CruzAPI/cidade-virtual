@@ -21,4 +21,5 @@ public interface TownBlock
 	void setStructure(Structure structure);
 	Optional<Structure> findStructure();
 	void reset();
+	void cut();
 }

@@ -2,9 +2,11 @@ package com.eul4.listener;
 
 import com.eul4.Main;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
+import com.fastasyncworldedit.core.FaweAPI;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -44,7 +46,7 @@ public class StructureMoveListener implements Listener
 		
 		if(townBlock == null)
 		{
-			player.sendMessage("you must move to a town block");
+			townPlayer.sendMessage(PluginMessage.YOU_CAN_NOT_CONSTRUCT_OUTSIDE_YOUR_TOWN);
 			return;
 		}
 		
@@ -56,7 +58,7 @@ public class StructureMoveListener implements Listener
 		}
 		catch(CannotConstructException ex)
 		{
-			player.sendMessage("cant construct here...");
+			townPlayer.sendMessage(PluginMessage.STRUCTURE_CAN_NOT_CONSTRUCT_HERE);
 		}
 	}
 	
@@ -83,14 +85,6 @@ public class StructureMoveListener implements Listener
 		player.getInventory().removeItemAnySlot(movingStructure.getItem());
 		player.sendMessage("cancel move");
 		
-		try
-		{
-			movingStructure.cancelMove();
-			townPlayer.setMovingStructure(null);
-		}
-		catch(CannotConstructException ex)
-		{
-			player.sendMessage("move cancelled but failed to reconstruct");
-		}
+		movingStructure.cancelMove();
 	}
 }

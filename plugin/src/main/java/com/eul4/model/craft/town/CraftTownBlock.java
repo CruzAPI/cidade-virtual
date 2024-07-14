@@ -1,5 +1,6 @@
 package com.eul4.model.craft.town;
 
+import com.eul4.common.util.ThreadUtil;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
@@ -107,23 +109,49 @@ public class CraftTownBlock implements TownBlock
 		{
 			if(block.getY() < Town.BED_ROCK_Y)
 			{
-				block.setType(Material.AIR);
+				block.setBlockData(Material.AIR.createBlockData());
 			}
 			else if(block.getY() == Town.BED_ROCK_Y)
 			{
-				block.setType(Material.BEDROCK);
+				block.setBlockData(Material.BEDROCK.createBlockData());
 			}
 			else if(block.getY() < Town.GRASS_Y)
 			{
-				block.setType(Material.DIRT);
+				block.setBlockData(Material.DIRT.createBlockData());
 			}
 			else if(block.getY() == Town.GRASS_Y)
 			{
-				block.setType(Material.GRASS_BLOCK);
+				block.setBlockData(Material.GRASS_BLOCK.createBlockData());
 			}
 			else
 			{
-				block.setType(Material.AIR);
+				block.setBlockData(Material.AIR.createBlockData());
+			}
+		}
+	}
+	
+	@Override
+	public void cut()
+	{
+		for(Block block = this.block.getWorld().getBlockAt(this.block.getX(), 0, this.block.getZ());
+				block.getY() < block.getWorld().getMaxHeight();
+				block = block.getRelative(BlockFace.UP))
+		{
+			if(block.getY() < Town.BED_ROCK_Y)
+			{
+				block.setBlockData(Material.AIR.createBlockData());
+			}
+			else if(block.getY() == Town.BED_ROCK_Y)
+			{
+				block.setBlockData(Material.BEDROCK.createBlockData());
+			}
+			else if(block.getY() <= Town.GRASS_Y)
+			{
+				block.setBlockData(Material.RED_CONCRETE.createBlockData());
+			}
+			else
+			{
+				block.setBlockData(Material.AIR.createBlockData());
 			}
 		}
 	}

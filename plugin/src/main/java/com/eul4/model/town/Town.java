@@ -62,9 +62,9 @@ public interface Town
 	
 	void startMovingStructure(Structure structure) throws IOException, CannotConstructException;
 	
-	void cancelMovingStructure() throws CannotConstructException;
+	void cancelMovingStructure();
 	
-	void finishMovingStructure(TownBlock centerTownBlock, int rotation) throws CannotConstructException;
+	void finishMovingStructure(TownBlock centerTownBlock, int rotation);
 	
 	boolean isMovingStructure();
 	Structure getMovingStructure();

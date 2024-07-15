@@ -9,4 +9,5 @@ public class TownTileFields
 	public final boolean isInTownBorder;
 	public final boolean bought;
 	public final Hologram hologram;
+	public final int depth;
 }

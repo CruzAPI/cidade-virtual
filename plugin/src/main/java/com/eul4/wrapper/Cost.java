@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 
+import java.util.Collections;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -15,4 +16,10 @@ public class Cost
 {
 	private final Price price;
 	private final Map<Material, Integer> resources;
+	
+	public Cost(Price price)
+	{
+		this.price = price;
+		this.resources = Collections.emptyMap();
+	}
 }

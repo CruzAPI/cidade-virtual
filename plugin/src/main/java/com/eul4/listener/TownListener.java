@@ -2,10 +2,12 @@ package com.eul4.listener;
 
 import com.eul4.Main;
 import com.eul4.common.hologram.Hologram;
+import com.eul4.model.inventory.craft.CraftConfirmationGui;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
+import com.eul4.service.PurchaseV2;
 import com.eul4.type.PluginWorldType;
 import com.eul4.world.TownWorld;
 import lombok.RequiredArgsConstructor;
@@ -164,7 +166,16 @@ public class TownListener implements Listener
 			return;
 		}
 		
-		tile.buy();
+		PurchaseV2 purchase = new PurchaseV2(townPlayer, tile.calculatePrice(), tile::buy);
+		
+		townPlayer.openGui(new CraftConfirmationGui(townPlayer)
+		{
+			@Override
+			public void confirm()
+			{
+				purchase.tryExecutePurchaseValidatingPrice(tile.calculatePrice());
+			}
+		});
 	}
 	
 	@EventHandler

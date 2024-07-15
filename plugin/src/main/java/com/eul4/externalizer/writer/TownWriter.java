@@ -4,7 +4,6 @@ import com.eul4.common.externalizer.writer.BlockWriter;
 import com.eul4.common.externalizer.writer.ObjectWriter;
 import com.eul4.common.type.player.Writers;
 import com.eul4.model.town.Town;
-import com.eul4.model.town.structure.Armory;
 
 import java.io.IOException;
 
@@ -32,5 +31,7 @@ public class TownWriter extends ObjectWriter<Town>
 		out.writeInt(town.getDislikes());
 		out.writeDouble(town.getHardness());
 		out.writeLong(town.getLastAttackFinishTick());
+		
+		writers.getWriter(BoughtTileMapByDepthWriter.class).writeReferenceNotNull(town.getBoughtTileMapByDepth());
 	}
 }

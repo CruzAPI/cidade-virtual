@@ -1,13 +1,14 @@
 package com.eul4.model.craft.town;
 
+import com.eul4.Price;
 import com.eul4.common.hologram.Hologram;
+import com.eul4.enums.Currency;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
 import com.eul4.wrapper.TownTileFields;
 import lombok.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.eul4.i18n.PluginMessage.BOLD_DECORATED_VALUE_CURRENCY;
+import static com.eul4.i18n.PluginMessage.CLICK_TO_BUY_THIS_TILE;
 import static org.bukkit.block.BlockFace.*;
 
 @RequiredArgsConstructor
@@ -34,10 +37,12 @@ public class CraftTownTile implements TownTile
 	private Hologram hologram;
 	
 	private boolean loaded;
+	private int depth;
 	
-	public CraftTownTile(Town town, Block block, boolean isInTownBorder)
+	public CraftTownTile(Town town, Block block, boolean isInTownBorder, int depth)
 	{
 		this(town, block);
+		this.depth = depth;
 		setInTownBorder(isInTownBorder);
 		loaded = true;
 	}
@@ -49,32 +54,23 @@ public class CraftTownTile implements TownTile
 	}
 	
 	@Override
-	public void buy()
+	public boolean buy()
 	{
-		if(bought)
+		if(bought || !isInTownBorder || town.isFrozen())
 		{
-			Bukkit.broadcastMessage("Tile already bought.");
-			return;
-		}
-		
-		if(!isInTownBorder)
-		{
-			Bukkit.broadcastMessage("Cannot buy this tile yet.");
-			return;
-		}
-
-		if(town.isFrozen())
-		{
-			town.getPlayer().ifPresent(player -> player.sendMessage("It is not possible to buy the tile.")); //TODO translate message.
-			return;
+			return false;
 		}
 
 		bought = true;
 		getNeighboringTiles().forEach(neighborTile -> neighborTile.setInTownBorder(true));
 		makeBlocksAvailable();
 		
-		Bukkit.broadcastMessage("tile bought!");
+		town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer.sendMessage(PluginMessage.TILE_BOUGHT));
+		
 		removeHologram();
+		town.getBoughtTileMapByDepth().incrementTilesBoughtInDepth(depth);
+		town.updateTileHolograms();
+		return true;
 	}
 	
 	private void makeBlocksAvailable()
@@ -126,12 +122,13 @@ public class CraftTownTile implements TownTile
 	@Override
 	public void setInTownBorder(boolean value)
 	{
-		if(!isInTownBorder && value)
+		boolean spawnHologram = !isInTownBorder && value;
+		isInTownBorder = value;
+		
+		if(spawnHologram)
 		{
 			spawnHologram();
 		}
-		
-		isInTownBorder = value;
 	}
 	
 	private void spawnHologram()
@@ -144,7 +141,7 @@ public class CraftTownTile implements TownTile
 		Location location = getBlock().getLocation().add(0.5D, 1.0D, 0.5D);
 		
 		hologram = new Hologram(town.getPlugin(), location);
-		hologram.newLine(PluginMessage.CLICK_TO_BUY_THIS_TILE);
+		updateHologram();
 	}
 	
 	private void removeHologram()
@@ -164,6 +161,7 @@ public class CraftTownTile implements TownTile
 		hologram = fields.hologram;
 		bought = fields.bought;
 		isInTownBorder = fields.isInTownBorder;
+		depth = fields.depth;
 		
 		loaded = true;
 	}
@@ -184,12 +182,49 @@ public class CraftTownTile implements TownTile
 		
 		if(!town.isUnderAttack() && isInTownBorder)
 		{
-			hologram.setSize(1);
-			hologram.getLine(0).setMessageAndArgs(PluginMessage.CLICK_TO_BUY_THIS_TILE);
+			Price price = calculatePrice();
+			
+			hologram.setSize(3);
+			hologram.getLine(2).setMessageAndArgs(CLICK_TO_BUY_THIS_TILE);
+			hologram.getLine(1).setMessageAndArgs(BOLD_DECORATED_VALUE_CURRENCY, Currency.LIKE, price.getLikes());
+			hologram.getLine(0).setMessageAndArgs(BOLD_DECORATED_VALUE_CURRENCY, Currency.DISLIKE, price.getDislikes());
 		}
 		else
 		{
 			hologram.remove();
 		}
+	}
+	
+	@Override
+	public Price calculatePrice()
+	{
+		final int tilesBought = town.getBoughtTileMapByDepth().getTilesBoughtInDepth(depth);
+		
+		final int basePrice = getTileBasePriceByDepth(depth);
+		final int incrementPrice = getIncrementTilePriceChartByDepth(depth);
+		
+		return new Price(basePrice + incrementPrice * tilesBought);
+	}
+	
+	private static int getIncrementTilePriceChartByDepth(int depth)
+	{
+		return switch(depth)
+		{
+			case 1 -> 500;
+			case 2 -> 2_000;
+			case 3 -> 10_000;
+			default -> 30_000;
+		};
+	}
+	
+	private static int getTileBasePriceByDepth(int depth)
+	{
+		return switch(depth)
+		{
+			case 1 -> 200;
+			case 2 -> 10_000;
+			case 3 -> 150_000;
+			default -> 900_000;
+		};
 	}
 }

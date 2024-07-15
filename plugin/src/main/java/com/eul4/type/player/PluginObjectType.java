@@ -11,6 +11,7 @@ public enum PluginObjectType implements ObjectType
 	ADMIN((byte) 0, PluginExternalizerType.ADMIN),
 	ARMORY((byte) 0, PluginExternalizerType.ARMORY),
 	ATTACKER((byte) 0, PluginExternalizerType.ATTACKER),
+	BOUGHT_TILE_MAP_BY_DEPTH((byte) 0, PluginExternalizerType.BOUGHT_TILE_MAP_BY_DEPTH),
 	BLOCK_DATA_MAP((byte) 0, PluginExternalizerType.BLOCK_DATA_MAP),
 	BLOCK_DATA((byte) 0, PluginExternalizerType.BLOCK_DATA),
 	CANNON((byte) 0, PluginExternalizerType.CANNON),

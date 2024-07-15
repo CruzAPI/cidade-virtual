@@ -66,13 +66,13 @@ public class TestCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			Evoker evoker = (Evoker) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.EVOKER);
-			
-			evoker.setCelebrating(true);
+			pluginPlayer.getTown().setDislikes(10_000_0000);
+			pluginPlayer.getTown().setLikes(10_000_0000);
 		}
-		else if(args.length == 2)
+		else if(args.length == 1)
 		{
-			player.playSound(player.getLocation(), Sound.valueOf(args[0]), 1.0f, Pitch.getPitch(Integer.parseInt(args[1])));
+			pluginPlayer.getTown().setDislikes(0);
+			pluginPlayer.getTown().setLikes(0);
 		}
 		else if(args.length == 2)
 		{

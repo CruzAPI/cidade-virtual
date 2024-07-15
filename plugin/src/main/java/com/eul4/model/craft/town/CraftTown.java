@@ -18,10 +18,7 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
 import com.eul4.model.town.structure.*;
-import com.eul4.wrapper.StructureSet;
-import com.eul4.wrapper.TownAttack;
-import com.eul4.wrapper.TownBlockMap;
-import com.eul4.wrapper.TownTileMap;
+import com.eul4.wrapper.*;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
@@ -81,6 +78,8 @@ public class CraftTown implements Town
 	private TownTileMap townTileMap;
 	private StructureSet structureSet;
 	
+	private BoughtTileMapByDepth boughtTileMapByDepth;
+	
 	private transient Structure movingStructure;
 	private transient ClipboardHolder movingStructureClipboardHolder;
 	
@@ -120,6 +119,8 @@ public class CraftTown implements Town
 	public CraftTown(OfflinePlayer owner, Block block, Main plugin) throws CannotConstructException, IOException
 	{
 		this(owner.getUniqueId(), block, plugin);
+		
+		this.boughtTileMapByDepth = new BoughtTileMapByDepth();
 		
 		this.townBlockMap = getInitialTownBlocks();
 		this.townTileMap = getInitialTownTiles();
@@ -175,8 +176,11 @@ public class CraftTown implements Town
 		
 		for(int i = minI; i < maxI; i++)
 		{
+			final int currentRing = Math.max(Math.abs(x), Math.abs(z));
+			final int tileDepth = currentRing - skipRing;
+			
 			Block block = getLocation().getBlock().getRelative(x * TownTile.DIAMETER, 0, z * TownTile.DIAMETER);
-			townTileMap.put(block, new CraftTownTile(this, block, isInTownBorder(i, x, z)));
+			townTileMap.put(block, new CraftTownTile(this, block, isInTownBorder(i, x, z), tileDepth));
 			
 			if(x == z || x < 0 && x == -z || x > 0 && x == 1 - z)
 			{
@@ -864,6 +868,7 @@ public class CraftTown implements Town
 				.orElse(false);
 	}
 	
+	@Override
 	public void updateTileHolograms()
 	{
 		townTileMap.values().forEach(TownTile::updateHologram);

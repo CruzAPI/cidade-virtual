@@ -11,10 +11,7 @@ import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.structure.Armory;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
-import com.eul4.wrapper.StructureSet;
-import com.eul4.wrapper.TownAttack;
-import com.eul4.wrapper.TownBlockMap;
-import com.eul4.wrapper.TownTileMap;
+import com.eul4.wrapper.*;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -24,6 +21,7 @@ import org.bukkit.util.BoundingBox;
 import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -158,6 +156,8 @@ public interface Town
 	Future<Void> loadAndPasteTownSchematic(ExecutorService executorService);
 	void loadAndPasteTownSchematic();
 	
+	void updateTileHolograms();
+	
 	void updateHolograms();
 	
 	Optional<PluginPlayer> findPluginPlayer();
@@ -169,4 +169,7 @@ public interface Town
 	BoundingBox getBoundingBoxExcludingWalls();
 	
 	Location getRandomSpawnLocation();
+	
+	BoughtTileMapByDepth getBoughtTileMapByDepth();
+	void setBoughtTileMapByDepth(BoughtTileMapByDepth boughtTileMapByDepth);
 }

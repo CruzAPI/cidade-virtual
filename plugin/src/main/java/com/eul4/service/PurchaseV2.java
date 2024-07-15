@@ -1,8 +1,6 @@
 package com.eul4.service;
 
 import com.eul4.Price;
-import com.eul4.common.i18n.MessageArgs;
-import com.eul4.common.i18n.Messageable;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
@@ -15,8 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 
@@ -27,6 +23,13 @@ public class PurchaseV2
 	private final PluginPlayer pluginPlayer;
 	private final Cost cost;
 	private final BooleanSupplier execution;
+	
+	public PurchaseV2(PluginPlayer pluginPlayer, Price price, BooleanSupplier execution)
+	{
+		this.pluginPlayer = pluginPlayer;
+		this.cost = new Cost(price);
+		this.execution = execution;
+	}
 	
 	public boolean isAffordable()
 	{
@@ -100,6 +103,28 @@ public class PurchaseV2
 		}
 		
 		return affordable;
+	}
+	
+	public boolean isPriceValid(Price price, boolean sendMessage)
+	{
+		boolean valid = price.equals(this.cost.getPrice());
+		
+		if(sendMessage && !valid)
+		{
+			pluginPlayer.sendMessage(PluginMessage.PURCHASE_INVALID_PRICE);
+		}
+		
+		return valid;
+	}
+	
+	public boolean tryExecutePurchaseValidatingPrice(Price price)
+	{
+		if(!isPriceValid(price, true))
+		{
+			return false;
+		}
+		
+		return tryExecutePurchase();
 	}
 	
 	public boolean tryExecutePurchase()

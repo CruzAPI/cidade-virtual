@@ -60,6 +60,7 @@ public class TownReader extends ObjectReader<Town>
 		town.setDislikes(in.readInt());
 		town.setHardnessField(in.readDouble());
 		town.setLastAttackFinishTick(in.readLong());
+		town.setBoughtTileMapByDepth(readers.getReader(BoughtTileMapByDepthReader.class).readReference(town));
 	}
 	
 	public Town readReference(Main plugin) throws IOException, ClassNotFoundException

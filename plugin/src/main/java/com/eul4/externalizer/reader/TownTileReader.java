@@ -56,6 +56,7 @@ public class TownTileReader extends ObjectReader<TownTile>
 				.isInTownBorder(in.readBoolean())
 				.bought(in.readBoolean())
 				.hologram(readers.getReader(HologramReader.class).readReference(townTile.getTown().getPlugin()))
+				.depth(in.readInt())
 				.build());
 	}
 	

@@ -1,5 +1,6 @@
 package com.eul4.model.town;
 
+import com.eul4.Price;
 import com.eul4.common.hologram.Hologram;
 import com.eul4.wrapper.TownTileFields;
 import org.bukkit.block.Block;
@@ -15,7 +16,7 @@ public interface TownTile
 	
 	Block getBlock();
 	
-	void buy();
+	boolean buy();
 	TownTile getRelative(BlockFace direction);
 	Optional<TownTile> findRelative(BlockFace direction);
 	List<TownTile> getNeighboringTiles();
@@ -30,4 +31,8 @@ public interface TownTile
 	Town getTown();
 	
 	void updateHologram();
+	
+	int getDepth();
+	
+	Price calculatePrice();
 }

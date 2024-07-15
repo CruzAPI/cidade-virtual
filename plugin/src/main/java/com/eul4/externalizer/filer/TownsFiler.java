@@ -33,6 +33,7 @@ public class TownsFiler extends Filer
 		CommonObjectType.OBJECT,
 		CommonObjectType.TRANSLATED_HOLOGRAM_LINE,
 		PluginObjectType.ARMORY,
+		PluginObjectType.BOUGHT_TILE_MAP_BY_DEPTH,
 		PluginObjectType.CANNON,
 		PluginObjectType.DEPOSIT,
 		PluginObjectType.DISLIKE_DEPOSIT,

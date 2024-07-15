@@ -189,6 +189,13 @@ public enum PluginMessage implements Message
 		((Currency) args[0]).getPluralWord().translateWord(bundle),
 	}),
 	
+	BOLD_DECORATED_VALUE_CURRENCY("bold-decorated-value-currency", (bundle, args) -> new Component[]
+	{
+		((Currency) args[0]).getBaseComponent().decorate(BOLD),
+		text((int) args[1]),
+		((Currency) args[0]).getPluralWord().translateWord(bundle, String::toUpperCase),
+	}),
+	
 	LIKES("likes"),
 	DISLIKES("dislikes"),
 	
@@ -606,6 +613,10 @@ public enum PluginMessage implements Message
 	}),
 	
 	COMMAND_TOWN_FAILED_TO_CREATE_TOWN("command.town.failed-to-create-town", empty().color(RED)),
+	
+	TILE_BOUGHT("tile-bought", empty().color(GREEN)),
+	
+	PURCHASE_INVALID_PRICE("purchase-invalid-price", empty().color(RED)),
 	
 	;
 	

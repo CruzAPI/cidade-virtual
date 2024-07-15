@@ -23,5 +23,6 @@ public class TownTileWriter extends ObjectWriter<TownTile>
 		
 		out.writeBoolean(townTile.isBought());
 		writers.getWriter(HologramWriter.class).writeReference(townTile.getHologram());
+		out.writeInt(townTile.getDepth());
 	}
 }

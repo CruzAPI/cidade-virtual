@@ -618,6 +618,8 @@ public enum PluginMessage implements Message
 	
 	PURCHASE_INVALID_PRICE("purchase-invalid-price", empty().color(RED)),
 	
+	INVENTORY_STRUCTURE_GUI_MOVE_STRUCTURE("inventory.structure-gui.move-structure", empty().color(GRAY)),
+	
 	;
 	
 	private final String key;

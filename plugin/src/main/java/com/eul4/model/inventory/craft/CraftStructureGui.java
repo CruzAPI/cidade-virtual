@@ -33,7 +33,6 @@ public abstract class CraftStructureGui extends CraftGui implements StructureGui
 	
 	protected final ItemStack upgrade;
 	protected final ItemStack move;
-	protected final ItemStack finishBuild;
 	
 	private BukkitRunnable updateTask;
 	
@@ -45,25 +44,17 @@ public abstract class CraftStructureGui extends CraftGui implements StructureGui
 		
 		ItemMeta meta;
 		
-		upgrade = new ItemStack(Material.EXPERIENCE_BOTTLE);
+		upgrade = ItemStack.of(Material.EXPERIENCE_BOTTLE);
 		
-		
-		move = new ItemStack(Material.TARGET);
+		move = ItemStack.of(Material.REPEATER);
 		meta = move.getItemMeta();
-		meta.setDisplayName("Move Structure");
+		meta.displayName(PluginMessage.INVENTORY_STRUCTURE_GUI_MOVE_STRUCTURE.translate(commonPlayer));
 		move.setItemMeta(meta);
-		
-		finishBuild = new ItemStack(Material.LIME_CONCRETE);
-		meta = finishBuild.getItemMeta();
-		meta.setDisplayName("Finish Build");
-		finishBuild.setItemMeta(meta);
 	}
 	
 	@Override
 	public void updateInventory()
 	{
-		ItemMeta meta;
-		
 		updateItemStacks();
 		
 		inventory.setItem(0, upgrade);

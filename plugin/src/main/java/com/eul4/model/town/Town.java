@@ -172,4 +172,7 @@ public interface Town
 	
 	BoughtTileMapByDepth getBoughtTileMapByDepth();
 	void setBoughtTileMapByDepth(BoughtTileMapByDepth boughtTileMapByDepth);
+	
+	boolean hasReachedMaxLikeCapacity();
+	boolean hasReachedMaxDislikeCapacity();
 }

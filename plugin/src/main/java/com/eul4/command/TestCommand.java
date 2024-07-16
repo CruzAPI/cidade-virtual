@@ -62,6 +62,11 @@ public class TestCommand implements TabExecutor
 			return true;
 		}
 		
+		if(!player.isOp())
+		{
+			return true;
+		}
+		
 		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
 		
 		if(args.length == 0)
@@ -71,8 +76,10 @@ public class TestCommand implements TabExecutor
 		}
 		else if(args.length == 1)
 		{
-			pluginPlayer.getTown().setDislikes(0);
-			pluginPlayer.getTown().setLikes(0);
+			int amount = Integer.parseInt(args[0]);
+			
+			pluginPlayer.getTown().setDislikes(amount);
+			pluginPlayer.getTown().setLikes(amount);
 		}
 		else if(args.length == 2)
 		{

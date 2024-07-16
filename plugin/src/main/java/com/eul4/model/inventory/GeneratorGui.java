@@ -1,5 +1,6 @@
 package com.eul4.model.inventory;
 
+import com.eul4.enums.Currency;
 import com.eul4.model.town.structure.Generator;
 import org.bukkit.inventory.ItemStack;
 

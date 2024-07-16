@@ -7,6 +7,7 @@ import com.eul4.model.town.structure.LikeGenerator;
 import com.eul4.model.town.structure.Structure;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
 public class CraftLikeGeneratorGui extends CraftGeneratorGui
@@ -33,5 +34,11 @@ public class CraftLikeGeneratorGui extends CraftGeneratorGui
 				NamedTextColor.DARK_GREEN,
 				PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
 				generator.getLevel());
+	}
+	
+	@Override
+	protected Material getCollectType()
+	{
+		return Material.LIME_STAINED_GLASS;
 	}
 }

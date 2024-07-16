@@ -6,6 +6,7 @@ import com.eul4.common.i18n.Message;
 import com.eul4.common.wrapper.TimerTranslater;
 import com.eul4.enums.Currency;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.structure.Generator;
 import com.eul4.rule.attribute.*;
 import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
@@ -53,6 +54,107 @@ public enum PluginMessage implements Message
 	INVENTORY_ARMORY_MENU_MY_INVENTORY("inventory.armory-menu.my-inventory", empty().color(GOLD)),
 	
 	INVENTORY_ARMORY_WEAPON_SHOP_TITLE("inventory.armory-weapon-shop.title", empty().color(BLACK).decorate(BOLD)),
+	
+	INVENTORY_GENERATOR_COLLECT("inventory.generator.collect", (bundle, args) ->
+	{
+		Generator generator = (Generator) args[0];
+		
+		return new Component[]
+		{
+			empty().color(WHITE),
+			generator.getCurrency().getBaseComponent()
+					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.append(text(":"))
+					.decorate(BOLD),
+			text(generator.getBalance()),
+			text(generator.getCapacity()),
+		};
+	}),
+	
+	INVENTORY_GENERATOR_COLLECT_LORE_DEPOSIT_FULL("inventory.generator.collect.lore.deposit-full", (bundle, args) ->
+	{
+		Generator generator = (Generator) args[0];
+		
+		return new Component[]
+		{
+			empty().color(RED),
+			generator.getCurrency().getBaseComponent()
+					.append(text(generator.getPossibleAmountToCollect()))
+					.append(text(" "))
+					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.decorate(BOLD),
+		};
+	}),
+	
+	INVENTORY_GENERATOR_COLLECT_LORE("inventory.generator.collect.lore", (bundle, args) ->
+	{
+		Generator generator = (Generator) args[0];
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			generator.getCurrency().getBaseComponent()
+					.append(text(generator.getPossibleAmountToCollect()))
+					.append(text(" "))
+					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.decorate(BOLD),
+		};
+	}),
+	
+	GENERATOR_COLLECT("generator.collect", (bundle, args) ->
+	{
+		Generator generator = (Generator) args[0];
+		int amountCollected = (int) args[1];
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			generator.getCurrency().getBaseComponent()
+					.append(text(amountCollected))
+					.append(text(" "))
+					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.decorate(BOLD),
+		};
+	}),
+	
+	GENERATOR_COLLECT_EMPTY("generator.collect.empty", (bundle, args) ->
+	{
+		Generator generator = (Generator) args[0];
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			generator.getCurrency().getBaseComponent()
+					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.decorate(BOLD),
+		};
+	}),
+	
+	GENERATOR_COLLECT_DEPOSIT_FULLED("generator.collect.deposit-fulled", (bundle, args) ->
+	{
+		Generator generator = (Generator) args[0];
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			generator.getCurrency().getBaseComponent()
+					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.decorate(BOLD),
+		};
+	}),
+	
+	GENERATOR_COLLECT_DEPOSIT_FULL("generator.collect.deposit-full", (bundle, args) ->
+	{
+		Generator generator = (Generator) args[0];
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			generator.getCurrency().getBaseComponent()
+					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.decorate(BOLD),
+		};
+	}),
 	
 	STRUCTURE_GENERATOR_TITLE("structure.generator.title",
 	(bundle, args) -> new Component[]
@@ -617,6 +719,8 @@ public enum PluginMessage implements Message
 	TILE_BOUGHT("tile-bought", empty().color(GREEN)),
 	
 	PURCHASE_INVALID_PRICE("purchase-invalid-price", empty().color(RED)),
+	
+	INVENTORY_STRUCTURE_GUI_MOVE_STRUCTURE("inventory.structure-gui.move-structure", empty().color(GRAY)),
 	
 	;
 	

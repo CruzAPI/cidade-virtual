@@ -1,6 +1,7 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.enums.Currency;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
@@ -55,7 +56,7 @@ public class CraftDislikeGenerator extends CraftGenerator implements DislikeGene
 	@Override
 	public void setTownBalance(int balance)
 	{
-		town.setCappedDislikes(balance);
+		town.setDislikes(balance);
 	}
 	
 	@Override
@@ -75,5 +76,17 @@ public class CraftDislikeGenerator extends CraftGenerator implements DislikeGene
 	protected PluginMessage getStructureBalanceMessageUnderAttack()
 	{
 		return PluginMessage.STRUCTURE_DISLIKE_GENERATOR_BALANCE;
+	}
+	
+	@Override
+	public Currency getCurrency()
+	{
+		return Currency.DISLIKE;
+	}
+	
+	@Override
+	public boolean hasReachedMaxTownBalanceCapacity()
+	{
+		return town.hasReachedMaxDislikeCapacity();
 	}
 }

@@ -1,7 +1,6 @@
 package com.eul4.model.inventory.craft;
 
 import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.GeneratorGui;
 import com.eul4.model.town.structure.Generator;
 import lombok.Getter;
@@ -10,26 +9,45 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import static com.eul4.i18n.PluginMessage.*;
+
 @Getter
 public abstract class CraftGeneratorGui extends CraftStructureGui implements GeneratorGui
 {
+	private final Generator generator;
+	
 	protected ItemStack collect;
 	
-	public CraftGeneratorGui(CommonPlayer commonPlayer, Generator structure, Inventory inventory)
+	public CraftGeneratorGui(CommonPlayer commonPlayer, Generator generator, Inventory inventory)
 	{
-		super(commonPlayer, structure, inventory);
+		super(commonPlayer, generator, inventory);
 		
-		ItemMeta meta;
+		this.generator = generator;
 		
-		collect = new ItemStack(Material.GOLD_INGOT);
-		meta = collect.getItemMeta();
-		meta.displayName(PluginMessage.COLLECT_LIKES.translate(commonPlayer.getLocale()));
-		collect.setItemMeta(meta);
+		collect = ItemStack.of(getCollectType());
 	}
+	
+	protected abstract Material getCollectType();
 	
 	@Override
 	public void updateInventory()
 	{
+		ItemMeta meta;
+		
+		meta = collect.getItemMeta();
+		meta.displayName(INVENTORY_GENERATOR_COLLECT.translate(commonPlayer.getLocale(), generator));
+		
+		if(generator.hasReachedMaxTownBalanceCapacity())
+		{
+			meta.lore(INVENTORY_GENERATOR_COLLECT_LORE_DEPOSIT_FULL.translateLore(commonPlayer.getLocale(), generator));
+		}
+		else
+		{
+			meta.lore(INVENTORY_GENERATOR_COLLECT_LORE.translateLore(commonPlayer.getLocale(), generator));
+		}
+		
+		collect.setItemMeta(meta);
+		
 		inventory.setItem(4, collect);
 		super.updateInventory();
 	}

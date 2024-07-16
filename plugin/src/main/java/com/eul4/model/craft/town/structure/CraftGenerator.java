@@ -11,6 +11,7 @@ import com.eul4.model.town.structure.Generator;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.GeneratorAttribute;
 import com.eul4.util.MessageUtil;
+import com.eul4.util.SoundUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.block.BlockFace;
@@ -18,6 +19,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static com.eul4.i18n.PluginMessage.*;
 
 @Getter
 @Setter
@@ -144,19 +147,60 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 	protected abstract PluginMessage getStructureBalanceMessageUnderAttack();
 	
 	@Override
-	public void collect()
+	public final void collect()
+	{
+		final int currentBalance = this.balance;
+		final boolean depositAlreadyFull = hasReachedMaxTownBalanceCapacity();
+		
+		int toCollect = getPossibleAmountToCollect();
+		
+		this.balance -= toCollect;
+		
+		setTownBalance(getTownBalance() + toCollect);
+		
+		updateHologram();
+		
+		final boolean depositFulled = hasReachedMaxTownBalanceCapacity();
+		
+		if(currentBalance == 0 && toCollect == 0)
+		{
+			town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer
+					.sendMessage(GENERATOR_COLLECT_EMPTY, this));
+			town.getPlayer().ifPresent(SoundUtil::playPiano);
+		}
+		else if(toCollect == 0 && depositAlreadyFull)
+		{
+			town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer
+					.sendMessage(GENERATOR_COLLECT_DEPOSIT_FULL, this));
+			town.getPlayer().ifPresent(SoundUtil::playPlong);
+		}
+		else
+		{
+			town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer
+					.sendMessage(GENERATOR_COLLECT, this, toCollect));
+			
+			if(depositFulled)
+			{
+				town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer.sendMessage(
+						GENERATOR_COLLECT_DEPOSIT_FULLED, this));
+				town.getPlayer().ifPresent(SoundUtil::playPiano);
+			}
+			else
+			{
+				town.getPlayer().ifPresent(SoundUtil::playPling);
+			}
+		}
+	}
+	
+	@Override
+	public final int getPossibleAmountToCollect()
 	{
 		int balanceLimit = getTownBalanceLimit();
 		int balance = getTownBalance();
 		
 		int canReceive = balanceLimit - balance;
 		
-		int toCollect = Math.min(this.balance, canReceive);
-		
-		this.balance -= toCollect;
-		
-		setTownBalance(balance + toCollect);
-		updateHologram();
+		return Math.max(0, Math.min(this.balance, canReceive));
 	}
 	
 	public abstract int getTownBalanceLimit();

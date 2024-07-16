@@ -962,4 +962,16 @@ public class CraftTown implements Town
 		
 		return randomSpawnLocation;
 	}
+	
+	@Override
+	public boolean hasReachedMaxDislikeCapacity()
+	{
+		return dislikes >= dislikeCapacity;
+	}
+	
+	@Override
+	public boolean hasReachedMaxLikeCapacity()
+	{
+		return likes >= likeCapacity;
+	}
 }

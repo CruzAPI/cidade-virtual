@@ -1,6 +1,7 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.enums.Currency;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
@@ -55,7 +56,7 @@ public class CraftLikeGenerator extends CraftGenerator implements LikeGenerator
 	@Override
 	public void setTownBalance(int balance)
 	{
-		town.setCappedLikes(balance);
+		town.setLikes(balance);
 	}
 	
 	@Override
@@ -75,5 +76,17 @@ public class CraftLikeGenerator extends CraftGenerator implements LikeGenerator
 	protected PluginMessage getStructureBalanceMessageUnderAttack()
 	{
 		return PluginMessage.STRUCTURE_LIKE_GENERATOR_BALANCE;
+	}
+	
+	@Override
+	public Currency getCurrency()
+	{
+		return Currency.LIKE;
+	}
+	
+	@Override
+	public boolean hasReachedMaxTownBalanceCapacity()
+	{
+		return town.hasReachedMaxLikeCapacity();
 	}
 }

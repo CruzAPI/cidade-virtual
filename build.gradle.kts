@@ -29,6 +29,8 @@ val bashPath = project.property("bash.path") as String
 val user = project.property("remote.user") as String
 val hostname = project.property("remote.hostname") as String
 val resetTown: Boolean = project.findProperty("resetTowns")?.toString()?.toBoolean() ?: false
+val containerName = project.findProperty("containerName")?.toString()
+val pluginDirectory = project.findProperty("pluginDir")?.toString()
 
 task("resetTownsLocal")
 {
@@ -110,7 +112,7 @@ task("startLocal")
 task("stopRemote")
 {
     doLast {
-        val process = ProcessBuilder(bashPath, "-c", "${buildFile.parent}/stop-remote.sh $user $hostname").start()
+        val process = ProcessBuilder(bashPath, "-c", "${buildFile.parent}/stop-remote.sh $user $hostname $containerName").start()
         val exitCode = process.waitFor()
         val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
 
@@ -141,7 +143,7 @@ task("stopRemote")
 task("startRemote")
 {
     doLast {
-        val process = ProcessBuilder(bashPath, "-c", "${buildFile.parent}/start-remote.sh $user $hostname").start()
+        val process = ProcessBuilder(bashPath, "-c", "${buildFile.parent}/start-remote.sh $user $hostname $containerName").start()
 
         if(process.waitFor() != 0)
         {
@@ -153,9 +155,9 @@ task("startRemote")
     }
 }
 
-configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validator" }) {
+configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validator" || it.name == "authenticator" }) {
     this.afterEvaluate {
-        fun getFinalJarAbsolutePath(): String = tasks.reobfJar.get().outputJar.get().asFile.absolutePath
+        fun getFinalJarAbsolutePath(): String = tasks.jar.get().archiveFile.get().asFile.absolutePath
 
         task("cpLocal")
         {
@@ -176,7 +178,9 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
         task("scpRemote")
         {
             doLast {
-                val scpProcess = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/scp.sh ${getFinalJarAbsolutePath()} $user $hostname").start()
+                val scpProcess = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/scp.sh ${getFinalJarAbsolutePath()} $user $hostname $pluginDirectory").start()
+
+                println("${rootDir.absolutePath}/scp.sh ${getFinalJarAbsolutePath()} $user $hostname $pluginDirectory")
 
                 if (scpProcess.waitFor() != 0)
                 {
@@ -285,7 +289,7 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
 fun isRemoteContainerStopped(): Boolean
 {
     val bashPath = project.property("bash.path") as String
-    val process = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/check-remote-container.sh $user $hostname").start()
+    val process = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/check-remote-container.sh $user $hostname $containerName").start()
 
     return process.waitFor() != 0
 }

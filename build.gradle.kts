@@ -46,21 +46,25 @@ task("resetTownsLocal")
     }
 }
 
-task("resetTownsRemote")
-{
+task("resetTownsRemote") {
     doLast {
-        val process = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/reset-towns-remote.sh $user $hostname").start()
+        // Correctly handle file path separators for different OS
+        val scriptPath = "${rootDir.absolutePath.replace("\\", "/")}/reset-towns-remote.sh"
+
+        val process = ProcessBuilder(bashPath, "-c", "$scriptPath $user $hostname").start()
         val exitCode = process.waitFor()
+
+        // Read the error stream once and store the result
         val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
 
-        if(exitCode != 0)
-        {
+        if (exitCode != 0) {
             throw GradleException("Failed to reset towns!\n" +
                     "$errorMessage\n" +
                     "(exit code: ${process.exitValue()})")
         }
     }
 }
+
 
 task("stopLocal")
 {
@@ -107,44 +111,43 @@ task("startLocal")
     }
 }
 
-task("stopRemote")
-{
+task("stopRemote") {
     doLast {
-        val process = ProcessBuilder(bashPath, "-c", "${buildFile.parent}/stop-remote.sh $user $hostname").start()
+        // Correctly handle file path separators for different OS
+        val scriptPath = "${buildFile.parent.replace("\\", "/")}/stop-remote.sh"
+
+        val process = ProcessBuilder(bashPath, "-c", "$scriptPath $user $hostname").start()
         val exitCode = process.waitFor()
+
+        // Read the error stream once and store the result
         val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
 
-        if(exitCode == 1)
-        {
+        if (exitCode == 1) {
             println("WARN: $errorMessage")
-        }
-        else if(exitCode != 0)
-        {
-            val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
+        } else if (exitCode != 0) {
+            // Throw an exception with the previously read error message
             throw GradleException("Failed to stop server!\n" +
                     "$errorMessage\n" +
                     "(exit code: ${process.exitValue()})")
-        }
-        else
-        {
-            while(!isRemoteContainerStopped())
-            {
-                println("Sleeping 1s... Waiting container to stop.")
+        } else {
+            while (!isRemoteContainerStopped()) {
+                println("Sleeping 1s... Waiting for the container to stop.")
                 Thread.sleep(1000L)
             }
-
             println("Container stopped!")
         }
     }
 }
 
-task("startRemote")
-{
-    doLast {
-        val process = ProcessBuilder(bashPath, "-c", "${buildFile.parent}/start-remote.sh $user $hostname").start()
 
-        if(process.waitFor() != 0)
-        {
+task("startRemote") {
+    doLast {
+        // Correctly handle file path separators for different OS
+        val scriptPath = "${buildFile.parent.replace("\\", "/")}/start-remote.sh"
+
+        val process = ProcessBuilder(bashPath, "-c", "$scriptPath $user $hostname").start()
+
+        if (process.waitFor() != 0) {
             val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
             throw GradleException("Failed to start server!\n" +
                     "$errorMessage\n" +
@@ -152,6 +155,7 @@ task("startRemote")
         }
     }
 }
+
 
 configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validator" }) {
     this.afterEvaluate {
@@ -173,13 +177,15 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
             }
         }
 
-        task("scpRemote")
-        {
+        task("scpRemote") {
             doLast {
-                val scpProcess = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/scp.sh ${getFinalJarAbsolutePath()} $user $hostname").start()
+                // Correctly handle file path separators for different OS
+                val scriptPath = "${rootDir.absolutePath.replace("\\", "/")}/scp.sh"
+                val jarPath = getFinalJarAbsolutePath().replace("\\", "/")
 
-                if (scpProcess.waitFor() != 0)
-                {
+                val scpProcess = ProcessBuilder(bashPath, "-c", "$scriptPath $jarPath $user $hostname").start()
+
+                if (scpProcess.waitFor() != 0) {
                     val errorMessage = scpProcess.errorStream.bufferedReader().use { it.readText() }
                     throw GradleException("Failed to scp ${this@configure.name}!\n" +
                             "$errorMessage\n" +
@@ -187,6 +193,7 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
                 }
             }
         }
+
 
         task("deployLocal")
         {

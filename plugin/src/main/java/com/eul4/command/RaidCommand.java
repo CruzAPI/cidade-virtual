@@ -35,7 +35,7 @@ public class RaidCommand implements TabExecutor
 		
 		if(!townPlayer.hasTown())
 		{
-			player.sendMessage("you do not have a town."); //TODO message
+			player.sendMessage("Você não tem uma cidade."); //TODO message
 			return true;
 		}
 		

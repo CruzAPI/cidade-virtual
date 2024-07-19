@@ -44,7 +44,16 @@ public enum PluginMessage implements Message
 	STRUCTURE_DISLIKE_DEPOSIT_NAME("structure.dislike-deposit.name"),
 	COLLECT_LIKES("collect-likes", empty().color(GREEN)),
 	CLICK_TO_BUY_THIS_TILE("click-to-buy-this-tile", empty().decorate(BOLD)),
-	
+
+	HOME_SET("home.mensagem",
+			(bundle, args) -> new Component[]
+	{
+		(Component) args[0],
+				((Message) args[1]).translateWord(bundle.getLocale()),
+				ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
+				text((int) args[2]),
+	}),
+
 	TOWN_COMMAND_NAME("town.command.name"),
 	COMMAND_BUY_STRUCTURE_ALIASES("command.buy-structure.aliases"),
 	

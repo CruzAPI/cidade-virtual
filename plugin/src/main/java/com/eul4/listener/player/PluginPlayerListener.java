@@ -3,6 +3,7 @@ package com.eul4.listener.player;
 import com.eul4.Main;
 import com.eul4.model.player.PluginPlayer;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,13 +12,22 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
 @RequiredArgsConstructor
 public class PluginPlayerListener implements Listener
 {
 	private final Main plugin;
-	
+
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event)
+	{
+		Bukkit.getScheduler().runTask(plugin, () -> {
+			event.getPlayer().performCommand("showbalance");
+		});
+	}
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void on(PlayerItemHeldEvent event)
 	{

@@ -205,6 +205,14 @@ public class Main extends Common
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("macroid").setExecutor(new MacroidCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
+		getCommand("sethome").setExecutor(new SetHomeCommand(this));
+		getCommand("delhome").setExecutor(new DelHomeCommand(this));
+		getCommand("listhome").setExecutor(new ListHomesCommand(this));
+		getCommand("tpa").setExecutor(new TPACommand(this));
+		getCommand("showbalance").setExecutor(new ShowBalancesCommand(this));
+		getCommand("tpaccept").setExecutor(new TPACCEPTCommand(this));
+		getCommand("home").setExecutor(new HomeCommand(this));
+
 	}
 	
 	private void registerListeners()

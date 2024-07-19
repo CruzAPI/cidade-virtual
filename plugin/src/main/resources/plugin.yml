@@ -15,9 +15,20 @@ commands:
   admin:
   build:
   move:
+  home:
+    aliases: [casa]
+  sethome:
+    aliases: [criarcasa, criacasa, setarcasa, setcasa]
+  delhome:
+    aliases: [deletarcasa, apagarcasa]
+  listhome:
+    aliases: [listarcasa, listacasa, listhomes]
   buystructure:
     aliases: [loja]
+  tpa:
+  tpaccept:
   rulereload:
+  showbalance:
   macroid:
   raid:
     aliases: [ataque, attack, atacar]

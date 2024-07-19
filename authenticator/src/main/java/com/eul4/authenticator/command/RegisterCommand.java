@@ -12,8 +12,7 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.logging.Level;
 
-import static com.eul4.authenticator.util.MessageUtil.CONTACT_SERVER_ADMINISTRATOR_MESSAGE;
-import static com.eul4.authenticator.util.MessageUtil.UNEXPECTED_ERROR_MESSAGE;
+import static com.eul4.authenticator.util.MessageUtil.*;
 import static net.md_5.bungee.api.ChatColor.GREEN;
 import static net.md_5.bungee.api.ChatColor.RED;
 
@@ -88,16 +87,7 @@ public class RegisterCommand extends Command implements TabExecutor
 						player.getName(),
 						player.getUniqueId()), e);
 				
-				TextComponent[] textComponents = new TextComponent[2];
-				
-				textComponents[0] = new TextComponent(UNEXPECTED_ERROR_MESSAGE);
-				textComponents[1] = new TextComponent(CONTACT_SERVER_ADMINISTRATOR_MESSAGE);
-				
-				textComponents[0].setColor(RED);
-				textComponents[1].setColor(RED);
-				
-				sender.sendMessage(textComponents[0]);
-				sender.sendMessage(textComponents[1]);
+				sendUnexpectedErrorMessage(sender);
 				
 				return;
 			}
@@ -171,16 +161,7 @@ public class RegisterCommand extends Command implements TabExecutor
 						player.getName(),
 						player.getUniqueId()), e);
 				
-				TextComponent[] textComponents = new TextComponent[2];
-				
-				textComponents[0] = new TextComponent(UNEXPECTED_ERROR_MESSAGE);
-				textComponents[1] = new TextComponent(CONTACT_SERVER_ADMINISTRATOR_MESSAGE);
-				
-				textComponents[0].setColor(RED);
-				textComponents[1].setColor(RED);
-				
-				sender.sendMessage(textComponents[0]);
-				sender.sendMessage(textComponents[1]);
+				sendUnexpectedErrorMessage(sender);
 			}
 		}
 		else

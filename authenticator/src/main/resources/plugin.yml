@@ -1,0 +1,4 @@
+name: Authenticator
+main: com.eul4.authenticator.Main
+version: 1.0
+author: CruzAPI

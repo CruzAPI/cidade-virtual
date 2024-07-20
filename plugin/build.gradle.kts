@@ -26,10 +26,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 }
 
-tasks.assemble {
-    dependsOn(tasks.reobfJar)
-}
-
 tasks.shadowJar {
     shouldRunAfter(tasks.clean)
     mergeServiceFiles()

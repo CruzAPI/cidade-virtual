@@ -1,2 +1,6 @@
 #!/bin/bash
-scp "$1" "$2"@"$3":~/cidade-virtual/server/plugins
+
+echo "ECHO"
+echo "$1" "$2"@"$3":"$4"
+
+scp "$1" "$2"@"$3":"$4"

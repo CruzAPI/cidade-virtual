@@ -79,8 +79,6 @@ public enum PluginMessage implements Message
 		{
 			empty().color(RED),
 			generator.getCurrency().getBaseComponent()
-					.append(text(generator.getPossibleAmountToCollect()))
-					.append(text(" "))
 					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};

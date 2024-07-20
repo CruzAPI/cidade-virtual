@@ -11,6 +11,7 @@ import com.eul4.exception.StructureLimitException;
 import com.eul4.exception.StructureNotForSaleException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.craft.CraftStructureShopGui;
+import com.eul4.model.player.BuyStructurePerformer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -54,27 +55,13 @@ public class BuyStructureCommand implements TabExecutor
 		
 		CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
 		
-		if(!player.isOp())
+		if(!(commonPlayer instanceof BuyStructurePerformer buyStructurePerformer))
 		{
-			commonPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
-			return true;
+			commonPlayer.sendMessage(CommonMessage.CAN_NOT_PERFORM);
+			return false;
 		}
 		
-		if(args.length == 0)
-		{
-			commonPlayer.openGui(new CraftStructureShopGui(commonPlayer));
-		}
-		else if(args.length == 1)
-		{
-			TownPlayer townPlayer = (TownPlayer) plugin.getPlayerManager().get(player);
-			StructureType structureType = StructureType.valueOf(args[0]);
-			
-			Town town = townPlayer.getTown();
-			
-			executeBuy(townPlayer, structureType);
-		}
-		
-		return false;
+		return buyStructurePerformer.performBuyStructure();
 	}
 	
 	public boolean executeBuy(TownPlayer townPlayer, StructureType structureType)

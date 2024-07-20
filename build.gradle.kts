@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("io.papermc.paperweight.userdev") version "1.7.1"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.eul4"
@@ -122,7 +123,6 @@ task("stopRemote")
         }
         else if(exitCode != 0)
         {
-            val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
             throw GradleException("Failed to stop server!\n" +
                     "$errorMessage\n" +
                     "(exit code: ${process.exitValue()})")
@@ -157,7 +157,7 @@ task("startRemote")
 
 configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validator" || it.name == "authenticator" }) {
     this.afterEvaluate {
-        fun getFinalJarAbsolutePath(): String = tasks.jar.get().archiveFile.get().asFile.absolutePath
+        fun getFinalJarAbsolutePath(): String = tasks.shadowJar.get().archiveFile.get().asFile.absolutePath
 
         task("cpLocal")
         {

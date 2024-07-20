@@ -2,7 +2,6 @@ package com.eul4.world.craft;
 
 import com.eul4.common.type.player.PlayerType;
 import com.eul4.type.PluginWorldType;
-import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.world.TownWorld;
 import org.bukkit.World;
 

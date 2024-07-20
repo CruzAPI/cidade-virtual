@@ -1,11 +1,13 @@
 package com.eul4.service;
 
 import com.eul4.Main;
+import com.eul4.common.util.BoundingBoxUtil;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.TownAlreadyExistsException;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.town.Town;
 import com.eul4.type.PluginWorldType;
+import com.eul4.util.FaweUtil;
 import com.eul4.wrapper.TownMap;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
@@ -22,6 +24,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.util.BoundingBox;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +44,7 @@ public class TownManager
 	@Getter
 	private TownMap towns;
 	
-	private Set<UUID> waitingCreation = new HashSet<>();
+	private final Set<UUID> waitingCreation = new HashSet<>();
 	
 	public void loadTowns() throws Exception
 	{
@@ -75,14 +78,49 @@ public class TownManager
 		{
 			File file = new File("plugins/FastAsyncWorldEdit/schematics", "basis.schem");
 			
-			var world = FaweAPI.getWorld(PluginWorldType.TOWN_WORLD.getInstance().getWorld().getName());
+			var weWorld = FaweAPI.getWorld(PluginWorldType.TOWN_WORLD.getInstance().getWorld().getName());
 			
 			ClipboardFormat format = ClipboardFormats.findByFile(file);
 			
 			try(ClipboardReader reader = format.getReader(new FileInputStream(file));
 					Clipboard clipboard = reader.read();
-					EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(world, -1))
+					EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(weWorld, -1))
 			{
+				final int minX = clipboard.getMinimumPoint().x();
+				final int minY = clipboard.getMinimumPoint().y();
+				final int minZ = clipboard.getMinimumPoint().z();
+				final int maxX = clipboard.getMaximumPoint().x();
+				final int maxY = clipboard.getMaximumPoint().y();
+				final int maxZ = clipboard.getMaximumPoint().z();
+				
+				final int originX = clipboard.getOrigin().x();
+				final int originY = clipboard.getOrigin().y();
+				final int originZ = clipboard.getOrigin().z();
+				
+				final int relativeMinX = minX - originX;
+				final int relativeMinY = minY - originY;
+				final int relativeMinZ = minZ - originZ;
+				final int relativeMaxX = maxX - originX;
+				final int relativeMaxY = maxY - originY;
+				final int relativeMaxZ = maxZ - originZ;
+				
+				final int absolutMinX = relativeMinX + to.x();
+				final int absolutMinY = relativeMinY + to.y();
+				final int absolutMinZ = relativeMinZ + to.z();
+				final int absolutMaxX = relativeMaxX + to.x();
+				final int absolutMaxY = relativeMaxY + to.y();
+				final int absolutMaxZ = relativeMaxZ + to.z();
+				
+				BlockVector3 min = BlockVector3.at(absolutMinX, absolutMinY, absolutMinZ);
+				BlockVector3 max = BlockVector3.at(absolutMaxX, absolutMaxY, absolutMaxZ);
+				
+				BoundingBox boundingBox = FaweUtil.boundingBox(min, max, weWorld);
+				
+				plugin.getServer()
+						.getScheduler()
+						.getMainThreadExecutor(plugin)
+						.execute(() -> BoundingBoxUtil.removeEntities(boundingBox, location.getWorld()));
+				
 				Operation operation = new ClipboardHolder(clipboard)
 						.createPaste(editSession)
 						.to(to)

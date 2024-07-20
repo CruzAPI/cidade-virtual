@@ -71,8 +71,7 @@ public class TestCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			pluginPlayer.getTown().setDislikes(10_000_0000);
-			pluginPlayer.getTown().setLikes(10_000_0000);
+			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
 		}
 		else if(args.length == 1)
 		{

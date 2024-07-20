@@ -23,35 +23,35 @@ public enum ItemBuilder
 {
 	LIKE_GENERATOR((itemBuilder, commonPlayer) ->
 	{
-		ItemStack item = new ItemStack(Material.EMERALD);
+		ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
 	}, StructureType.LIKE_GENERATOR),
 	
 	DISLIKE_GENERATOR((itemBuilder, commonPlayer) ->
 	{
-		ItemStack item = new ItemStack(Material.REDSTONE);
+		ItemStack item = new ItemStack(Material.RED_STAINED_GLASS);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
 	}, StructureType.DISLIKE_GENERATOR),
 	
 	LIKE_DEPOSIT((itemBuilder, commonPlayer) ->
 	{
-		ItemStack item = new ItemStack(Material.EMERALD_BLOCK);
+		ItemStack item = new ItemStack(Material.LIME_CONCRETE);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
 	}, StructureType.LIKE_DEPOSIT),
 	
 	DISLIKE_DEPOSIT((itemBuilder, commonPlayer) ->
 	{
-		ItemStack item = new ItemStack(Material.REDSTONE_BLOCK);
+		ItemStack item = new ItemStack(Material.RED_CONCRETE);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
 	}, StructureType.DISLIKE_DEPOSIT),
 	
 	ARMORY((itemBuilder, commonPlayer) ->
 	{
-		ItemStack item = new ItemStack(Material.DIAMOND_BLOCK);
+		ItemStack item = new ItemStack(Material.IRON_BLOCK);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
 	}, StructureType.ARMORY),

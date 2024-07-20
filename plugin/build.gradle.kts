@@ -36,3 +36,7 @@ tasks.shadowJar {
         include(project(":common"))
     }
 }
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
+}

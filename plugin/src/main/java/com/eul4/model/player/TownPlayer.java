@@ -8,7 +8,8 @@ public interface TownPlayer extends
 		PhysicalPlayer,
 		Invincible,
 		TownPerformer.TeleportInside,
-		SpawnPerformer.Reincarnation
+		SpawnPerformer.Reincarnation,
+		BuyStructurePerformer
 {
 	Town getTown();
 	boolean hasTown();

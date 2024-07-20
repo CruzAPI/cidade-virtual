@@ -14,10 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.eul4.i18n.PluginMessage.DECORATED_VALUE_CURRENCY;
 import static net.kyori.adventure.text.Component.empty;
@@ -26,7 +23,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.RED;
 
 public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 {
-	private final Map<ItemStack, ItemBuilder> itemStructureMap = new HashMap<>();
+	private final Map<ItemStack, ItemBuilder> itemStructureMap = new LinkedHashMap<>();
 	
 	private ItemStack likeGenerator;
 	private ItemStack dislikeGenerator;
@@ -40,23 +37,23 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 	{
 		super(commonPlayer, commonPlayer.createInventory(9 * 6, PluginMessage.STRUCTURE_SHOP_TITLE));
 		
-		likeGenerator = new ItemStack(Material.EMERALD);
+		likeGenerator = new ItemStack(Material.LIME_STAINED_GLASS);
 		setDisplayNameAndPriceInLore(likeGenerator, ItemBuilder.LIKE_GENERATOR);
 		
-		dislikeGenerator = new ItemStack(Material.REDSTONE);
+		dislikeGenerator = new ItemStack(Material.RED_STAINED_GLASS);
 		setDisplayNameAndPriceInLore(dislikeGenerator, ItemBuilder.DISLIKE_GENERATOR);
 		
-		likeDeposit = new ItemStack(Material.EMERALD_BLOCK);
+		likeDeposit = new ItemStack(Material.LIME_CONCRETE);
 		setDisplayNameAndPriceInLore(likeDeposit, ItemBuilder.LIKE_DEPOSIT);
 		
-		dislikeDeposit = new ItemStack(Material.REDSTONE_BLOCK);
+		dislikeDeposit = new ItemStack(Material.RED_CONCRETE);
 		setDisplayNameAndPriceInLore(dislikeDeposit, ItemBuilder.DISLIKE_DEPOSIT);
 		
-		armory = new ItemStack(Material.DIAMOND_BLOCK); //TODO: duplicated Material in ItemBuilder?? Probably one for icon and the other for be placed in ground.
+		armory = new ItemStack(Material.IRON_BLOCK); //TODO: duplicated Material in ItemBuilder?? Probably one for icon and the other for be placed in ground.
 		setDisplayNameAndPriceInLore(armory, ItemBuilder.ARMORY);
 		
-		cannon = new ItemStack(Material.DISPENSER);
-		setDisplayNameAndPriceInLore(cannon, ItemBuilder.CANNON);
+//		cannon = new ItemStack(Material.DISPENSER);
+//		setDisplayNameAndPriceInLore(cannon, ItemBuilder.CANNON);
 		
 		turret = new ItemStack(Material.SMOOTH_STONE);
 		setDisplayNameAndPriceInLore(turret, ItemBuilder.TURRET);

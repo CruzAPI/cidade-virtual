@@ -33,6 +33,10 @@ public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
+		case 1:
+			this.reader = Reader.identity();
+			this.parameterizedReadable = this::parameterizedReadableVersion1;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -46,6 +50,20 @@ public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 			
 			return CommonPlayerData.builder()
 					.playerData(playerData)
+					.build();
+		};
+	}
+	
+	private Readable<CommonPlayerData> parameterizedReadableVersion1(Plugin plugin) throws IOException, ClassNotFoundException
+	{
+		return () ->
+		{
+			PlayerData playerData = readers.getReader(PlayerDataReader.class).readReference(plugin);
+			boolean scoreboardEnabled = in.readBoolean();
+			
+			return CommonPlayerData.builder()
+					.playerData(playerData)
+					.scoreboardEnabled(scoreboardEnabled)
 					.build();
 		};
 	}

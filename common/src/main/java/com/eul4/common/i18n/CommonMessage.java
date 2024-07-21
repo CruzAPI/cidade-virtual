@@ -46,7 +46,10 @@ public enum CommonMessage implements Message
 	
 	CONFIRM("confirm"),
 	CANCEL("cancel"),
-	CAN_NOT_PERFORM("can-not-perform", empty().color(RED));
+	CAN_NOT_PERFORM("can-not-perform", empty().color(RED)),
+	SCOREBOARD_ENABLED("command.scoreboard.enabled", empty().color(GREEN)),
+	SCOREBOARD_DISABLED("command.scoreboard.disabled", empty().color(GREEN)),
+	;
 	
 	private final BundleBaseName bundleBaseName;
 	private final String key;

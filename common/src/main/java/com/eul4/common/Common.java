@@ -3,6 +3,7 @@ package com.eul4.common;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.eul4.common.command.BuildCommand;
+import com.eul4.common.command.ScoreboardCommand;
 import com.eul4.common.event.WorldSaveOrStopEvent;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
@@ -68,6 +69,7 @@ public abstract class Common extends JavaPlugin
 	private void registerCommand()
 	{
 		getCommand("build").setExecutor(new BuildCommand(this));
+		getCommand("scoreboard").setExecutor(new ScoreboardCommand(this));
 	}
 	
 	private void registerPacketAdapters()

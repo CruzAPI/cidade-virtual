@@ -12,4 +12,7 @@ import lombok.NoArgsConstructor;
 public class CommonPlayerData
 {
 	private PlayerData playerData;
+	
+	@Builder.Default
+	private boolean scoreboardEnabled = true;
 }

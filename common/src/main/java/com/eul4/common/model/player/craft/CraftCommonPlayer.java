@@ -66,8 +66,13 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	public void reset()
 	{
 		player.resetTitle();
-		
-		if(this instanceof ScoreboardPlayer scoreboardPlayer)
+		resetScoreboard();
+	}
+	
+	@Override
+	public final void resetScoreboard()
+	{
+		if(this instanceof ScoreboardPlayer scoreboardPlayer && commonPlayerData.isScoreboardEnabled())
 		{
 			player.setScoreboard(scoreboardPlayer.getScoreboard().getBukkitScoreboard());
 		}

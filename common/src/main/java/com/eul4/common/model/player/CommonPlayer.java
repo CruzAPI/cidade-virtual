@@ -25,6 +25,7 @@ public interface CommonPlayer extends Messageable
 	Player getPlayer();
 	Common getPlugin();
 	
+	void resetScoreboard();
 	void resetPlayerData();
 	
 	UUID getUniqueId();

@@ -10,7 +10,7 @@ public enum CommonObjectType implements ObjectType
 	BLOCK((byte) 0, CommonExternalizerType.BLOCK),
 	BLOCK_VECTOR((byte) 0, CommonExternalizerType.BLOCK_VECTOR),
 	CHUNK((byte) 0, CommonExternalizerType.CHUNK),
-	COMMON_PLAYER_DATA((byte) 0, CommonExternalizerType.COMMON_PLAYER_DATA),
+	COMMON_PLAYER_DATA((byte) 1, CommonExternalizerType.COMMON_PLAYER_DATA),
 	COMMON_PLAYER((byte) 0, null),
 	ENTITY((byte) 0, CommonExternalizerType.ENTITY),
 	HOLOGRAM((byte) 0, CommonExternalizerType.HOLOGRAM),

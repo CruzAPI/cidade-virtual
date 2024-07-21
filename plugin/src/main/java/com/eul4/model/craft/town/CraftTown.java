@@ -4,6 +4,10 @@ import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.common.util.ThreadUtil;
+import com.eul4.event.DislikeChangeEvent;
+import com.eul4.event.LikeChangeEvent;
+import com.eul4.event.TownCapacityChangeEvent;
+import com.eul4.event.TownHardnessChangeEvent;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
@@ -355,15 +359,17 @@ public class CraftTown implements Town
 	@Override
 	public void setCappedLikes(int likes)
 	{
+		final int oldLikes = this.likes;
 		this.likes = Math.min(likeCapacity, likes);
-		onLikesChanged();
+		onLikesChanged(oldLikes);
 	}
 	
 	@Override
 	public void setCappedDislikes(int dislikes)
 	{
+		final int oldDislikes = this.dislikes;
 		this.dislikes = Math.min(dislikeCapacity, dislikes);
-		onDislikesChanged();
+		onDislikesChanged(oldDislikes);
 	}
 	
 	@Override
@@ -375,8 +381,14 @@ public class CraftTown implements Town
 	@Override
 	public void subtract(Price price)
 	{
+		final int oldLikes = this.likes;
+		final int oldDislikes = this.dislikes;
+		
 		this.likes -= price.getLikes();
 		this.dislikes -= price.getDislikes();
+		
+		onLikesChanged(oldLikes);
+		onDislikesChanged(oldDislikes);
 	}
 	
 	private int subtractCount(int currentValue, int subtractedValue, IntConsumer setBalanceOperation)
@@ -456,6 +468,8 @@ public class CraftTown implements Town
 	{
 		likeCapacity = calculateLikeCapacity();
 		dislikeCapacity = calculateDislikeCapacity();
+		
+		new TownCapacityChangeEvent(this).callEvent();
 	}
 	
 	public int calculateLikeCapacity()
@@ -532,7 +546,7 @@ public class CraftTown implements Town
 	@Override
 	public double getHardnessLimit()
 	{
-		return 20000.0D;
+		return 1000.0D; //TODO Move to TownHallAttribute?
 	}
 	
 	@Override
@@ -544,12 +558,14 @@ public class CraftTown implements Town
 		}
 		
 		this.hardness += hardness;
+		onHardnessChange();
 	}
 	
 	@Override
 	public void decreaseHardness(double hardness)
 	{
 		this.hardness = Math.max(0.0D, this.hardness - hardness);
+		onHardnessChange();
 	}
 	
 	@Override
@@ -561,6 +577,12 @@ public class CraftTown implements Town
 		}
 		
 		this.hardness = Math.max(0.0D, hardness);
+		onHardnessChange();
+	}
+	
+	private void onHardnessChange()
+	{
+		new TownHardnessChangeEvent(this).callEvent();
 	}
 	
 	@Override
@@ -609,6 +631,7 @@ public class CraftTown implements Town
 	public void setHardnessField(double hardness)
 	{
 		this.hardness = hardness;
+		onHardnessChange();
 	}
 	
 	@Override
@@ -888,24 +911,28 @@ public class CraftTown implements Town
 	
 	public void setLikes(int likes)
 	{
+		final int oldLikes = this.likes;
 		this.likes = likes;
-		onLikesChanged();
+		onLikesChanged(oldLikes);
 	}
 	
 	public void setDislikes(int dislikes)
 	{
+		final int oldDislikes = this.dislikes;
 		this.dislikes = dislikes;
-		onDislikesChanged();
+		onDislikesChanged(oldDislikes);
 	}
 	
-	private void onLikesChanged()
+	private void onLikesChanged(final int oldLikes)
 	{
 		structureSet.forEach(Structure::onTownLikeBalanceChange);
+		new LikeChangeEvent(this, oldLikes, likes).callEvent();
 	}
 	
-	private void onDislikesChanged()
+	private void onDislikesChanged(final int oldDislikes)
 	{
 		structureSet.forEach(Structure::onTownDislikeBalanceChange);
+		new DislikeChangeEvent(this, oldDislikes, dislikes).callEvent();
 	}
 	
 	@Override

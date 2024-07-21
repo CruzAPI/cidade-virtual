@@ -20,6 +20,7 @@ import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
 import com.eul4.listener.hotbar.RaidSpectatorHotbarListener;
 import com.eul4.listener.inventory.*;
 import com.eul4.listener.player.*;
+import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
@@ -213,6 +214,7 @@ public class Main extends Common
 		registerHotbarListeners();
 		registerInventoryListeners();
 		registerPlayerListeners();
+		registerScoreboardListeners();
 		registerStructureListeners();
 		
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
@@ -267,6 +269,11 @@ public class Main extends Common
 		pluginManager.registerEvents(new InvincibleListener(this), this);
 		pluginManager.registerEvents(new PluginPlayerListener(this), this);
 		pluginManager.registerEvents(new SpectatorListener(this), this);
+	}
+	
+	private void registerScoreboardListeners()
+	{
+		pluginManager.registerEvents(new TownScoreboardListener(this), this);
 	}
 	
 	private void registerStructureListeners()

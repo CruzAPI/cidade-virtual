@@ -3,6 +3,7 @@ package com.eul4.common.i18n;
 import com.eul4.common.model.player.CommonPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,11 @@ public interface Message
 	BundleBaseName getBundleBaseName();
 	String getKey();
 	BiFunction<ResourceBundle, Object[], Component[]> getComponentBiFunction();
+	
+	default String getTemplate(CommonPlayer commonPlayer)
+	{
+		return getTemplate(commonPlayer.getLocale());
+	}
 	
 	default String getTemplate(ResourceBundle bundle)
 	{
@@ -109,6 +115,11 @@ public interface Message
 	default Component translate(ResourceBundle bundle, Object... args)
 	{
 		return translate(bundle.getLocale(), args);
+	}
+	
+	default String translateToLegacyText(CommonPlayer commonPlayer, Object... args)
+	{
+		return LegacyComponentSerializer.legacySection().serialize(translate(commonPlayer, args));
 	}
 	
 	default Component translate(CommonPlayer commonPlayer, Object... args)

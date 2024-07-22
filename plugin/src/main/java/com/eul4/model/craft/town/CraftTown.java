@@ -201,8 +201,8 @@ public class CraftTown implements Town
 		TownBlock centerTownBlock = getTownBlock(block);
 		Block centerBlock = centerTownBlock.getBlock();
 		
-		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, -3));
-		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(-10, 0, 3));
+		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(11, 0, 4));
+		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(11, 0, -4));
 		
 		townHall = new CraftTownHall(this, centerTownBlock, true);
 		new CraftLikeGenerator(this, likeFarmTownBlock, true);

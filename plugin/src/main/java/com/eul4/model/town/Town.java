@@ -12,6 +12,7 @@ import com.eul4.model.town.structure.Armory;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.wrapper.*;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -20,11 +21,8 @@ import org.bukkit.util.BoundingBox;
 
 import java.awt.*;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -112,6 +110,7 @@ public interface Town
 	boolean isOnline();
 	
 	int getLevel();
+	int getBuiltLevel();
 	
 	boolean isUnderAttack();
 	Attacker getAttacker();
@@ -175,4 +174,9 @@ public interface Town
 	
 	boolean hasReachedMaxLikeCapacity();
 	boolean hasReachedMaxDislikeCapacity();
+	
+	Component getOwnerDisplayName();
+	
+	Optional<RaidAnalyzer> findAnalyzer();
+	void clearAnalisys();
 }

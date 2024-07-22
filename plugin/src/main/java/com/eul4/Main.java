@@ -20,6 +20,7 @@ import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
 import com.eul4.listener.hotbar.RaidSpectatorHotbarListener;
 import com.eul4.listener.inventory.*;
 import com.eul4.listener.player.*;
+import com.eul4.listener.scoreboard.AnalyzerScoreboardListener;
 import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
 import com.eul4.model.town.Town;
@@ -273,6 +274,7 @@ public class Main extends Common
 	
 	private void registerScoreboardListeners()
 	{
+		pluginManager.registerEvents(new AnalyzerScoreboardListener(this), this);
 		pluginManager.registerEvents(new TownScoreboardListener(this), this);
 	}
 	

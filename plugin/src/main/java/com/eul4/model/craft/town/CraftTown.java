@@ -39,6 +39,8 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -604,6 +606,12 @@ public class CraftTown implements Town
 	}
 	
 	@Override
+	public int getBuiltLevel()
+	{
+		return townHall.getBuiltLevel();
+	}
+	
+	@Override
 	public boolean isUnderAttack()
 	{
 		return currentAttack != null && !currentAttack.isFinished();
@@ -1000,5 +1008,28 @@ public class CraftTown implements Town
 	public boolean hasReachedMaxLikeCapacity()
 	{
 		return likes >= likeCapacity;
+	}
+	
+	@Override
+	public Component getOwnerDisplayName()
+	{
+		OfflinePlayer offlinePlayer = getOwner();
+		String playerName = Optional.ofNullable(offlinePlayer.getName()).orElse("Unknown");
+		
+		return offlinePlayer.isOnline()
+				? offlinePlayer.getPlayer().displayName()
+				: Component.text(playerName).color(NamedTextColor.DARK_GRAY);
+	}
+	
+	@Override
+	public Optional<RaidAnalyzer> findAnalyzer()
+	{
+		return Optional.ofNullable(analyzer);
+	}
+	
+	@Override
+	public void clearAnalisys()
+	{
+		setAnalyzer(null);
 	}
 }

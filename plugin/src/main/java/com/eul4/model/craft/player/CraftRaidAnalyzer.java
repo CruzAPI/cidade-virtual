@@ -1,11 +1,14 @@
 package com.eul4.model.craft.player;
 
 import com.eul4.Main;
+import com.eul4.event.AnalyzingTownEvent;
 import com.eul4.hotbar.RaidAnalyzerHotbar;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
+import com.eul4.scoreboard.AnalyzerScoreboard;
+import com.eul4.scoreboard.CraftAnalyzerScoreboard;
 import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.util.MessageUtil;
 import com.eul4.wrapper.PreTownAttack;
@@ -20,7 +23,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -46,6 +48,8 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	private PreTownAttack preTownAttack;
 	
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+	
+	private final AnalyzerScoreboard scoreboard = new CraftAnalyzerScoreboard(this);
 	
 	public CraftRaidAnalyzer(Player player, Main plugin)
 	{
@@ -85,7 +89,9 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	@Override
 	public void analyzeTown(Town town)
 	{
+		clearCurrentAnalisis();
 		analyzingTown = town;
+		town.setAnalyzer(this);
 		
 		Title title = Title.title(
 				PluginMessage.TITLE_OWNER_TOWN.translate(this, town.getOwner()),
@@ -99,6 +105,9 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		hotbar.reset();
 		player.teleport(town.getLocation().toHighestLocation());
 		player.showTitle(title);
+		
+		scoreboard.register();
+		new AnalyzingTownEvent(this).callEvent();
 	}
 	
 	@Override
@@ -126,6 +135,11 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		return rerollFuture != null && !rerollFuture.isDone();
 	}
 	
+	private void clearCurrentAnalisis()
+	{
+		Optional.ofNullable(analyzingTown).ifPresent(Town::clearAnalisys);
+	}
+	
 	private void scheduleAnalyzeTimer()
 	{
 		cancelAnalysisTask();
@@ -141,6 +155,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 			return;
 		}
 		
+		clearCurrentAnalisis();
 		cancelAnalysisTask();
 		skippedTowns.add(analyzingTown);
 		
@@ -185,6 +200,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	{
 		super.invalidate();
 		cancelAnalysisTask();
+		clearCurrentAnalisis();
 		Optional.ofNullable(preTownAttack).ifPresent(PreTownAttack::cancel);
 	}
 	
@@ -321,5 +337,11 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 	public SpiritualPlayerType getPlayerType()
 	{
 		return SpiritualPlayerType.RAID_ANALYZER;
+	}
+	
+	@Override
+	public Optional<Town> findAnalyzingTown()
+	{
+		return Optional.ofNullable(analyzingTown);
 	}
 }

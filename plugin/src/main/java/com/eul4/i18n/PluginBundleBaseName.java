@@ -6,6 +6,7 @@ public enum PluginBundleBaseName implements BundleBaseName
 {
 	PLUGIN("plugin"),
 	TOWN_SCOREBOARD("town_scoreboard"),
+	ANALYZER_SCOREBOARD("analyzer_scoreboard"),
 	;
 	
 	private final String bundleBaseName;

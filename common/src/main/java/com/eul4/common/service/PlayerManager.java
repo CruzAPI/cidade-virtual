@@ -2,6 +2,7 @@ package com.eul4.common.service;
 
 import com.eul4.common.Common;
 import com.eul4.common.event.CommonPlayerRegisterEvent;
+import com.eul4.common.event.CommonPlayerUnregisterEvent;
 import com.eul4.common.exception.InvalidCommonPlayerException;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.type.player.PlayerType;
@@ -135,7 +136,12 @@ public class PlayerManager
 	
 	public void unregister(UUID uuid)
 	{
-		commonPlayers.remove(uuid);
+		CommonPlayer removed = commonPlayers.remove(uuid);
+		
+		if(removed != null)
+		{
+			new CommonPlayerUnregisterEvent(removed).callEvent();
+		}
 	}
 	
 	public boolean isRegistered(CommonPlayer commonPlayer)

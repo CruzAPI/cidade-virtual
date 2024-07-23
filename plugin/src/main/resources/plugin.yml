@@ -21,3 +21,5 @@ commands:
   macroid:
   raid:
     aliases: [ataque, attack, atacar]
+  scoreboard:
+    aliases: [score]

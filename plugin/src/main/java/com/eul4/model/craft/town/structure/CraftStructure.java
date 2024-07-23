@@ -6,6 +6,7 @@ import com.eul4.common.util.ThreadUtil;
 import com.eul4.common.wrapper.Pitch;
 import com.eul4.enums.StructureStatus;
 import com.eul4.event.StructureConstructEvent;
+import com.eul4.event.StructureFinishEvent;
 import com.eul4.exception.*;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
@@ -454,6 +455,7 @@ public abstract class CraftStructure implements Structure
 	{
 		updateHologram();
 		reloadAttributesAndReloadTownAttributes();
+		new StructureFinishEvent(this).callEvent();
 	}
 	
 	public double getBuildProgressPercentage()

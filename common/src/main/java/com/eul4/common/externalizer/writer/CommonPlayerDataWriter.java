@@ -16,5 +16,6 @@ public class CommonPlayerDataWriter extends ObjectWriter<CommonPlayerData>
 	protected void writeObject(CommonPlayerData commonPlayerData) throws IOException
 	{
 		writers.getWriter(PlayerDataWriter.class).writeReference(commonPlayerData.getPlayerData());
+		out.writeBoolean(commonPlayerData.isScoreboardEnabled());
 	}
 }

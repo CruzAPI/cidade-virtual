@@ -9,6 +9,7 @@ import com.eul4.common.model.data.CommonPlayerData;
 import com.eul4.common.model.data.PlayerData;
 import com.eul4.common.model.inventory.Gui;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.model.player.ScoreboardPlayer;
 import com.eul4.common.world.CommonWorld;
 import lombok.Getter;
 import lombok.Setter;
@@ -65,6 +66,20 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	public void reset()
 	{
 		player.resetTitle();
+		resetScoreboard();
+	}
+	
+	@Override
+	public final void resetScoreboard()
+	{
+		if(this instanceof ScoreboardPlayer scoreboardPlayer && commonPlayerData.isScoreboardEnabled())
+		{
+			player.setScoreboard(scoreboardPlayer.getScoreboard().getBukkitScoreboard());
+		}
+		else
+		{
+			player.setScoreboard(plugin.getServer().getScoreboardManager().getNewScoreboard());
+		}
 	}
 	
 	@Override

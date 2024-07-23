@@ -2,12 +2,13 @@ package com.eul4.model.craft.player;
 
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
-import com.eul4.exception.TownNotFoundException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
+import com.eul4.scoreboard.CraftTownScoreboard;
+import com.eul4.scoreboard.TownScoreboard;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import com.eul4.type.player.SpiritualPlayerType;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Player;
 public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 {
 	private final transient PluginPlayerType lastPlayerType;
+	private final TownScoreboard townScoreboard = new CraftTownScoreboard(this);
 	
 	public CraftTownPlayer(Player player, Main plugin)
 	{
@@ -136,5 +138,11 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 	public void performTown()
 	{
 		teleportToTownHall();
+	}
+	
+	@Override
+	public TownScoreboard getScoreboard()
+	{
+		return townScoreboard;
 	}
 }

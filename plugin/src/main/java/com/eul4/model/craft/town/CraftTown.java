@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.common.util.ThreadUtil;
+import com.eul4.event.*;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
@@ -35,6 +36,8 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -92,6 +95,10 @@ public class CraftTown implements Town
 	
 	private transient int likeCapacity;
 	private transient int dislikeCapacity;
+	private transient int likesInGenerators;
+	private transient int dislikesInGenerators;
+	private transient int likeGeneratorsCapacity;
+	private transient int dislikeGeneratorsCapacity;
 	
 	private TownHall townHall;
 	private Armory armory;
@@ -355,15 +362,17 @@ public class CraftTown implements Town
 	@Override
 	public void setCappedLikes(int likes)
 	{
+		final int oldLikes = this.likes;
 		this.likes = Math.min(likeCapacity, likes);
-		onLikesChanged();
+		onLikesChanged(oldLikes);
 	}
 	
 	@Override
 	public void setCappedDislikes(int dislikes)
 	{
+		final int oldDislikes = this.dislikes;
 		this.dislikes = Math.min(dislikeCapacity, dislikes);
-		onDislikesChanged();
+		onDislikesChanged(oldDislikes);
 	}
 	
 	@Override
@@ -375,8 +384,14 @@ public class CraftTown implements Town
 	@Override
 	public void subtract(Price price)
 	{
+		final int oldLikes = this.likes;
+		final int oldDislikes = this.dislikes;
+		
 		this.likes -= price.getLikes();
 		this.dislikes -= price.getDislikes();
+		
+		onLikesChanged(oldLikes);
+		onDislikesChanged(oldDislikes);
 	}
 	
 	private int subtractCount(int currentValue, int subtractedValue, IntConsumer setBalanceOperation)
@@ -456,6 +471,11 @@ public class CraftTown implements Town
 	{
 		likeCapacity = calculateLikeCapacity();
 		dislikeCapacity = calculateDislikeCapacity();
+		likeGeneratorsCapacity = calculateLikeGeneratorsCapacity();
+		dislikeGeneratorsCapacity = calculateDislikeGeneratorsCapacity();
+		
+		new TownCapacityChangeEvent(this).callEvent();
+		new GeneratorsCapacityChangeEvent(this).callEvent();
 	}
 	
 	public int calculateLikeCapacity()
@@ -486,6 +506,66 @@ public class CraftTown implements Town
 		}
 		
 		return dislikeCapacity;
+	}
+	
+	public int calculateLikeGeneratorsCapacity()
+	{
+		int likeGeneratorsCapacity = 0;
+		
+		for(Structure structure : structureSet)
+		{
+			if(structure instanceof LikeGenerator likeGenerator)
+			{
+				likeGeneratorsCapacity += likeGenerator.getCapacity();
+			}
+		}
+		
+		return likeGeneratorsCapacity;
+	}
+	
+	public int calculateDislikeGeneratorsCapacity()
+	{
+		int dislikeGeneratorsCapacity = 0;
+		
+		for(Structure structure : structureSet)
+		{
+			if(structure instanceof DislikeGenerator dislikeGenerator)
+			{
+				dislikeGeneratorsCapacity += dislikeGenerator.getCapacity();
+			}
+		}
+		
+		return dislikeGeneratorsCapacity;
+	}
+	
+	public int calculateLikesInGenerator()
+	{
+		int likesInGenerator = 0;
+		
+		for(Structure structure : structureSet)
+		{
+			if(structure instanceof LikeGenerator likeGenerator)
+			{
+				likesInGenerator += likeGenerator.getBalance();
+			}
+		}
+		
+		return likesInGenerator;
+	}
+	
+	public int calculateDislikesInGenerator()
+	{
+		int likesInGenerator = 0;
+		
+		for(Structure structure : structureSet)
+		{
+			if(structure instanceof LikeGenerator likeGenerator)
+			{
+				likesInGenerator += likeGenerator.getBalance();
+			}
+		}
+		
+		return likesInGenerator;
 	}
 	
 	@Override
@@ -532,7 +612,7 @@ public class CraftTown implements Town
 	@Override
 	public double getHardnessLimit()
 	{
-		return 20000.0D;
+		return 1000.0D; //TODO Move to TownHallAttribute?
 	}
 	
 	@Override
@@ -544,12 +624,14 @@ public class CraftTown implements Town
 		}
 		
 		this.hardness += hardness;
+		onHardnessChange();
 	}
 	
 	@Override
 	public void decreaseHardness(double hardness)
 	{
 		this.hardness = Math.max(0.0D, this.hardness - hardness);
+		onHardnessChange();
 	}
 	
 	@Override
@@ -561,6 +643,12 @@ public class CraftTown implements Town
 		}
 		
 		this.hardness = Math.max(0.0D, hardness);
+		onHardnessChange();
+	}
+	
+	private void onHardnessChange()
+	{
+		new TownHardnessChangeEvent(this).callEvent();
 	}
 	
 	@Override
@@ -579,6 +667,12 @@ public class CraftTown implements Town
 	public int getLevel()
 	{
 		return townHall.getLevel();
+	}
+	
+	@Override
+	public int getBuiltLevel()
+	{
+		return townHall.getBuiltLevel();
 	}
 	
 	@Override
@@ -609,6 +703,7 @@ public class CraftTown implements Town
 	public void setHardnessField(double hardness)
 	{
 		this.hardness = hardness;
+		onHardnessChange();
 	}
 	
 	@Override
@@ -888,24 +983,28 @@ public class CraftTown implements Town
 	
 	public void setLikes(int likes)
 	{
+		final int oldLikes = this.likes;
 		this.likes = likes;
-		onLikesChanged();
+		onLikesChanged(oldLikes);
 	}
 	
 	public void setDislikes(int dislikes)
 	{
+		final int oldDislikes = this.dislikes;
 		this.dislikes = dislikes;
-		onDislikesChanged();
+		onDislikesChanged(oldDislikes);
 	}
 	
-	private void onLikesChanged()
+	private void onLikesChanged(final int oldLikes)
 	{
 		structureSet.forEach(Structure::onTownLikeBalanceChange);
+		new LikeChangeEvent(this, oldLikes, likes).callEvent();
 	}
 	
-	private void onDislikesChanged()
+	private void onDislikesChanged(final int oldDislikes)
 	{
 		structureSet.forEach(Structure::onTownDislikeBalanceChange);
+		new DislikeChangeEvent(this, oldDislikes, dislikes).callEvent();
 	}
 	
 	@Override
@@ -973,5 +1072,64 @@ public class CraftTown implements Town
 	public boolean hasReachedMaxLikeCapacity()
 	{
 		return likes >= likeCapacity;
+	}
+	
+	@Override
+	public Component getOwnerDisplayName()
+	{
+		OfflinePlayer offlinePlayer = getOwner();
+		String playerName = Optional.ofNullable(offlinePlayer.getName()).orElse("Unknown");
+		
+		return offlinePlayer.isOnline()
+				? offlinePlayer.getPlayer().displayName()
+				: Component.text(playerName).color(NamedTextColor.DARK_GRAY);
+	}
+	
+	@Override
+	public Optional<RaidAnalyzer> findAnalyzer()
+	{
+		return Optional.ofNullable(analyzer);
+	}
+	
+	@Override
+	public void clearAnalisys()
+	{
+		setAnalyzer(null);
+	}
+	
+	@Override
+	public int getLikesIncludingGenerators()
+	{
+		return likes + likesInGenerators;
+	}
+	
+	@Override
+	public int getDislikesIncludingGenerators()
+	{
+		return dislikes + dislikesInGenerators;
+	}
+	
+	@Override
+	public int getLikeCapacityIncludingGenerators()
+	{
+		return likeCapacity + likeGeneratorsCapacity;
+	}
+	
+	@Override
+	public int getDislikeCapacityIncludingGenerators()
+	{
+		return dislikeCapacity + dislikeGeneratorsCapacity;
+	}
+	
+	public void setLikesInGenerators(int likesInGenerators)
+	{
+		this.likesInGenerators = likesInGenerators;
+		new GenerateLikeEvent(this).callEvent();
+	}
+	
+	public void setDislikesInGenerators(int dislikesInGenerators)
+	{
+		this.dislikesInGenerators = dislikesInGenerators;
+		new GenerateDislikeEvent(this).callEvent();
 	}
 }

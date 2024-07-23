@@ -6,17 +6,11 @@ import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
-import com.eul4.model.town.structure.Armory;
-import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.wrapper.TownAttack;
 import lombok.Getter;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -57,6 +51,10 @@ public class CraftAttacker extends CraftFighter implements Attacker
 				.filter(Predicate.not(TownBlock::isAvailable)).isEmpty())
 		{
 			player.teleport(town.getRandomSpawnLocation());
+		}
+		else
+		{
+			player.teleport(player.getLocation().toHighestLocation().add(0.0D, 1.0D, 0.0D));
 		}
 		
 		equipBattleInventory();

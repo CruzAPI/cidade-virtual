@@ -63,20 +63,13 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	@Override
 	public boolean teleportToTownHall()
 	{
-		plugin.getLogger().info("[PluginPlayer] from=" + player.getWorld() + " to=townHall");//TODO
-		return player.teleport(getTownHallSpawnLocation());
+		return player.teleport(getTown().getTownHall().getSpawnLocation());
 	}
 	
 	@Override
 	public boolean teleportToHighestTownHall()
 	{
-		plugin.getLogger().info("[PluginPlayer] from=" + player.getWorld() + " to=highestTownHall");//TODO
-		return player.teleport(getTownHallSpawnLocation().toHighestLocation());
-	}
-	
-	private Location getTownHallSpawnLocation()
-	{
-		return getTown().getTownHall().getCenterTownBlock().getBlock().getLocation().add(0.5D, 1.0D, 0.5D);
+		return player.teleport(getTown().getTownHall().getSpawnLocation().toHighestLocation().add(0.0D, 1.0D, 0.0D));
 	}
 	
 	@Override

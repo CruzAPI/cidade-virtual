@@ -15,7 +15,9 @@ import com.sk89q.worldedit.math.BlockVector3;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.util.Map;
@@ -26,6 +28,7 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 {
 	private int likeCapacity;
 	private int dislikeCapacity;
+	private transient Vector spawnPosition;
 	
 	@Setter(AccessLevel.PRIVATE)
 	private transient int remainingLikeCapacity;
@@ -84,6 +87,7 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 		likeCapacity = getRule().getAttribute(getBuiltLevel()).getLikeCapacity();
 		dislikeCapacity = getRule().getAttribute(getBuiltLevel()).getDislikeCapacity();
 		structureLimitMap = getRule().getAttribute(getBuiltLevel()).getStructureLimit();
+		spawnPosition = getRule().getAttributeOrDefault(getLevel()).getSpawnPosition();
 	}
 	
 	@Override
@@ -189,5 +193,13 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 		
 		remainingLikeCapacity = likeCapacity;
 		remainingDislikeCapacity = dislikeCapacity;
+	}
+	
+	@Override
+	public Location getSpawnLocation()
+	{
+		Location location = getLocation().add(spawnPosition);
+		location.setYaw(270.0F); //EAST, TODO: fix pitch when add rotation to structures
+		return location;
 	}
 }

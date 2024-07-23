@@ -4,6 +4,7 @@ import com.eul4.StructureType;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
+import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Armory;
@@ -16,11 +17,14 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -40,6 +44,8 @@ public class CraftArmory extends CraftStructure implements Armory
 	
 	private Villager npc;
 	
+	private transient NPCWatcherTask npcWatcherTask;
+	
 	public CraftArmory(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
 		this(town, centerTownBlock, false);
@@ -51,6 +57,7 @@ public class CraftArmory extends CraftStructure implements Armory
 		town.setArmory(this);
 		
 		this.npc = (Villager) centerTownBlock.getBlock().getWorld().spawnEntity(getDefaultNpcLocation(), VILLAGER, CUSTOM, this::setupNPC);
+		scheduleNPCWatcherTaskIfPossible();
 	}
 	
 	public CraftArmory(Town town)
@@ -206,7 +213,7 @@ public class CraftArmory extends CraftStructure implements Armory
 	private Location getDefaultNpcLocation()
 	{
 		Location npcLocation = getCenterTownBlock().getBlock()
-				.getRelative(BlockFace.UP)
+				.getRelative(BlockFace.UP, 3)
 				.getLocation()
 				.toCenterLocation();
 		
@@ -255,5 +262,53 @@ public class CraftArmory extends CraftStructure implements Armory
 	{
 		this.npc.setInvisible(false);
 		this.npc.teleport(getDefaultNpcLocation());
+	}
+	
+	private class NPCWatcherTask extends BukkitRunnable
+	{
+		@Override
+		public void run()
+		{
+			final Player player = town.findPluginPlayer()
+					.filter(TownPlayer.class::isInstance)
+					.map(TownPlayer.class::cast)
+					.map(TownPlayer::getPlayer)
+					.orElse(null);
+			
+			if(player == null || player.getWorld() != npc.getWorld())
+			{
+				npc.setRotation(0.0F, 0.0F);
+				return;
+			}
+			
+			final Location npcLocation = npc.getLocation();
+			final Location targetLocation = player.getLocation();
+			
+			final Vector direction = targetLocation.toVector().subtract(npcLocation.toVector());
+			
+			final float yaw = (float) Math.toDegrees(Math.atan2(direction.getZ(), direction.getX())) - 90;
+			final float pitch = (float) Math.toDegrees(Math.atan2(-direction.getY(), direction.length()));
+			
+			npc.setRotation(yaw, pitch);
+		}
+	}
+	
+	@Override
+	public void load()
+	{
+		super.load();
+		
+		scheduleNPCWatcherTaskIfPossible();
+	}
+	
+	private void scheduleNPCWatcherTaskIfPossible()
+	{
+		if(npcWatcherTask != null && !npcWatcherTask.isCancelled())
+		{
+			return;
+		}
+		
+		npcWatcherTask = new NPCWatcherTask();
+		npcWatcherTask.runTaskTimer(town.getPlugin(), 0L, 1L);
 	}
 }

@@ -4,6 +4,7 @@ import com.eul4.StructureType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.bukkit.util.Vector;
 
 import java.util.Map;
 
@@ -17,4 +18,5 @@ public class TownHallAttribute extends GenericAttribute
 	private Map<StructureType, Integer> structureLimit;
 	private int likeCapacity;
 	private int dislikeCapacity;
+	private Vector spawnPosition;
 }

@@ -5,6 +5,7 @@ import com.eul4.StructureType;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.TownHallAttribute;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.Vector;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -37,9 +38,14 @@ public class TownHallRuleSerializer extends GenericRuleSerializer
 		
 		int likeCapacity = section.getInt("like_capacity");
 		int dislikeCapacity = section.getInt("dislike_capacity");
+		double spawnPositionX = section.getDouble("spawn_position.x");
+		double spawnPositionY = section.getDouble("spawn_position.y");
+		double spawnPositionZ = section.getDouble("spawn_position.z");
+		Vector spawnPosition = new Vector(spawnPositionX, spawnPositionY, spawnPositionZ);
 		
 		townHallAttribute.setLikeCapacity(likeCapacity);
 		townHallAttribute.setDislikeCapacity(dislikeCapacity);
+		townHallAttribute.setSpawnPosition(spawnPosition);
 	}
 	
 	private void readStructureLimit(TownHallAttribute townHallAttribute, ConfigurationSection section)

@@ -206,7 +206,7 @@ public class CraftArmory extends CraftStructure implements Armory
 	private Location getDefaultNpcLocation()
 	{
 		Location npcLocation = getCenterTownBlock().getBlock()
-				.getRelative(BlockFace.UP)
+				.getRelative(BlockFace.UP, 3)
 				.getLocation()
 				.toCenterLocation();
 		

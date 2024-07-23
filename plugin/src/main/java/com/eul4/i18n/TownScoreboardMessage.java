@@ -18,7 +18,8 @@ import static net.kyori.adventure.text.Component.text;
 @Getter
 public enum TownScoreboardMessage implements Message
 {
-	TITLE("title"),
+	TITLE_1("title-1"),
+	TITLE_2("title-2"),
 	
 	LIKES_PREFIX("likes.prefix"),
 	LIKES_ENTRY("likes.entry"),

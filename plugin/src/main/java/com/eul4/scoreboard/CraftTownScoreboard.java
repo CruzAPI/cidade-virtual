@@ -33,7 +33,6 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 		
 		Objective objective = scoreboard.registerNewObjective("name", Criteria.DUMMY, Component.text("text"));
 		
-		objective.displayName(TITLE.translate(pluginScoreboardPlayer));
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		likesTeam = scoreboard.registerNewTeam("likesTeam");
@@ -82,6 +81,8 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 		
 		if(pluginScoreboardPlayer.hasTown())
 		{
+			objective.displayName(TITLE_2.translate(pluginScoreboardPlayer));
+			
 			objective.getScore("§0 ").setScore(6);
 			objective.getScore(likesEntry).setScore(5);
 			objective.getScore(dislikesEntry).setScore(4);
@@ -92,6 +93,8 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 		}
 		else
 		{
+			objective.displayName(TITLE_1.translate(pluginScoreboardPlayer));
+			
 			objective.getScore("§0 ").setScore(8);
 			objective.getScore(helloEntry).setScore(7);
 			objective.getScore(welcome1Entry).setScore(6);

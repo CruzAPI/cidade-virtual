@@ -1,12 +1,11 @@
 package com.eul4.i18n;
 
 import com.eul4.common.i18n.BundleBaseName;
+import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.i18n.Message;
 import com.eul4.model.town.Town;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.OfflinePlayer;
 
 import java.text.DecimalFormat;
@@ -16,6 +15,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 
+import static com.eul4.common.i18n.CommonMessage.OFFLINE;
+import static com.eul4.common.i18n.CommonMessage.ONLINE;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
@@ -34,12 +35,22 @@ public enum AnalyzerScoreboardMessage implements Message
 				.orElse("???")),
 	}),
 	
-	ANALYZING_PREFIX("analyzing.prefix"),
-	ANALYZING_ENTRY("analyzing.entry"),
-	ANALYZING_SUFFIX("analyzing.suffix", (bundle, args) -> new Component[]
+	PLAYER_STATUS_PREFIX("player-status.prefix", (bundle, args) -> new Component[]
 	{
 		empty(),
 		(Component) args[0],
+	}),
+	PLAYER_STATUS_ENTRY("player-status.entry"),
+	PLAYER_STATUS_SUFFIX("player-status.suffix", (bundle, args) ->
+	{
+		boolean isOnline = (boolean) args[0];
+		Message message = isOnline ? ONLINE : OFFLINE;
+		
+		return new Component[]
+		{
+			empty(),
+			message.translate(bundle, String::toUpperCase),
+		};
 	}),
 	
 	TOWN_HALL_LEVEL_PREFIX("town-hall-level.prefix"),

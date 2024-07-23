@@ -114,7 +114,12 @@ public interface Message
 	
 	default Component translate(ResourceBundle bundle, Object... args)
 	{
-		return translate(bundle.getLocale(), args);
+		return translate(bundle, UnaryOperator.identity(), args);
+	}
+	
+	default Component translate(ResourceBundle bundle, UnaryOperator<String> operator, Object... args)
+	{
+		return translate(bundle.getLocale(), operator, args);
 	}
 	
 	default String translateToLegacyText(CommonPlayer commonPlayer, Object... args)
@@ -124,10 +129,20 @@ public interface Message
 	
 	default Component translate(CommonPlayer commonPlayer, Object... args)
 	{
-		return translate(commonPlayer.getLocale(), args);
+		return translate(commonPlayer, UnaryOperator.identity(), args);
+	}
+	
+	default Component translate(CommonPlayer commonPlayer, UnaryOperator<String> operator, Object... args)
+	{
+		return translate(commonPlayer.getLocale(), operator, args);
 	}
 	
 	default Component translate(Locale locale, Object... args)
+	{
+		return translate(locale, UnaryOperator.identity(), args);
+	}
+	
+	default Component translate(Locale locale, UnaryOperator<String> operator, Object... args)
 	{
 		final ResourceBundle bundle = ResourceBundleHandler.getBundle(getBundleBaseName(), locale);
 		final String template = getTemplate(bundle);
@@ -138,7 +153,7 @@ public interface Message
 		
 		while(matcher.find())
 		{
-			String baseText = matcher.group(1);
+			String baseText = operator.apply(matcher.group(1));
 			component = component.append(Component.text(baseText));
 			
 			String index = matcher.group(2);

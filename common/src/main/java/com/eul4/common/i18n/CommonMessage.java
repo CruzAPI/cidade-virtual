@@ -3,6 +3,7 @@ package com.eul4.common.i18n;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -10,8 +11,8 @@ import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 
 import static net.kyori.adventure.text.Component.empty;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 @Getter
 public enum CommonMessage implements Message
@@ -20,6 +21,9 @@ public enum CommonMessage implements Message
 	PLAYER("player"),
 	SPECTATOR("spectator"),
 	USAGE("usage", empty().color(RED)),
+	
+	ONLINE("online", empty().color(GREEN).decorate(BOLD)),
+	OFFLINE("offline", empty().color(DARK_RED).decorate(BOLD)),
 	
 	GAME_MODE_CHANGED("player-mode-changed",
 	(bundle, args) -> new Component[]

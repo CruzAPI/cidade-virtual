@@ -78,7 +78,7 @@ public class AnalyzerScoreboardListener implements Listener
 		pluginPlayer.findTown()
 				.flatMap(Town::findAnalyzer)
 				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateAnalyzingTeam);
+				.ifPresent(AnalyzerScoreboard::updatePlayerStatusTeam);
 	}
 	
 	@EventHandler
@@ -89,7 +89,7 @@ public class AnalyzerScoreboardListener implements Listener
 		pluginPlayer.findTown()
 				.flatMap(Town::findAnalyzer)
 				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateAnalyzingTeam);
+				.ifPresent(AnalyzerScoreboard::updatePlayerStatusTeam);
 	}
 	
 	@EventHandler

@@ -3,6 +3,8 @@ package com.eul4.model.craft.player;
 import com.eul4.Main;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.VanillaPlayer;
+import com.eul4.scoreboard.CraftTownScoreboard;
+import com.eul4.scoreboard.TownScoreboard;
 import com.eul4.type.PluginWorldType;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.world.VanillaWorld;
@@ -13,6 +15,8 @@ import org.bukkit.entity.Player;
 @Getter
 public class CraftVanillaPlayer extends CraftPhysicalPlayer implements VanillaPlayer
 {
+	private final TownScoreboard scoreboard = new CraftTownScoreboard(this);
+	
 	public CraftVanillaPlayer(Player player, Main plugin)
 	{
 		super(player, plugin);

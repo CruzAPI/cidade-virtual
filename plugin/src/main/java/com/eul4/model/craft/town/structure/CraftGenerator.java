@@ -78,7 +78,7 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 			return;
 		}
 		
-		balance = Math.min(getCapacity(), balance + getIncome());
+		setBalance(Math.min(getCapacity(), balance + getIncome()));
 		updateHologram();
 		updateInventoryView();
 	}
@@ -154,8 +154,7 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 		
 		int toCollect = getPossibleAmountToCollect();
 		
-		this.balance -= toCollect;
-		
+		setBalance(balance - toCollect);
 		setTownBalance(getTownBalance() + toCollect);
 		
 		updateHologram();
@@ -251,12 +250,12 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 		if(value > balance)
 		{
 			int currentCount = balance;
-			balance = 0;
+			setBalance(0);
 			onSubtractBalance();
 			return currentCount;
 		}
 		
-		balance -= value;
+		setBalance(balance - value);
 		onSubtractBalance();
 		return value;
 	}
@@ -270,4 +269,22 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 	{
 		return balance == 0;
 	}
+	
+	public void setBalance(int balance)
+	{
+		final int oldBalance = this.balance;
+		this.balance = balance;
+		final int diff = this.balance - oldBalance;
+		
+		incrementTownGeneratorsBalance(diff);
+	}
+	
+	private void incrementTownGeneratorsBalance(int value)
+	{
+		setTownGeneratorsBalance(getTownGeneratorsBalance() + value);
+	}
+	
+	protected abstract int getTownGeneratorsBalance();
+	
+	protected abstract void setTownGeneratorsBalance(int balance);
 }

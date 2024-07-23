@@ -10,11 +10,8 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.scoreboard.AnalyzerScoreboard;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 @RequiredArgsConstructor
 public class AnalyzerScoreboardListener implements Listener
@@ -67,7 +64,8 @@ public class AnalyzerScoreboardListener implements Listener
 			return;
 		}
 		
-		townHall.getTown().findAnalyzer()
+		townHall.getTown()
+				.findAnalyzer()
 				.map(RaidAnalyzer::getScoreboard)
 				.ifPresent(AnalyzerScoreboard::updateTownHallLevelTeam);
 	}
@@ -92,5 +90,32 @@ public class AnalyzerScoreboardListener implements Listener
 				.flatMap(Town::findAnalyzer)
 				.map(RaidAnalyzer::getScoreboard)
 				.ifPresent(AnalyzerScoreboard::updateAnalyzingTeam);
+	}
+	
+	@EventHandler
+	public void on(GenerateLikeEvent event)
+	{
+		event.getTown()
+				.findAnalyzer()
+				.map(RaidAnalyzer::getScoreboard)
+				.ifPresent(AnalyzerScoreboard::updateLikesTeam);
+	}
+	
+	@EventHandler
+	public void on(GenerateDislikeEvent event)
+	{
+		event.getTown()
+				.findAnalyzer()
+				.map(RaidAnalyzer::getScoreboard)
+				.ifPresent(AnalyzerScoreboard::updateDislikesTeam);
+	}
+	
+	@EventHandler
+	public void on(GeneratorsCapacityChangeEvent event)
+	{
+		event.getTown()
+				.findAnalyzer()
+				.map(RaidAnalyzer::getScoreboard)
+				.ifPresent(AnalyzerScoreboard::updateLikesAndDislikesTeams);
 	}
 }

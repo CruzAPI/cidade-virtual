@@ -7,8 +7,8 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.LikeGenerator;
-import com.eul4.rule.attribute.LikeGeneratorAttribute;
 import com.eul4.rule.Rule;
+import com.eul4.rule.attribute.LikeGeneratorAttribute;
 import com.eul4.wrapper.Resource;
 import com.sk89q.worldedit.math.BlockVector3;
 import lombok.Getter;
@@ -88,5 +88,17 @@ public class CraftLikeGenerator extends CraftGenerator implements LikeGenerator
 	public boolean hasReachedMaxTownBalanceCapacity()
 	{
 		return town.hasReachedMaxLikeCapacity();
+	}
+	
+	@Override
+	protected int getTownGeneratorsBalance()
+	{
+		return town.getLikesInGenerators();
+	}
+	
+	@Override
+	protected void setTownGeneratorsBalance(int balance)
+	{
+		town.setLikesInGenerators(balance);
 	}
 }

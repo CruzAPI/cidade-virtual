@@ -4,10 +4,7 @@ import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.common.util.ThreadUtil;
-import com.eul4.event.DislikeChangeEvent;
-import com.eul4.event.LikeChangeEvent;
-import com.eul4.event.TownCapacityChangeEvent;
-import com.eul4.event.TownHardnessChangeEvent;
+import com.eul4.event.*;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
@@ -98,6 +95,10 @@ public class CraftTown implements Town
 	
 	private transient int likeCapacity;
 	private transient int dislikeCapacity;
+	private transient int likesInGenerators;
+	private transient int dislikesInGenerators;
+	private transient int likeGeneratorsCapacity;
+	private transient int dislikeGeneratorsCapacity;
 	
 	private TownHall townHall;
 	private Armory armory;
@@ -470,8 +471,11 @@ public class CraftTown implements Town
 	{
 		likeCapacity = calculateLikeCapacity();
 		dislikeCapacity = calculateDislikeCapacity();
+		likeGeneratorsCapacity = calculateLikeGeneratorsCapacity();
+		dislikeGeneratorsCapacity = calculateDislikeGeneratorsCapacity();
 		
 		new TownCapacityChangeEvent(this).callEvent();
+		new GeneratorsCapacityChangeEvent(this).callEvent();
 	}
 	
 	public int calculateLikeCapacity()
@@ -502,6 +506,66 @@ public class CraftTown implements Town
 		}
 		
 		return dislikeCapacity;
+	}
+	
+	public int calculateLikeGeneratorsCapacity()
+	{
+		int likeGeneratorsCapacity = 0;
+		
+		for(Structure structure : structureSet)
+		{
+			if(structure instanceof LikeGenerator likeGenerator)
+			{
+				likeGeneratorsCapacity += likeGenerator.getCapacity();
+			}
+		}
+		
+		return likeGeneratorsCapacity;
+	}
+	
+	public int calculateDislikeGeneratorsCapacity()
+	{
+		int dislikeGeneratorsCapacity = 0;
+		
+		for(Structure structure : structureSet)
+		{
+			if(structure instanceof DislikeGenerator dislikeGenerator)
+			{
+				dislikeGeneratorsCapacity += dislikeGenerator.getCapacity();
+			}
+		}
+		
+		return dislikeGeneratorsCapacity;
+	}
+	
+	public int calculateLikesInGenerator()
+	{
+		int likesInGenerator = 0;
+		
+		for(Structure structure : structureSet)
+		{
+			if(structure instanceof LikeGenerator likeGenerator)
+			{
+				likesInGenerator += likeGenerator.getBalance();
+			}
+		}
+		
+		return likesInGenerator;
+	}
+	
+	public int calculateDislikesInGenerator()
+	{
+		int likesInGenerator = 0;
+		
+		for(Structure structure : structureSet)
+		{
+			if(structure instanceof LikeGenerator likeGenerator)
+			{
+				likesInGenerator += likeGenerator.getBalance();
+			}
+		}
+		
+		return likesInGenerator;
 	}
 	
 	@Override
@@ -1031,5 +1095,41 @@ public class CraftTown implements Town
 	public void clearAnalisys()
 	{
 		setAnalyzer(null);
+	}
+	
+	@Override
+	public int getLikesIncludingGenerators()
+	{
+		return likes + likesInGenerators;
+	}
+	
+	@Override
+	public int getDislikesIncludingGenerators()
+	{
+		return dislikes + dislikesInGenerators;
+	}
+	
+	@Override
+	public int getLikeCapacityIncludingGenerators()
+	{
+		return likeCapacity + likeGeneratorsCapacity;
+	}
+	
+	@Override
+	public int getDislikeCapacityIncludingGenerators()
+	{
+		return dislikeCapacity + dislikeGeneratorsCapacity;
+	}
+	
+	public void setLikesInGenerators(int likesInGenerators)
+	{
+		this.likesInGenerators = likesInGenerators;
+		new GenerateLikeEvent(this).callEvent();
+	}
+	
+	public void setDislikesInGenerators(int dislikesInGenerators)
+	{
+		this.dislikesInGenerators = dislikesInGenerators;
+		new GenerateDislikeEvent(this).callEvent();
 	}
 }

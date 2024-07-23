@@ -15,6 +15,8 @@ public class CraftAnalyzerScoreboard extends CraftCommonScoreboard implements An
 {
 	private final RaidAnalyzer raidAnalyzer;
 	
+	private final Objective objective;
+	
 	private final Team analyzingTeam;
 	private final Team townHallLevelTeam;
 	private final Team likesTeam;
@@ -29,6 +31,9 @@ public class CraftAnalyzerScoreboard extends CraftCommonScoreboard implements An
 		super(raidAnalyzer, raidAnalyzer.getPlugin().getServer().getScoreboardManager().getNewScoreboard());
 		
 		this.raidAnalyzer = raidAnalyzer;
+		
+		objective = scoreboard.registerNewObjective("a", Criteria.DUMMY, Component.empty());
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		analyzingTeam = scoreboard.registerNewTeam("analyzingTeam");
 		townHallLevelTeam = scoreboard.registerNewTeam("townHallLevelTeam");
@@ -48,10 +53,9 @@ public class CraftAnalyzerScoreboard extends CraftCommonScoreboard implements An
 		
 		registered = true;
 		
-		Objective objective = scoreboard.registerNewObjective("name", Criteria.DUMMY, Component.empty());
+		Town analyzingTown = raidAnalyzer.getAnalyzingTown();
 		
-		objective.displayName(TITLE.translate(raidAnalyzer));
-		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		objective.displayName(TITLE.translate(raidAnalyzer, analyzingTown));
 		
 		String analyzingEntry = ANALYZING_ENTRY.translateToLegacyText(raidAnalyzer);
 		String townHallLevelEntry = TOWN_HALL_LEVEL_ENTRY.translateToLegacyText(raidAnalyzer);
@@ -59,8 +63,6 @@ public class CraftAnalyzerScoreboard extends CraftCommonScoreboard implements An
 		String dislikesEntry = DISLIKES_ENTRY.translateToLegacyText(raidAnalyzer);
 		String hardnessEntry = HARDNESS_ENTRY.translateToLegacyText(raidAnalyzer);
 		String footerEntry = FOOTER_ENTRY.translateToLegacyText(raidAnalyzer);
-		
-		Town analyzingTown = raidAnalyzer.getAnalyzingTown();
 		
 		analyzingTeam.prefix(ANALYZING_PREFIX.translate(raidAnalyzer));
 		analyzingTeam.addEntry(analyzingEntry);
@@ -97,6 +99,12 @@ public class CraftAnalyzerScoreboard extends CraftCommonScoreboard implements An
 		objective.getScore(hardnessEntry).setScore(2);
 		objective.getScore("§4 ").setScore(1);
 		objective.getScore(footerEntry).setScore(0);
+	}
+	
+	@Override
+	public void updateTitle()
+	{
+		objective.displayName(TITLE.translate(raidAnalyzer, raidAnalyzer.getAnalyzingTown()));
 	}
 	
 	@Override

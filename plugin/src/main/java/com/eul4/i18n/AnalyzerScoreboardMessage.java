@@ -5,20 +5,34 @@ import com.eul4.common.i18n.Message;
 import com.eul4.model.town.Town;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.OfflinePlayer;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 @Getter
 public enum AnalyzerScoreboardMessage implements Message
 {
-	TITLE("title"),
+	TITLE("title", (bundle, args) -> new Component[]
+	{
+		empty().color(WHITE).decorate(BOLD),
+		text(Optional.ofNullable((Town) args[0])
+				.map(Town::getOwner)
+				.map(OfflinePlayer::getName)
+				.map(String::toUpperCase)
+				.orElse("???")),
+	}),
 	
 	ANALYZING_PREFIX("analyzing.prefix"),
 	ANALYZING_ENTRY("analyzing.entry"),
@@ -46,8 +60,8 @@ public enum AnalyzerScoreboardMessage implements Message
 		return new Component[]
 		{
 			empty(),
-			text(town == null ? "?" : numberFormat.format(town.getLikes())),
-			text(town == null ? "?" : numberFormat.format(town.getLikeCapacity())),
+			text(town == null ? "?" : numberFormat.format(town.getLikesIncludingGenerators())),
+			text(town == null ? "?" : numberFormat.format(town.getLikeCapacityIncludingGenerators())),
 		};
 	}),
 	
@@ -61,8 +75,8 @@ public enum AnalyzerScoreboardMessage implements Message
 		return new Component[]
 		{
 			empty(),
-			text(town == null ? "?" : numberFormat.format(town.getDislikes())),
-			text(town == null ? "?" : numberFormat.format(town.getDislikeCapacity())),
+			text(town == null ? "?" : numberFormat.format(town.getDislikesIncludingGenerators())),
+			text(town == null ? "?" : numberFormat.format(town.getDislikeCapacityIncludingGenerators())),
 		};
 	}),
 	

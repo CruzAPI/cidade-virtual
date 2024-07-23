@@ -179,4 +179,14 @@ public interface Town
 	
 	Optional<RaidAnalyzer> findAnalyzer();
 	void clearAnalisys();
+	
+	int getLikesIncludingGenerators();
+	int getLikeCapacityIncludingGenerators();
+	int getDislikesIncludingGenerators();
+	int getDislikeCapacityIncludingGenerators();
+	
+	int getLikesInGenerators();
+	int getDislikesInGenerators();
+	void setLikesInGenerators(int likesInGenerators);
+	void setDislikesInGenerators(int dislikesInGenerators);
 }

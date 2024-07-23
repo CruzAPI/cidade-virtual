@@ -6,6 +6,7 @@ public interface AnalyzerScoreboard extends CommonScoreboard
 {
 	void register();
 	
+	void updateTitle();
 	void updateAnalyzingTeam();
 	void updateTownHallLevelTeam();
 	void updateLikesTeam();
@@ -20,6 +21,7 @@ public interface AnalyzerScoreboard extends CommonScoreboard
 	
 	default void updateAll()
 	{
+		updateTitle();
 		updateAnalyzingTeam();
 		updateTownHallLevelTeam();
 		updateLikesTeam();

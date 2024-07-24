@@ -1,0 +1,25 @@
+name: Plugin2
+main: com.eul4.plugin2.Main
+version: 1.0
+author: Eul4
+api-version: '1.21'
+depend: [ProtocolLib]
+commands:
+  balance:
+    aliases: [bal, saldo]
+  town:
+    aliases: [cidade, home, casa, cv]
+  spawn:
+    aliases: [vanilla, survival]
+  test:
+  admin:
+  build:
+  move:
+  buystructure:
+    aliases: [loja]
+  rulereload:
+  macroid:
+  raid:
+    aliases: [ataque, attack, atacar]
+  scoreboard:
+    aliases: [score]

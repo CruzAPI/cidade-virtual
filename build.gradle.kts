@@ -155,7 +155,7 @@ task("startRemote")
     }
 }
 
-configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validator" || it.name == "authenticator" }) {
+configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validator" || it.name == "authenticator" || it.name == "plugin2" }) {
     this.afterEvaluate {
         fun getFinalJarAbsolutePath(): String = tasks.shadowJar.get().archiveFile.get().asFile.absolutePath
 

@@ -637,7 +637,7 @@ public class CraftTown implements Town
 	@Override
 	public void setHardness(double hardness) throws TownHardnessLimitException
 	{
-		if(hardness > getHardnessLimit())
+		if(hardness > getHardnessLimit() && hardness > this.hardness)
 		{
 			throw new TownHardnessLimitException();
 		}

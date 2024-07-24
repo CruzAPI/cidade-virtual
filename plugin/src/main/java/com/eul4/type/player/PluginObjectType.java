@@ -31,6 +31,7 @@ public enum PluginObjectType implements ObjectType
 	RAID_ANALYZER((byte) 0, PluginExternalizerType.RAID_ANALYZER),
 	RAID_SPECTATOR((byte) 0, PluginExternalizerType.RAID_SPECTATOR),
 	SHORT_COORDINATE_BLOCK_CHUNK((byte) 0, PluginExternalizerType.SHORT_COORDINATE_BLOCK_CHUNK),
+	SPAWN_PLAYER((byte) 0, PluginExternalizerType.SPAWN_PLAYER),
 	SPIRITUAL_PLAYER((byte) 0, null),
 	STRUCTURE((byte) 0, null),
 	STRUCTURE_SET((byte) 0, PluginExternalizerType.STRUCTURE_SET),

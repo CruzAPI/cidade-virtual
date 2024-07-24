@@ -2,15 +2,12 @@ package com.eul4.command;
 
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
-import com.eul4.common.model.player.CommonAdmin;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.Admin;
-import com.eul4.model.player.PluginPlayer;
 import com.eul4.type.player.PhysicalPlayerType;
-import com.eul4.type.player.PluginPlayerType;
-import com.eul4.world.VanillaWorld;
+import com.eul4.world.OverWorld;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -54,9 +51,10 @@ public class AdminCommand implements TabExecutor
 		
 		if(commonPlayer instanceof Admin admin)
 		{
-			PlayerType playerType = commonPlayer.getCommonWorld() instanceof VanillaWorld
-					? PhysicalPlayerType.VANILLA_PLAYER
-					: PhysicalPlayerType.TOWN_PLAYER;
+			PlayerType playerType = commonPlayer.getCommonWorld() instanceof OverWorld overWorld
+					&& overWorld.isSafeZone(player.getLocation())
+					? PhysicalPlayerType.SPAWN_PLAYER
+					: commonPlayer.getCommonWorld().getDefaultPlayerType();
 			
 			if(playerType == PhysicalPlayerType.TOWN_PLAYER && !admin.hasTown())
 			{
@@ -72,8 +70,6 @@ public class AdminCommand implements TabExecutor
 			newCommonPlayer = plugin.getPlayerManager().register(commonPlayer, PhysicalPlayerType.ADMIN);
 			newCommonPlayer.sendMessage(CommonMessage.GAME_MODE_CHANGED, RED, CommonMessage.ADMINISTRATOR);
 		}
-		
-		newCommonPlayer.reset();
 		
 		return true;
 	}

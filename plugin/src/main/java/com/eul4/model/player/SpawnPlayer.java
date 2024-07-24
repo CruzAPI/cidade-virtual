@@ -2,12 +2,15 @@ package com.eul4.model.player;
 
 import com.eul4.scoreboard.TownScoreboard;
 
-public interface VanillaPlayer extends
+public interface SpawnPlayer extends
 		PhysicalPlayer,
 		TownPerformer.Reincarnate,
-		SpawnPerformer.Reincarnation,
-		PluginScoreboardPlayer
+		SpawnPerformer.Teleport,
+		PluginScoreboardPlayer,
+		Invincible
 {
 	@Override
 	TownScoreboard getScoreboard();
+	
+	PluginPlayer removeProtection();
 }

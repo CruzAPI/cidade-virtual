@@ -32,6 +32,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	RAID_ANALYZER(RaidAnalyzerReader::new, RaidAnalyzerReader.class, RaidAnalyzerWriter::new, RaidAnalyzerWriter.class),
 	RAID_SPECTATOR(RaidSpectatorReader::new, RaidSpectatorReader.class, RaidSpectatorWriter::new, RaidSpectatorWriter.class),
 	SHORT_COORDINATE_BLOCK_CHUNK(ShortCoordinateBlockChunkReader::new, ShortCoordinateBlockChunkReader.class, ShortCoordinateBlockChunkWriter::new, ShortCoordinateBlockChunkWriter.class),
+	SPAWN_PLAYER(SpawnPlayerReader::new, SpawnPlayerReader.class, SpawnPlayerWriter::new, SpawnPlayerWriter.class),
 	STRUCTURE_SET(StructureSetReader::new, StructureSetReader.class, StructureSetWriter::new, StructureSetWriter.class),
 	TOWN_BLOCK_MAP(TownBlockMapReader::new, TownBlockMapReader.class, TownBlockMapWriter::new, TownBlockMapWriter.class),
 	TOWN_BLOCK(TownBlockReader::new, TownBlockReader.class, TownBlockWriter::new, TownBlockWriter.class),

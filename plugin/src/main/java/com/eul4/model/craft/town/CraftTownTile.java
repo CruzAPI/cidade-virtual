@@ -68,8 +68,7 @@ public class CraftTownTile implements TownTile
 		town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer.sendMessage(PluginMessage.TILE_BOUGHT));
 		
 		removeHologram();
-		town.getBoughtTileMapByDepth().incrementTilesBoughtInDepth(depth);
-		town.updateTileHolograms();
+		town.onTileBought(this);
 		return true;
 	}
 	

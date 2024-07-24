@@ -1,7 +1,6 @@
 package com.eul4.i18n;
 
 import com.eul4.common.i18n.BundleBaseName;
-import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.i18n.Message;
 import com.eul4.model.town.Town;
 import lombok.Getter;

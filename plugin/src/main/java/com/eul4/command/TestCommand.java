@@ -1,41 +1,26 @@
 package com.eul4.command;
 
 import com.eul4.Main;
-import com.eul4.common.wrapper.Pitch;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.type.PluginWorldType;
-import com.eul4.util.AttributeModifierUtil;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.ToolComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER;
-import static org.bukkit.entity.EntityType.VILLAGER;
-import static org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CUSTOM;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor

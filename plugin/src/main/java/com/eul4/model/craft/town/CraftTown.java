@@ -33,6 +33,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -82,6 +83,7 @@ public class CraftTown implements Town
 	private StructureSet structureSet;
 	
 	private BoughtTileMapByDepth boughtTileMapByDepth;
+	private int tilesBought;
 	
 	private transient Structure movingStructure;
 	private transient ClipboardHolder movingStructureClipboardHolder;
@@ -92,6 +94,10 @@ public class CraftTown implements Town
 	private int dislikes;
 	
 	private double hardness;
+	private transient double hardnessLimit;
+	
+	@Getter(AccessLevel.NONE)
+	private final transient double baseHardnessLimit = 900.0D;
 	
 	private transient int likeCapacity;
 	private transient int dislikeCapacity;
@@ -473,9 +479,21 @@ public class CraftTown implements Town
 		dislikeCapacity = calculateDislikeCapacity();
 		likeGeneratorsCapacity = calculateLikeGeneratorsCapacity();
 		dislikeGeneratorsCapacity = calculateDislikeGeneratorsCapacity();
+		resetHardnessLimit();
 		
 		new TownCapacityChangeEvent(this).callEvent();
 		new GeneratorsCapacityChangeEvent(this).callEvent();
+	}
+	
+	public void resetHardnessLimit()
+	{
+		hardnessLimit = calculateHardnessLimit();
+		new TownHardnessChangeEvent(this).callEvent();
+	}
+	
+	public double calculateHardnessLimit()
+	{
+		return baseHardnessLimit + tilesBought * 100.0D;
 	}
 	
 	public int calculateLikeCapacity()
@@ -610,15 +628,9 @@ public class CraftTown implements Town
 	}
 	
 	@Override
-	public double getHardnessLimit()
-	{
-		return 1000.0D; //TODO Move to TownHallAttribute?
-	}
-	
-	@Override
 	public void increaseHardness(double hardness) throws TownHardnessLimitException
 	{
-		if(this.hardness + hardness > getHardnessLimit())
+		if(this.hardness + hardness > hardnessLimit)
 		{
 			throw new TownHardnessLimitException();
 		}
@@ -637,7 +649,7 @@ public class CraftTown implements Town
 	@Override
 	public void setHardness(double hardness) throws TownHardnessLimitException
 	{
-		if(hardness > getHardnessLimit())
+		if(hardness > this.hardnessLimit && hardness > this.hardness)
 		{
 			throw new TownHardnessLimitException();
 		}
@@ -1131,5 +1143,23 @@ public class CraftTown implements Town
 	{
 		this.dislikesInGenerators = dislikesInGenerators;
 		new GenerateDislikeEvent(this).callEvent();
+	}
+	
+	@Override
+	public void onTileBought(TownTile townTile)
+	{
+		tilesBought++;
+		boughtTileMapByDepth.incrementTilesBoughtInDepth(townTile.getDepth());
+		updateTileHolograms();
+		resetHardnessLimit();
+	}
+	
+	@Override
+	public void setDefaultTilesBought()
+	{
+		tilesBought = boughtTileMapByDepth.values()
+				.stream()
+				.mapToInt(Integer::intValue)
+				.sum();
 	}
 }

@@ -724,7 +724,7 @@ public enum PluginMessage implements Message
 	
 	SPAWN_PROTECTION_DISABLED("spawn-protection.disabled", empty().color(RED)),
 	
-	;
+	CAN_NOT_CREATE_PORTAL_HERE("can-not-create-portal-here", empty().color(RED));
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

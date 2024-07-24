@@ -138,6 +138,8 @@ public interface Town
 	void setDislikes(int dislike);
 	void setHardnessField(double hardness);
 	void setLastAttackFinishTick(long lastAttackFinishTick);
+	void setBoughtTileMapByDepth(BoughtTileMapByDepth boughtTileMapByDepth);
+	void setTilesBought(int tilesBought);
 	
 	Block getBlock();
 	
@@ -170,7 +172,7 @@ public interface Town
 	Location getRandomSpawnLocation();
 	
 	BoughtTileMapByDepth getBoughtTileMapByDepth();
-	void setBoughtTileMapByDepth(BoughtTileMapByDepth boughtTileMapByDepth);
+	int getTilesBought();
 	
 	boolean hasReachedMaxLikeCapacity();
 	boolean hasReachedMaxDislikeCapacity();
@@ -189,4 +191,8 @@ public interface Town
 	int getDislikesInGenerators();
 	void setLikesInGenerators(int likesInGenerators);
 	void setDislikesInGenerators(int dislikesInGenerators);
+	
+	void onTileBought(TownTile townTile);
+	
+	void setDefaultTilesBought();
 }

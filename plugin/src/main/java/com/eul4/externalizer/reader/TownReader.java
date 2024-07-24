@@ -36,6 +36,10 @@ public class TownReader extends ObjectReader<Town>
 			this.reader = this::readerVersion0;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
+		case 1:
+			this.reader = this::readerVersion1;
+			this.parameterizedReadable = this::parameterizedReadableVersion0;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -61,6 +65,24 @@ public class TownReader extends ObjectReader<Town>
 		town.setHardnessField(in.readDouble());
 		town.setLastAttackFinishTick(in.readLong());
 		town.setBoughtTileMapByDepth(readers.getReader(BoughtTileMapByDepthReader.class).readReference(town));
+		
+		town.setDefaultTilesBought();
+	}
+	
+	private void readerVersion1(Town town) throws IOException, ClassNotFoundException
+	{
+		town.setTownBlockMap(readers.getReader(TownBlockMapReader.class).readReference(town));
+		town.setTownTileMap(readers.getReader(TownTileMapReader.class).readReference(town));
+		town.setStructureSet(readers.getReader(StructureSetReader.class).readReference(town));
+		town.setMovingStructure(readers.getReader(GenericStructureReader.class).readReference(town));
+		town.setTownHall(readers.getReader(TownHallReader.class).readReference(town));
+		town.setArmory(readers.getReader(ArmoryReader.class).readReference(town));
+		town.setLikes(in.readInt());
+		town.setDislikes(in.readInt());
+		town.setHardnessField(in.readDouble());
+		town.setLastAttackFinishTick(in.readLong());
+		town.setBoughtTileMapByDepth(readers.getReader(BoughtTileMapByDepthReader.class).readReference(town));
+		town.setTilesBought(in.readInt());
 	}
 	
 	public Town readReference(Main plugin) throws IOException, ClassNotFoundException

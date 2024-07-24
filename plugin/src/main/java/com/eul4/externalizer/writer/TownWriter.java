@@ -33,5 +33,7 @@ public class TownWriter extends ObjectWriter<Town>
 		out.writeLong(town.getLastAttackFinishTick());
 		
 		writers.getWriter(BoughtTileMapByDepthWriter.class).writeReferenceNotNull(town.getBoughtTileMapByDepth());
+		
+		out.writeInt(town.getTilesBought());
 	}
 }

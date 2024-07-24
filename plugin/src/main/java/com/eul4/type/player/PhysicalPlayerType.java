@@ -1,15 +1,10 @@
 package com.eul4.type.player;
 
 import com.eul4.Main;
-import com.eul4.externalizer.reader.AdminReader;
-import com.eul4.externalizer.reader.PhysicalPlayerReader;
-import com.eul4.externalizer.reader.TownPlayerReader;
-import com.eul4.externalizer.reader.VanillaPlayerReader;
-import com.eul4.externalizer.writer.AdminWriter;
-import com.eul4.externalizer.writer.PhysicalPlayerWriter;
-import com.eul4.externalizer.writer.TownPlayerWriter;
-import com.eul4.externalizer.writer.VanillaPlayerWriter;
+import com.eul4.externalizer.reader.*;
+import com.eul4.externalizer.writer.*;
 import com.eul4.model.craft.player.CraftAdmin;
+import com.eul4.model.craft.player.CraftSpawnPlayer;
 import com.eul4.model.craft.player.CraftTownPlayer;
 import com.eul4.model.craft.player.CraftVanillaPlayer;
 import com.eul4.model.player.*;
@@ -26,6 +21,7 @@ public enum PhysicalPlayerType implements PluginPlayerType
 	ADMIN(Admin.class, CraftAdmin::new, CraftAdmin::new, AdminWriter.class, AdminReader.class),
 	TOWN_PLAYER(TownPlayer.class, CraftTownPlayer::new, CraftTownPlayer::new, TownPlayerWriter.class, TownPlayerReader.class),
 	VANILLA_PLAYER(VanillaPlayer.class, CraftVanillaPlayer::new, CraftVanillaPlayer::new, VanillaPlayerWriter.class, VanillaPlayerReader.class),
+	SPAWN_PLAYER(SpawnPlayer.class, CraftSpawnPlayer::new, CraftSpawnPlayer::new, SpawnPlayerWriter.class, SpawnPlayerReader.class),
 	;
 	
 	private final Class<? extends PhysicalPlayer> interfaceType;

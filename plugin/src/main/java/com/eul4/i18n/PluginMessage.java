@@ -720,6 +720,10 @@ public enum PluginMessage implements Message
 	
 	INVENTORY_STRUCTURE_GUI_MOVE_STRUCTURE("inventory.structure-gui.move-structure", empty().color(GRAY)),
 	
+	SPAWN_PROTECTION_ENABLED("spawn-protection.enabled", empty().color(GREEN)),
+	
+	SPAWN_PROTECTION_DISABLED("spawn-protection.disabled", empty().color(RED)),
+	
 	;
 	
 	private final String key;

@@ -5,12 +5,11 @@ import com.eul4.common.type.player.PlayerType;
 import java.util.Collection;
 import java.util.List;
 
-import static com.eul4.type.player.PhysicalPlayerType.ADMIN;
-import static com.eul4.type.player.PhysicalPlayerType.VANILLA_PLAYER;
+import static com.eul4.type.player.PhysicalPlayerType.*;
 
 public interface VanillaWorld extends PluginWorld
 {
-	List<PlayerType> ACCEPTABLE_PLAYER_TYPES = List.of(VANILLA_PLAYER, ADMIN);
+	List<PlayerType> ACCEPTABLE_PLAYER_TYPES = List.of(VANILLA_PLAYER, ADMIN, SPAWN_PLAYER);
 	
 	@Override
 	default Collection<PlayerType> getAcceptablePlayerTypes()

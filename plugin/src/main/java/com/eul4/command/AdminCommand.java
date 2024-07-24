@@ -10,6 +10,7 @@ import com.eul4.model.player.Admin;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
+import com.eul4.world.OverWorld;
 import com.eul4.world.VanillaWorld;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
@@ -54,9 +55,10 @@ public class AdminCommand implements TabExecutor
 		
 		if(commonPlayer instanceof Admin admin)
 		{
-			PlayerType playerType = commonPlayer.getCommonWorld() instanceof VanillaWorld
-					? PhysicalPlayerType.VANILLA_PLAYER
-					: PhysicalPlayerType.TOWN_PLAYER;
+			PlayerType playerType = commonPlayer.getCommonWorld() instanceof OverWorld overWorld
+					&& overWorld.isSafeZone(player.getLocation())
+					? PhysicalPlayerType.SPAWN_PLAYER
+					: commonPlayer.getCommonWorld().getDefaultPlayerType();
 			
 			if(playerType == PhysicalPlayerType.TOWN_PLAYER && !admin.hasTown())
 			{

@@ -22,9 +22,9 @@ public interface SpawnPerformer extends PluginPlayer
 		@Override
 		default void performSpawn()
 		{
-			CommonPlayer commonPlayer = getPlugin().getPlayerManager().register(this, PhysicalPlayerType.VANILLA_PLAYER);
+			CommonPlayer commonPlayer = getPlugin().getPlayerManager().register(this, PhysicalPlayerType.SPAWN_PLAYER);
 			
-			if(commonPlayer instanceof VanillaPlayer)
+			if(commonPlayer instanceof SpawnPlayer)
 			{
 				Teleport.super.performSpawn();
 			}

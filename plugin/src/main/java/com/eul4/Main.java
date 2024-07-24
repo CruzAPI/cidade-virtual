@@ -29,6 +29,7 @@ import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
 import com.eul4.service.*;
+import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
 import com.eul4.util.FileUtil;
 import lombok.Getter;
@@ -119,6 +120,8 @@ public class Main extends Common
 		registerListeners();
 		registerPacketInterceptors();
 		
+		scheduleTasks();
+		
 		reloadRules();
 		townManager.loadTowns();
 		
@@ -195,6 +198,13 @@ public class Main extends Common
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 	}
 	
+	private void scheduleTasks()
+	{
+		SpawnProtectionTask spawnProtectionTask = new SpawnProtectionTask(this);
+		
+		spawnProtectionTask.runTaskTimer(this, 20L, 20L);
+	}
+	
 	private void registerCommands()
 	{
 		getCommand("admin").setExecutor(new AdminCommand(this));
@@ -232,6 +242,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new MacroidListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
+		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);

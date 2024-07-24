@@ -5,6 +5,7 @@ import com.eul4.Main;
 import com.eul4.world.OverWorld;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -20,6 +21,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.ArrayList;
@@ -269,6 +271,25 @@ public class SpawnProtectionListener implements Listener
 		{
 			cancelIfInSpawn(event.getBlock().getWorld(), event.getBlocks(), event);
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void on(SignChangeEvent event)
+	{
+		cancelIfInSpawn(event);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void on(PlayerInteractEvent event)
+	{
+		Block clickedBlock = event.getClickedBlock();
+		
+		if(clickedBlock == null || Tag.DOORS.isTagged(clickedBlock.getType()))
+		{
+			return;
+		}
+		
+		cancelIfInSpawn(clickedBlock, event);
 	}
 	
 	private <E extends BlockEvent & Cancellable> boolean cancelIfInSpawn(E event)

@@ -5,11 +5,12 @@ import com.eul4.world.OverWorld;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 
 public class CraftOverWorld extends CraftPluginWorld implements OverWorld
 {
+	private final Location spawnLocation = new Location(world, 0.5D, 70.5D, 0.5D, 270.0F, 0.0F);
+	
 	public CraftOverWorld(World world)
 	{
 		super(world);
@@ -24,13 +25,7 @@ public class CraftOverWorld extends CraftPluginWorld implements OverWorld
 	@Override
 	public Location getSpawnLocation()
 	{
-		return world.getBlockAt(0, 0, 0)
-				.getLocation()
-				.toHighestLocation()
-				.getBlock()
-				.getRelative(BlockFace.UP)
-				.getLocation()
-				.toCenterLocation();
+		return spawnLocation.clone();
 	}
 	
 	@Override

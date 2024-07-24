@@ -2,6 +2,8 @@ package com.eul4.listener;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import com.eul4.Main;
+import com.eul4.i18n.PluginMessage;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.world.OverWorld;
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,6 +33,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.ArrayList;
@@ -333,6 +337,19 @@ public class SpawnProtectionListener implements Listener
 	public void onItemFrameChange(PlayerItemFrameChangeEvent event)
 	{
 		cancelIfInSpawn(event.getItemFrame().getLocation().getBlock(), event);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onItemFrameChange(PortalCreateEvent event)
+	{
+		if(cancelIfInSpawn(event.getWorld(), event.getBlocks(), event))
+		{
+			if(event.getEntity() instanceof Player player
+					&& plugin.getPlayerManager().get(player) instanceof PluginPlayer pluginPlayer)
+			{
+				pluginPlayer.sendMessage(PluginMessage.CAN_NOT_CREATE_PORTAL_HERE);
+			}
+		}
 	}
 	
 	private <E extends HangingEvent & Cancellable> boolean cancelIfInSpawn(E event)

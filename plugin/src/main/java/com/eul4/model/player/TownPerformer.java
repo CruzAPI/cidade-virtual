@@ -70,6 +70,7 @@ public sealed interface TownPerformer extends PluginPlayer
 						getPlayer().playSound(getPlayer().getLocation(), ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, getPitch(0));
 						sendMessage(PluginMessage.TOWN_WELCOME, getPlayer().displayName());
 						sendMessage(PluginMessage.TOWN_HINT_BUY_STRUCTURE_COMMAND);
+						sendMessage(PluginMessage.TOWN_HINT_BACK_TO_SPAWN);
 						
 						return null;
 					}).get();

@@ -11,7 +11,7 @@ public interface TownPlayer extends
 		TownPerformer.TeleportInside,
 		SpawnPerformer.Reincarnation,
 		BuyStructurePerformer,
-		PluginScoreboardPlayer
+		TownScoreboardPlayer
 {
 	Town getTown();
 	boolean hasTown();
@@ -20,7 +20,4 @@ public interface TownPlayer extends
 	
 	void test(boolean test);
 	boolean test();
-	
-	@Override
-	TownScoreboard getScoreboard();
 }

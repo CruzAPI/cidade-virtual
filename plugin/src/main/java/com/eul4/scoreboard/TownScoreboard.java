@@ -1,7 +1,7 @@
 package com.eul4.scoreboard;
 
 import com.eul4.common.scoreboard.CommonScoreboard;
-import com.eul4.model.player.PluginScoreboardPlayer;
+import com.eul4.model.player.TownScoreboardPlayer;
 
 public interface TownScoreboard extends CommonScoreboard
 {
@@ -28,5 +28,5 @@ public interface TownScoreboard extends CommonScoreboard
 	}
 	
 	@Override
-	PluginScoreboardPlayer getScoreboardPlayer();
+	TownScoreboardPlayer getScoreboardPlayer();
 }

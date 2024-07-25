@@ -630,25 +630,24 @@ public class CraftTown implements Town
 	@Override
 	public void increaseHardness(double hardness) throws TownHardnessLimitException
 	{
-		if(this.hardness + hardness > hardnessLimit)
-		{
-			throw new TownHardnessLimitException();
-		}
-		
-		this.hardness += hardness;
-		onHardnessChange();
+		setHardness(this.hardness + hardness);
 	}
 	
 	@Override
+	@SneakyThrows
 	public void decreaseHardness(double hardness)
 	{
-		this.hardness = Math.max(0.0D, this.hardness - hardness);
-		onHardnessChange();
+		setHardness(this.hardness - hardness);
 	}
 	
 	@Override
 	public void setHardness(double hardness) throws TownHardnessLimitException
 	{
+		if(isUnderAttack())
+		{
+			return;
+		}
+		
 		if(hardness > this.hardnessLimit && hardness > this.hardness)
 		{
 			throw new TownHardnessLimitException();

@@ -3,23 +3,13 @@ main: com.eul4.plugin2.Main
 version: 1.0
 author: Eul4
 api-version: '1.21'
-depend: [ProtocolLib]
+depend: [ProtocolLib, Plugin]
 commands:
-  balance:
-    aliases: [bal, saldo]
-  town:
-    aliases: [cidade, home, casa, cv]
-  spawn:
-    aliases: [vanilla, survival]
-  test:
-  admin:
-  build:
-  move:
-  buystructure:
-    aliases: [loja]
-  rulereload:
-  macroid:
-  raid:
-    aliases: [ataque, attack, atacar]
-  scoreboard:
-    aliases: [score]
+  sethome:
+    description: Define uma home
+    usage: /sethome [nome]
+  home:
+    description: Vai para uma home definida
+    usage: /home [nome]
+  delhome:
+  listhomes:

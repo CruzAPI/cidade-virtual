@@ -1,7 +1,7 @@
 package com.eul4.scoreboard;
 
 import com.eul4.common.scoreboard.CraftCommonScoreboard;
-import com.eul4.model.player.PluginScoreboardPlayer;
+import com.eul4.model.player.TownScoreboardPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -12,7 +12,7 @@ import static com.eul4.i18n.TownScoreboardMessage.*;
 
 public class CraftTownScoreboard extends CraftCommonScoreboard implements TownScoreboard
 {
-	private final PluginScoreboardPlayer pluginScoreboardPlayer;
+	private final TownScoreboardPlayer townScoreboardPlayer;
 	
 	private final Team likesTeam;
 	private final Team dislikesTeam;
@@ -25,11 +25,11 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 	private final Team useTown1Team;
 	private final Team useTown2Team;
 	
-	public CraftTownScoreboard(PluginScoreboardPlayer pluginScoreboardPlayer)
+	public CraftTownScoreboard(TownScoreboardPlayer townScoreboardPlayer)
 	{
-		super(pluginScoreboardPlayer, pluginScoreboardPlayer.getPlugin().getServer().getScoreboardManager().getNewScoreboard());
+		super(townScoreboardPlayer, townScoreboardPlayer.getPlugin().getServer().getScoreboardManager().getNewScoreboard());
 		
-		this.pluginScoreboardPlayer = pluginScoreboardPlayer;
+		this.townScoreboardPlayer = townScoreboardPlayer;
 		
 		Objective objective = scoreboard.registerNewObjective("name", Criteria.DUMMY, Component.text("text"));
 		
@@ -46,16 +46,16 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 		useTown1Team = scoreboard.registerNewTeam("useTown1Team");
 		useTown2Team = scoreboard.registerNewTeam("useTown2Team");
 		
-		String likesEntry = LIKES_ENTRY.translateToLegacyText(pluginScoreboardPlayer);
-		String dislikesEntry = DISLIKES_ENTRY.translateToLegacyText(pluginScoreboardPlayer);
-		String hardnessEntry = HARDNESS_ENTRY.translateToLegacyText(pluginScoreboardPlayer);
-		String footerEntry = FOOTER_ENTRY.translateToLegacyText(pluginScoreboardPlayer);
+		String likesEntry = LIKES_ENTRY.translateToLegacyText(townScoreboardPlayer);
+		String dislikesEntry = DISLIKES_ENTRY.translateToLegacyText(townScoreboardPlayer);
+		String hardnessEntry = HARDNESS_ENTRY.translateToLegacyText(townScoreboardPlayer);
+		String footerEntry = FOOTER_ENTRY.translateToLegacyText(townScoreboardPlayer);
 		
-		String helloEntry = HELLO_ENTRY.translateToLegacyText(pluginScoreboardPlayer);
-		String welcome1Entry = WELCOME_1_ENTRY.translateToLegacyText(pluginScoreboardPlayer);
-		String welcome2Entry = WELCOME_2_ENTRY.translateToLegacyText(pluginScoreboardPlayer);
-		String useTown1Entry = USE_TOWN_1_ENTRY.translateToLegacyText(pluginScoreboardPlayer);
-		String useTown2Entry = USE_TOWN_2_ENTRY.translateToLegacyText(pluginScoreboardPlayer);
+		String helloEntry = HELLO_ENTRY.translateToLegacyText(townScoreboardPlayer);
+		String welcome1Entry = WELCOME_1_ENTRY.translateToLegacyText(townScoreboardPlayer);
+		String welcome2Entry = WELCOME_2_ENTRY.translateToLegacyText(townScoreboardPlayer);
+		String useTown1Entry = USE_TOWN_1_ENTRY.translateToLegacyText(townScoreboardPlayer);
+		String useTown2Entry = USE_TOWN_2_ENTRY.translateToLegacyText(townScoreboardPlayer);
 		
 		likesTeam.addEntry(likesEntry);
 		dislikesTeam.addEntry(dislikesEntry);
@@ -63,25 +63,25 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 		footerTeam.addEntry(footerEntry);
 		
 		helloTeam.addEntry(helloEntry);
-		helloTeam.suffix(HELLO_SUFFIX.translate(pluginScoreboardPlayer, pluginScoreboardPlayer.getPlayer().displayName()));
+		helloTeam.suffix(HELLO_SUFFIX.translate(townScoreboardPlayer, townScoreboardPlayer.getPlayer().displayName()));
 		
 		welcome1Team.addEntry(welcome1Entry);
-		welcome1Team.suffix(WELCOME_1_SUFFIX.translate(pluginScoreboardPlayer));
+		welcome1Team.suffix(WELCOME_1_SUFFIX.translate(townScoreboardPlayer));
 		
 		welcome2Team.addEntry(welcome2Entry);
-		welcome2Team.suffix(WELCOME_2_SUFFIX.translate(pluginScoreboardPlayer));
+		welcome2Team.suffix(WELCOME_2_SUFFIX.translate(townScoreboardPlayer));
 		
 		useTown1Team.addEntry(useTown1Entry);
-		useTown1Team.suffix(USE_TOWN_1_SUFFIX.translate(pluginScoreboardPlayer));
+		useTown1Team.suffix(USE_TOWN_1_SUFFIX.translate(townScoreboardPlayer));
 		
 		useTown2Team.addEntry(useTown2Entry);
-		useTown2Team.suffix(USE_TOWN_2_SUFFIX.translate(pluginScoreboardPlayer));
+		useTown2Team.suffix(USE_TOWN_2_SUFFIX.translate(townScoreboardPlayer));
 		
 		updateAll();
 		
-		if(pluginScoreboardPlayer.hasTown())
+		if(townScoreboardPlayer.hasTown())
 		{
-			objective.displayName(TITLE_2.translate(pluginScoreboardPlayer));
+			objective.displayName(TITLE_2.translate(townScoreboardPlayer));
 			
 			objective.getScore("§0 ").setScore(6);
 			objective.getScore(likesEntry).setScore(5);
@@ -93,7 +93,7 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 		}
 		else
 		{
-			objective.displayName(TITLE_1.translate(pluginScoreboardPlayer));
+			objective.displayName(TITLE_1.translate(townScoreboardPlayer));
 			
 			objective.getScore("§0 ").setScore(8);
 			objective.getScore(helloEntry).setScore(7);
@@ -110,24 +110,24 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 	@Override
 	public void updateLikesTeam()
 	{
-		likesTeam.suffix(LIKES_SUFFIX.translate(pluginScoreboardPlayer, pluginScoreboardPlayer.getTown()));
+		likesTeam.suffix(LIKES_SUFFIX.translate(townScoreboardPlayer, townScoreboardPlayer.getTown()));
 	}
 	
 	@Override
 	public void updateDislikesTeam()
 	{
-		dislikesTeam.suffix(DISLIKES_SUFFIX.translate(pluginScoreboardPlayer, pluginScoreboardPlayer.getTown()));
+		dislikesTeam.suffix(DISLIKES_SUFFIX.translate(townScoreboardPlayer, townScoreboardPlayer.getTown()));
 	}
 	
 	@Override
 	public void updateHardnessTeam()
 	{
-		hardnessTeam.suffix(HARDNESS_SUFFIX.translate(pluginScoreboardPlayer, pluginScoreboardPlayer.getTown()));
+		hardnessTeam.suffix(HARDNESS_SUFFIX.translate(townScoreboardPlayer, townScoreboardPlayer.getTown()));
 	}
 	
 	@Override
-	public PluginScoreboardPlayer getScoreboardPlayer()
+	public TownScoreboardPlayer getScoreboardPlayer()
 	{
-		return pluginScoreboardPlayer;
+		return townScoreboardPlayer;
 	}
 }

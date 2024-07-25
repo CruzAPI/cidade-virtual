@@ -291,6 +291,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new InventoryOrganizerPlayerListener(this), this);
 		pluginManager.registerEvents(new InvincibleListener(this), this);
 		pluginManager.registerEvents(new PluginPlayerListener(this), this);
+		pluginManager.registerEvents(new ProtectableListener(this), this);
 		pluginManager.registerEvents(new SpectatorListener(this), this);
 		pluginManager.registerEvents(new TutorialTownPlayerListener(this), this);
 	}

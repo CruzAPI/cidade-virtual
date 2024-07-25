@@ -723,7 +723,7 @@ public enum PluginMessage implements Message
 	INVENTORY_STRUCTURE_GUI_MOVE_STRUCTURE("inventory.structure-gui.move-structure", empty().color(GRAY)),
 	
 	SPAWN_PROTECTION_ENABLED("spawn-protection.enabled", empty().color(GREEN)),
-	
+	SPAWN_PROTECTION_WARN("spawn-protection.warn", empty().color(YELLOW)),
 	SPAWN_PROTECTION_DISABLED("spawn-protection.disabled", empty().color(RED)),
 	
 	CAN_NOT_CREATE_PORTAL_HERE("can-not-create-portal-here", empty().color(RED)),

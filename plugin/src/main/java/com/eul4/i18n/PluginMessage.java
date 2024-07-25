@@ -47,6 +47,7 @@ public enum PluginMessage implements Message
 	CLICK_TO_BUY_THIS_TILE("click-to-buy-this-tile", empty().decorate(BOLD)),
 	
 	TOWN_COMMAND_NAME("town.command.name"),
+	SPAWN_COMMAND_NAME("spawn.command.name"),
 	COMMAND_BUY_STRUCTURE_ALIASES("command.buy-structure.aliases"),
 	
 	INVENTORY_ARMORY_MENU_TITLE("inventory.armory-menu.title", empty().color(BLACK).decorate(BOLD)),
@@ -724,7 +725,13 @@ public enum PluginMessage implements Message
 	
 	SPAWN_PROTECTION_DISABLED("spawn-protection.disabled", empty().color(RED)),
 	
-	CAN_NOT_CREATE_PORTAL_HERE("can-not-create-portal-here", empty().color(RED));
+	CAN_NOT_CREATE_PORTAL_HERE("can-not-create-portal-here", empty().color(RED)),
+	
+	TOWN_HINT_BACK_TO_SPAWN("town.hint-back-to-spawn", (bundle, args) -> new Component[]
+	{
+		empty().color(GRAY),
+		SPAWN_COMMAND_NAME.translate(bundle, command -> "/" + command).color(WHITE),
+	});
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

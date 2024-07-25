@@ -1,5 +1,6 @@
 package com.eul4.plugin2.command;
 
+import com.eul4.model.player.Fighter;
 import com.eul4.plugin2.Main;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
@@ -23,8 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 @RequiredArgsConstructor
-public class HomeCommand implements TabExecutor, Listener
-{
+public class HomeCommand implements TabExecutor, Listener {
     private final Main plugin;
     private final Map<UUID, BukkitRunnable> teleportTasks = new HashMap<>();
     private final Map<UUID, Long> cooldowns = new HashMap<>();
@@ -35,8 +35,7 @@ public class HomeCommand implements TabExecutor, Listener
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender,
                                                 @NotNull Command command,
                                                 @NotNull String alias,
-                                                @NotNull String[] args)
-    {
+                                                @NotNull String[] args) {
         return Collections.emptyList();
     }
 
@@ -44,21 +43,22 @@ public class HomeCommand implements TabExecutor, Listener
     public boolean onCommand(@NotNull CommandSender commandSender,
                              @NotNull Command command,
                              @NotNull String alias,
-                             @NotNull String[] args)
-    {
-        if (!(commandSender instanceof Player player))
-        {
+                             @NotNull String[] args) {
+        if (!(commandSender instanceof Player player)) {
+            return true;
+        }
+
+        if (isFighter(player)) {
+            player.sendMessage(Component.text("Voc\u00ea n\u00e3o pode usar esse comando porque est\u00e1 no mundo da Cidade Virtual. Digite /spawn para voltar.", NamedTextColor.RED));
             return true;
         }
 
         UUID playerUUID = player.getUniqueId();
 
         // Check for cooldown
-        if (cooldowns.containsKey(playerUUID))
-        {
+        if (cooldowns.containsKey(playerUUID)) {
             long timeElapsed = System.currentTimeMillis() - cooldowns.get(playerUUID);
-            if (timeElapsed < COOLDOWN_TIME)
-            {
+            if (timeElapsed < COOLDOWN_TIME) {
                 long timeLeft = (COOLDOWN_TIME - timeElapsed) / 1000;
                 player.sendMessage(Component.text("Voc\u00ea precisa esperar " + timeLeft + " segundos antes de usar o comando novamente.", NamedTextColor.RED));
                 return true;
@@ -68,8 +68,7 @@ public class HomeCommand implements TabExecutor, Listener
         String homeName = (args.length > 0) ? args[0] : "default";
         String pathPrefix = "homes." + playerUUID + "." + homeName;
 
-        if (plugin.getConfig().getConfigurationSection(pathPrefix) == null)
-        {
+        if (plugin.getConfig().getConfigurationSection(pathPrefix) == null) {
             player.sendMessage(Component.text("Casa n\u00e3o encontrada!", NamedTextColor.RED));
             return true;
         }
@@ -84,26 +83,20 @@ public class HomeCommand implements TabExecutor, Listener
 
         player.sendMessage(Component.text("Fique parado por 5 segundos para ser teleportado.", NamedTextColor.GREEN));
 
-        BukkitRunnable teleportTask = new BukkitRunnable()
-        {
+        BukkitRunnable teleportTask = new BukkitRunnable() {
             int countdown = 5;
 
             @Override
-            public void run()
-            {
-                if (!player.getLocation().toVector().equals(vector))
-                {
+            public void run() {
+                if (!player.getLocation().toVector().equals(vector)) {
                     Optional.ofNullable(teleportTasks.remove(playerUUID))
                             .ifPresent(lixeira -> player.sendActionBar(Component.text("Teleporte cancelado.", NamedTextColor.RED)));
                     return;
                 }
-                if (countdown > 0)
-                {
+                if (countdown > 0) {
                     player.sendActionBar(Component.text("Teleportando em " + countdown + " segundos...", NamedTextColor.YELLOW));
                     countdown--;
-                }
-                else
-                {
+                } else {
                     player.teleport(location);
                     player.sendActionBar(Component.text("Voc\u00ea foi teleportado para sua casa!", NamedTextColor.GREEN));
                     teleportTasks.remove(playerUUID);
@@ -122,43 +115,39 @@ public class HomeCommand implements TabExecutor, Listener
     }
 
     @EventHandler
-    public void onEntityDamage(EntityDamageEvent event)
-    {
-        if (event.getEntity() instanceof Player player)
-        {
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player player) {
             UUID playerUUID = player.getUniqueId();
-            if (teleportTasks.containsKey(playerUUID))
-            {
+            if (teleportTasks.containsKey(playerUUID)) {
                 teleportTasks.get(playerUUID).cancel();
                 teleportTasks.remove(playerUUID);
-                player.sendActionBar(Component.text("Teleporte cancelado.", NamedTextColor.RED));
+                player.sendActionBar(Component.text("Teleporte cancelado porque voc\u00ea foi atacado.", NamedTextColor.RED));
             }
         }
     }
 
     @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
-    {
-        if (event.getDamager() instanceof Player player)
-        {
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player player) {
             UUID playerUUID = player.getUniqueId();
-            if (teleportTasks.containsKey(playerUUID))
-            {
+            if (teleportTasks.containsKey(playerUUID)) {
                 teleportTasks.get(playerUUID).cancel();
                 teleportTasks.remove(playerUUID);
-                player.sendActionBar(Component.text("Teleporte cancelado.", NamedTextColor.RED));
+                player.sendActionBar(Component.text("Teleporte cancelado porque voc\u00ea atacou algu\u00e9m.", NamedTextColor.RED));
             }
         }
 
-        if (event.getEntity() instanceof Player player)
-        {
+        if (event.getEntity() instanceof Player player) {
             UUID playerUUID = player.getUniqueId();
-            if (teleportTasks.containsKey(playerUUID))
-            {
+            if (teleportTasks.containsKey(playerUUID)) {
                 teleportTasks.get(playerUUID).cancel();
                 teleportTasks.remove(playerUUID);
-                player.sendActionBar(Component.text("Teleporte cancelado.", NamedTextColor.RED));
+                player.sendActionBar(Component.text("Teleporte cancelado porque voc\u00ea foi atacado.", NamedTextColor.RED));
             }
         }
+    }
+
+    private boolean isFighter(Player player) {
+        return player.getWorld().getName().equals("town_world");
     }
 }

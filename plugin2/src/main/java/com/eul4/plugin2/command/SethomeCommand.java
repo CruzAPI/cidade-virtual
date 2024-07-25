@@ -1,5 +1,6 @@
 package com.eul4.plugin2.command;
 
+import com.eul4.model.player.Fighter;
 import com.eul4.plugin2.Main;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
@@ -17,16 +18,14 @@ import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class SethomeCommand implements TabExecutor
-{
+public class SethomeCommand implements TabExecutor {
     private final Main plugin;
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender,
                                                 @NotNull Command command,
                                                 @NotNull String alias,
-                                                @NotNull String[] args)
-    {
+                                                @NotNull String[] args) {
         return Collections.emptyList();
     }
 
@@ -34,10 +33,13 @@ public class SethomeCommand implements TabExecutor
     public boolean onCommand(@NotNull CommandSender commandSender,
                              @NotNull Command command,
                              @NotNull String alias,
-                             @NotNull String[] args)
-    {
-        if (!(commandSender instanceof Player player))
-        {
+                             @NotNull String[] args) {
+        if (!(commandSender instanceof Player player)) {
+            return true;
+        }
+
+        if (isFighter(player)) {
+            player.sendMessage(Component.text("Voc\u00ea n\u00e3o pode usar esse comando porque est\u00e1 no mundo da Cidade Virtual. Digite /spawn para voltar.", NamedTextColor.RED));
             return true;
         }
 
@@ -46,15 +48,13 @@ public class SethomeCommand implements TabExecutor
         String homeName = (args.length > 0) ? args[0] : "default";
         String pathPrefix = "homes." + playerUUID;
 
-        if (plugin.getConfig().getConfigurationSection(pathPrefix) == null)
-        {
+        if (plugin.getConfig().getConfigurationSection(pathPrefix) == null) {
             plugin.getConfig().createSection(pathPrefix);
         }
 
         Set<String> playerHomes = plugin.getConfig().getConfigurationSection(pathPrefix).getKeys(false);
 
-        if (playerHomes.size() >= maxHomes && !playerHomes.contains(homeName))
-        {
+        if (playerHomes.size() >= maxHomes && !playerHomes.contains(homeName)) {
             player.sendMessage(Component.text("Voc\u00ea j\u00e1 ultrapassou o seu limite de casas!", NamedTextColor.RED));
             player.sendMessage(Component.text("Para adicionar uma nova, apague uma de suas casas com /delhome", NamedTextColor.RED));
             return true;
@@ -87,4 +87,7 @@ public class SethomeCommand implements TabExecutor
         return true;
     }
 
+    private boolean isFighter(Player player) {
+        return player.getWorld().getName().equals("town_world");
+    }
 }

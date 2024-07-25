@@ -13,3 +13,5 @@ commands:
     usage: /home [nome]
   delhome:
   listhomes:
+  tpa:
+  aceitartpa:

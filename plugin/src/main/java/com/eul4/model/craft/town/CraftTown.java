@@ -370,6 +370,7 @@ public class CraftTown implements Town
 	{
 		structureSet.forEach(Structure::load);
 		reloadAllStructureAttributes();
+		updateTileHolograms();
 		TOWN_BLOCKS.putAll(townBlockMap);
 	}
 	

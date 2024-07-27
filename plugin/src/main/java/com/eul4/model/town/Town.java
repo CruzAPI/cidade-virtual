@@ -195,4 +195,7 @@ public interface Town
 	void onTileBought(TownTile townTile);
 	
 	void setDefaultTilesBought();
+	
+	@Deprecated
+	void setDefaultBoughtTileMapByDepth();
 }

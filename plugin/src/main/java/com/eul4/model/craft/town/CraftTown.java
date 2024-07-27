@@ -1174,14 +1174,18 @@ public class CraftTown implements Town
 	@Deprecated
 	public void setDefaultBoughtTileMapByDepth()
 	{
+		plugin.getLogger().warning("town: " + getOwner().getName());
 		Map<Integer, Integer> totalTiles = Map.ofEntries(Map.entry(1, 4 * 4),
 				Map.entry(2, 6 * 6),
 				Map.entry(3, 8 * 8),
 				Map.entry(4, 10 * 10));
+		plugin.getLogger().warning("totalTiles: " + totalTiles);
 		
 		Map<Integer, Integer> boughtTiles = getTownTileMap().values().stream()
 				.filter(not(TownTile::isBought))
 				.collect(groupingBy(TownTile::getDepth, collectingAndThen(counting(), Long::intValue)));
+		
+		plugin.getLogger().warning("boughtTiles: " + boughtTiles);
 		
 		Map<Integer, Integer> subtractedMap = totalTiles.entrySet().stream().collect(toMap(Map.Entry::getKey, entry ->
 		{
@@ -1190,6 +1194,7 @@ public class CraftTown implements Town
 			return value1 - value2;
 		}));
 		
+		plugin.getLogger().warning("subtractedMap: " + subtractedMap);
 		boughtTileMapByDepth = new BoughtTileMapByDepth(ownerUUID, subtractedMap);
 	}
 }

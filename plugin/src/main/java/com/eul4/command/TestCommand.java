@@ -3,6 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
+import com.eul4.model.town.Town;
 import com.eul4.type.PluginWorldType;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
@@ -67,41 +68,12 @@ public class TestCommand implements TabExecutor
 		}
 		else if(args.length == 2)
 		{
-			int damage = Integer.parseInt(args[0]);
-			int maxDamage = Integer.parseInt(args[1]);
+			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(args[0]);
 			
-			ItemStack item = player.getInventory().getItemInMainHand();
+			Town town = plugin.getTownManager().getTown(offlinePlayer.getUniqueId());
 			
-			Bukkit.broadcastMessage("durability: " + item.getDurability());
-			
-			ItemMeta meta = item.getItemMeta();
-			if(meta instanceof Damageable damageable)
-			{
-				Bukkit.broadcastMessage("damage: "
-						+ (damageable.hasDamage() ? damageable.getDamage() : null)
-						+ " maxdamage: " + (damageable.hasMaxDamage() ? damageable.getMaxDamage() : null));
-				damageable.setDamage(damage);
-				damageable.setMaxDamage(maxDamage);
-			}
-			
-			item.setItemMeta(meta);
-			
-//			int i = Integer.parseInt(args[0]);
-//
-//			ItemStack item = new ItemStack(Material.LEATHER_HELMET);
-//			ItemMeta meta = item.getItemMeta();
-//			meta.addAttributeModifier(Attribute.GENERIC_ARMOR, new AttributeModifier(UUID.randomUUID(), "", i, ADD_NUMBER, EquipmentSlot.HEAD));
-//			item.setItemMeta(meta);
-//			player.getInventory().addItem(item);
-
-//			ItemStack goldenPickaxe = new ItemStack(Material.GOLDEN_PICKAXE);
-//			ItemMeta meta = goldenPickaxe.getItemMeta();
-//			ToolComponent tool = meta.getTool();
-//
-//			tool.addRule(Tag.MINEABLE_PICKAXE, 0.1F, true);
-//			meta.setTool(tool);
-//			goldenPickaxe.setItemMeta(meta);
-//			player.getInventory().addItem(goldenPickaxe);
+			player.sendMessage("map: " + town.getBoughtTileMapByDepth());
+			player.sendMessage("tilesBought: " + town.getTilesBought());
 		}
 		else if(args.length == 1)
 		{

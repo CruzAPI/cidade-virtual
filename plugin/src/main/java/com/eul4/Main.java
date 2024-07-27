@@ -48,7 +48,7 @@ import java.util.logging.Level;
 public class Main extends Common
 {
 	private TownManager townManager;
-	
+	public static Main instance;
 	private DataFileManager dataFileManager;
 	private StructureUpgradeExecutor structureUpgradeExecutor;
 	private PurchaseExecutor purchaseExecutor;
@@ -86,6 +86,7 @@ public class Main extends Common
 	@Override
 	public void onEnable()
 	{
+		instance = this;
 		tryEnablePluginOrShutdown();
 	}
 	

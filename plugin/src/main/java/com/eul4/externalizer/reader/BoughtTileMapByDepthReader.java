@@ -43,7 +43,7 @@ public class BoughtTileMapByDepthReader extends ObjectReader<BoughtTileMapByDept
 	{
 		return () ->
 		{
-			BoughtTileMapByDepth boughtTileMapByDepth = new BoughtTileMapByDepth();
+			BoughtTileMapByDepth boughtTileMapByDepth = new BoughtTileMapByDepth(town.getOwnerUUID());
 			
 			int size = in.readInt();
 			

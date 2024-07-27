@@ -64,8 +64,11 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.Predicate;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static com.eul4.common.constant.CommonNamespacedKey.FAWE_IGNORE;
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.*;
 
 @Getter
 @Setter
@@ -133,7 +136,7 @@ public class CraftTown implements Town
 	{
 		this(owner.getUniqueId(), block, plugin);
 		
-		this.boughtTileMapByDepth = new BoughtTileMapByDepth();
+		this.boughtTileMapByDepth = new BoughtTileMapByDepth(ownerUUID);
 		
 		this.townBlockMap = getInitialTownBlocks();
 		this.townTileMap = getInitialTownTiles();
@@ -174,6 +177,11 @@ public class CraftTown implements Town
 			return townTileMap;
 		}
 		
+		return createInitialTownTiles();
+	}
+	
+	private TownTileMap createInitialTownTiles()
+	{
 		TownTileMap townTileMap = new TownTileMap();
 		
 		final int rings = 4;
@@ -362,6 +370,7 @@ public class CraftTown implements Town
 	{
 		structureSet.forEach(Structure::load);
 		reloadAllStructureAttributes();
+		updateTileHolograms();
 		TOWN_BLOCKS.putAll(townBlockMap);
 	}
 	
@@ -900,7 +909,7 @@ public class CraftTown implements Town
 			
 			List<? extends Entity> weEntitiesToCopy = clipboard1.getEntities()
 					.stream()
-					.filter(Predicate.not(this::hasFaweIgnoreFlag))
+					.filter(not(this::hasFaweIgnoreFlag))
 					.toList();
 			
 			try(EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld))
@@ -1160,5 +1169,33 @@ public class CraftTown implements Town
 				.stream()
 				.mapToInt(Integer::intValue)
 				.sum();
+	}
+	
+	@Override
+	@Deprecated
+	public void setDefaultBoughtTileMapByDepth()
+	{
+		plugin.getLogger().warning("town: " + getOwner().getName());
+		Map<Integer, Integer> totalTiles = Map.ofEntries(Map.entry(1, 4 * 4),
+				Map.entry(2, 6 * 4),
+				Map.entry(3, 8 * 4),
+				Map.entry(4, 10 * 4));
+		plugin.getLogger().warning("totalTiles: " + totalTiles);
+		
+		Map<Integer, Integer> boughtTiles = getTownTileMap().values().stream()
+				.filter(not(TownTile::isBought))
+				.collect(groupingBy(TownTile::getDepth, collectingAndThen(counting(), Long::intValue)));
+		
+		plugin.getLogger().warning("boughtTiles: " + boughtTiles);
+		
+		Map<Integer, Integer> subtractedMap = totalTiles.entrySet().stream().collect(toMap(Map.Entry::getKey, entry ->
+		{
+			int value1 = entry.getValue();
+			int value2 = boughtTiles.getOrDefault(entry.getKey(), 0);
+			return value1 - value2;
+		}));
+		
+		plugin.getLogger().warning("subtractedMap: " + subtractedMap);
+		boughtTileMapByDepth = new BoughtTileMapByDepth(ownerUUID, subtractedMap);
 	}
 }

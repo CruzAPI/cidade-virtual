@@ -64,7 +64,12 @@ public class TownReader extends ObjectReader<Town>
 		town.setDislikes(in.readInt());
 		town.setHardnessField(in.readDouble());
 		town.setLastAttackFinishTick(in.readLong());
-		town.setBoughtTileMapByDepth(readers.getReader(BoughtTileMapByDepthReader.class).readReference(town));
+		
+		//FIXME: FULL BUGADO, NAO USAR!!! LENDO APENAS PARA NAO DAR EOF OU IOEXCEPTION
+		readers.getReader(BoughtTileMapByDepthReader.class).readReference(town);
+		
+		//CALCULAR PROPRIO COM BASE NO TOWN TILE MAP!!!
+		town.setDefaultBoughtTileMapByDepth();
 		
 		town.setDefaultTilesBought();
 	}

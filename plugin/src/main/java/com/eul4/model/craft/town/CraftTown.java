@@ -1176,9 +1176,9 @@ public class CraftTown implements Town
 	{
 		plugin.getLogger().warning("town: " + getOwner().getName());
 		Map<Integer, Integer> totalTiles = Map.ofEntries(Map.entry(1, 4 * 4),
-				Map.entry(2, 6 * 6),
-				Map.entry(3, 8 * 8),
-				Map.entry(4, 10 * 10));
+				Map.entry(2, 6 * 4),
+				Map.entry(3, 8 * 4),
+				Map.entry(4, 10 * 4));
 		plugin.getLogger().warning("totalTiles: " + totalTiles);
 		
 		Map<Integer, Integer> boughtTiles = getTownTileMap().values().stream()

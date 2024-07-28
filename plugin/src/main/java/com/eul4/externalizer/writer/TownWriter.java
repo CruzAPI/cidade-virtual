@@ -23,8 +23,7 @@ public class TownWriter extends ObjectWriter<Town>
 		
 		writers.getWriter(TownBlockMapWriter.class).writeReference(town.getTownBlockMap());
 		writers.getWriter(TownTileMapWriter.class).writeReference(town.getTownTileMap());
-		writers.getWriter(StructureSetWriter.class).writeReference(town.getStructureSet());
-		writers.getWriter(GenericStructureWriter.class).writeReference(town.getMovingStructure());
+		writers.getWriter(StructureMapWriter.class).writeReference(town.getStructureMap());
 		writers.getWriter(TownHallWriter.class).writeReference(town.getTownHall());
 		writers.getWriter(ArmoryWriter.class).writeReference(town.getArmory());
 		out.writeInt(town.getLikes());

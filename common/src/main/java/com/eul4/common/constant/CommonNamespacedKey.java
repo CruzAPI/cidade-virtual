@@ -14,5 +14,7 @@ public class CommonNamespacedKey
 	CANCEL_SPAWN = new NamespacedKey(NAMESPACE, "remove_on_drop"),
 	CANCEL_INTERACTION = new NamespacedKey(NAMESPACE, "cancel_interaction"),
 	REMOVE_ON_CHUNK_LOAD = new NamespacedKey(NAMESPACE, "remove_on_chunk_load"),
-	FAWE_IGNORE = new NamespacedKey(NAMESPACE, "fawe_ignore");
+	REMOVE_ITEM_ON_PLAYER_JOIN = new NamespacedKey(NAMESPACE, "remove_item_on_player_join"),
+	FAWE_IGNORE = new NamespacedKey(NAMESPACE, "fawe_ignore"),
+	ITEM_UUID = new NamespacedKey(NAMESPACE, "item_uuid");
 }

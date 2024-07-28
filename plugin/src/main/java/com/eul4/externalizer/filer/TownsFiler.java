@@ -19,7 +19,7 @@ import java.util.logging.Level;
 
 public class TownsFiler extends Filer
 {
-	private static final byte VERSION = 0;
+	private static final byte VERSION = 1;
 	
 	private static final ObjectType[] OBJECT_TYPES_V0 = new ObjectType[]
 	{
@@ -43,7 +43,7 @@ public class TownsFiler extends Filer
 		PluginObjectType.LIKE_DEPOSIT,
 		PluginObjectType.LIKE_GENERATOR,
 		PluginObjectType.STRUCTURE,
-		PluginObjectType.STRUCTURE_SET,
+		PluginObjectType.STRUCTURE_MAP,
 		PluginObjectType.TOWN_BLOCK_MAP,
 		PluginObjectType.TOWN_BLOCK,
 		PluginObjectType.TOWN_BLOCK_SET,
@@ -53,6 +53,41 @@ public class TownsFiler extends Filer
 		PluginObjectType.TOWN_TILE_MAP,
 		PluginObjectType.TOWN_TILE,
 		PluginObjectType.TURRET,
+	};
+	
+	private static final ObjectType[] OBJECT_TYPES_V1 = new ObjectType[]
+	{
+		CommonObjectType.BLOCK,
+		CommonObjectType.CHUNK,
+		CommonObjectType.ENTITY,
+		CommonObjectType.HOLOGRAM,
+		CommonObjectType.INVENTORY,
+		CommonObjectType.ITEM_STACK,
+		CommonObjectType.LOCATION,
+		CommonObjectType.OBJECT,
+		CommonObjectType.TRANSLATED_HOLOGRAM_LINE,
+		PluginObjectType.ARMORY,
+		PluginObjectType.BOUGHT_TILE_MAP_BY_DEPTH,
+		PluginObjectType.CANNON,
+		PluginObjectType.DEPOSIT,
+		PluginObjectType.DISLIKE_DEPOSIT,
+		PluginObjectType.DISLIKE_GENERATOR,
+		PluginObjectType.GENERATOR,
+		PluginObjectType.GENERIC_STRUCTURE,
+		PluginObjectType.LIKE_DEPOSIT,
+		PluginObjectType.LIKE_GENERATOR,
+		PluginObjectType.STRUCTURE,
+		PluginObjectType.STRUCTURE_MAP,
+		PluginObjectType.TOWN_BLOCK_MAP,
+		PluginObjectType.TOWN_BLOCK,
+		PluginObjectType.TOWN_BLOCK_SET,
+		PluginObjectType.TOWN_HALL,
+		PluginObjectType.TOWN_MAP,
+		PluginObjectType.TOWN,
+		PluginObjectType.TOWN_TILE_MAP,
+		PluginObjectType.TOWN_TILE,
+		PluginObjectType.TURRET,
+		PluginObjectType.VECTOR_3,
 	};
 
 	public TownsFiler(Main plugin)
@@ -139,6 +174,7 @@ public class TownsFiler extends Filer
 		return switch(version)
 		{
 			case 0 -> OBJECT_TYPES_V0;
+			case 1 -> OBJECT_TYPES_V1;
 			default -> throw new InvalidVersionException(MessageFormat.format(
 					"Invalid {0} version: {1}",
 					getClass().getSimpleName(),

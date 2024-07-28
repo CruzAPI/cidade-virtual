@@ -4,28 +4,12 @@ import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.structure.Structure;
 import com.eul4.type.player.SpiritualPlayerType;
-import com.fastasyncworldedit.core.FaweAPI;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
-import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardWriter;
-import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
-import com.sk89q.worldedit.function.operation.Operation;
-import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.MessageFormat;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,6 +42,7 @@ public class PreTownAttack
 		}
 		
 		started = true;
+		town.getStructureMap().values().forEach(Structure::onStartPreAttack);
 		onStart();
 	}
 	

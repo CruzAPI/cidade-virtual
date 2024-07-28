@@ -33,13 +33,13 @@ val resetTown: Boolean = project.findProperty("resetTowns")?.toString()?.toBoole
 val containerName = project.findProperty("containerName")?.toString()
 val pluginDirectory = project.findProperty("pluginDir")?.toString()
 val buildFileParent = fixPath(buildFile.parent)
-val rootDirLixeira = fixPath(rootDir.absolutePath)
+val rootDirPath = fixPath(rootDir.absolutePath)
 
 
 task("resetTownsLocal")
 {
     doLast {
-        val process = ProcessBuilder(bashPath, "-c", "${rootDir.absolutePath}/reset-towns-local.sh").start()
+        val process = ProcessBuilder(bashPath, "-c", "${rootDirPath}/reset-towns-local.sh").start()
         val exitCode = process.waitFor()
         val errorMessage = process.errorStream.bufferedReader().use { it.readText()
         }
@@ -56,7 +56,7 @@ task("resetTownsLocal")
 task("resetTownsRemote")
 {
     doLast {
-        val process = ProcessBuilder(bashPath, "-c", "${rootDirLixeira}/reset-towns-remote.sh $user $hostname").start()
+        val process = ProcessBuilder(bashPath, "-c", "${rootDirPath}/reset-towns-remote.sh $user $hostname").start()
         val exitCode = process.waitFor()
         val errorMessage = process.errorStream.bufferedReader().use { it.readText() }
 
@@ -167,7 +167,7 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
         {
             doLast {
                 val buildPath = getFinalJarAbsolutePath()
-                val cpProcess = ProcessBuilder(bashPath, "-c", "${rootDirLixeira}/cp.sh $buildPath ${rootDir.absolutePath}").start()
+                val cpProcess = ProcessBuilder(bashPath, "-c", "${rootDirPath}/cp.sh $buildPath ${rootDir.absolutePath}").start()
 
                 if(cpProcess.waitFor() != 0)
                 {
@@ -183,9 +183,9 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
         task("scpRemote")
         {
             doLast {
-                val scpProcess = ProcessBuilder(bashPath, "-c", "${rootDirLixeira}/scp.sh ${getFinalJarAbsolutePath()} $user $hostname $pluginDirectory").start()
+                val scpProcess = ProcessBuilder(bashPath, "-c", "${rootDirPath}/scp.sh ${getFinalJarAbsolutePath()} $user $hostname $pluginDirectory").start()
 
-                println("${rootDirLixeira}/scp.sh ${getFinalJarAbsolutePath()} $user $hostname $pluginDirectory")
+                println("${rootDirPath}/scp.sh ${getFinalJarAbsolutePath()} $user $hostname $pluginDirectory")
 
                 if (scpProcess.waitFor() != 0)
                 {
@@ -294,7 +294,7 @@ configure(subprojects.filter { it.name == "plugin" || it.name == "plugin-validat
 fun isRemoteContainerStopped(): Boolean
 {
     val bashPath = project.property("bash.path") as String
-    val process = ProcessBuilder(bashPath, "-c", "${rootDirLixeira}/check-remote-container.sh $user $hostname $containerName").start()
+    val process = ProcessBuilder(bashPath, "-c", "${rootDirPath}/check-remote-container.sh $user $hostname $containerName").start()
 
     return process.waitFor() != 0
 }
@@ -302,7 +302,7 @@ fun isRemoteContainerStopped(): Boolean
 fun isLocalContainerStopped(): Boolean
 {
     val bashPath = project.property("bash.path") as String
-    val process = ProcessBuilder(bashPath, "-c", "${rootDirLixeira}/check-container.sh").start()
+    val process = ProcessBuilder(bashPath, "-c", "${rootDirPath}/check-container.sh").start()
 
     return process.waitFor() != 0
 }

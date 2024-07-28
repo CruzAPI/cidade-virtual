@@ -11,6 +11,7 @@ import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.interceptor.HologramTranslatorAdapter;
 import com.eul4.common.interceptor.SpawnEntityInterceptor;
 import com.eul4.common.listener.*;
+import com.eul4.common.listener.container.RemoveItemOnPlayerJoinListener;
 import com.eul4.common.listener.container.RemoveOnChunkLoadListener;
 import com.eul4.common.service.CommonDataFileManager;
 import com.eul4.common.service.PlayerManager;
@@ -105,6 +106,7 @@ public abstract class Common extends JavaPlugin
 		pluginManager.registerEvents(new CancelItemDropListener(this), this);
 		pluginManager.registerEvents(new CancelItemMoveListener(this), this);
 		pluginManager.registerEvents(new RemoveOnDropItemListener(this), this);
+		pluginManager.registerEvents(new RemoveItemOnPlayerJoinListener(this), this);
 		pluginManager.registerEvents(new CancelInteractionItemListener(this), this);
 		pluginManager.registerEvents(new WorldSaveRecallListener(this), this);
 	}

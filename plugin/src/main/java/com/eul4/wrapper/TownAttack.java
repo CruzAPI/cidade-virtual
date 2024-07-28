@@ -70,7 +70,7 @@ public class TownAttack
 		schedulerWallTask();
 		scheduleForceFieldTask();
 		
-		town.getStructureSet().forEach(Structure::onStartAttack);
+		town.getStructureMap().values().forEach(Structure::onStartAttack);
 		
 		town.updateHolograms();
 		town.getPlayer().map(town.getPlugin().getPlayerManager()::get)
@@ -104,7 +104,7 @@ public class TownAttack
 		Optional.ofNullable(wallTask).ifPresent(WallTask::cancel);
 		Optional.ofNullable(forceFieldTask).ifPresent(ForceFieldTask::cancel);
 		
-		town.getStructureSet().forEach(Structure::onFinishAttack);
+		town.getStructureMap().values().forEach(Structure::onFinishAttack);
 		
 		onFinishCalled = true;
 		

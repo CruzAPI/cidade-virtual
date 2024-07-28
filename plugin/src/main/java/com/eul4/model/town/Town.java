@@ -54,16 +54,6 @@ public interface Town
 	TownTile getTile(Point point);
 	Main getPlugin();
 	
-	void setMovingStructure(Structure structure);
-	
-	void startMovingStructure(Structure structure) throws IOException, CannotConstructException;
-	
-	void cancelMovingStructure() throws CannotConstructException;
-	
-	void finishMovingStructure(TownBlock centerTownBlock, int rotation) throws CannotConstructException;
-	
-	boolean isMovingStructure();
-	Structure getMovingStructure();
 	OfflinePlayer getOwner();
 	Optional<Player> getPlayer();
 	
@@ -126,12 +116,12 @@ public interface Town
 	
 	TownTileMap getTownTileMap();
 	TownBlockMap getTownBlockMap();
-	StructureSet getStructureSet();
+	StructureMap getStructureMap();
 	
 	//TODO: remove set methods, create an unique method, like in TownTile#loadFields
 	void setTownBlockMap(TownBlockMap townBlockMap);
 	void setTownTileMap(TownTileMap townTileMap);
-	void setStructureSet(StructureSet structureSet);
+	void setStructureMap(StructureMap structureMap);
 	void setTownHall(TownHall townHall);
 	void setArmory(Armory armory);
 	void setLikes(int likes);
@@ -198,4 +188,11 @@ public interface Town
 	
 	@Deprecated
 	void setDefaultBoughtTileMapByDepth();
+	
+	void setMovingStructure(Structure structure);
+	Structure getMovingStructure();
+	
+	UUID getUUID();
+	
+	Structure getStructureByUniqueId(UUID structureUUID);
 }

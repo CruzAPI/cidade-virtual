@@ -8,23 +8,24 @@ import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.structure.Structure;
 import com.eul4.type.player.PluginObjectType;
-import com.eul4.wrapper.StructureSet;
+import com.eul4.wrapper.StructureMap;
 import lombok.Getter;
 
 import java.io.IOException;
 
 @Getter
-public class StructureSetReader extends ObjectReader<StructureSet>
+public class StructureMapReader extends ObjectReader<StructureMap>
 {
-	private final Reader<StructureSet> reader;
-	private final ParameterizedReadable<StructureSet, Town> parameterizedReadable;
+	private final Reader<StructureMap> reader;
+	private final ParameterizedReadable<StructureMap, Town> parameterizedReadable;
 	
-	public StructureSetReader(Readers readers) throws InvalidVersionException
+	public StructureMapReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers, StructureSet.class);
+		super(readers, StructureMap.class);
 		
-		final ObjectType objectType = PluginObjectType.STRUCTURE_SET;
+		final ObjectType objectType = PluginObjectType.STRUCTURE_MAP;
 		final byte version = readers.getVersions().get(objectType);
 		
 		switch(version)
@@ -38,24 +39,25 @@ public class StructureSetReader extends ObjectReader<StructureSet>
 		}
 	}
 	
-	private Readable<StructureSet> parameterizedReadableVersion0(Town town)
+	private Readable<StructureMap> parameterizedReadableVersion0(Town town)
 	{
 		return () ->
 		{
-			StructureSet structureSet = new StructureSet();
+			StructureMap structureMap = new StructureMap(town.getOwnerUUID());
 			
 			int size = in.readInt();
 			
 			for(int i = 0; i < size; i++)
 			{
-				structureSet.add(readers.getReader(GenericStructureReader.class).readReference(town));
+				Structure structure = readers.getReader(GenericStructureReader.class).readReference(town);
+				structureMap.put(structure.getUUID(), structure);
 			}
 			
-			return structureSet;
+			return structureMap;
 		};
 	}
 	
-	public StructureSet readReference(Town town) throws IOException, ClassNotFoundException
+	public StructureMap readReference(Town town) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(town));
 	}

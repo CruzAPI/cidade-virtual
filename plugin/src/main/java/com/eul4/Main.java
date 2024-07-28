@@ -213,7 +213,6 @@ public class Main extends Common
 		getCommand(TownCommand.COMMAND_NAME).setExecutor(new TownCommand(this));
 		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
-		getCommand("move").setExecutor(new MoveCommand(this));
 		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("macroid").setExecutor(new MacroidCommand(this));
@@ -327,7 +326,7 @@ public class Main extends Common
 				UUID uuid = UUID.fromString(FileUtils.removeExtension(file.getName()));
 				Town town = townManager.getTown(uuid);
 				town.loadAndPasteTownSchematic();
-				town.getStructureSet().forEach(Structure::onBuildCorruptedTown);
+				town.getStructureMap().values().forEach(Structure::onBuildCorruptedTown);
 				getLogger().info(MessageFormat.format("Corrupted town {0} restored!", uuid));
 			}
 			catch(Exception e)

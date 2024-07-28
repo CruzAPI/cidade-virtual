@@ -6,7 +6,6 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
-import com.eul4.model.town.structure.Structure;
 import com.eul4.scoreboard.CraftTownScoreboard;
 import com.eul4.scoreboard.TownScoreboard;
 import com.eul4.type.player.PhysicalPlayerType;
@@ -57,18 +56,6 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 	public boolean hasTown()
 	{
 		return getTown() != null;
-	}
-	
-	@Override
-	public Structure getMovingStructure()
-	{
-		return townPlayerData.getMovingStructure();
-	}
-	
-	@Override
-	public void setMovingStructure(Structure structure)
-	{
-		townPlayerData.setMovingStructure(structure);
 	}
 	
 	@Override

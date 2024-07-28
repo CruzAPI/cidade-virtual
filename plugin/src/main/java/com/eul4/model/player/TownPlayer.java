@@ -15,8 +15,6 @@ public interface TownPlayer extends
 {
 	Town getTown();
 	boolean hasTown();
-	Structure getMovingStructure();
-	void setMovingStructure(Structure structure);
 	
 	void test(boolean test);
 	boolean test();

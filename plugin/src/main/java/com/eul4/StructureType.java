@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Material;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -41,7 +42,8 @@ public enum StructureType
 		Main::getTownHallRule,
 		NamedTextColor.YELLOW,
 		PluginMessage.STRUCTURE_TOWN_HALL_NAME,
-		PluginMessage.STRUCTURE_TOWN_HALL_UPGRADE_PREVIEW_LORE
+		PluginMessage.STRUCTURE_TOWN_HALL_UPGRADE_PREVIEW_LORE,
+		Material.BRICKS
 	),
 	
 	LIKE_GENERATOR
@@ -55,7 +57,8 @@ public enum StructureType
 		Main::getLikeGeneratorRule,
 		NamedTextColor.GREEN,
 		PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
-		PluginMessage.STRUCTURE_LIKE_GENERATOR_UPGRADE_PREVIEW_LORE
+		PluginMessage.STRUCTURE_LIKE_GENERATOR_UPGRADE_PREVIEW_LORE,
+		Material.LIME_STAINED_GLASS
 	),
 	
 	DISLIKE_GENERATOR
@@ -69,7 +72,8 @@ public enum StructureType
 		Main::getDislikeGeneratorRule,
 		NamedTextColor.RED,
 		PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME,
-		PluginMessage.STRUCTURE_DISLIKE_GENERATOR_UPGRADE_PREVIEW_LORE
+		PluginMessage.STRUCTURE_DISLIKE_GENERATOR_UPGRADE_PREVIEW_LORE,
+		Material.RED_STAINED_GLASS
 	),
 	
 	DISLIKE_DEPOSIT
@@ -83,7 +87,8 @@ public enum StructureType
 		Main::getDislikeDepositRule,
 		NamedTextColor.RED,
 		PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_NAME,
-		PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
+		PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_UPGRADE_PREVIEW_LORE,
+		Material.RED_CONCRETE
 	),
 	
 	LIKE_DEPOSIT
@@ -97,7 +102,8 @@ public enum StructureType
 		Main::getLikeDepositRule,
 		NamedTextColor.GREEN,
 		PluginMessage.STRUCTURE_LIKE_DEPOSIT_NAME,
-		PluginMessage.STRUCTURE_LIKE_DEPOSIT_UPGRADE_PREVIEW_LORE
+		PluginMessage.STRUCTURE_LIKE_DEPOSIT_UPGRADE_PREVIEW_LORE,
+		Material.LIME_CONCRETE
 	),
 	
 	ARMORY
@@ -111,7 +117,8 @@ public enum StructureType
 		Main::getArmoryRule,
 		NamedTextColor.GOLD,
 		PluginMessage.STRUCTURE_ARMORY_NAME,
-		PluginMessage.STRUCTURE_ARMORY_UPGRADE_PREVIEW_LORE
+		PluginMessage.STRUCTURE_ARMORY_UPGRADE_PREVIEW_LORE,
+		Material.IRON_BLOCK
 	),
 	
 	CANNON
@@ -125,7 +132,8 @@ public enum StructureType
 		Main::getCannonRule,
 		NamedTextColor.GRAY,
 		PluginMessage.STRUCTURE_CANNON_NAME,
-		PluginMessage.STRUCTURE_CANNON_UPGRADE_PREVIEW_LORE
+		PluginMessage.STRUCTURE_CANNON_UPGRADE_PREVIEW_LORE,
+		Material.DISPENSER
 	),
 	
 	TURRET
@@ -139,7 +147,8 @@ public enum StructureType
 		Main::getTurretRule,
 		NamedTextColor.GRAY,
 		PluginMessage.STRUCTURE_TURRET_NAME,
-		PluginMessage.STRUCTURE_TURRET_UPGRADE_PREVIEW_LORE
+		PluginMessage.STRUCTURE_TURRET_UPGRADE_PREVIEW_LORE,
+		Material.SMOOTH_STONE
 	),
 	
 	;
@@ -154,6 +163,7 @@ public enum StructureType
 	private final TextColor color;
 	private final Message nameMessage;
 	private final Message upgradePreviewLoreMessage;
+	private final Material icon;
 	
 	public Rule<?> getRule(Main plugin)
 	{

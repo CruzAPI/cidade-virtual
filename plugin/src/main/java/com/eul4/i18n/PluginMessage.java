@@ -226,6 +226,7 @@ public enum PluginMessage implements Message
 	
 	STRUCTURE_BUILD_FINISHED("structure.build-finished", empty().color(GREEN)),
 	STRUCTURE_SCHEMATIC_NOT_FOUND("structure.schematic-not-found", empty().color(RED)),
+	STRUCTURE_FAILED_CANCEL_MOVE("structure.failed-cancel-move", empty().color(RED)),
 	STRUCTURE_CAN_NOT_CONSTRUCT_HERE("structure.can-not-construct-here", empty().color(RED)),
 	STRUCTURE_ALREADY_BUILT("structure.already-build", empty().color(RED)),
 	STRUCTURE_NOT_READY_YET("structure.not-ready-yet", empty().color(RED)),
@@ -731,7 +732,22 @@ public enum PluginMessage implements Message
 	{
 		empty().color(GRAY),
 		SPAWN_COMMAND_NAME.translate(bundle, command -> "/" + command).color(WHITE),
-	});
+	}),
+	
+	STRUCTURE_ITEM_MOVE("structure.item-move", (bundle, args) ->
+	{
+		StructureType structureType = (StructureType) args[0];
+		
+		return new Component[]
+		{
+			empty().color(AQUA),
+			structureType.getNameMessage().translate(bundle).color(structureType.getColor()),
+		};
+	}),
+	
+	STRUCTURE_ITEM_MOVE_LORE("structure.item-move.lore", empty().color(GRAY)),
+	
+	STRUCTURE_MOVE_INVENTORY_FULL("structure.move-inventory-full", empty().color(RED));
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

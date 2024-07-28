@@ -1,6 +1,8 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.common.util.ContainerUtil;
+import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotBuildYetException;
 import com.eul4.exception.CannotConstructException;
@@ -37,6 +39,11 @@ public class StructureListener implements Listener
 		Town town = townPlayer.getTown();
 		
 		if(town == null)
+		{
+			return;
+		}
+		
+		if(ContainerUtil.hasFlag(event.getItem(), PluginNamespacedKey.CANCEL_STRUCTURE_INTERACTION))
 		{
 			return;
 		}

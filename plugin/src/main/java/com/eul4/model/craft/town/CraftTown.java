@@ -60,11 +60,8 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
 import java.util.function.IntConsumer;
-import java.util.function.Predicate;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import static com.eul4.common.constant.CommonNamespacedKey.FAWE_IGNORE;
 import static java.util.function.Predicate.not;
@@ -83,15 +80,10 @@ public class CraftTown implements Town
 	
 	private TownBlockMap townBlockMap;
 	private TownTileMap townTileMap;
-	private StructureSet structureSet;
+	private StructureMap structureMap;
 	
 	private BoughtTileMapByDepth boughtTileMapByDepth;
 	private int tilesBought;
-	
-	private transient Structure movingStructure;
-	private transient ClipboardHolder movingStructureClipboardHolder;
-	
-	private final transient Consumer<Player> removeMovingStructureItem;
 	
 	private int likes;
 	private int dislikes;
@@ -123,13 +115,14 @@ public class CraftTown implements Town
 	@Setter
 	private long lastAttackFinishTick;
 	
+	@Deprecated
+	private Structure movingStructure;
+	
 	public CraftTown(UUID ownerUUID, Block block, Main plugin)
 	{
 		this.ownerUUID = ownerUUID;
 		this.block = block;
 		this.plugin = plugin;
-		this.removeMovingStructureItem = player ->
-				player.getInventory().removeItemAnySlot(movingStructure.getItem());
 	}
 	
 	public CraftTown(OfflinePlayer owner, Block block, Main plugin) throws CannotConstructException, IOException
@@ -140,7 +133,7 @@ public class CraftTown implements Town
 		
 		this.townBlockMap = getInitialTownBlocks();
 		this.townTileMap = getInitialTownTiles();
-		this.structureSet = new StructureSet();
+		this.structureMap = new StructureMap(ownerUUID);
 		
 		createInitialStructures();
 		ThreadUtil.runSynchronouslyUntilTerminate(plugin, this::reloadAllStructureAttributes);
@@ -222,8 +215,8 @@ public class CraftTown implements Town
 		TownBlock centerTownBlock = getTownBlock(block);
 		Block centerBlock = centerTownBlock.getBlock();
 		
-		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(11, 0, 4));
-		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(11, 0, -4));
+		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(4, 0, -11));
+		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(-4, 0, -11));
 		
 		townHall = new CraftTownHall(this, centerTownBlock, true);
 		new CraftLikeGenerator(this, likeFarmTownBlock, true);
@@ -240,78 +233,6 @@ public class CraftTown implements Town
 	public Optional<Player> getPlayer()
 	{
 		return Optional.ofNullable(getOwner().getPlayer());
-	}
-	
-	@Override
-	public Structure getMovingStructure()
-	{
-		return movingStructure;
-	}
-	
-	@Override
-	public void setMovingStructure(Structure structure)
-	{
-		this.movingStructure = structure;
-	}
-	
-	@Override
-	public void startMovingStructure(Structure structure) throws IOException, CannotConstructException
-	{
-		if(isMovingStructure())
-		{
-			cancelMovingStructure();
-		}
-		
-		movingStructureClipboardHolder = structure.loadSchematic();
-		structure.demolishStructureConstruction(movingStructureClipboardHolder);
-		movingStructure = structure;
-		
-		movingStructure.onStartMove();
-	}
-	
-	@Override
-	public void cancelMovingStructure() throws CannotConstructException
-	{
-		if(!isMovingStructure())
-		{
-			return;
-		}
-		
-		getPlayer().ifPresent(removeMovingStructureItem);
-		
-		Structure movingStructure = this.movingStructure;
-		ClipboardHolder movingStructureClipboardHolder = this.movingStructureClipboardHolder;
-		
-		this.movingStructure = null;
-		this.movingStructureClipboardHolder = null;
-		
-		movingStructure.construct(movingStructureClipboardHolder);
-		movingStructure.onCancelMove();
-	}
-	
-	@Override
-	public void finishMovingStructure(TownBlock centerTownBlock, int rotation) throws CannotConstructException
-	{
-		if(!isMovingStructure())
-		{
-			return;
-		}
-		
-		movingStructure.construct(movingStructureClipboardHolder, centerTownBlock, rotation);
-		movingStructure.teleportHologramToDefaultLocation();
-		
-		getPlayer().ifPresent(removeMovingStructureItem);
-		
-		movingStructure.onFinishMove();
-		
-		this.movingStructure = null;
-		this.movingStructureClipboardHolder = null;
-	}
-	
-	@Override
-	public boolean isMovingStructure()
-	{
-		return movingStructure != null;
 	}
 	
 	protected void onFinishMove()
@@ -368,7 +289,7 @@ public class CraftTown implements Town
 	@Override
 	public void load()
 	{
-		structureSet.forEach(Structure::load);
+		structureMap.values().forEach(Structure::load);
 		reloadAllStructureAttributes();
 		updateTileHolograms();
 		TOWN_BLOCKS.putAll(townBlockMap);
@@ -393,7 +314,7 @@ public class CraftTown implements Town
 	@Override
 	public void addStructure(Structure structure)
 	{
-		structureSet.add(structure);
+		structureMap.put(structure.getUUID(), structure);
 	}
 	
 	@Override
@@ -509,7 +430,7 @@ public class CraftTown implements Town
 	{
 		int likeCapacity = townHall.getLikeCapacity();
 		
-		for(Structure structure : structureSet)
+		for(Structure structure : structureMap.values())
 		{
 			if(structure instanceof LikeDeposit likeDeposit)
 			{
@@ -524,7 +445,7 @@ public class CraftTown implements Town
 	{
 		int dislikeCapacity = townHall.getDislikeCapacity();
 		
-		for(Structure structure : structureSet)
+		for(Structure structure : structureMap.values())
 		{
 			if(structure instanceof DislikeDeposit dislikeDeposit)
 			{
@@ -539,7 +460,7 @@ public class CraftTown implements Town
 	{
 		int likeGeneratorsCapacity = 0;
 		
-		for(Structure structure : structureSet)
+		for(Structure structure : structureMap.values())
 		{
 			if(structure instanceof LikeGenerator likeGenerator)
 			{
@@ -554,7 +475,7 @@ public class CraftTown implements Town
 	{
 		int dislikeGeneratorsCapacity = 0;
 		
-		for(Structure structure : structureSet)
+		for(Structure structure : structureMap.values())
 		{
 			if(structure instanceof DislikeGenerator dislikeGenerator)
 			{
@@ -569,7 +490,7 @@ public class CraftTown implements Town
 	{
 		int likesInGenerator = 0;
 		
-		for(Structure structure : structureSet)
+		for(Structure structure : structureMap.values())
 		{
 			if(structure instanceof LikeGenerator likeGenerator)
 			{
@@ -584,7 +505,7 @@ public class CraftTown implements Town
 	{
 		int likesInGenerator = 0;
 		
-		for(Structure structure : structureSet)
+		for(Structure structure : structureMap.values())
 		{
 			if(structure instanceof LikeGenerator likeGenerator)
 			{
@@ -598,7 +519,7 @@ public class CraftTown implements Town
 	@Override
 	public void reloadAllStructureAttributes()
 	{
-		structureSet.forEach(Structure::reloadAttributes);
+		structureMap.values().forEach(Structure::reloadAttributes);
 		resetAttributes();
 	}
 	
@@ -613,7 +534,7 @@ public class CraftTown implements Town
 	{
 		int count = 0;
 		
-		for(Structure structure : structureSet)
+		for(Structure structure : structureMap.values())
 		{
 			if(structure.getStructureType() == structureType)
 			{
@@ -991,7 +912,7 @@ public class CraftTown implements Town
 	
 	public void updateStructureHolograms()
 	{
-		structureSet.forEach(Structure::updateHologram);
+		structureMap.values().forEach(Structure::updateHologram);
 	}
 	
 	@Override
@@ -1017,13 +938,13 @@ public class CraftTown implements Town
 	
 	private void onLikesChanged(final int oldLikes)
 	{
-		structureSet.forEach(Structure::onTownLikeBalanceChange);
+		structureMap.values().forEach(Structure::onTownLikeBalanceChange);
 		new LikeChangeEvent(this, oldLikes, likes).callEvent();
 	}
 	
 	private void onDislikesChanged(final int oldDislikes)
 	{
-		structureSet.forEach(Structure::onTownDislikeBalanceChange);
+		structureMap.values().forEach(Structure::onTownDislikeBalanceChange);
 		new DislikeChangeEvent(this, oldDislikes, dislikes).callEvent();
 	}
 	
@@ -1197,5 +1118,17 @@ public class CraftTown implements Town
 		
 		plugin.getLogger().warning("subtractedMap: " + subtractedMap);
 		boughtTileMapByDepth = new BoughtTileMapByDepth(ownerUUID, subtractedMap);
+	}
+	
+	@Override
+	public UUID getUUID()
+	{
+		return getOwnerUUID();
+	}
+	
+	@Override
+	public Structure getStructureByUniqueId(UUID structureUUID)
+	{
+		return structureMap.get(structureUUID);
 	}
 }

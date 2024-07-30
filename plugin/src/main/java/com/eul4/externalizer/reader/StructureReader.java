@@ -44,8 +44,6 @@ public abstract class StructureReader<S extends Structure> extends ObjectReader<
 	private S readerVersion0(S structure) throws IOException, ClassNotFoundException
 	{
 		structure.setDefaultUUID();
-		structure.setDefaultCenterPosition();
-		
 		structure.setCenterTownBlock(readers.getReader(TownBlockReader.class).readReference(structure.getTown()));
 		structure.setLevel(in.readInt());
 		structure.setRotation(in.readInt());
@@ -54,6 +52,7 @@ public abstract class StructureReader<S extends Structure> extends ObjectReader<
 		structure.setBuildTicks(in.readInt());
 		structure.setTotalBuildTicks(in.readInt());
 		structure.setHologram(readers.getReader(HologramReader.class).readReference(structure.getTown().getPlugin()));
+		structure.setDefaultCenterPosition();
 		
 		return structure;
 	}

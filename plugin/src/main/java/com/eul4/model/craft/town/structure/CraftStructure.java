@@ -990,7 +990,8 @@ public abstract class CraftStructure implements Structure
 		}
 	}
 	
-	private World getWorld()
+	@Override
+	public final World getWorld()
 	{
 		return getLocation().getWorld();
 	}

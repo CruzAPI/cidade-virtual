@@ -9,13 +9,15 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.TownHallAttribute;
+import com.eul4.util.FaweUtil;
 import com.eul4.util.MessageUtil;
 import com.eul4.wrapper.Resource;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
+import com.sk89q.worldedit.math.transform.AffineTransform;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
@@ -29,7 +31,7 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 {
 	private int likeCapacity;
 	private int dislikeCapacity;
-	private transient Vector spawnPosition;
+	private transient Vector3 relativeSpawnPosition;
 	
 	@Setter(AccessLevel.PRIVATE)
 	private transient int remainingLikeCapacity;
@@ -88,7 +90,7 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 		likeCapacity = getRule().getAttribute(getBuiltLevel()).getLikeCapacity();
 		dislikeCapacity = getRule().getAttribute(getBuiltLevel()).getDislikeCapacity();
 		structureLimitMap = getRule().getAttribute(getBuiltLevel()).getStructureLimit();
-		spawnPosition = getRule().getAttributeOrDefault(getLevel()).getSpawnPosition();
+		relativeSpawnPosition = getRule().getAttributeOrDefault(getLevel()).getSpawnPosition();
 	}
 	
 	@Override
@@ -199,8 +201,21 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	@Override
 	public Location getSpawnLocation()
 	{
-		Location location = getLocation().add(spawnPosition);
-		location.setYaw(getRotation() + 180.0F);
-		return location;
+		return getBukkitRotatedSpawnPosition().toLocation(getWorld(), getRotation() + 180.0F, 0.0F);
+	}
+	
+	public Vector getBukkitRotatedSpawnPosition()
+	{
+		return FaweUtil.toBukkitVector(getRotatedSpawnPosition());
+	}
+	
+	public Vector3 getRotatedSpawnPosition()
+	{
+		return getCenterPosition().add(getRotatedSpawnRelativePosition());
+	}
+	
+	public Vector3 getRotatedSpawnRelativePosition()
+	{
+		return new AffineTransform().rotateY(-getRotation()).apply(relativeSpawnPosition);
 	}
 }

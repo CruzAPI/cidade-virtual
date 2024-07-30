@@ -17,11 +17,6 @@ public interface TownScoreboard extends CommonScoreboard
 	
 	default void updateAll()
 	{
-		if(!getScoreboardPlayer().hasTown())
-		{
-			return;
-		}
-		
 		updateLikesTeam();
 		updateDislikesTeam();
 		updateHardnessTeam();

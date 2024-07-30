@@ -4,6 +4,8 @@ import com.eul4.scoreboard.TownScoreboard;
 
 public interface TownScoreboardPlayer extends PluginScoreboardPlayer
 {
-	@Override
-	TownScoreboard getScoreboard();
+	default TownScoreboard getTownScoreboard()
+	{
+		return getScoreboard() instanceof TownScoreboard townScoreboard ? townScoreboard : null;
+	}
 }

@@ -22,7 +22,7 @@ public class TownScoreboardListener implements Listener
 		event.getTown().findPluginPlayer()
 				.filter(TownScoreboardPlayer.class::isInstance)
 				.map(TownScoreboardPlayer.class::cast)
-				.map(TownScoreboardPlayer::getScoreboard)
+				.map(TownScoreboardPlayer::getTownScoreboard)
 				.ifPresent(TownScoreboard::updateDislikesTeam);
 	}
 	
@@ -32,7 +32,7 @@ public class TownScoreboardListener implements Listener
 		event.getTown().findPluginPlayer()
 				.filter(TownScoreboardPlayer.class::isInstance)
 				.map(TownScoreboardPlayer.class::cast)
-				.map(TownScoreboardPlayer::getScoreboard)
+				.map(TownScoreboardPlayer::getTownScoreboard)
 				.ifPresent(TownScoreboard::updateLikesTeam);
 	}
 	
@@ -42,7 +42,7 @@ public class TownScoreboardListener implements Listener
 		event.getTown().findPluginPlayer()
 				.filter(TownScoreboardPlayer.class::isInstance)
 				.map(TownScoreboardPlayer.class::cast)
-				.map(TownScoreboardPlayer::getScoreboard)
+				.map(TownScoreboardPlayer::getTownScoreboard)
 				.ifPresent(TownScoreboard::updateLikesAndDislikesTeams);
 	}
 	
@@ -52,7 +52,7 @@ public class TownScoreboardListener implements Listener
 		event.getTown().findPluginPlayer()
 				.filter(TownScoreboardPlayer.class::isInstance)
 				.map(TownScoreboardPlayer.class::cast)
-				.map(TownScoreboardPlayer::getScoreboard)
+				.map(TownScoreboardPlayer::getTownScoreboard)
 				.ifPresent(TownScoreboard::updateHardnessTeam);
 	}
 }

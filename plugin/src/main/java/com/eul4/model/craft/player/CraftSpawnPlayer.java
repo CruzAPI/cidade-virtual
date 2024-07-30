@@ -1,11 +1,12 @@
 package com.eul4.model.craft.player;
 
 import com.eul4.Main;
+import com.eul4.common.scoreboard.CommonScoreboard;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.SpawnPlayer;
+import com.eul4.scoreboard.CraftInitialScoreboard;
 import com.eul4.scoreboard.CraftTownScoreboard;
-import com.eul4.scoreboard.TownScoreboard;
 import com.eul4.type.PluginWorldType;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.world.OverWorld;
@@ -16,7 +17,9 @@ import org.bukkit.entity.Player;
 @Getter
 public class CraftSpawnPlayer extends CraftPhysicalPlayer implements SpawnPlayer
 {
-	private final TownScoreboard scoreboard = new CraftTownScoreboard(this);
+	private final CommonScoreboard scoreboard = hasTown()
+			? new CraftTownScoreboard(this)
+			: new CraftInitialScoreboard(this);
 	
 	public CraftSpawnPlayer(Player player, Main plugin)
 	{

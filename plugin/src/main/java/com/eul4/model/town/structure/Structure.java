@@ -7,6 +7,7 @@ import com.eul4.enums.StructureStatus;
 import com.eul4.exception.*;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.player.Attacker;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.rule.Rule;
@@ -17,6 +18,7 @@ import com.sk89q.worldedit.session.ClipboardHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -40,15 +42,17 @@ public interface Structure
 	File getSchematicFile();
 	StructureType getStructureType();
 	
-	void startMove() throws IOException, CannotConstructException;
+	void startMove() throws IOException;
+	
+	void cancelMoveBlindly();
 	
 	void cancelMove() throws CannotConstructException;
 	
-	void finishMove(TownBlock centerTownBlock, int rotation) throws CannotConstructException;
+	boolean finishMove(TownBlock centerTownBlock, int rotation) throws CannotConstructException;
 	
-	ItemStack getItem();
+	ItemStack getItem(PluginPlayer pluginPlayer);
 	
-	void finishMove(TownBlock centerTownBlock) throws CannotConstructException;
+	boolean finishMove(TownBlock centerTownBlock) throws CannotConstructException;
 	Location getLocation();
 	
 	void construct(ClipboardHolder movingStructureClipboardHolder) throws CannotConstructException;
@@ -121,7 +125,24 @@ public interface Structure
 	void onTownLikeBalanceChange();
 	void onTownDislikeBalanceChange();
 	
+	void removeAllStructureItemMove();
+	void removeAllStructureItemMove(Player player);
+	
 	void onStartMove();
 	void onFinishMove();
 	void onCancelMove();
+	
+	boolean isMoving();
+	
+	void setUUID(UUID uuid);
+	void setCenterPosition(Vector3 vector3);
+	
+	@Deprecated
+	void setDefaultUUID();
+	@Deprecated
+	void setDefaultCenterPosition();
+	
+	void onStartPreAttack();
+	
+	Vector3 getCenterPosition();
 }

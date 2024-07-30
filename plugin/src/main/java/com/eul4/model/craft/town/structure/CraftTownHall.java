@@ -15,6 +15,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
@@ -199,7 +200,7 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	public Location getSpawnLocation()
 	{
 		Location location = getLocation().add(spawnPosition);
-		location.setYaw(270.0F); //EAST, TODO: fix pitch when add rotation to structures
+		location.setYaw(getRotation() + 180.0F);
 		return location;
 	}
 }

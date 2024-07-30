@@ -1,9 +1,12 @@
 package com.eul4.model.craft.town.structure;
 
+import com.eul4.common.constant.CommonNamespacedKey;
 import com.eul4.common.hologram.Hologram;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.util.ContainerUtil;
 import com.eul4.common.util.ThreadUtil;
 import com.eul4.common.wrapper.Pitch;
+import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.StructureStatus;
 import com.eul4.event.StructureConstructEvent;
 import com.eul4.event.StructureFinishEvent;
@@ -11,11 +14,13 @@ import com.eul4.exception.*;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.player.Attacker;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.GenericAttribute;
+import com.eul4.util.FaweUtil;
 import com.eul4.wrapper.TownBlockSet;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
@@ -28,6 +33,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import joptsimple.internal.Strings;
 import lombok.Getter;
@@ -56,9 +62,11 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 @Setter
 @Getter
@@ -102,6 +110,11 @@ public abstract class CraftStructure implements Structure
 	
 	private transient Villager fakeStructureDamageCalculator;
 	
+	private transient boolean moving;
+	private transient ClipboardHolder clipboardHolder;
+	
+	private Vector3 centerPosition;
+	
 	public CraftStructure(Town town)
 	{
 		this.town = town;
@@ -118,17 +131,17 @@ public abstract class CraftStructure implements Structure
 		
 		this.uuid = UUID.randomUUID();
 		this.centerTownBlock = centerTownBlock;
+		this.centerPosition = FaweUtil.toFaweVector(centerTownBlock.getBlock().getLocation().toVector());
 		this.level = 1;
 		this.status = isBuilt ? StructureStatus.BUILT : StructureStatus.UNREADY;
 		this.buildTicks = isBuilt ? 0 : getRule().getAttribute(1).getTotalBuildTicks();
 		this.totalBuildTicks = buildTicks;
 		
 		resetAttributes();
+		construct(loadSchematic(), centerTownBlock, 0);
 		
 		this.hologram = new Hologram(town.getPlugin(),
 				centerTownBlock.getBlock().getLocation().add(hologramRelativePosition));
-		
-		construct(loadSchematic(), centerTownBlock, 0);
 		
 		ThreadUtil.runSynchronouslyUntilTerminate(town.getPlugin(), this::updateHologram);
 		
@@ -137,21 +150,113 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
-	public void startMove() throws IOException, CannotConstructException
+	public void startMove() throws IOException
 	{
-		town.startMovingStructure(this);
+		if(moving)
+		{
+			return;
+		}
+		
+		moving = true;
+		clipboardHolder = loadSchematic();
+		
+		demolishStructureConstruction(clipboardHolder);
+		onStartMove();
 	}
 	
 	@Override
-	public void finishMove(TownBlock centerTownBlock, int rotation) throws CannotConstructException
+	public boolean finishMove(TownBlock centerTownBlock) throws CannotConstructException
 	{
-		town.finishMovingStructure(centerTownBlock, rotation);
+		return finishMove(centerTownBlock, rotation);
 	}
 	
 	@Override
-	public void finishMove(TownBlock centerTownBlock) throws CannotConstructException
+	public boolean finishMove(TownBlock centerTownBlock, int rotation) throws CannotConstructException
 	{
-		finishMove(centerTownBlock, rotation);
+		if(!moving)
+		{
+			return false;
+		}
+		
+		construct(clipboardHolder, centerTownBlock, rotation);
+		teleportHologramToDefaultLocation();
+		removeAllStructureItemMove();
+		onFinishMove();
+		moving = false;
+		clipboardHolder = null;
+		return true;
+	}
+	
+	@Override
+	public void cancelMoveBlindly()
+	{
+		try
+		{
+			cancelMove();
+		}
+		catch(CannotConstructException e)
+		{
+			String msg = MessageFormat.format("Failed to cancel structure move blindly! "
+					+ "structureUUID={0} "
+					+ "townUUID={1} "
+					+ "ownerUUID={2} "
+					+ "owner={3}",
+					uuid,
+					town.getUUID(),
+					town.getOwnerUUID(),
+					town.getOwner().getName());
+			
+			town.getPlugin().getLogger().log(Level.WARNING, msg, e);
+		}
+	}
+	
+	@Override
+	public void cancelMove() throws CannotConstructException
+	{
+		removeAllStructureItemMove();
+		
+		if(!moving)
+		{
+			return;
+		}
+		
+		try
+		{
+			construct(clipboardHolder);
+			onCancelMove();
+		}
+		finally
+		{
+			moving = false;
+			clipboardHolder = null;
+		}
+	}
+	
+	@Override
+	public final void removeAllStructureItemMove()
+	{
+		town.getPlayer().ifPresent(this::removeAllStructureItemMove);
+	}
+	
+	@Override
+	public final void removeAllStructureItemMove(Player player)
+	{
+		ItemStack[] contents = player.getInventory().getContents();
+		
+		for(int i = 0; i < contents.length; i++)
+		{
+			ItemStack content = contents[i];
+			
+			if(isStructureItemMove(content))
+			{
+				player.getInventory().setItem(i, null);
+			}
+		}
+	}
+	
+	private boolean isStructureItemMove(ItemStack item)
+	{
+		return uuid.equals(ContainerUtil.getUUID(item, PluginNamespacedKey.STRUCTURE_ITEM_MOVE_UUID));
 	}
 	
 	@Override
@@ -170,12 +275,6 @@ public abstract class CraftStructure implements Structure
 	public void onCancelMove()
 	{
 	
-	}
-	
-	@Override
-	public void cancelMove() throws CannotConstructException
-	{
-		town.cancelMovingStructure();
 	}
 	
 	@Override
@@ -226,8 +325,10 @@ public abstract class CraftStructure implements Structure
 		Block center = centerTownBlock.getBlock();
 		BlockVector3 to = BlockVector3.at(center.getX(), center.getY() + 1, center.getZ());
 		
-		clipboardHolder.setTransform(new AffineTransform().rotateY(rotation));
+		clipboardHolder.setTransform(new AffineTransform().rotateY(-rotation));
 		Clipboard clipboard = clipboardHolder.getClipboard();
+		
+		Region region = clipboard.getRegion();
 		
 		final Vector3 rotatedMin = clipboardHolder.getTransform().apply(clipboard.getMinimumPoint().toVector3());
 		final Vector3 rotatedMax = clipboardHolder.getTransform().apply(clipboard.getMaximumPoint().toVector3());
@@ -262,6 +363,9 @@ public abstract class CraftStructure implements Structure
 			}
 		}
 		
+		Region shiftedRegion = region.clone();
+		shiftedRegion.shift(to.subtract(clipboard.getOrigin()));
+		
 		this.townBlockSet.removeAll(townBlockSet);
 		this.townBlockSet.forEach(TownBlock::reset);
 		
@@ -283,6 +387,10 @@ public abstract class CraftStructure implements Structure
 		
 		this.centerTownBlock = centerTownBlock;
 		this.rotation = rotation;
+		this.centerPosition = shiftedRegion
+				.getCenter()
+				.add(0.5D, 0.0D, 0.5D)
+				.withY(centerTownBlock.getBlock().getY() + 1.0D);
 	}
 	
 	@Override
@@ -325,13 +433,24 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
-	public ItemStack getItem()
+	public ItemStack getItem(PluginPlayer pluginPlayer)
 	{
-		ItemStack item = new ItemStack(Material.STONE);
+		ItemStack item = ItemStack.of(getStructureType().getIcon());
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(Component.text("ttext")); //TODO
+		meta.displayName(PluginMessage.STRUCTURE_ITEM_MOVE.translate(pluginPlayer, getStructureType()));
+		meta.lore(PluginMessage.STRUCTURE_ITEM_MOVE_LORE.translateLore(pluginPlayer));
 		meta.addEnchant(Enchantment.UNBREAKING, 1, true);
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		meta.addItemFlags(ItemFlag.values());
+		
+		var container = meta.getPersistentDataContainer();
+		
+		ContainerUtil.setUUID(container, PluginNamespacedKey.TOWN_UUID, town.getUUID());
+		ContainerUtil.setUUID(container, PluginNamespacedKey.STRUCTURE_ITEM_MOVE_UUID, uuid);
+		ContainerUtil.setUUID(container, CommonNamespacedKey.ITEM_UUID, UUID.randomUUID());
+		ContainerUtil.setFlag(container, CommonNamespacedKey.CANCEL_MOVE);
+		ContainerUtil.setFlag(container, CommonNamespacedKey.REMOVE_ITEM_ON_PLAYER_JOIN);
+		ContainerUtil.setFlag(container, PluginNamespacedKey.CANCEL_STRUCTURE_INTERACTION);
+		
 		item.setItemMeta(meta);
 		
 		return item;
@@ -354,6 +473,7 @@ public abstract class CraftStructure implements Structure
 	{
 		resetAttributes();
 		scheduleBuildTaskIfPossible();
+		reconstructBlindly();
 	}
 	
 	@Override
@@ -426,7 +546,15 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public void teleportHologramToDefaultLocation()
 	{
-		hologram.teleport(getLocation().add(getHologramRelativePosition()));
+		Vector3 relativePosition = FaweUtil.toFaweVector(hologramRelativePosition);
+		Vector3 rotatedRelativePosition = new AffineTransform()
+				.rotateY(-rotation)
+				.apply(relativePosition);
+		Vector3 rotatedAbsolutPosition = centerPosition.add(rotatedRelativePosition);
+		
+		Location newLocation = FaweUtil.toBukkitVector(rotatedAbsolutPosition).toLocation(getWorld());
+		
+		hologram.teleport(newLocation);
 	}
 	
 	@Override
@@ -778,6 +906,12 @@ public abstract class CraftStructure implements Structure
 	}
 	
 	@Override
+	public void onStartPreAttack()
+	{
+		cancelMoveBlindly();
+	}
+	
+	@Override
 	public void onFinishAttack()
 	{
 	
@@ -799,5 +933,68 @@ public abstract class CraftStructure implements Structure
 	public void onTownDislikeBalanceChange()
 	{
 	
+	}
+	
+	@Override
+	public void setUUID(UUID uuid)
+	{
+		this.uuid = uuid;
+	}
+	
+	@Override
+	public void setDefaultUUID()
+	{
+		this.uuid = UUID.randomUUID();
+	}
+	
+	private void reconstructBlindly()
+	{
+		try
+		{
+			construct(loadSchematic(), centerTownBlock, rotation);
+		}
+		catch(CannotConstructException e)
+		{
+			String msg = MessageFormat.format("Failed to reconstruct structure! Maybe it didn't fit? "
+					+ "structureUUID={0} "
+					+ "townUUID={1} "
+					+ "ownerUUID={2} "
+					+ "owner={3}"
+					+ "structureType={4}",
+					uuid,
+					town.getUUID(),
+					town.getOwnerUUID(),
+					town.getOwner().getName(),
+					getStructureType());
+			
+			town.getPlugin().getLogger().log(Level.WARNING, msg, e);
+		}
+		catch(IOException e)
+		{
+			String msg = MessageFormat.format("Failed to reconstruct structure! Schematic not found. "
+					+ "structureUUID={0} "
+					+ "townUUID={1} "
+					+ "ownerUUID={2} "
+					+ "owner={3}"
+					+ "structureType={4}",
+					uuid,
+					town.getUUID(),
+					town.getOwnerUUID(),
+					town.getOwner().getName(),
+					getStructureType());
+			
+			town.getPlugin().getLogger().log(Level.WARNING, msg, e);
+		}
+	}
+	
+	private World getWorld()
+	{
+		return getLocation().getWorld();
+	}
+	
+	public void setDefaultCenterPosition()
+	{
+		this.centerPosition = FaweUtil.toFaweVector(centerTownBlock.getBlock().getLocation().toVector())
+				.add(0.5D, 1.0D, 0.5D);
 	}
 }

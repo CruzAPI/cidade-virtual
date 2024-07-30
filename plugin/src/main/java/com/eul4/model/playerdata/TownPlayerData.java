@@ -15,6 +15,5 @@ public class TownPlayerData implements ExternalObject
 {
 	public static final byte VERSION = 0;
 	
-	private Structure movingStructure;
 	private boolean test;
 }

@@ -1,12 +1,14 @@
 package com.eul4.util;
 
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.regions.Region;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 
 @UtilityClass
 public final class FaweUtil
@@ -32,5 +34,15 @@ public final class FaweUtil
 		Block maxBlock = toBukkitBlock(max, weWorld);
 		
 		return BoundingBox.of(minBlock, maxBlock);
+	}
+	
+	public static Vector3 toFaweVector(Vector vector)
+	{
+		return Vector3.at(vector.getX(), vector.getY(), vector.getZ());
+	}
+	
+	public static Vector toBukkitVector(Vector3 vector3)
+	{
+		return new Vector(vector3.x(), vector3.y(), vector3.z());
 	}
 }

@@ -14,6 +14,7 @@ import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Getter
 public abstract class StructureReader<S extends Structure> extends ObjectReader<S>
@@ -32,6 +33,9 @@ public abstract class StructureReader<S extends Structure> extends ObjectReader<
 		case 0:
 			this.reader = this::readerVersion0;
 			break;
+		case 1:
+			this.reader = this::readerVersion1;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -39,6 +43,7 @@ public abstract class StructureReader<S extends Structure> extends ObjectReader<
 	
 	private S readerVersion0(S structure) throws IOException, ClassNotFoundException
 	{
+		structure.setDefaultUUID();
 		structure.setCenterTownBlock(readers.getReader(TownBlockReader.class).readReference(structure.getTown()));
 		structure.setLevel(in.readInt());
 		structure.setRotation(in.readInt());
@@ -47,6 +52,23 @@ public abstract class StructureReader<S extends Structure> extends ObjectReader<
 		structure.setBuildTicks(in.readInt());
 		structure.setTotalBuildTicks(in.readInt());
 		structure.setHologram(readers.getReader(HologramReader.class).readReference(structure.getTown().getPlugin()));
+		structure.setDefaultCenterPosition();
+		
+		return structure;
+	}
+	
+	private S readerVersion1(S structure) throws IOException, ClassNotFoundException
+	{
+		structure.setUUID(new UUID(in.readLong(), in.readLong()));
+		structure.setCenterTownBlock(readers.getReader(TownBlockReader.class).readReference(structure.getTown()));
+		structure.setLevel(in.readInt());
+		structure.setRotation(in.readInt());
+		structure.setTownBlockSet(readers.getReader(TownBlockSetReader.class).readReference(structure.getTown()));
+		structure.setStatus(StructureStatus.values()[in.readInt()]);
+		structure.setBuildTicks(in.readInt());
+		structure.setTotalBuildTicks(in.readInt());
+		structure.setHologram(readers.getReader(HologramReader.class).readReference(structure.getTown().getPlugin()));
+		structure.setCenterPosition(readers.getReader(Vector3Reader.class).readReference());
 		
 		return structure;
 	}

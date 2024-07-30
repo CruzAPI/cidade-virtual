@@ -33,7 +33,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	RAID_SPECTATOR(RaidSpectatorReader::new, RaidSpectatorReader.class, RaidSpectatorWriter::new, RaidSpectatorWriter.class),
 	SHORT_COORDINATE_BLOCK_CHUNK(ShortCoordinateBlockChunkReader::new, ShortCoordinateBlockChunkReader.class, ShortCoordinateBlockChunkWriter::new, ShortCoordinateBlockChunkWriter.class),
 	SPAWN_PLAYER(SpawnPlayerReader::new, SpawnPlayerReader.class, SpawnPlayerWriter::new, SpawnPlayerWriter.class),
-	STRUCTURE_SET(StructureSetReader::new, StructureSetReader.class, StructureSetWriter::new, StructureSetWriter.class),
+	STRUCTURE_MAP(StructureMapReader::new, StructureMapReader.class, StructureMapWriter::new, StructureMapWriter.class),
 	TOWN_BLOCK_MAP(TownBlockMapReader::new, TownBlockMapReader.class, TownBlockMapWriter::new, TownBlockMapWriter.class),
 	TOWN_BLOCK(TownBlockReader::new, TownBlockReader.class, TownBlockWriter::new, TownBlockWriter.class),
 	TOWN_BLOCK_SET(TownBlockSetReader::new, TownBlockSetReader.class, TownBlockSetWriter::new, TownBlockSetWriter.class),
@@ -46,6 +46,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	TOWN(TownReader::new, TownReader.class, TownWriter::new, TownWriter.class),
 	TURRET(TurretReader::new, TurretReader.class, TurretWriter::new, TurretWriter.class),
 	VANILLA_PLAYER(VanillaPlayerReader::new, VanillaPlayerReader.class, VanillaPlayerWriter::new, VanillaPlayerWriter.class),
+	VECTOR_3(Vector3Reader::new, Vector3Reader.class, Vector3Writer::new, Vector3Writer.class),
 	;
 	private final ReaderConstructor readerConstructor;
 	private final Class<? extends ObjectReader<?>> readerClass;

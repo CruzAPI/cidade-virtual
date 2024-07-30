@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -188,5 +189,10 @@ public class TownManager
 	public boolean isCreating(UUID uuid)
 	{
 		return waitingCreation.contains(uuid);
+	}
+	
+	public Optional<Town> findTown(UUID townUUID)
+	{
+		return Optional.ofNullable(getTown(townUUID));
 	}
 }

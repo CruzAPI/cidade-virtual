@@ -5,8 +5,9 @@ import com.eul4.common.i18n.BundleBaseName;
 public enum PluginBundleBaseName implements BundleBaseName
 {
 	PLUGIN("plugin"),
-	TOWN_SCOREBOARD("town_scoreboard"),
 	ANALYZER_SCOREBOARD("analyzer_scoreboard"),
+	INITIAL_SCOREBOARD("initial_scoreboard"),
+	TOWN_SCOREBOARD("town_scoreboard"),
 	;
 	
 	private final String bundleBaseName;

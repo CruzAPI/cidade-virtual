@@ -1,19 +1,26 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.common.event.CommonPlayerRegisterEvent;
+import com.eul4.common.event.CommonPlayerUnregisterEvent;
+import com.eul4.common.wrapper.Pitch;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
+import com.eul4.wrapper.StructureItemMove;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockCanBuildEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 @RequiredArgsConstructor
@@ -22,41 +29,47 @@ public class StructureMoveListener implements Listener
 	private final Main plugin;
 	
 	@EventHandler
-	public void onBlockCanBuild(BlockCanBuildEvent e)
+	public void onBlockClick(PlayerInteractEvent e)
 	{
 		final Player player = e.getPlayer();
+		final Block clickedBlock = e.getClickedBlock();
 		
-		if(player == null || !(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer))
+		if(!(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
+				|| e.getHand() != EquipmentSlot.HAND
+				|| e.getAction() != Action.RIGHT_CLICK_BLOCK
+				|| clickedBlock == null)
 		{
 			return;
 		}
 		
-		final Structure movingStructure = townPlayer.getMovingStructure();
+		ItemStack item = player.getInventory().getItemInMainHand();
+		Structure structure = StructureItemMove.getStructure(item, plugin);
 		
-		if(movingStructure == null || !player.getInventory().getItemInMainHand().equals(movingStructure.getItem()))
+		if(structure == null)
 		{
 			return;
 		}
 		
-		e.setBuildable(false);
+		e.setCancelled(true);
 		
-		final TownBlock townBlock = townPlayer.getTown().getTownBlock(e.getBlock());
+		TownBlock townBlock = structure.getTown().getTownBlock(clickedBlock);
 		
 		if(townBlock == null)
 		{
-			player.sendMessage("you must move to a town block");
+			townPlayer.sendMessage(PluginMessage.YOU_CAN_NOT_CONSTRUCT_OUTSIDE_YOUR_TOWN);
 			return;
 		}
 		
 		try
 		{
-			movingStructure.finishMove(townBlock);
-			player.getInventory().removeItemAnySlot(movingStructure.getItem());
-			townPlayer.setMovingStructure(null);
+			if(structure.finishMove(townBlock, getRotation(player)))
+			{
+				player.playSound(clickedBlock.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, Pitch.max());
+			}
 		}
 		catch(CannotConstructException ex)
 		{
-			player.sendMessage("cant construct here...");
+			townPlayer.sendMessage(PluginMessage.STRUCTURE_CAN_NOT_CONSTRUCT_HERE);
 		}
 	}
 	
@@ -70,27 +83,53 @@ public class StructureMoveListener implements Listener
 			return;
 		}
 		
-		final Structure movingStructure = townPlayer.getMovingStructure();
-		final ItemStack itemStack = e.getItemDrop().getItemStack();
+		ItemStack item = e.getItemDrop().getItemStack();
+		Structure structure = StructureItemMove.getStructure(item, plugin);
 		
-		if(movingStructure == null || !itemStack.equals(movingStructure.getItem()))
+		if(structure == null)
 		{
 			return;
 		}
 		
 		e.getItemDrop().remove();
-		
-		player.getInventory().removeItemAnySlot(movingStructure.getItem());
-		player.sendMessage("cancel move");
+		structure.removeAllStructureItemMove(player);
 		
 		try
 		{
-			movingStructure.cancelMove();
-			townPlayer.setMovingStructure(null);
+			structure.cancelMove();
 		}
 		catch(CannotConstructException ex)
 		{
-			player.sendMessage("move cancelled but failed to reconstruct");
+			townPlayer.sendMessage(PluginMessage.STRUCTURE_FAILED_CANCEL_MOVE);
 		}
+	}
+	
+	@EventHandler
+	public void onCommonPlayerUnregister(CommonPlayerUnregisterEvent e)
+	{
+		cancelAllStructureItemMoveInInventory(e.getCommonPlayer().getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onCommonPlayerRegister(CommonPlayerRegisterEvent e)
+	{
+		cancelAllStructureItemMoveInInventory(e.getCommonPlayer().getPlayer());
+	}
+	
+	private void cancelAllStructureItemMoveInInventory(Player player)
+	{
+		for(final ItemStack content : player.getInventory().getContents())
+		{
+			StructureItemMove.findStructure(content, plugin).ifPresent(Structure::cancelMoveBlindly);
+		}
+	}
+	
+	public static int getRotation(Player player)
+	{
+		float yaw = player.getLocation().getYaw();
+		yaw = (yaw % 360 + 360) % 360;
+		
+		int rotation = Math.round(yaw / 90) * 90;
+		return rotation % 360;
 	}
 }

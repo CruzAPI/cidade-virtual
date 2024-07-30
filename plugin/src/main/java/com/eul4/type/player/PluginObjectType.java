@@ -33,8 +33,8 @@ public enum PluginObjectType implements ObjectType
 	SHORT_COORDINATE_BLOCK_CHUNK((byte) 0, PluginExternalizerType.SHORT_COORDINATE_BLOCK_CHUNK),
 	SPAWN_PLAYER((byte) 0, PluginExternalizerType.SPAWN_PLAYER),
 	SPIRITUAL_PLAYER((byte) 0, null),
-	STRUCTURE((byte) 0, null),
-	STRUCTURE_SET((byte) 0, PluginExternalizerType.STRUCTURE_SET),
+	STRUCTURE((byte) 1, null),
+	STRUCTURE_MAP((byte) 0, PluginExternalizerType.STRUCTURE_MAP),
 	TOWN_BLOCK_MAP((byte) 0, PluginExternalizerType.TOWN_BLOCK_MAP),
 	TOWN_BLOCK((byte) 0, PluginExternalizerType.TOWN_BLOCK),
 	TOWN_BLOCK_SET((byte) 0, PluginExternalizerType.TOWN_BLOCK_SET),
@@ -42,11 +42,12 @@ public enum PluginObjectType implements ObjectType
 	TOWN_MAP((byte) 0, PluginExternalizerType.TOWN_MAP),
 	TOWN_PLAYER_DATA((byte) 0, PluginExternalizerType.TOWN_PLAYER_DATA),
 	TOWN_PLAYER((byte) 0, PluginExternalizerType.TOWN_PLAYER),
-	TOWN((byte) 1, PluginExternalizerType.TOWN),
+	TOWN((byte) 2, PluginExternalizerType.TOWN),
 	TOWN_TILE_MAP((byte) 0, PluginExternalizerType.TOWN_TILE_MAP),
 	TOWN_TILE((byte) 0, PluginExternalizerType.TOWN_TILE),
 	TURRET((byte) 0, PluginExternalizerType.TURRET),
 	VANILLA_PLAYER((byte) 0, PluginExternalizerType.VANILLA_PLAYER),
+	VECTOR_3((byte) 0, PluginExternalizerType.VECTOR_3),
 	;
 	
 	private final byte version;

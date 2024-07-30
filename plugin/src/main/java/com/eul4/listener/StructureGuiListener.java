@@ -2,8 +2,10 @@ package com.eul4.listener;
 
 import com.eul4.Main;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.player.TownPlayer;
+import com.eul4.model.town.structure.Structure;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +17,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @RequiredArgsConstructor
 public class StructureGuiListener implements Listener
@@ -63,18 +66,22 @@ public class StructureGuiListener implements Listener
 			
 			try
 			{
-				var map = player.getInventory().addItem(structureGui.getStructure().getItem());
+				Structure structure = structureGui.getStructure();
 				
-				structureGui.getStructure().startMove();
-				townPlayer.setMovingStructure(structureGui.getStructure());
-			}
-			catch(CannotConstructException e)
-			{
-				player.sendMessage("failed to cancel move");
+				structure.removeAllStructureItemMove(player);
+				HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(structure.getItem(townPlayer));
+				
+				if(!remainingItems.isEmpty())
+				{
+					townPlayer.sendMessage(PluginMessage.STRUCTURE_MOVE_INVENTORY_FULL);
+					return;
+				}
+				
+				structure.startMove();
 			}
 			catch(IOException e)
 			{
-				player.sendMessage("schem not found?.");
+				townPlayer.sendMessage(PluginMessage.STRUCTURE_SCHEMATIC_NOT_FOUND);
 			}
 		}
 	}

@@ -5,6 +5,7 @@ public interface SpawnPlayer extends
 		TownPerformer.Reincarnate,
 		SpawnPerformer.Teleport,
 		TownScoreboardPlayer,
+		InitialScoreboardPlayer,
 		Invincible
 {
 	PluginPlayer removeProtection();

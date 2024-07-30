@@ -17,6 +17,8 @@ public abstract class StructureWriter<S extends Structure> extends ObjectWriter<
 	@Override
 	protected void writeObject(S structure) throws IOException
 	{
+		out.writeLong(structure.getUUID().getMostSignificantBits());
+		out.writeLong(structure.getUUID().getLeastSignificantBits());
 		writers.getWriter(TownBlockWriter.class).writeReference(structure.getCenterTownBlock());
 		out.writeInt(structure.getLevel());
 		out.writeInt(structure.getRotation());
@@ -25,5 +27,6 @@ public abstract class StructureWriter<S extends Structure> extends ObjectWriter<
 		out.writeInt(structure.getBuildTicks());
 		out.writeInt(structure.getTotalBuildTicks());
 		writers.getWriter(HologramWriter.class).writeReference(structure.getHologram());
+		writers.getWriter(Vector3Writer.class).writeReference(structure.getCenterPosition());
 	}
 }

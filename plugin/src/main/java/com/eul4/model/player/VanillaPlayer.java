@@ -4,7 +4,8 @@ public interface VanillaPlayer extends
 		PhysicalPlayer,
 		TownPerformer.Reincarnate,
 		SpawnPerformer.Reincarnation,
-		TownScoreboardPlayer
+		TownScoreboardPlayer,
+		InitialScoreboardPlayer
 {
 
 }

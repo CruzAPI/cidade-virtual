@@ -15,5 +15,8 @@ public class PluginNamespacedKey
 	WEAPON_ITEM_ATTRIBUTE = new NamespacedKey(NAMESPACE, "weapon_item_attribute"),
 	BATTLE_INVENTORY_OWNER = new NamespacedKey(NAMESPACE, "battle_inventory_owner"),
 	FAKE_VILLAGER = new NamespacedKey(NAMESPACE, "fake_villager"),
-	FAKE_SHULKER_BULLET = new NamespacedKey(NAMESPACE, "fake_shulker_bullet");
+	FAKE_SHULKER_BULLET = new NamespacedKey(NAMESPACE, "fake_shulker_bullet"),
+	STRUCTURE_ITEM_MOVE_UUID = new NamespacedKey(NAMESPACE, "structure_item_move_uuid"),
+	TOWN_UUID = new NamespacedKey(NAMESPACE, "town_uuid"),
+	CANCEL_STRUCTURE_INTERACTION = new NamespacedKey(NAMESPACE, "cancel_structure_interaction");
 }

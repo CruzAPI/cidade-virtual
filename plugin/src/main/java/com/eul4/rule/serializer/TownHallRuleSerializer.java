@@ -4,8 +4,8 @@ import com.eul4.Main;
 import com.eul4.StructureType;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.TownHallAttribute;
+import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.util.Vector;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -41,7 +41,7 @@ public class TownHallRuleSerializer extends GenericRuleSerializer
 		double spawnPositionX = section.getDouble("spawn_position.x");
 		double spawnPositionY = section.getDouble("spawn_position.y");
 		double spawnPositionZ = section.getDouble("spawn_position.z");
-		Vector spawnPosition = new Vector(spawnPositionX, spawnPositionY, spawnPositionZ);
+		Vector3 spawnPosition = Vector3.at(spawnPositionX, spawnPositionY, spawnPositionZ);
 		
 		townHallAttribute.setLikeCapacity(likeCapacity);
 		townHallAttribute.setDislikeCapacity(dislikeCapacity);

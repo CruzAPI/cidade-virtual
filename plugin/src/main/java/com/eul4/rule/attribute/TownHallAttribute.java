@@ -1,10 +1,10 @@
 package com.eul4.rule.attribute;
 
 import com.eul4.StructureType;
+import com.sk89q.worldedit.math.Vector3;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.bukkit.util.Vector;
 
 import java.util.Map;
 
@@ -18,5 +18,5 @@ public class TownHallAttribute extends GenericAttribute
 	private Map<StructureType, Integer> structureLimit;
 	private int likeCapacity;
 	private int dislikeCapacity;
-	private Vector spawnPosition;
+	private Vector3 spawnPosition;
 }

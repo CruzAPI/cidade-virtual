@@ -17,6 +17,7 @@ import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -145,4 +146,5 @@ public interface Structure
 	void onStartPreAttack();
 	
 	Vector3 getCenterPosition();
+	World getWorld();
 }

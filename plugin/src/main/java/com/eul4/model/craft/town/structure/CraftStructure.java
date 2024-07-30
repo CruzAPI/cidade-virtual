@@ -64,6 +64,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -955,12 +956,13 @@ public abstract class CraftStructure implements Structure
 		}
 		catch(CannotConstructException e)
 		{
-			String msg = MessageFormat.format("Failed to reconstruct structure! Maybe it didn't fit? "
+			String pattern = "Failed to reconstruct structure! Maybe it didn''t fit? "
 					+ "structureUUID={0} "
 					+ "townUUID={1} "
 					+ "ownerUUID={2} "
-					+ "owner={3}"
-					+ "structureType={4}",
+					+ "owner={3} "
+					+ "structureType={4}";
+			String msg = MessageFormat.format(pattern,
 					uuid,
 					town.getUUID(),
 					town.getOwnerUUID(),
@@ -971,12 +973,13 @@ public abstract class CraftStructure implements Structure
 		}
 		catch(IOException e)
 		{
-			String msg = MessageFormat.format("Failed to reconstruct structure! Schematic not found. "
+			String pattern = "Failed to reconstruct structure! Schematic not found. "
 					+ "structureUUID={0} "
 					+ "townUUID={1} "
 					+ "ownerUUID={2} "
-					+ "owner={3}"
-					+ "structureType={4}",
+					+ "owner={3} "
+					+ "structureType={4}";
+			String msg = MessageFormat.format(pattern,
 					uuid,
 					town.getUUID(),
 					town.getOwnerUUID(),

@@ -73,7 +73,7 @@ public class TownAttack
 		town.getStructureMap().values().forEach(Structure::onStartAttack);
 		
 		town.updateHolograms();
-		town.getPlayer().map(town.getPlugin().getPlayerManager()::get)
+		town.findPlayer().map(town.getPlugin().getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
 				.ifPresent(PluginPlayer::onStartingTownAttack);
 	}
@@ -118,7 +118,7 @@ public class TownAttack
 		
 		forInvolvedPlayers(pluginPlayer -> pluginPlayer.sendMessage(PluginMessage.ATTACK_IS_OVER));
 		
-		town.getPlayer().map(town.getPlugin().getPlayerManager()::get)
+		town.findPlayer().map(town.getPlugin().getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
 				.ifPresent(PluginPlayer::onFinishingTownAttack);
 		
@@ -248,7 +248,7 @@ public class TownAttack
 		
 		private void clearBars()
 		{
-			town.getPlayer().ifPresent(player -> player.hideBossBar(bossBar));
+			town.findPlayer().ifPresent(player -> player.hideBossBar(bossBar));
 			attacker.getPlayer().hideBossBar(attackerBossBar);
 		}
 		

@@ -3,12 +3,14 @@ package com.eul4.model.craft.town;
 import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
+import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.util.ThreadUtil;
 import com.eul4.event.*;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
 import com.eul4.exception.TownHardnessLimitException;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
 import com.eul4.model.craft.town.structure.CraftTownHall;
@@ -44,8 +46,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 import org.enginehub.linbus.tree.LinByteTag;
 import org.enginehub.linbus.tree.LinTagType;
 
@@ -118,6 +124,8 @@ public class CraftTown implements Town
 	@Deprecated
 	private Structure movingStructure;
 	
+	private Villager assistant;
+	
 	public CraftTown(UUID ownerUUID, Block block, Main plugin)
 	{
 		this.ownerUUID = ownerUUID;
@@ -136,9 +144,50 @@ public class CraftTown implements Town
 		this.structureMap = new StructureMap(ownerUUID);
 		
 		createInitialStructures();
+		
 		ThreadUtil.runSynchronouslyUntilTerminate(plugin, this::reloadAllStructureAttributes);
+		ThreadUtil.runSynchronouslyUntilTerminate(plugin, this::spawnAssistant);
 		
 		TOWN_BLOCKS.putAll(townBlockMap);
+	}
+	
+	private void spawnAssistant()
+	{
+		if(this.assistant != null)
+		{
+			return;
+		}
+		
+		this.assistant = (Villager) block.getWorld().spawnEntity(getAssistantDefaultLocation(),
+				EntityType.VILLAGER,
+				CreatureSpawnEvent.SpawnReason.CUSTOM, this::setupAssistant);
+	}
+	
+	private Location getAssistantDefaultLocation()
+	{
+		return block.getLocation().add(getAssistantDefaultRelativePosition());
+	}
+	
+	private Vector getAssistantDefaultRelativePosition()
+	{
+		return new Vector(0.5D, 1.0D, -10.0D);
+	}
+	
+	private void setupAssistant(org.bukkit.entity.Entity assistant)
+	{
+		setupAssistant((Villager) assistant);
+	}
+	
+	private void setupAssistant(Villager assistant)
+	{
+		assistant.setAI(false);
+		assistant.setSilent(true);
+		assistant.setInvulnerable(true);
+		assistant.setRemoveWhenFarAway(false);
+		assistant.setCustomNameVisible(true);
+		assistant.customName(PluginMessage.TOWN_VIRTUAL_ASSISTANT.translate(findPluginPlayer()
+				.map(PluginPlayer::getLocale)
+				.orElse(ResourceBundleHandler.DEFAULT_LOCALE)));
 	}
 	
 	private TownBlockMap getInitialTownBlocks()
@@ -215,12 +264,16 @@ public class CraftTown implements Town
 		TownBlock centerTownBlock = getTownBlock(block);
 		Block centerBlock = centerTownBlock.getBlock();
 		
-		TownBlock likeFarmTownBlock = getTownBlock(centerBlock.getRelative(4, 0, -11));
-		TownBlock dislikeFarmTownBlock = getTownBlock(centerBlock.getRelative(-4, 0, -11));
+		TownBlock likeGeneratorTownBlock = getTownBlock(centerBlock.getRelative(4, 0, -11));
+		TownBlock dislikeGeneratorTownBlock = getTownBlock(centerBlock.getRelative(-4, 0, -11));
 		
 		townHall = new CraftTownHall(this, centerTownBlock, true);
-		new CraftLikeGenerator(this, likeFarmTownBlock, true);
-		new CraftDislikeGenerator(this, dislikeFarmTownBlock, true);
+		
+		LikeGenerator likeGenerator = new CraftLikeGenerator(this, likeGeneratorTownBlock, true);
+		DislikeGenerator dislikeGenerator = new CraftDislikeGenerator(this, dislikeGeneratorTownBlock, true);
+		
+		ThreadUtil.runSynchronouslyUntilTerminate(plugin, likeGenerator::full);
+		ThreadUtil.runSynchronouslyUntilTerminate(plugin, dislikeGenerator::full);
 	}
 	
 	@Override
@@ -230,9 +283,15 @@ public class CraftTown implements Town
 	}
 	
 	@Override
-	public Optional<Player> getPlayer()
+	public Optional<Player> findPlayer()
 	{
 		return Optional.ofNullable(getOwner().getPlayer());
+	}
+	
+	@Override
+	public Player getPlayer()
+	{
+		return getOwner().getPlayer();
 	}
 	
 	protected void onFinishMove()
@@ -684,7 +743,7 @@ public class CraftTown implements Town
 	@Override
 	public PluginPlayer getPluginPlayer()
 	{
-		return getPlayer()
+		return findPlayer()
 				.map(plugin.getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
 				.orElse(null);
@@ -1130,5 +1189,33 @@ public class CraftTown implements Town
 	public Structure getStructureByUniqueId(UUID structureUUID)
 	{
 		return structureMap.get(structureUUID);
+	}
+	
+	@Override
+	public Optional<LikeGenerator> findFirstLikeGenerator()
+	{
+		for(Structure structure : getStructureMap().values())
+		{
+			if(structure instanceof LikeGenerator likeGenerator)
+			{
+				return Optional.of(likeGenerator);
+			}
+		}
+		
+		return Optional.empty();
+	}
+	
+	@Override
+	public Optional<DislikeGenerator> findFirstDislikeGenerator()
+	{
+		for(Structure structure : getStructureMap().values())
+		{
+			if(structure instanceof DislikeGenerator dislikeGenerator)
+			{
+				return Optional.of(dislikeGenerator);
+			}
+		}
+		
+		return Optional.empty();
 	}
 }

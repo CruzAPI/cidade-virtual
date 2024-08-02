@@ -5,7 +5,6 @@ import com.eul4.common.i18n.CommonMessage;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
-import com.eul4.model.town.Town;
 import com.eul4.scoreboard.CraftTownScoreboard;
 import com.eul4.scoreboard.TownScoreboard;
 import com.eul4.type.player.PhysicalPlayerType;
@@ -41,21 +40,13 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 		
 		if(!(getCommonWorld() instanceof TownWorld) && hasTown())
 		{
-			plugin.getLogger().info("[TownPlayerReset] from=" + player.getWorld() + " to=TOWNHALL");//TODO
 			teleportToTownHall();
 		}
-	}
-	
-	@Override
-	public Town getTown()
-	{
-		return plugin.getTownManager().getTown(player.getUniqueId());
-	}
-	
-	@Override
-	public boolean hasTown()
-	{
-		return getTown() != null;
+		
+		if(hasTown())
+		{
+			townScoreboard.registerScores();
+		}
 	}
 	
 	@Override
@@ -86,7 +77,6 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 	public PluginPlayer load()
 	{
 		PluginPlayer pluginPlayer = super.load();
-		
 		if(!hasTown())
 		{
 			if(lastPlayerType == PhysicalPlayerType.ADMIN)
@@ -131,5 +121,11 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 	public TownScoreboard getScoreboard()
 	{
 		return townScoreboard;
+	}
+	
+	@Override
+	public void onTownCreate()
+	{
+		super.onTownCreate();
 	}
 }

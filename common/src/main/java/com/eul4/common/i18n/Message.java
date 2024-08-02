@@ -172,4 +172,11 @@ public interface Message
 		
 		return component;
 	}
+	
+	default MessageArgs withArgs(Object... args)
+	{
+		return new MessageArgs(this, args);
+	}
+	
+	String name();
 }

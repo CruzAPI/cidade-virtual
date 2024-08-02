@@ -13,16 +13,6 @@ public interface PluginPlayer extends CommonPlayer
 {
 	Main getPlugin();
 	
-	default Town getTown()
-	{
-		return getPlugin().getTownManager().getTown(getUniqueId());
-	}
-	
-	default boolean hasTown()
-	{
-		return getTown() != null;
-	}
-	
 	TownPlayerData getTownPlayerData();
 	
 	@Override
@@ -55,4 +45,10 @@ public interface PluginPlayer extends CommonPlayer
 	void resetAttackCooldown();
 	
 	boolean isCritical();
+	
+	Town getTown();
+	
+	boolean hasTown();
+	
+	void onTownCreate();
 }

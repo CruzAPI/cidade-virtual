@@ -22,7 +22,7 @@ import java.util.logging.Level;
 
 public class PlayerDataFiler extends Filer
 {
-	private static final byte VERSION = 1;
+	private static final byte VERSION = 2;
 	
 	private static final ObjectType[]
 	
@@ -74,6 +74,33 @@ public class PlayerDataFiler extends Filer
 		PluginObjectType.RAID_SPECTATOR,
 		PluginObjectType.TOWN_PLAYER_DATA,
 		PluginObjectType.TOWN_PLAYER,
+		PluginObjectType.VANILLA_PLAYER,
+	},
+	
+	OBJECT_TYPES_V2 = new ObjectType[]
+	{
+		CommonObjectType.COMMON_PLAYER_DATA,
+		CommonObjectType.COMMON_PLAYER,
+		CommonObjectType.INVENTORY,
+		CommonObjectType.ITEM_STACK,
+		CommonObjectType.LOCATION,
+		CommonObjectType.OBJECT,
+		CommonObjectType.PLAYER_DATA,
+		CommonObjectType.POTION_EFFECT_COLLECTION,
+		CommonObjectType.POTION_EFFECT,
+		PluginObjectType.ADMIN,
+		PluginObjectType.ATTACKER,
+		PluginObjectType.DEFENDER,
+		PluginObjectType.GENERIC_PLUGIN_PLAYER,
+		PluginObjectType.PLUGIN_PLAYER,
+		PluginObjectType.PHYSICAL_PLAYER,
+		PluginObjectType.SPAWN_PLAYER,
+		PluginObjectType.SPIRITUAL_PLAYER,
+		PluginObjectType.RAID_ANALYZER,
+		PluginObjectType.RAID_SPECTATOR,
+		PluginObjectType.TOWN_PLAYER_DATA,
+		PluginObjectType.TOWN_PLAYER,
+		PluginObjectType.TUTORIAL_TOWN_PLAYER,
 		PluginObjectType.VANILLA_PLAYER,
 	};
 	
@@ -230,6 +257,7 @@ public class PlayerDataFiler extends Filer
 		{
 			case 0 -> OBJECT_TYPES_V0;
 			case 1 -> OBJECT_TYPES_V1;
+			case 2 -> OBJECT_TYPES_V2;
 			default -> throw new InvalidVersionException(MessageFormat.format(
 					"Invalid {0} version: {1}",
 					getClass().getSimpleName(),

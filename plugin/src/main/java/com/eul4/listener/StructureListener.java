@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.common.util.ContainerUtil;
 import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.StructureStatus;
+import com.eul4.event.StructureInteractEvent;
 import com.eul4.exception.CannotBuildYetException;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.StructureAlreadyBuiltException;
@@ -56,6 +57,14 @@ public class StructureListener implements Listener
 		}
 		
 		Structure structure = townBlock.getStructure();
+		
+		StructureInteractEvent structureInteractEvent = new StructureInteractEvent(structure);
+		plugin.getPluginManager().callEvent(structureInteractEvent);
+		
+		if(structureInteractEvent.isCancelled())
+		{
+			return;
+		}
 		
 		if(structure.getStatus() == StructureStatus.READY)
 		{

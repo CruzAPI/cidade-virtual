@@ -20,6 +20,7 @@ import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
 import com.eul4.listener.hotbar.RaidSpectatorHotbarListener;
 import com.eul4.listener.inventory.*;
 import com.eul4.listener.player.*;
+import com.eul4.listener.player.tutorial.step.*;
 import com.eul4.listener.scoreboard.AnalyzerScoreboardListener;
 import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
@@ -217,6 +218,7 @@ public class Main extends Common
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("macroid").setExecutor(new MacroidCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
+		getCommand(TutorialCommand.COMMAND_NAME).setExecutor(new TutorialCommand(this));
 	}
 	
 	private void registerListeners()
@@ -274,6 +276,8 @@ public class Main extends Common
 	
 	private void registerPlayerListeners()
 	{
+		registerTutorialStepListeners();
+		
 		pluginManager.registerEvents(new AttackerListener(this), this);
 		pluginManager.registerEvents(new DefenderListener(this), this);
 		pluginManager.registerEvents(new FighterListener(this), this);
@@ -281,6 +285,17 @@ public class Main extends Common
 		pluginManager.registerEvents(new InvincibleListener(this), this);
 		pluginManager.registerEvents(new PluginPlayerListener(this), this);
 		pluginManager.registerEvents(new SpectatorListener(this), this);
+		pluginManager.registerEvents(new TutorialTownPlayerListener(this), this);
+	}
+	
+	private void registerTutorialStepListeners()
+	{
+		pluginManager.registerEvents(new AssistantStepListener(this), this);
+		pluginManager.registerEvents(new ClickToFinishTownHallStepListener(this), this);
+		pluginManager.registerEvents(new CollectDislikesStepListener(this), this);
+		pluginManager.registerEvents(new CollectLikesStepListener(this), this);
+		pluginManager.registerEvents(new UpgradeTownHallStepListener(this), this);
+		pluginManager.registerEvents(new WaitFinishTownHallStepListener(this), this);
 	}
 	
 	private void registerScoreboardListeners()

@@ -8,6 +8,7 @@ public enum PluginBundleBaseName implements BundleBaseName
 	ANALYZER_SCOREBOARD("analyzer_scoreboard"),
 	INITIAL_SCOREBOARD("initial_scoreboard"),
 	TOWN_SCOREBOARD("town_scoreboard"),
+	TOWN_TUTORIAL("town_tutorial"),
 	;
 	
 	private final String bundleBaseName;

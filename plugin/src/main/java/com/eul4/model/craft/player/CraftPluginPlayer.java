@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
-import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -73,12 +72,6 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	}
 	
 	@Override
-	public Optional<Town> findTown()
-	{
-		return Optional.ofNullable(getTown());
-	}
-	
-	@Override
 	public void resetAttackCooldown()
 	{
 		this.lastAttackCooldownTick = plugin.getServer().getCurrentTick();
@@ -102,5 +95,29 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 				&& !serverPlayer.hasEffect(MobEffects.BLINDNESS)
 				&& !serverPlayer.isPassenger()
 				&& !serverPlayer.isSprinting();
+	}
+	
+	@Override
+	public final Town getTown()
+	{
+		return plugin.getTownManager().getTown(player.getUniqueId());
+	}
+	
+	@Override
+	public final Optional<Town> findTown()
+	{
+		return Optional.ofNullable(getTown());
+	}
+	
+	@Override
+	public final boolean hasTown()
+	{
+		return getTown() != null;
+	}
+	
+	@Override
+	public void onTownCreate()
+	{
+	
 	}
 }

@@ -18,7 +18,7 @@ public abstract class ObjectReader<T>
 	protected final Readers readers;
 	protected final ObjectInput in;
 	private final Reader<T> reader;
-	private final Class<T> type;
+	protected final Class<T> type;
 	
 	private final Map<Integer, T> references = new HashMap<>();
 	private int currentId;

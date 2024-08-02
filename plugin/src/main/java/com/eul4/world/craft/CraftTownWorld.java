@@ -8,12 +8,11 @@ import org.bukkit.World;
 import java.util.Collection;
 import java.util.List;
 
-import static com.eul4.type.player.PhysicalPlayerType.ADMIN;
-import static com.eul4.type.player.PhysicalPlayerType.TOWN_PLAYER;
+import static com.eul4.type.player.PhysicalPlayerType.*;
 
 public class CraftTownWorld extends CraftPluginWorld implements TownWorld
 {
-	private final List<PlayerType> acceptablePlayerTypes = List.of(TOWN_PLAYER, ADMIN);
+	private final List<PlayerType> acceptablePlayerTypes = List.of(TOWN_PLAYER, ADMIN, TUTORIAL_TOWN_PLAYER);
 	
 	public CraftTownWorld(World world)
 	{

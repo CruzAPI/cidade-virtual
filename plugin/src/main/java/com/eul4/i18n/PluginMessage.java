@@ -747,7 +747,9 @@ public enum PluginMessage implements Message
 	
 	STRUCTURE_ITEM_MOVE_LORE("structure.item-move.lore", empty().color(GRAY)),
 	
-	STRUCTURE_MOVE_INVENTORY_FULL("structure.move-inventory-full", empty().color(RED));
+	STRUCTURE_MOVE_INVENTORY_FULL("structure.move-inventory-full", empty().color(RED)),
+	
+	TOWN_VIRTUAL_ASSISTANT("town.virtual-assistant", empty().color(WHITE).decorate(BOLD));
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

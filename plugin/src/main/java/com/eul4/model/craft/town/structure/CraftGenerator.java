@@ -1,6 +1,7 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.enums.StructureStatus;
+import com.eul4.event.GeneratorCollectEvent;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
@@ -154,6 +155,10 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 		
 		int toCollect = getPossibleAmountToCollect();
 		
+		GeneratorCollectEvent generatorCollectEvent = newGeneratorCollectEvent(toCollect);
+		town.getPlugin().getPluginManager().callEvent(generatorCollectEvent);
+		final boolean sendMessage = generatorCollectEvent.getSendMessage();
+		
 		setBalance(balance - toCollect);
 		setTownBalance(getTownBalance() + toCollect);
 		
@@ -164,29 +169,29 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 		if(currentBalance == 0 && toCollect == 0)
 		{
 			town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer
-					.sendMessage(GENERATOR_COLLECT_EMPTY, this));
-			town.getPlayer().ifPresent(SoundUtil::playPiano);
+					.sendMessage(sendMessage, GENERATOR_COLLECT_EMPTY, this));
+			town.findPlayer().ifPresent(SoundUtil::playPiano);
 		}
 		else if(toCollect == 0 && depositAlreadyFull)
 		{
 			town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer
-					.sendMessage(GENERATOR_COLLECT_DEPOSIT_FULL, this));
-			town.getPlayer().ifPresent(SoundUtil::playPlong);
+					.sendMessage(sendMessage, GENERATOR_COLLECT_DEPOSIT_FULL, this));
+			town.findPlayer().ifPresent(SoundUtil::playPlong);
 		}
 		else
 		{
 			town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer
-					.sendMessage(GENERATOR_COLLECT, this, toCollect));
+					.sendMessage(sendMessage, GENERATOR_COLLECT, this, toCollect));
 			
 			if(depositFulled)
 			{
-				town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer.sendMessage(
-						GENERATOR_COLLECT_DEPOSIT_FULLED, this));
-				town.getPlayer().ifPresent(SoundUtil::playPiano);
+				town.findPluginPlayer().ifPresent(pluginPlayer -> pluginPlayer
+						.sendMessage(sendMessage, GENERATOR_COLLECT_DEPOSIT_FULLED, this));
+				town.findPlayer().ifPresent(SoundUtil::playPiano);
 			}
 			else
 			{
-				town.getPlayer().ifPresent(SoundUtil::playPling);
+				town.findPlayer().ifPresent(SoundUtil::playPling);
 			}
 		}
 	}
@@ -201,6 +206,8 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 		
 		return Math.max(0, Math.min(this.balance, canReceive));
 	}
+	
+	protected abstract GeneratorCollectEvent newGeneratorCollectEvent(int amountCollected);
 	
 	public abstract int getTownBalanceLimit();
 	
@@ -287,4 +294,10 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 	protected abstract int getTownGeneratorsBalance();
 	
 	protected abstract void setTownGeneratorsBalance(int balance);
+	
+	@Override
+	public final void full()
+	{
+		setBalance(getCapacity());
+	}
 }

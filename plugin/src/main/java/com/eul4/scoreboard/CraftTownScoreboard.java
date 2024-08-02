@@ -25,15 +25,14 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 		
 		this.townScoreboardPlayer = townScoreboardPlayer;
 		
-		Objective objective = scoreboard.registerNewObjective("name", Criteria.DUMMY, Component.text("text"));
-		
-		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		
 		likesTeam = scoreboard.registerNewTeam("likesTeam");
 		dislikesTeam = scoreboard.registerNewTeam("dislikesTeam");
 		hardnessTeam = scoreboard.registerNewTeam("hardnessTeam");
 		footerTeam = scoreboard.registerNewTeam("footerTeam");
-		
+	}
+	
+	public void registerScores()
+	{
 		String likesEntry = LIKES_ENTRY.translateToLegacyText(townScoreboardPlayer);
 		String dislikesEntry = DISLIKES_ENTRY.translateToLegacyText(townScoreboardPlayer);
 		String hardnessEntry = HARDNESS_ENTRY.translateToLegacyText(townScoreboardPlayer);
@@ -45,6 +44,9 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 		footerTeam.addEntry(footerEntry);
 		
 		updateAll();
+		
+		Objective objective = scoreboard.registerNewObjective("name", Criteria.DUMMY, Component.text("text"));
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		objective.displayName(TITLE.translate(townScoreboardPlayer));
 		

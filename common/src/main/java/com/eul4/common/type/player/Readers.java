@@ -18,7 +18,7 @@ public class Readers
 	private final ObjectInput in;
 	private final Map<ObjectType, Byte> versions;
 	
-	private final Map<Class<? extends ObjectReader<?>>, ObjectReader<?>> readers = new HashMap<>();
+	private final Map<Class<? extends ObjectReader>, ObjectReader> readers = new HashMap<>();
 	
 	public static Readers of(Common plugin, ObjectInput in, Map<ObjectType, Byte> versions) throws InvalidVersionException
 	{
@@ -48,7 +48,7 @@ public class Readers
 		readers.put(externalizerType.getReaderClass(), externalizerType.newInstance(this));
 	}
 	
-	public <R extends ObjectReader<?>> R getReader(Class<R> type)
+	public <R extends ObjectReader> R getReader(Class<R> type)
 	{
 		return type.cast(readers.get(type));
 	}

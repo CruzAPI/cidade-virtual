@@ -2,6 +2,8 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
 import com.eul4.enums.Currency;
+import com.eul4.event.DislikeGeneratorCollectEvent;
+import com.eul4.event.LikeGeneratorCollectEvent;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
@@ -100,5 +102,11 @@ public class CraftDislikeGenerator extends CraftGenerator implements DislikeGene
 	protected void setTownGeneratorsBalance(int balance)
 	{
 		town.setDislikesInGenerators(balance);
+	}
+	
+	@Override
+	protected DislikeGeneratorCollectEvent newGeneratorCollectEvent(int amountCollected)
+	{
+		return new DislikeGeneratorCollectEvent(town, amountCollected);
 	}
 }

@@ -53,7 +53,7 @@ public class GenericPluginPlayerReader extends ObjectReader<PluginPlayer>
 	
 	private Readable<PluginPlayer> biParameterizedReadableVersion0(Player player, Main plugin)
 	{
-		return () -> readers
+		return () -> (PluginPlayer) readers
 				.getReader(PlayerCategory.values()[in.readInt()]
 						.getEnumValues()[in.readInt()].getReaderClass())
 				.getBiParameterizedReadable()

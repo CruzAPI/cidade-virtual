@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.WorldSaveEvent;
@@ -38,6 +39,12 @@ public class CommonPlayerListener implements Listener
 		{
 			oldCommonPlayer.savePlayerData();
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void on(PlayerCommandPreprocessEvent event)
+	{
+		event.setMessage(event.getMessage().toLowerCase());
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

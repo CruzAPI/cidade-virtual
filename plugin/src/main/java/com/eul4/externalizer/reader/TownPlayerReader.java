@@ -17,14 +17,19 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 
 @Getter
-public class TownPlayerReader extends PhysicalPlayerReader<TownPlayer>
+public class TownPlayerReader<TP extends TownPlayer> extends PhysicalPlayerReader<TP>
 {
-	private final Reader<TownPlayer> reader;
-	private final BiParameterizedReadable<TownPlayer, Player, Main> biParameterizedReadable;
+	private final Reader<TP> reader;
+	private final BiParameterizedReadable<TP, Player, Main> biParameterizedReadable;
 	
 	public TownPlayerReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers, TownPlayer.class);
+		this(readers, (Class<TP>) TownPlayer.class);
+	}
+	
+	public TownPlayerReader(Readers readers, Class<TP> type) throws InvalidVersionException
+	{
+		super(readers, type);
 		
 		final ObjectType objectType = PluginObjectType.TOWN_PLAYER;
 		final byte version = readers.getVersions().get(objectType);
@@ -40,18 +45,18 @@ public class TownPlayerReader extends PhysicalPlayerReader<TownPlayer>
 		}
 	}
 	
-	private Readable<TownPlayer> biParameterizedReadableVersion0(Player player, Main plugin)
+	private Readable<TP> biParameterizedReadableVersion0(Player player, Main plugin)
 	{
-		return () -> new CraftTownPlayer(player, plugin);
+		return () -> type.cast(new CraftTownPlayer(player, plugin));
 	}
 	
-	private void readerVersion0(TownPlayer townPlayer) throws IOException, ClassNotFoundException
+	private void readerVersion0(TP townPlayer) throws IOException, ClassNotFoundException
 	{
 		super.getReader().readObject(townPlayer);
 	}
 	
 	@Override
-	public TownPlayer readReference(Player player, Common plugin) throws IOException, ClassNotFoundException
+	public TP readReference(Player player, Common plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(biParameterizedReadable.getReadable(player, (Main) plugin));
 	}

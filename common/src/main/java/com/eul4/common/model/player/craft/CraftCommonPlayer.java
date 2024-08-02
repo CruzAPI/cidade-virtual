@@ -11,6 +11,7 @@ import com.eul4.common.model.inventory.Gui;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.model.player.ScoreboardPlayer;
 import com.eul4.common.world.CommonWorld;
+import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -221,5 +222,25 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	public Optional<CommonPlayer> findOldInstance()
 	{
 		return Optional.ofNullable(oldInstance);
+	}
+	
+	@Override
+	public void clearChat()
+	{
+		for(int i = 0; i < 200; i++)
+		{
+			player.sendMessage(Component.empty());
+		}
+	}
+	
+	@Override
+	public void clearChat(int emptyLines)
+	{
+		Preconditions.checkArgument(emptyLines > 0);
+		
+		for(int i = 0; i < emptyLines; i++)
+		{
+			player.sendMessage(Component.empty());
+		}
 	}
 }

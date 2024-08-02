@@ -6,8 +6,8 @@ import com.eul4.common.externalizer.writer.ObjectWriter;
 
 public interface ExternalizerType
 {
-	ObjectReader<?> newInstance(Readers readers) throws InvalidVersionException;
-	Class<? extends ObjectReader<?>> getReaderClass();
-	ObjectWriter<?> newInstance(Writers writers);
-	Class<? extends ObjectWriter<?>> getWriterClass();
+	ObjectReader newInstance(Readers readers) throws InvalidVersionException;
+	Class<? extends ObjectReader> getReaderClass();
+	ObjectWriter newInstance(Writers writers);
+	Class<? extends ObjectWriter> getWriterClass();
 }

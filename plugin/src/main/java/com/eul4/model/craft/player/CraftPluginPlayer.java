@@ -6,6 +6,7 @@ import com.eul4.common.model.player.craft.CraftCommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
+import com.eul4.model.playerdata.TutorialTownPlayerData;
 import com.eul4.model.town.Town;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	protected final Main plugin;
 	
 	protected TownPlayerData townPlayerData;
+	protected TutorialTownPlayerData tutorialTownPlayerData;
 	
 	private transient int lastAttackCooldownTick;
 	
@@ -32,6 +34,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 		super(player, plugin);
 		this.plugin = plugin;
 		this.townPlayerData = new TownPlayerData();
+		this.tutorialTownPlayerData = new TutorialTownPlayerData();
 	}
 	
 	protected CraftPluginPlayer(Player player, PluginPlayer pluginPlayer)
@@ -39,6 +42,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 		super(player, pluginPlayer);
 		this.plugin = pluginPlayer.getPlugin();
 		this.townPlayerData = pluginPlayer.getTownPlayerData();
+		this.tutorialTownPlayerData = pluginPlayer.getTutorialTownPlayerData();
 	}
 	
 	public void onStartingTownAttack()

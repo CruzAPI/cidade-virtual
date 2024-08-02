@@ -20,5 +20,6 @@ public abstract sealed class PluginPlayerWriter<P extends PluginPlayer> extends 
 		super.writeObject(pluginPlayer);
 		
 		writers.getWriter(TownPlayerDataWriter.class).writeReference(pluginPlayer.getTownPlayerData());
+		writers.getWriter(TutorialTownPlayerDataWriter.class).writeReference(pluginPlayer.getTutorialTownPlayerData());
 	}
 }

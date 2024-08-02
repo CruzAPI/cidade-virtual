@@ -126,6 +126,8 @@ public class CraftTown implements Town
 	
 	private Villager assistant;
 	
+	private boolean finishedTutorial;
+	
 	public CraftTown(UUID ownerUUID, Block block, Main plugin)
 	{
 		this.ownerUUID = ownerUUID;
@@ -690,7 +692,7 @@ public class CraftTown implements Town
 	@Override
 	public boolean canBeAnalyzed()
 	{
-		return !isUnderAttack() && !isUnderAnalysis() && !isInCooldown();
+		return finishedTutorial && !isUnderAttack() && !isUnderAnalysis() && !isInCooldown();
 	}
 	
 	private boolean isInCooldown()
@@ -1038,6 +1040,18 @@ public class CraftTown implements Town
 	}
 	
 	@Override
+	public BoundingBox getBoundingBox()
+	{
+		Location min = block.getRelative(-Town.TOWN_FULL_RADIUS, 0, -Town.TOWN_FULL_RADIUS).getLocation();
+		min.setY(-99999.0D);
+		
+		Location max = block.getRelative(Town.TOWN_FULL_RADIUS, 0, Town.TOWN_FULL_RADIUS).getLocation();
+		max.setY(block.getWorld().getMaxHeight());
+		
+		return BoundingBox.of(min.getBlock(), max.getBlock());
+	}
+	
+	@Override
 	public Location getRandomSpawnLocation()
 	{
 		Location randomSpawnLocation = getUnavailableRandomTownBlock()
@@ -1217,5 +1231,24 @@ public class CraftTown implements Town
 		}
 		
 		return Optional.empty();
+	}
+	
+	@Override
+	public World getWorld()
+	{
+		return getLocation().getWorld();
+	}
+	
+	@Override
+	public boolean isInside(Location location)
+	{
+		return location.getWorld() == getWorld()
+				&& getBoundingBox().contains(location.toVector());
+	}
+	
+	@Override
+	public boolean hasFinishedTutorial()
+	{
+		return finishedTutorial;
 	}
 }

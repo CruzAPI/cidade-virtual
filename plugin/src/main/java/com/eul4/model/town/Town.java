@@ -13,7 +13,9 @@ import com.eul4.wrapper.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.util.BoundingBox;
@@ -159,6 +161,8 @@ public interface Town
 	
 	BoundingBox getBoundingBoxExcludingWalls();
 	
+	BoundingBox getBoundingBox();
+	
 	Location getRandomSpawnLocation();
 	
 	BoughtTileMapByDepth getBoughtTileMapByDepth();
@@ -200,4 +204,11 @@ public interface Town
 	
 	Optional<LikeGenerator> findFirstLikeGenerator();
 	Optional<DislikeGenerator> findFirstDislikeGenerator();
+	
+	World getWorld();
+	
+	boolean isInside(Location location);
+	
+	boolean hasFinishedTutorial();
+	void setFinishedTutorial(boolean finishedTutorial);
 }

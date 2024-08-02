@@ -13,4 +13,5 @@ public interface Step
 	TutorialTownPlayer getTutorialTownPlayer();
 	Villager getAssistant();
 	void cancel() throws IllegalStateException;
+	CheckpointStepEnum getCheckpointStep();
 }

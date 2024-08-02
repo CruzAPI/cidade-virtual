@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 @RequiredArgsConstructor
 public class TutorialTownPlayerListener implements Listener
@@ -54,6 +55,16 @@ public class TutorialTownPlayerListener implements Listener
 	public void cancelCommands(PlayerCommandPreprocessEvent event)
 	{
 		if(plugin.getPlayerManager().get(event.getPlayer()) instanceof TutorialTownPlayer)
+		{
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void cancelTeleports(PlayerTeleportEvent event)
+	{
+		if(plugin.getPlayerManager().get(event.getPlayer()) instanceof TutorialTownPlayer
+				&& event.getCause() != PlayerTeleportEvent.TeleportCause.PLUGIN)
 		{
 			event.setCancelled(true);
 		}

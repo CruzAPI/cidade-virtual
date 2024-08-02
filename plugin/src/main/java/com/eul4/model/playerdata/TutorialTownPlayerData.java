@@ -1,5 +1,6 @@
 package com.eul4.model.playerdata;
 
+import com.eul4.model.player.tutorial.step.CheckpointStepEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TownPlayerData
+public class TutorialTownPlayerData
 {
-	private boolean test;
+	private CheckpointStepEnum checkpointStep;
 }

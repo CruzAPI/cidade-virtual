@@ -1,6 +1,7 @@
 package com.eul4.model.craft.player.tutorial.step;
 
 import com.eul4.model.player.TutorialTownPlayer;
+import com.eul4.model.player.tutorial.step.CheckpointStepEnum;
 import com.eul4.model.player.tutorial.step.Step24;
 
 import static com.eul4.i18n.TutorialTownMessage.BOSS_BAR_CLICK_TO_FINISH_BUILD;
@@ -24,5 +25,11 @@ public class CraftStep24 extends CraftStep implements Step24
 	{
 		cancel();
 		tutorialTownPlayer.scheduleStep(new CraftStep25(tutorialTownPlayer));
+	}
+	
+	@Override
+	public CheckpointStepEnum getCheckpointStep()
+	{
+		return CheckpointStepEnum.STEP_24;
 	}
 }

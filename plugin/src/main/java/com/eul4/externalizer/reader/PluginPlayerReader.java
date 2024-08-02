@@ -9,6 +9,7 @@ import com.eul4.common.wrapper.BiParameterizedReadable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
+import com.eul4.model.playerdata.TutorialTownPlayerData;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -33,6 +34,9 @@ public abstract sealed class PluginPlayerReader<P extends PluginPlayer> extends 
 		case 0:
 			this.reader = this::readerVersion0;
 			break;
+		case 1:
+			this.reader = this::readerVersion1;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -45,6 +49,17 @@ public abstract sealed class PluginPlayerReader<P extends PluginPlayer> extends 
 		TownPlayerData townPlayerData = readers.getReader(TownPlayerDataReader.class).readReference();
 		
 		pluginPlayer.setTownPlayerData(townPlayerData);
+	}
+	
+	private void readerVersion1(P pluginPlayer) throws IOException, ClassNotFoundException
+	{
+		super.getReader().readObject(pluginPlayer);
+		
+		TownPlayerData townPlayerData = readers.getReader(TownPlayerDataReader.class).readReference();
+		TutorialTownPlayerData tutorialTownPlayerData = readers.getReader(TutorialTownPlayerDataReader.class).readReference();
+		
+		pluginPlayer.setTownPlayerData(townPlayerData);
+		pluginPlayer.setTutorialTownPlayerData(tutorialTownPlayerData);
 	}
 	
 	public abstract BiParameterizedReadable<P, Player, Main> getBiParameterizedReadable();

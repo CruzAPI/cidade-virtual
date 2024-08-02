@@ -1,6 +1,7 @@
 package com.eul4.model.craft.player.tutorial.step;
 
 import com.eul4.model.player.TutorialTownPlayer;
+import com.eul4.model.player.tutorial.step.CheckpointStepEnum;
 import com.eul4.model.player.tutorial.step.Step14;
 
 import static com.eul4.i18n.TutorialTownMessage.*;
@@ -28,5 +29,11 @@ public class CraftStep14 extends CraftCollectDislikesStep implements Step14
 	{
 		cancel();
 		tutorialTownPlayer.scheduleStep(new CraftStep15(tutorialTownPlayer));
+	}
+	
+	@Override
+	public CheckpointStepEnum getCheckpointStep()
+	{
+		return CheckpointStepEnum.STEP_14;
 	}
 }

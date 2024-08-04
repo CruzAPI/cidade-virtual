@@ -4,7 +4,10 @@ import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.util.ContainerUtil;
+import com.eul4.common.util.EntityUtil;
 import com.eul4.common.util.ThreadUtil;
+import com.eul4.common.wrapper.Pitch;
 import com.eul4.event.*;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
@@ -17,6 +20,7 @@ import com.eul4.model.craft.town.structure.CraftTownHall;
 import com.eul4.model.player.Attacker;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
+import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
@@ -43,6 +47,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -50,6 +55,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.enginehub.linbus.tree.LinByteTag;
@@ -70,6 +76,7 @@ import java.util.function.IntConsumer;
 import java.util.logging.Level;
 
 import static com.eul4.common.constant.CommonNamespacedKey.FAWE_IGNORE;
+import static com.eul4.enums.PluginNamespacedKey.FAKE_VILLAGER;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.*;
 
@@ -128,6 +135,9 @@ public class CraftTown implements Town
 	
 	private boolean finishedTutorial;
 	
+	private transient EntityItemMoveMap entityItemMoveMap = new EntityItemMoveMap();
+	private transient AssistantTargetTask assistantTargetTask;
+	
 	public CraftTown(UUID ownerUUID, Block block, Main plugin)
 	{
 		this.ownerUUID = ownerUUID;
@@ -151,18 +161,6 @@ public class CraftTown implements Town
 		ThreadUtil.runSynchronouslyUntilTerminate(plugin, this::spawnAssistant);
 		
 		TOWN_BLOCKS.putAll(townBlockMap);
-	}
-	
-	private void spawnAssistant()
-	{
-		if(this.assistant != null)
-		{
-			return;
-		}
-		
-		this.assistant = (Villager) block.getWorld().spawnEntity(getAssistantDefaultLocation(),
-				EntityType.VILLAGER,
-				CreatureSpawnEvent.SpawnReason.CUSTOM, this::setupAssistant);
 	}
 	
 	private Location getAssistantDefaultLocation()
@@ -190,6 +188,10 @@ public class CraftTown implements Town
 		assistant.customName(PluginMessage.TOWN_VIRTUAL_ASSISTANT.translate(findPluginPlayer()
 				.map(PluginPlayer::getLocale)
 				.orElse(ResourceBundleHandler.DEFAULT_LOCALE)));
+		
+		var container = assistant.getPersistentDataContainer();
+		ContainerUtil.setFlag(container, FAKE_VILLAGER);
+		ContainerUtil.setFlag(container, FAWE_IGNORE);
 	}
 	
 	private TownBlockMap getInitialTownBlocks()
@@ -1250,5 +1252,120 @@ public class CraftTown implements Town
 	public boolean hasFinishedTutorial()
 	{
 		return finishedTutorial;
+	}
+	
+	@Override
+	@Deprecated
+	public void setDefaultFinishedTutorial()
+	{
+		finishedTutorial = true;
+	}
+	
+	public void removeAssistant()
+	{
+		if(assistant == null)
+		{
+			return;
+		}
+		
+		assistant.remove();
+		assistant = null;
+		
+		plugin.getPluginManager().callEvent(new AssistantRemoveEvent(this));
+	}
+	
+	@SneakyThrows
+	private void spawnAssistant()
+	{
+		spawnAssistant(getAssistantDefaultLocation().getBlock());
+	}
+	
+	public void spawnAssistant(Block block) throws CannotConstructException
+	{
+		removeAssistant();
+		TownBlock townBlock = getTownBlock(block);
+		
+		if(townBlock == null || !townBlock.isAvailable())
+		{
+			throw new CannotConstructException();
+		}
+		
+		this.assistant = (Villager) block.getWorld().spawnEntity(block.getLocation().add(0.5D, 0.0D, 0.5D),
+				EntityType.VILLAGER,
+				CreatureSpawnEvent.SpawnReason.CUSTOM, this::setupAssistant);
+		
+		findPlayer().ifPresent(player -> player.playSound(assistant.getLocation(),
+				Sound.ENTITY_VILLAGER_AMBIENT,
+				1.0F,
+				Pitch.getPitch(12)));
+		
+		plugin.getPluginManager().callEvent(new AssistantSpawnEvent(this));
+	}
+	
+	@Override
+	public void startMoveAssistant()
+	{
+		removeAssistant();
+		new AssistantItemMove(this).addItemIfNotPresent();
+	}
+	
+	@Override
+	public void scheduleAssistantTargetTaskIfPossible()
+	{
+		findAssistantTargetTask().ifPresent(BukkitRunnable::cancel);
+		
+		if(canScheduleAssistantTargetTask())
+		{
+			assistantTargetTask = new AssistantTargetTask();
+			assistantTargetTask.runTaskTimer(plugin, 0L, 1L);
+		}
+	}
+	
+	@Override
+	public Optional<AssistantTargetTask> findAssistantTargetTask()
+	{
+		return Optional.ofNullable(assistantTargetTask);
+	}
+	
+	public class AssistantTargetTask extends BukkitRunnable
+	{
+		@Override
+		public void run()
+		{
+			if(getPluginPlayer() instanceof TownPlayer townPlayer && assistant != null)
+			{
+				EntityUtil.targetEye(assistant, townPlayer.getPlayer());
+			}
+			else
+			{
+				cancel();
+			}
+		}
+		
+		@Override
+		public synchronized void cancel() throws IllegalStateException
+		{
+			super.cancel();
+			
+			findAssistant().ifPresent(entity -> entity.setRotation(0.0F, 0.0F));
+		}
+	}
+	
+	@Override
+	public Optional<Villager> findAssistant()
+	{
+		return Optional.ofNullable(assistant);
+	}
+	
+	@Override
+	public boolean hasAssistant()
+	{
+		return assistant != null;
+	}
+	
+	@Override
+	public boolean canScheduleAssistantTargetTask()
+	{
+		return getPluginPlayer() instanceof TownPlayer && assistant != null && finishedTutorial;
 	}
 }

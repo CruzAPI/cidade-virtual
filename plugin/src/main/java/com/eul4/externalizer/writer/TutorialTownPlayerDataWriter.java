@@ -16,6 +16,6 @@ public class TutorialTownPlayerDataWriter extends ObjectWriter<TutorialTownPlaye
 	@Override
 	protected void writeObject(TutorialTownPlayerData tutorialTownPlayerData) throws IOException
 	{
-		tutorialTownPlayerData.getCheckpointStep();
+		writers.getWriter(CheckpointStepEnumWriter.class).writeReference(tutorialTownPlayerData.getCheckpointStep());
 	}
 }

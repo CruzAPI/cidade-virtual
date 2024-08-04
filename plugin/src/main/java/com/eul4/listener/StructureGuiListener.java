@@ -1,7 +1,7 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
-import com.eul4.exception.CannotConstructException;
+import com.eul4.common.event.GuiClickEvent;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.player.TownPlayer;
@@ -36,31 +36,33 @@ public class StructureGuiListener implements Listener
 		event.setCancelled(true);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onInventoryClick(InventoryClickEvent event)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onGuiClick(GuiClickEvent event)
 	{
-		if(!(event.getWhoClicked() instanceof Player player)
-				|| !(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
-				|| !(townPlayer.getGui() instanceof StructureGui structureGui))
+		if(!(event.getGui() instanceof StructureGui structureGui)
+				|| !(structureGui.getCommonPlayer() instanceof TownPlayer townPlayer))
 		{
 			return;
 		}
 		
-		event.setCancelled(true);
+		Player player = townPlayer.getPlayer();
 		
-		final ItemStack currentItem = event.getCurrentItem();
+		InventoryClickEvent inventoryClickEvent = event.getInventoryClickEvent();
+		inventoryClickEvent.setCancelled(true);
 		
-		if(currentItem == null || event.getClick() != ClickType.LEFT)
+		final ItemStack currentItem = inventoryClickEvent.getCurrentItem();
+		
+		if(currentItem == null || inventoryClickEvent.getClick() != ClickType.LEFT)
 		{
 			return;
 		}
 		
-		if(currentItem.equals(structureGui.getUpgrade()))
+		if(currentItem.equals(structureGui.getUpgradeIcon()))
 		{
 			plugin.getStructureUpgradeExecutor().executeUpgradePursache(townPlayer, structureGui.getStructure());
 			player.closeInventory();
 		}
-		else if(event.getSlot() == 1)
+		else if(inventoryClickEvent.getSlot() == 1)
 		{
 			player.closeInventory();
 			

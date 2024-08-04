@@ -1,23 +1,23 @@
-package com.eul4.common.event;
+package com.eul4.event;
 
-import com.eul4.common.model.inventory.Gui;
+import com.eul4.model.player.PluginPlayer;
+import com.eul4.model.town.Town;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.inventory.InventoryClickEvent;
 
-@RequiredArgsConstructor
 @Getter
 @Setter
-public class GuiClickEvent extends Event implements Cancellable
+@RequiredArgsConstructor
+public class AssistantInteractEvent extends Event implements Cancellable
 {
 	private static final HandlerList HANDLER = new HandlerList();
 	
-	private final InventoryClickEvent inventoryClickEvent;
-	private final Gui gui;
+	private final PluginPlayer pluginPlayer;
+	private final Town town;
 	
 	private boolean cancelled;
 	
@@ -30,11 +30,5 @@ public class GuiClickEvent extends Event implements Cancellable
 	public HandlerList getHandlers()
 	{
 		return HANDLER;
-	}
-	
-	public void setAllCancelled(boolean cancelled)
-	{
-		this.cancelled = cancelled;
-		inventoryClickEvent.setCancelled(cancelled);
 	}
 }

@@ -151,4 +151,10 @@ public abstract class CraftStructureGui extends CraftGui implements StructureGui
 		
 		commonPlayer.getPlayer().getOpenInventory().setTitle(legacyText);
 	}
+	
+	@Override
+	public ItemStack getUpgradeIcon()
+	{
+		return upgrade.clone();
+	}
 }

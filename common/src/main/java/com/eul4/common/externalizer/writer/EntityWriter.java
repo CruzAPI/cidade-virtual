@@ -17,7 +17,7 @@ public class EntityWriter extends ObjectWriter<Entity>
 	protected void writeObject(Entity entity) throws IOException
 	{
 		UUID uuid = entity.getUniqueId();
-		
+		plugin.getLogger().severe("WRITE entityUUID=" + uuid);
 		out.writeLong(uuid.getMostSignificantBits());
 		out.writeLong(uuid.getLeastSignificantBits());
 		

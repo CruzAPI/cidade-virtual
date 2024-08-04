@@ -1,6 +1,7 @@
 package com.eul4.externalizer.writer;
 
 import com.eul4.common.externalizer.writer.BlockWriter;
+import com.eul4.common.externalizer.writer.EntityWriter;
 import com.eul4.common.externalizer.writer.ObjectWriter;
 import com.eul4.common.type.player.Writers;
 import com.eul4.model.town.Town;
@@ -34,5 +35,8 @@ public class TownWriter extends ObjectWriter<Town>
 		writers.getWriter(BoughtTileMapByDepthWriter.class).writeReferenceNotNull(town.getBoughtTileMapByDepth());
 		
 		out.writeInt(town.getTilesBought());
+		
+		out.writeBoolean(town.hasFinishedTutorial());
+		writers.getWriter(EntityWriter.class).writeReference(town.getAssistant());
 	}
 }

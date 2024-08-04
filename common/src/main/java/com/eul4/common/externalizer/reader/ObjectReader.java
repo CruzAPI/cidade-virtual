@@ -56,6 +56,7 @@ public abstract class ObjectReader<T>
 			T reference = readable.read();
 			references.put(currentId++, reference);
 			getReader().readObject(reference);
+			
 			return reference;
 		case -1:
 		default:

@@ -15,7 +15,6 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.util.BoundingBox;
@@ -201,6 +200,7 @@ public interface Town
 	Structure getStructureByUniqueId(UUID structureUUID);
 	
 	Villager getAssistant();
+	Optional<Villager> findAssistant();
 	
 	Optional<LikeGenerator> findFirstLikeGenerator();
 	Optional<DislikeGenerator> findFirstDislikeGenerator();
@@ -211,4 +211,21 @@ public interface Town
 	
 	boolean hasFinishedTutorial();
 	void setFinishedTutorial(boolean finishedTutorial);
+	void setDefaultFinishedTutorial();
+	
+	void spawnAssistant(Block block) throws CannotConstructException;
+	
+	EntityItemMoveMap getEntityItemMoveMap();
+	void startMoveAssistant();
+	
+	void scheduleAssistantTargetTaskIfPossible();
+	
+	Optional<CraftTown.AssistantTargetTask> findAssistantTargetTask();
+	CraftTown.AssistantTargetTask getAssistantTargetTask();
+	
+	boolean hasAssistant();
+	
+	boolean canScheduleAssistantTargetTask();
+	
+	void setAssistant(Villager villager);
 }

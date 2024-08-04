@@ -1,7 +1,7 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
-import com.eul4.exception.CannotConstructException;
+import com.eul4.common.event.GuiClickEvent;
 import com.eul4.model.inventory.GeneratorGui;
 import com.eul4.model.inventory.StructureGui;
 import com.eul4.model.player.TownPlayer;
@@ -14,8 +14,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.io.IOException;
 
 @RequiredArgsConstructor
 public class GeneratorGuiListener implements Listener
@@ -34,25 +32,28 @@ public class GeneratorGuiListener implements Listener
 		event.setCancelled(true);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onInventoryClick(InventoryClickEvent event)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onGuiClick(GuiClickEvent event)
 	{
-		if(!(event.getWhoClicked() instanceof Player player)
-				|| !(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer)
-				|| !(townPlayer.getGui() instanceof GeneratorGui generatorGui))
+		if(!(event.getGui() instanceof GeneratorGui generatorGui)
+				|| !(generatorGui.getCommonPlayer() instanceof TownPlayer townPlayer))
 		{
 			return;
 		}
 		
-		final ItemStack currentItem = event.getCurrentItem();
+		Player player = townPlayer.getPlayer();
+		
+		InventoryClickEvent inventoryClickEvent = event.getInventoryClickEvent();
+		
+		final ItemStack currentItem = inventoryClickEvent.getCurrentItem();
 		
 		if(currentItem == null)
 		{
 			return;
 		}
 		
-		if(event.getClick() == ClickType.LEFT
-				&& currentItem.equals(generatorGui.getCollect()))
+		if(inventoryClickEvent.getClick() == ClickType.LEFT
+				&& currentItem.equals(generatorGui.getCollectIcon()))
 		{
 			generatorGui.getStructure().collect();
 			player.closeInventory();

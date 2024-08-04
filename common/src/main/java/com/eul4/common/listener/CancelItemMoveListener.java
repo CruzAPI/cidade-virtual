@@ -2,6 +2,7 @@ package com.eul4.common.listener;
 
 import com.eul4.common.Common;
 import com.eul4.common.constant.CommonNamespacedKey;
+import com.eul4.common.util.ContainerUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -15,13 +16,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Set;
 
 @RequiredArgsConstructor
 public class CancelItemMoveListener implements Listener
 {
+	private static final int OFF_HAND_SLOT = 40;
+	private static final int RAW_OFF_HAND_SLOT = 45;
+	
 	private final Common plugin;
 	
 	@EventHandler(ignoreCancelled = true)
@@ -37,6 +40,12 @@ public class CancelItemMoveListener implements Listener
 	
 	private boolean hasAnySlotInUpperInventory(final InventoryDragEvent event)
 	{
+		if(event.getInventory().getType() == InventoryType.CRAFTING
+				&& event.getRawSlots().contains(RAW_OFF_HAND_SLOT))
+		{
+			return true;
+		}
+		
 		// Type CRAFTING size is 5, adding the 4 armor slots totalizing 9.
 		int size = event.getInventory().getType() == InventoryType.CRAFTING ? 9 : event.getInventory().getSize();
 		
@@ -150,23 +159,12 @@ public class CancelItemMoveListener implements Listener
 		
 		return clickedInventory != null
 				&& (clickedInventory.getType() != InventoryType.PLAYER
-				|| event.getSlotType() == InventoryType.SlotType.ARMOR);
+				|| event.getSlotType() == InventoryType.SlotType.ARMOR
+				|| event.getSlot() == OFF_HAND_SLOT);
 	}
 	
 	private boolean isMoveCancelled(ItemStack item)
 	{
-		if(item == null || !item.hasItemMeta())
-		{
-			return false;
-		}
-		
-		final var container = item.getItemMeta().getPersistentDataContainer();
-		
-		if(!container.has(CommonNamespacedKey.CANCEL_MOVE, PersistentDataType.BOOLEAN))
-		{
-			return false;
-		}
-		
-		return container.get(CommonNamespacedKey.CANCEL_MOVE, PersistentDataType.BOOLEAN);
+		return ContainerUtil.hasFlag(item, CommonNamespacedKey.CANCEL_MOVE);
 	}
 }

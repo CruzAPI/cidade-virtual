@@ -83,7 +83,7 @@ public class CraftTutorialTownPlayer extends CraftTownPlayer implements Tutorial
 	@Override
 	public PluginPlayer reload()
 	{
-		return super.reload();
+		return player.isOp() ? finishTutorial() : super.reload();
 	}
 	
 	@Override
@@ -102,6 +102,8 @@ public class CraftTutorialTownPlayer extends CraftTownPlayer implements Tutorial
 	@Override
 	public PluginPlayer finishTutorial()
 	{
+		getTown().setFinishedTutorial(true);
+		
 		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().register(this, PhysicalPlayerType.TOWN_PLAYER);
 		
 		pluginPlayer.clearChat();

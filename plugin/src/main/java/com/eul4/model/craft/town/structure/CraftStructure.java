@@ -450,6 +450,7 @@ public abstract class CraftStructure implements Structure
 		ContainerUtil.setUUID(container, PluginNamespacedKey.STRUCTURE_ITEM_MOVE_UUID, uuid);
 		ContainerUtil.setUUID(container, CommonNamespacedKey.ITEM_UUID, UUID.randomUUID());
 		ContainerUtil.setFlag(container, CommonNamespacedKey.CANCEL_MOVE);
+		ContainerUtil.setFlag(container, CommonNamespacedKey.CANCEL_SWAP);
 		ContainerUtil.setFlag(container, CommonNamespacedKey.REMOVE_ITEM_ON_PLAYER_JOIN);
 		ContainerUtil.setFlag(container, PluginNamespacedKey.CANCEL_STRUCTURE_INTERACTION);
 		

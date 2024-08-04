@@ -1,6 +1,8 @@
 package com.eul4.wrapper;
 
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.event.AttackFinishEvent;
+import com.eul4.event.AttackStartEvent;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.*;
 import com.eul4.model.town.Town;
@@ -73,9 +75,11 @@ public class TownAttack
 		town.getStructureMap().values().forEach(Structure::onStartAttack);
 		
 		town.updateHolograms();
-		town.getPlayer().map(town.getPlugin().getPlayerManager()::get)
+		town.findPlayer().map(town.getPlugin().getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
 				.ifPresent(PluginPlayer::onStartingTownAttack);
+		
+		town.getPlugin().getPluginManager().callEvent(new AttackStartEvent(town));
 	}
 	
 	private void scheduleForceFieldTask()
@@ -118,7 +122,7 @@ public class TownAttack
 		
 		forInvolvedPlayers(pluginPlayer -> pluginPlayer.sendMessage(PluginMessage.ATTACK_IS_OVER));
 		
-		town.getPlayer().map(town.getPlugin().getPlayerManager()::get)
+		town.findPlayer().map(town.getPlugin().getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
 				.ifPresent(PluginPlayer::onFinishingTownAttack);
 		
@@ -126,6 +130,8 @@ public class TownAttack
 		{
 			attacker.reincarnate();
 		}
+		
+		town.getPlugin().getPluginManager().callEvent(new AttackFinishEvent(town));
 	}
 	
 	public boolean isFinished()
@@ -248,7 +254,7 @@ public class TownAttack
 		
 		private void clearBars()
 		{
-			town.getPlayer().ifPresent(player -> player.hideBossBar(bossBar));
+			town.findPlayer().ifPresent(player -> player.hideBossBar(bossBar));
 			attacker.getPlayer().hideBossBar(attackerBossBar);
 		}
 		

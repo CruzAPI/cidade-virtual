@@ -116,6 +116,7 @@ public enum ItemBuilder
 		container.set(PluginNamespacedKey.ITEM_BUILDER_ORDINAL, PersistentDataType.INTEGER, itemBuilder.ordinal());
 		container.set(CommonNamespacedKey.CANCEL_SPAWN, PersistentDataType.BOOLEAN, true);
 		container.set(CommonNamespacedKey.CANCEL_MOVE, PersistentDataType.BOOLEAN, true);
+		container.set(CommonNamespacedKey.CANCEL_SWAP, PersistentDataType.BOOLEAN, true);
 		container.set(CommonNamespacedKey.CANCEL_INTERACTION, PersistentDataType.BOOLEAN, true);
 		container.set(NamespacedKey.randomKey(), PersistentDataType.BOOLEAN, true);
 		

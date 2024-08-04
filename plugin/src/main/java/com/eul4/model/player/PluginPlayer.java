@@ -3,6 +3,7 @@ package com.eul4.model.player;
 import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
+import com.eul4.model.playerdata.TutorialTownPlayerData;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
@@ -13,17 +14,8 @@ public interface PluginPlayer extends CommonPlayer
 {
 	Main getPlugin();
 	
-	default Town getTown()
-	{
-		return getPlugin().getTownManager().getTown(getUniqueId());
-	}
-	
-	default boolean hasTown()
-	{
-		return getTown() != null;
-	}
-	
 	TownPlayerData getTownPlayerData();
+	TutorialTownPlayerData getTutorialTownPlayerData();
 	
 	@Override
 	PluginPlayerType getPlayerType();
@@ -37,6 +29,7 @@ public interface PluginPlayer extends CommonPlayer
 	Class<? extends PluginPlayer> getInterfaceType();
 	
 	void setTownPlayerData(TownPlayerData townPlayerData);
+	void setTutorialTownPlayerData(TutorialTownPlayerData tutorialTownPlayerData);
 	
 	PhysicalPlayerType getReincarnationType();
 	
@@ -55,4 +48,10 @@ public interface PluginPlayer extends CommonPlayer
 	void resetAttackCooldown();
 	
 	boolean isCritical();
+	
+	Town getTown();
+	
+	boolean hasTown();
+	
+	void onTownCreate();
 }

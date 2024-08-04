@@ -59,6 +59,19 @@ public class TestCommand implements TabExecutor
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
 		}
+		else if((args.length == 1 || args.length == 2) && args[0].equals("info"))
+		{
+			Player target = args.length == 1 ? player : Bukkit.getPlayer(args[1]);
+			
+			if(target == null)
+			{
+				player.sendMessage("player not found.");
+				return false;
+			}
+			
+			PluginPlayer targetPluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(target);
+			player.sendMessage(target.getName() + ": " + targetPluginPlayer.getClass().getSimpleName());
+		}
 		else if(args.length == 1)
 		{
 			int amount = Integer.parseInt(args[0]);

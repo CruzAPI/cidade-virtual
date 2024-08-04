@@ -57,4 +57,10 @@ public abstract class CraftGeneratorGui extends CraftStructureGui implements Gen
 	{
 		return (Generator) structure;
 	}
+	
+	@Override
+	public ItemStack getCollectIcon()
+	{
+		return collect.clone();
+	}
 }

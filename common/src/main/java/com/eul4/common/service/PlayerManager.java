@@ -9,10 +9,7 @@ import com.eul4.common.type.player.PlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class PlayerManager
@@ -115,6 +112,16 @@ public class PlayerManager
 	public CommonPlayer register(Player player, CommonPlayer oldInstance, PlayerType playerType)
 	{
 		return register(playerType.newInstance(player, oldInstance));
+	}
+	
+	public Optional<CommonPlayer> find(Player player)
+	{
+		return find(player.getUniqueId());
+	}
+	
+	public Optional<CommonPlayer> find(UUID uuid)
+	{
+		return Optional.ofNullable(get(uuid));
 	}
 	
 	public CommonPlayer get(Player player)

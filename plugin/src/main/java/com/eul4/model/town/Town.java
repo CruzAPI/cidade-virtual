@@ -8,15 +8,15 @@ import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.player.Attacker;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidAnalyzer;
-import com.eul4.model.town.structure.Armory;
-import com.eul4.model.town.structure.Structure;
-import com.eul4.model.town.structure.TownHall;
+import com.eul4.model.town.structure.*;
 import com.eul4.wrapper.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.util.BoundingBox;
 
 import java.awt.*;
@@ -55,7 +55,8 @@ public interface Town
 	Main getPlugin();
 	
 	OfflinePlayer getOwner();
-	Optional<Player> getPlayer();
+	Player getPlayer();
+	Optional<Player> findPlayer();
 	
 	
 	void load();
@@ -159,6 +160,8 @@ public interface Town
 	
 	BoundingBox getBoundingBoxExcludingWalls();
 	
+	BoundingBox getBoundingBox();
+	
 	Location getRandomSpawnLocation();
 	
 	BoughtTileMapByDepth getBoughtTileMapByDepth();
@@ -195,4 +198,34 @@ public interface Town
 	UUID getUUID();
 	
 	Structure getStructureByUniqueId(UUID structureUUID);
+	
+	Villager getAssistant();
+	Optional<Villager> findAssistant();
+	
+	Optional<LikeGenerator> findFirstLikeGenerator();
+	Optional<DislikeGenerator> findFirstDislikeGenerator();
+	
+	World getWorld();
+	
+	boolean isInside(Location location);
+	
+	boolean hasFinishedTutorial();
+	void setFinishedTutorial(boolean finishedTutorial);
+	void setDefaultFinishedTutorial();
+	
+	void spawnAssistant(Block block) throws CannotConstructException;
+	
+	EntityItemMoveMap getEntityItemMoveMap();
+	void startMoveAssistant();
+	
+	void scheduleAssistantTargetTaskIfPossible();
+	
+	Optional<CraftTown.AssistantTargetTask> findAssistantTargetTask();
+	CraftTown.AssistantTargetTask getAssistantTargetTask();
+	
+	boolean hasAssistant();
+	
+	boolean canScheduleAssistantTargetTask();
+	
+	void setAssistant(Villager villager);
 }

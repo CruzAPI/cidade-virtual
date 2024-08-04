@@ -18,5 +18,6 @@ public class PluginNamespacedKey
 	FAKE_SHULKER_BULLET = new NamespacedKey(NAMESPACE, "fake_shulker_bullet"),
 	STRUCTURE_ITEM_MOVE_UUID = new NamespacedKey(NAMESPACE, "structure_item_move_uuid"),
 	TOWN_UUID = new NamespacedKey(NAMESPACE, "town_uuid"),
+	ENTITY_MOVE_ITEM_TYPE_ORDINAL = new NamespacedKey(NAMESPACE, "entity_move_item_type_ordinal"),
 	CANCEL_STRUCTURE_INTERACTION = new NamespacedKey(NAMESPACE, "cancel_structure_interaction");
 }

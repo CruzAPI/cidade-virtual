@@ -747,8 +747,22 @@ public enum PluginMessage implements Message
 	
 	STRUCTURE_ITEM_MOVE_LORE("structure.item-move.lore", empty().color(GRAY)),
 	
-	STRUCTURE_MOVE_INVENTORY_FULL("structure.move-inventory-full", empty().color(RED));
+	STRUCTURE_MOVE_INVENTORY_FULL("structure.move-inventory-full", empty().color(RED)),
 	
+	TOWN_VIRTUAL_ASSISTANT("town.virtual-assistant", empty().color(WHITE).decorate(BOLD)),
+	
+	INVENTORY_ASSISTANT_TITLE("inventory.assistant.title"),
+	INVENTORY_ASSISTANT_MOVE_ASSISTANT("inventory.assistant.move-assistant"),
+	INVENTORY_ASSISTANT_STRUCTURE_SHOP("inventory.assistant.structure-shop"),
+	INVENTORY_ASSISTANT_BACK_TO_SPAWN("inventory.assistant.back-to-spawn"),
+	
+	INVENTORY_TOWN_HALL_ASSISTANT_MENU("inventory.town-hall.assistant-menu"),
+	
+	MOVE_ASSISTANT_ITEM("move-assistant.item"),
+	MOVE_ASSISTANT_ITEM_LORE("move-assistant.item.lore", empty().color(GRAY)),
+	MOVE_ASSISTANT_INVENTORY_FULL("move-assistant.inventory-full", empty().color(RED)),
+	MOVE_ASSISTANT_CAN_NOT_MOVE_HERE("move-assistant.can-not-move-here", empty().color(RED)),
+	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;
 	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;

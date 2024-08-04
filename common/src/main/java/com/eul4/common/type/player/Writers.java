@@ -15,7 +15,7 @@ public class Writers
 	private final Common plugin;
 	private final ObjectOutput out;
 	
-	private final Map<Class<? extends ObjectWriter<?>>, ObjectWriter<?>> writers = new HashMap<>();
+	private final Map<Class<? extends ObjectWriter>, ObjectWriter> writers = new HashMap<>();
 	
 	public static Writers of(Common plugin, ObjectOutput out, ObjectType[] objectTypes)
 	{
@@ -45,7 +45,7 @@ public class Writers
 		writers.put(externalizerType.getWriterClass(), externalizerType.newInstance(this));
 	}
 	
-	public <W extends ObjectWriter<?>> W getWriter(Class<W> type)
+	public <W extends ObjectWriter> W getWriter(Class<W> type)
 	{
 		return type.cast(writers.get(type));
 	}

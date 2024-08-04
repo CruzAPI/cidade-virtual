@@ -1,6 +1,7 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.common.util.EntityUtil;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
@@ -281,15 +282,7 @@ public class CraftArmory extends CraftStructure implements Armory
 				return;
 			}
 			
-			final Location npcLocation = npc.getLocation();
-			final Location targetLocation = player.getLocation();
-			
-			final Vector direction = targetLocation.toVector().subtract(npcLocation.toVector());
-			
-			final float yaw = (float) Math.toDegrees(Math.atan2(direction.getZ(), direction.getX())) - 90;
-			final float pitch = (float) Math.toDegrees(Math.atan2(-direction.getY(), direction.length()));
-			
-			npc.setRotation(yaw, pitch);
+			EntityUtil.targetEye(npc, player);
 		}
 	}
 	

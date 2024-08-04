@@ -50,4 +50,7 @@ public interface CommonPlayer extends Messageable
 	boolean isRegistered();
 	Optional<CommonPlayer> findOldInstance();
 	CommonPlayer getOldInstance();
+	
+	void clearChat();
+	void clearChat(int emptyLines);
 }

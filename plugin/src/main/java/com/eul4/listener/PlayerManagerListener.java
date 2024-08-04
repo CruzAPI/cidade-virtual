@@ -5,6 +5,7 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.world.CommonWorld;
 import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.model.player.PluginPlayer;
+import com.eul4.type.PluginWorldType;
 import com.eul4.type.player.PhysicalPlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.World;
@@ -15,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
 
 import java.text.MessageFormat;
 
@@ -38,8 +40,8 @@ public class PlayerManagerListener implements Listener
 			return;
 		}
 		
-		plugin.getPlayerManager().register(player, plugin, PhysicalPlayerType.VANILLA_PLAYER);
-		player.sendMessage("Welcome!");
+		plugin.getPlayerManager().register(player, plugin, PhysicalPlayerType.SPAWN_PLAYER);
+		player.teleport(PluginWorldType.OVER_WORLD.getInstance().getSpawnLocation());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)

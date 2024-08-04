@@ -1,5 +1,6 @@
 package com.eul4.common.util;
 
+import com.eul4.common.constant.CommonNamespacedKey;
 import com.eul4.common.wrapper.UUIDUtil;
 import lombok.experimental.UtilityClass;
 import org.bukkit.NamespacedKey;
@@ -27,6 +28,16 @@ public class ContainerUtil
 	public static Optional<UUID> findUUID(PersistentDataContainer container, NamespacedKey namespacedKey)
 	{
 		return Optional.ofNullable(getUUID(container, namespacedKey));
+	}
+	
+	public static Optional<UUID> findUUID(ItemStack item)
+	{
+		return Optional.ofNullable(getUUID(item));
+	}
+	
+	public static UUID getUUID(ItemStack item)
+	{
+		return getUUID(item, CommonNamespacedKey.ITEM_UUID);
 	}
 	
 	public static UUID getUUID(ItemStack item, NamespacedKey namespacedKey)
@@ -77,5 +88,17 @@ public class ContainerUtil
 	public static boolean hasFlag(PersistentDataContainer container, NamespacedKey namespacedKey)
 	{
 		return container.getOrDefault(namespacedKey, PersistentDataType.BOOLEAN, false);
+	}
+	
+	public static UUID setRandomUUID(PersistentDataContainer container)
+	{
+		return setRandomUUID(container, CommonNamespacedKey.ITEM_UUID);
+	}
+	
+	public static UUID setRandomUUID(PersistentDataContainer container, NamespacedKey namespacedKey)
+	{
+		final UUID uuid = UUID.randomUUID();
+		setUUID(container, namespacedKey, uuid);
+		return uuid;
 	}
 }

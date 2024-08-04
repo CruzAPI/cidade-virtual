@@ -2,6 +2,7 @@ package com.eul4.listener;
 
 import com.eul4.Main;
 import com.eul4.common.hologram.Hologram;
+import com.eul4.event.TileInteractEvent;
 import com.eul4.model.inventory.craft.CraftConfirmationGui;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
@@ -162,6 +163,14 @@ public class TownListener implements Listener
 		final TownTile tile = townBlock.getTile();
 		
 		if(tile == null)
+		{
+			return;
+		}
+		
+		TileInteractEvent tileInteractEvent = new TileInteractEvent(tile);
+		plugin.getPluginManager().callEvent(tileInteractEvent);
+		
+		if(tileInteractEvent.isCancelled())
 		{
 			return;
 		}

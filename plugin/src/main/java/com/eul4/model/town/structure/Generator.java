@@ -14,4 +14,6 @@ public interface Generator extends ResourceStructure
 	
 	int getPossibleAmountToCollect();
 	boolean hasReachedMaxTownBalanceCapacity();
+	
+	void full();
 }

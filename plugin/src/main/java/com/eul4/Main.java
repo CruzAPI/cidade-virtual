@@ -20,6 +20,7 @@ import com.eul4.listener.hotbar.RaidAnalyzerHotbarListener;
 import com.eul4.listener.hotbar.RaidSpectatorHotbarListener;
 import com.eul4.listener.inventory.*;
 import com.eul4.listener.player.*;
+import com.eul4.listener.player.tutorial.step.*;
 import com.eul4.listener.scoreboard.AnalyzerScoreboardListener;
 import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
@@ -217,6 +218,7 @@ public class Main extends Common
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("macroid").setExecutor(new MacroidCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
+		getCommand(TutorialCommand.COMMAND_NAME).setExecutor(new TutorialCommand(this));
 	}
 	
 	private void registerListeners()
@@ -228,7 +230,12 @@ public class Main extends Common
 		registerScoreboardListeners();
 		registerStructureListeners();
 		
+		pluginManager.registerEvents(new AssistantHideListener(this), this);
+		pluginManager.registerEvents(new AssistantInteractListener(this), this);
+		pluginManager.registerEvents(new AssistantTargetTaskListener(this), this);
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
+		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
+		pluginManager.registerEvents(new EntityItemMoveListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);
@@ -243,7 +250,6 @@ public class Main extends Common
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
-		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);
 		pluginManager.registerEvents(new FrozenTownListener(this), this);
@@ -270,10 +276,14 @@ public class Main extends Common
 		pluginManager.registerEvents(new ArmoryMyInventoryMenuGuiListener(this), this);
 		pluginManager.registerEvents(new ArmorySelectOrStorageItemsGuiListener(this), this);
 		pluginManager.registerEvents(new ArmoryWeaponShopGuiListener(this), this);
+		pluginManager.registerEvents(new AssistantGuiListener(this), this);
+		pluginManager.registerEvents(new TownHallGuiListener(this), this);
 	}
 	
 	private void registerPlayerListeners()
 	{
+		registerTutorialStepListeners();
+		
 		pluginManager.registerEvents(new AttackerListener(this), this);
 		pluginManager.registerEvents(new DefenderListener(this), this);
 		pluginManager.registerEvents(new FighterListener(this), this);
@@ -281,6 +291,17 @@ public class Main extends Common
 		pluginManager.registerEvents(new InvincibleListener(this), this);
 		pluginManager.registerEvents(new PluginPlayerListener(this), this);
 		pluginManager.registerEvents(new SpectatorListener(this), this);
+		pluginManager.registerEvents(new TutorialTownPlayerListener(this), this);
+	}
+	
+	private void registerTutorialStepListeners()
+	{
+		pluginManager.registerEvents(new AssistantStepListener(this), this);
+		pluginManager.registerEvents(new ClickToFinishTownHallStepListener(this), this);
+		pluginManager.registerEvents(new CollectDislikesStepListener(this), this);
+		pluginManager.registerEvents(new CollectLikesStepListener(this), this);
+		pluginManager.registerEvents(new UpgradeTownHallStepListener(this), this);
+		pluginManager.registerEvents(new WaitFinishTownHallStepListener(this), this);
 	}
 	
 	private void registerScoreboardListeners()

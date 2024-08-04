@@ -5,6 +5,8 @@ import com.eul4.model.player.TownScoreboardPlayer;
 
 public interface TownScoreboard extends CommonScoreboard
 {
+	void registerScores();
+	
 	void updateLikesTeam();
 	void updateDislikesTeam();
 	void updateHardnessTeam();

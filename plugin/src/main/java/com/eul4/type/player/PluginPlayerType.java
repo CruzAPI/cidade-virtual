@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 public interface PluginPlayerType extends PlayerType
 {
 	Class<? extends PluginPlayer> getInterfaceType();
-	Class<? extends PluginPlayerWriter<?>> getWriterClass();
-	Class<? extends PluginPlayerReader<?>> getReaderClass();
+	Class<? extends PluginPlayerWriter> getWriterClass();
+	Class<? extends PluginPlayerReader> getReaderClass();
 	PluginPlayer newInstance(Player player, PluginPlayer pluginPlayer);
 	PluginPlayer newInstance(Player player, Main plugin);
 	PlayerCategory getCategory();

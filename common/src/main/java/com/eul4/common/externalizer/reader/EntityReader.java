@@ -45,6 +45,7 @@ public class EntityReader extends ObjectReader<Entity>
 		return () ->
 		{
 			UUID uuid = new UUID(in.readLong(), in.readLong());
+			
 			Chunk chunk = readers.getReader(ChunkReader.class).readReference(plugin);
 			chunk.load();
 			return Objects.requireNonNull(chunk.getWorld().getEntity(uuid));

@@ -6,12 +6,12 @@ import com.eul4.common.model.player.craft.CraftCommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
+import com.eul4.model.playerdata.TutorialTownPlayerData;
 import com.eul4.model.town.Town;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
-import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -25,6 +25,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	protected final Main plugin;
 	
 	protected TownPlayerData townPlayerData;
+	protected TutorialTownPlayerData tutorialTownPlayerData;
 	
 	private transient int lastAttackCooldownTick;
 	
@@ -33,6 +34,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 		super(player, plugin);
 		this.plugin = plugin;
 		this.townPlayerData = new TownPlayerData();
+		this.tutorialTownPlayerData = new TutorialTownPlayerData();
 	}
 	
 	protected CraftPluginPlayer(Player player, PluginPlayer pluginPlayer)
@@ -40,6 +42,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 		super(player, pluginPlayer);
 		this.plugin = pluginPlayer.getPlugin();
 		this.townPlayerData = pluginPlayer.getTownPlayerData();
+		this.tutorialTownPlayerData = pluginPlayer.getTutorialTownPlayerData();
 	}
 	
 	public void onStartingTownAttack()
@@ -73,12 +76,6 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	}
 	
 	@Override
-	public Optional<Town> findTown()
-	{
-		return Optional.ofNullable(getTown());
-	}
-	
-	@Override
 	public void resetAttackCooldown()
 	{
 		this.lastAttackCooldownTick = plugin.getServer().getCurrentTick();
@@ -102,5 +99,29 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 				&& !serverPlayer.hasEffect(MobEffects.BLINDNESS)
 				&& !serverPlayer.isPassenger()
 				&& !serverPlayer.isSprinting();
+	}
+	
+	@Override
+	public final Town getTown()
+	{
+		return plugin.getTownManager().getTown(player.getUniqueId());
+	}
+	
+	@Override
+	public final Optional<Town> findTown()
+	{
+		return Optional.ofNullable(getTown());
+	}
+	
+	@Override
+	public final boolean hasTown()
+	{
+		return getTown() != null;
+	}
+	
+	@Override
+	public void onTownCreate()
+	{
+	
 	}
 }

@@ -10,6 +10,8 @@ import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.StructureStatus;
 import com.eul4.event.StructureConstructEvent;
 import com.eul4.event.StructureFinishEvent;
+import com.eul4.event.StructureReadyEvent;
+import com.eul4.event.StructureUpgradeEvent;
 import com.eul4.exception.*;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
@@ -64,7 +66,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -236,7 +237,7 @@ public abstract class CraftStructure implements Structure
 	@Override
 	public final void removeAllStructureItemMove()
 	{
-		town.getPlayer().ifPresent(this::removeAllStructureItemMove);
+		town.findPlayer().ifPresent(this::removeAllStructureItemMove);
 	}
 	
 	@Override
@@ -449,6 +450,7 @@ public abstract class CraftStructure implements Structure
 		ContainerUtil.setUUID(container, PluginNamespacedKey.STRUCTURE_ITEM_MOVE_UUID, uuid);
 		ContainerUtil.setUUID(container, CommonNamespacedKey.ITEM_UUID, UUID.randomUUID());
 		ContainerUtil.setFlag(container, CommonNamespacedKey.CANCEL_MOVE);
+		ContainerUtil.setFlag(container, CommonNamespacedKey.CANCEL_SWAP);
 		ContainerUtil.setFlag(container, CommonNamespacedKey.REMOVE_ITEM_ON_PLAYER_JOIN);
 		ContainerUtil.setFlag(container, PluginNamespacedKey.CANCEL_STRUCTURE_INTERACTION);
 		
@@ -502,6 +504,8 @@ public abstract class CraftStructure implements Structure
 					updateHologram();
 					cancel();
 					construct(loadSchematic());
+					new StructureReadyEvent(CraftStructure.this).callEvent();
+					
 					return;
 				}
 				
@@ -650,6 +654,8 @@ public abstract class CraftStructure implements Structure
 		this.level = nextLevel;
 		
 		scheduleBuildTaskIfPossible();
+		
+		new StructureUpgradeEvent(this).callEvent();
 	}
 	
 	public void checkUpgrade() throws UpgradeLockedException, UpgradeNotFoundException

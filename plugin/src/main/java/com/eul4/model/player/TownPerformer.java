@@ -4,6 +4,7 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.PhysicalPlayerType;
+import com.eul4.type.player.PluginPlayerType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
@@ -63,14 +64,17 @@ public sealed interface TownPerformer extends PluginPlayer
 					
 					getPlugin().getServer().getScheduler().callSyncMethod(getPlugin(), () ->
 					{
-						execute();
+						executeInNewlyCreation();
+						
+						getPlugin().getPlayerManager()
+								.find(getPlayer())
+								.map(PluginPlayer.class::cast)
+								.ifPresent(PluginPlayer::onTownCreate);
+						
 						getPlayer().resetTitle();
 						getPlayer().showTitle(welcomeTitle);
 						
 						getPlayer().playSound(getPlayer().getLocation(), ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, getPitch(0));
-						sendMessage(PluginMessage.TOWN_WELCOME, getPlayer().displayName());
-						sendMessage(PluginMessage.TOWN_HINT_BUY_STRUCTURE_COMMAND);
-						sendMessage(PluginMessage.TOWN_HINT_BACK_TO_SPAWN);
 						
 						return null;
 					}).get();
@@ -88,6 +92,11 @@ public sealed interface TownPerformer extends PluginPlayer
 	}
 	
 	void execute();
+	
+	default void executeInNewlyCreation()
+	{
+		execute();
+	}
 	
 	non-sealed interface TeleportInside extends TownPerformer
 	{
@@ -112,7 +121,21 @@ public sealed interface TownPerformer extends PluginPlayer
 		@Override
 		default void execute()
 		{
-			CommonPlayer commonPlayer = getPlugin().getPlayerManager().register(this, PhysicalPlayerType.TOWN_PLAYER);
+			execute(false);
+		}
+		
+		@Override
+		default void executeInNewlyCreation()
+		{
+			execute(true);
+		}
+		
+		private void execute(boolean newlyCreated)
+		{
+			PluginPlayerType pluginPlayerType = newlyCreated
+					? PhysicalPlayerType.TUTORIAL_TOWN_PLAYER
+					: PhysicalPlayerType.TOWN_PLAYER;
+			CommonPlayer commonPlayer = getPlugin().getPlayerManager().register(this, pluginPlayerType);
 			
 			if(commonPlayer instanceof TownPlayer)
 			{

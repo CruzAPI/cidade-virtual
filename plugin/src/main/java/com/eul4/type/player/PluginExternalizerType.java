@@ -6,6 +6,7 @@ import com.eul4.common.externalizer.writer.ObjectWriter;
 import com.eul4.common.type.player.*;
 import com.eul4.externalizer.reader.*;
 import com.eul4.externalizer.writer.*;
+import com.eul4.model.player.TutorialTownPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +21,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	BLOCK_DATA_MAP(BlockDataMapReader::new, BlockDataMapReader.class, BlockDataMapWriter::new, BlockDataMapWriter.class),
 	BLOCK_DATA(BlockDataReader::new, BlockDataReader.class, BlockDataWriter::new, BlockDataWriter.class),
 	CANNON(CannonReader::new, CannonReader.class, CannonWriter::new, CannonWriter.class),
+	CHECKPOINT_STEP_ENUM(CheckpointStepEnumReader::new, CheckpointStepEnumReader.class, CheckpointStepEnumWriter::new, CheckpointStepEnumWriter.class),
 	DEFENDER(DefenderReader::new, DefenderReader.class, DefenderWriter::new, DefenderWriter.class),
 	DEFENDER_SPECTATOR(DefenderSpectatorReader::new, DefenderSpectatorReader.class, DefenderSpectatorWriter::new, DefenderSpectatorWriter.class),
 	DISLIKE_DEPOSIT(DislikeDepositReader::new, DislikeDepositReader.class, DislikeDepositWriter::new, DislikeDepositWriter.class),
@@ -45,13 +47,15 @@ public enum PluginExternalizerType implements ExternalizerType
 	TOWN_TILE(TownTileReader::new, TownTileReader.class, TownTileWriter::new, TownTileWriter.class),
 	TOWN(TownReader::new, TownReader.class, TownWriter::new, TownWriter.class),
 	TURRET(TurretReader::new, TurretReader.class, TurretWriter::new, TurretWriter.class),
+	TUTORIAL_TOWN_PLAYER_DATA(TutorialTownPlayerDataReader::new, TutorialTownPlayerDataReader.class, TutorialTownPlayerDataWriter::new, TutorialTownPlayerDataWriter.class),
+	TUTORIAL_TOWN_PLAYER(TutorialTownPlayerReader::new, TutorialTownPlayerReader.class, TutorialTownPlayerWriter::new, TutorialTownPlayerWriter.class),
 	VANILLA_PLAYER(VanillaPlayerReader::new, VanillaPlayerReader.class, VanillaPlayerWriter::new, VanillaPlayerWriter.class),
 	VECTOR_3(Vector3Reader::new, Vector3Reader.class, Vector3Writer::new, Vector3Writer.class),
 	;
 	private final ReaderConstructor readerConstructor;
-	private final Class<? extends ObjectReader<?>> readerClass;
+	private final Class<? extends ObjectReader> readerClass;
 	private final WriterConstructor writerConstructor;
-	private final Class<? extends ObjectWriter<?>> writerClass;
+	private final Class<? extends ObjectWriter> writerClass;
 	
 	@Override
 	public ObjectReader<?> newInstance(Readers readers) throws InvalidVersionException

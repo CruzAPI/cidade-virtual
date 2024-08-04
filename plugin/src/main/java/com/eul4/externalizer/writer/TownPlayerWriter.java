@@ -5,15 +5,20 @@ import com.eul4.model.player.TownPlayer;
 
 import java.io.IOException;
 
-public class TownPlayerWriter extends PhysicalPlayerWriter<TownPlayer>
+public class TownPlayerWriter<TP extends TownPlayer> extends PhysicalPlayerWriter<TP>
 {
 	public TownPlayerWriter(Writers writers)
 	{
-		super(writers, TownPlayer.class);
+		this(writers, (Class<TP>) TownPlayer.class);
+	}
+	
+	public TownPlayerWriter(Writers writers, Class<TP> type)
+	{
+		super(writers, type);
 	}
 	
 	@Override
-	protected void writeObject(TownPlayer townPlayer) throws IOException
+	protected void writeObject(TP townPlayer) throws IOException
 	{
 		super.writeObject(townPlayer);
 	}

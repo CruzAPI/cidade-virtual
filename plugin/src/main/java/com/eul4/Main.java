@@ -230,6 +230,7 @@ public class Main extends Common
 		registerScoreboardListeners();
 		registerStructureListeners();
 		
+		pluginManager.registerEvents(new AssistantHideListener(this), this);
 		pluginManager.registerEvents(new AssistantInteractListener(this), this);
 		pluginManager.registerEvents(new AssistantTargetTaskListener(this), this);
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);

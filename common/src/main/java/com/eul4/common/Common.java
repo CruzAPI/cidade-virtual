@@ -8,6 +8,7 @@ import com.eul4.common.event.WorldSaveOrStopEvent;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.interceptor.HideEntityFlagInterceptor;
 import com.eul4.common.interceptor.HologramTranslatorAdapter;
 import com.eul4.common.interceptor.SpawnEntityInterceptor;
 import com.eul4.common.listener.*;
@@ -79,6 +80,7 @@ public abstract class Common extends JavaPlugin
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 		protocolManager.addPacketListener(hologramTranslatorAdapter = new HologramTranslatorAdapter(this));
 		protocolManager.addPacketListener(spawnEntityInterceptor = new SpawnEntityInterceptor(this));
+		protocolManager.addPacketListener(new HideEntityFlagInterceptor(this));
 	}
 	
 	private void registerCommonResourceBundles()

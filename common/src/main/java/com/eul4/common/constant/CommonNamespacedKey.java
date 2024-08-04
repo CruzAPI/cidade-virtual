@@ -12,6 +12,7 @@ public class CommonNamespacedKey
 	CANCEL_DROP = new NamespacedKey(NAMESPACE, "cancel_drop"),
 	CANCEL_SWAP = new NamespacedKey(NAMESPACE, "cancel_swap"),
 	CANCEL_MOVE = new NamespacedKey(NAMESPACE, "cancel_move"),
+	HIDE_ENTITY = new NamespacedKey(NAMESPACE, "hide_entity"),
 	CANCEL_SPAWN = new NamespacedKey(NAMESPACE, "remove_on_drop"),
 	CANCEL_INTERACTION = new NamespacedKey(NAMESPACE, "cancel_interaction"),
 	REMOVE_ON_CHUNK_LOAD = new NamespacedKey(NAMESPACE, "remove_on_chunk_load"),

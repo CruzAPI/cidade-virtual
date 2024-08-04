@@ -1,6 +1,8 @@
 package com.eul4.wrapper;
 
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.event.AttackFinishEvent;
+import com.eul4.event.AttackStartEvent;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.*;
 import com.eul4.model.town.Town;
@@ -76,6 +78,8 @@ public class TownAttack
 		town.findPlayer().map(town.getPlugin().getPlayerManager()::get)
 				.map(PluginPlayer.class::cast)
 				.ifPresent(PluginPlayer::onStartingTownAttack);
+		
+		town.getPlugin().getPluginManager().callEvent(new AttackStartEvent(town));
 	}
 	
 	private void scheduleForceFieldTask()
@@ -126,6 +130,8 @@ public class TownAttack
 		{
 			attacker.reincarnate();
 		}
+		
+		town.getPlugin().getPluginManager().callEvent(new AttackFinishEvent(town));
 	}
 	
 	public boolean isFinished()

@@ -218,7 +218,7 @@ public class Main extends Common
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("macroid").setExecutor(new MacroidCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
-		getCommand(TutorialCommand.COMMAND_NAME).setExecutor(new TutorialCommand(this));
+//		getCommand(TutorialCommand.COMMAND_NAME).setExecutor(new TutorialCommand(this));
 	}
 	
 	private void registerListeners()

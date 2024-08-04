@@ -22,4 +22,3 @@ commands:
     aliases: [ataque, attack, atacar]
   scoreboard:
     aliases: [score]
-  tutorial:

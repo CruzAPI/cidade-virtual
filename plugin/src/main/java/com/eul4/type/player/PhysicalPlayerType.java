@@ -17,9 +17,9 @@ public enum PhysicalPlayerType implements PluginPlayerType
 {
 	ADMIN(Admin.class, CraftAdmin::new, CraftAdmin::new, AdminWriter.class, AdminReader.class),
 	TOWN_PLAYER(TownPlayer.class, CraftTownPlayer::new, CraftTownPlayer::new, TownPlayerWriter.class, TownPlayerReader.class),
-	TUTORIAL_TOWN_PLAYER(TutorialTownPlayer.class, CraftTutorialTownPlayer::new, CraftTutorialTownPlayer::new, TutorialTownPlayerWriter.class, TutorialTownPlayerReader.class),
 	VANILLA_PLAYER(VanillaPlayer.class, CraftVanillaPlayer::new, CraftVanillaPlayer::new, VanillaPlayerWriter.class, VanillaPlayerReader.class),
 	SPAWN_PLAYER(SpawnPlayer.class, CraftSpawnPlayer::new, CraftSpawnPlayer::new, SpawnPlayerWriter.class, SpawnPlayerReader.class),
+	TUTORIAL_TOWN_PLAYER(TutorialTownPlayer.class, CraftTutorialTownPlayer::new, CraftTutorialTownPlayer::new, TutorialTownPlayerWriter.class, TutorialTownPlayerReader.class),
 	;
 	
 	private final Class<? extends PhysicalPlayer> interfaceType;

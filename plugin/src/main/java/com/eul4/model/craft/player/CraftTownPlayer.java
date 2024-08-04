@@ -77,6 +77,7 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 	public PluginPlayer load()
 	{
 		PluginPlayer pluginPlayer = super.load();
+		
 		if(!hasTown())
 		{
 			if(lastPlayerType == PhysicalPlayerType.ADMIN)

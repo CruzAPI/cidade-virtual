@@ -36,8 +36,11 @@ public class CraftTutorialTownPlayer extends CraftTownPlayer implements Tutorial
 		super.reset();
 		clearChat();
 		
-		scheduleCheckpointStep();
-		scheduleTutorialTownPlayerTask();
+		if(hasTown())
+		{
+			scheduleCheckpointStep();
+			scheduleTutorialTownPlayerTask();
+		}
 	}
 	
 	private void cancelCurrentStep()

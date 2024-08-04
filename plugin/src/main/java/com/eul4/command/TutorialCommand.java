@@ -42,9 +42,9 @@ public class TutorialCommand implements TabExecutor
 			return false;
 		}
 		
-		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
-		pluginPlayer = (PluginPlayer) plugin.getPlayerManager().register(pluginPlayer, PhysicalPlayerType.TUTORIAL_TOWN_PLAYER);
-		
+//		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+//		pluginPlayer = (PluginPlayer) plugin.getPlayerManager().register(pluginPlayer, PhysicalPlayerType.TUTORIAL_TOWN_PLAYER);
+//
 		return true;
 	}
 }

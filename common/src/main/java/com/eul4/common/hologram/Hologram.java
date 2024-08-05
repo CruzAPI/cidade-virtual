@@ -5,6 +5,7 @@ import com.eul4.common.i18n.Message;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.util.ThreadUtil;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecraft.server.level.ServerLevel;
@@ -34,7 +35,7 @@ public class Hologram
 	
 	public void remove()
 	{
-		hologramLines.forEach(translatedHologramLine -> translatedHologramLine.armorStand.remove());
+		hologramLines.forEach(TranslatedHologramLine::remove);
 		hologramLines.clear();
 	}
 	
@@ -64,6 +65,8 @@ public class Hologram
 		TranslatedHologramLine line = new TranslatedHologramLine(armorStand);
 		
 		hologramLines.add(line);
+		
+		TranslatedHologramLine.ARMOR_STAND_UUID_MAP.put(armorStand.getUniqueId(), line);
 		plugin.getHologramTranslatorAdapter().getHolograms().put(armorStand, line);
 		setTextFunction.accept(line);
 		
@@ -138,10 +141,18 @@ public class Hologram
 		}
 	}
 	
+	public void load()
+	{
+		hologramLines.forEach(TranslatedHologramLine::load);
+	}
+	
 	@Getter
 	public class TranslatedHologramLine
 	{
-		private final ArmorStand armorStand;
+		public static final Map<UUID, TranslatedHologramLine> ARMOR_STAND_UUID_MAP = new HashMap<>();
+		
+		@Setter
+		private ArmorStand armorStand;
 		
 		private Message message;
 		private Object[] args;
@@ -185,6 +196,17 @@ public class Hologram
 					.map(ArmorStand::getUniqueId)
 					.map(UUID::toString)
 					.orElse("null");
+		}
+		
+		public void remove()
+		{
+			ARMOR_STAND_UUID_MAP.remove(armorStand.getUniqueId());
+			armorStand.remove();
+		}
+		
+		public void load()
+		{
+			ARMOR_STAND_UUID_MAP.put(armorStand.getUniqueId(), this);
 		}
 	}
 }

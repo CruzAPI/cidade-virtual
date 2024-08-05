@@ -8,9 +8,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public interface Armory extends Structure
 {
+	Map<UUID, Armory> NPC_UUID_MAP = new HashMap<>();
+	
 	Villager getNPC();
 	ItemStack[] getStorageContents();
 	void setStorageContents(ItemStack[] contents);

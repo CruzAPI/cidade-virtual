@@ -477,6 +477,7 @@ public abstract class CraftStructure implements Structure
 		resetAttributes();
 		scheduleBuildTaskIfPossible();
 		reconstructBlindly();
+		hologram.load();
 	}
 	
 	@Override

@@ -59,6 +59,35 @@ public class TestCommand implements TabExecutor
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
 		}
+		else if((args.length == 1) && args[0].equals("debug"))
+		{
+			Player target = args.length == 1 ? player : Bukkit.getPlayer(args[1]);
+			
+			if(target == null)
+			{
+				player.sendMessage("player not found.");
+				return false;
+			}
+			
+			PluginPlayer targetPluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(target);
+			
+			Town town = targetPluginPlayer.getTown();
+			
+			if(town == null)
+			{
+				player.sendMessage(target.getName() + " does not have a town!");
+				return false;
+			}
+			
+			Entity npc = town.getArmory().getNPC();
+			
+			player.sendMessage("Armory NPC: uuid=" + npc.getUniqueId()
+					+ " type=" + npc.getType()
+					+ " isDead=" + npc.isDead()
+					+ " isValid=" + npc.isValid()
+					+ " ref=" + Integer.toHexString(npc.hashCode())
+			);
+		}
 		else if((args.length == 1 || args.length == 2) && args[0].equals("info"))
 		{
 			Player target = args.length == 1 ? player : Bukkit.getPlayer(args[1]);

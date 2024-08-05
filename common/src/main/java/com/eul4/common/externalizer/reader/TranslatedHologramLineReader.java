@@ -33,6 +33,10 @@ public class TranslatedHologramLineReader extends ObjectReader<Hologram.Translat
 			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
+		case 1:
+			this.reader = Reader.identity();
+			this.parameterizedReadable = this::parameterizedReadableVersion1;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -44,9 +48,18 @@ public class TranslatedHologramLineReader extends ObjectReader<Hologram.Translat
 		{
 			hologram.getLocation().getChunk().load();
 			ArmorStand armorStand = (ArmorStand) hologram.getPlugin()
-					.getEntityRegisterListener()
-					.getEntityByUuid(new UUID(in.readLong(), in.readLong()));
+					.getServer()
+					.getEntity(new UUID(in.readLong(), in.readLong()));
 			
+			return hologram.new TranslatedHologramLine(armorStand);
+		};
+	}
+	
+	private Readable<Hologram.TranslatedHologramLine> parameterizedReadableVersion1(Hologram hologram)
+	{
+		return () ->
+		{
+			ArmorStand armorStand = (ArmorStand) readers.getReader(EntityReader.class).readReference(hologram.getPlugin());
 			return hologram.new TranslatedHologramLine(armorStand);
 		};
 	}

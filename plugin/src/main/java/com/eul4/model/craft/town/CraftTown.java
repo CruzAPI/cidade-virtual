@@ -353,8 +353,15 @@ public class CraftTown implements Town
 	public void load()
 	{
 		structureMap.values().forEach(Structure::load);
+		townTileMap.values().forEach(TownTile::load);
 		reloadAllStructureAttributes();
 		updateTileHolograms();
+		
+		if(assistant != null)
+		{
+			ASSISTANT_UUID_MAP.put(assistant.getUniqueId(), this);
+		}
+		
 		TOWN_BLOCKS.putAll(townBlockMap);
 	}
 	
@@ -1268,6 +1275,7 @@ public class CraftTown implements Town
 			return;
 		}
 		
+		ASSISTANT_UUID_MAP.remove(assistant.getUniqueId());
 		assistant.remove();
 		assistant = null;
 		
@@ -1293,6 +1301,7 @@ public class CraftTown implements Town
 		this.assistant = (Villager) block.getWorld().spawnEntity(block.getLocation().add(0.5D, 0.0D, 0.5D),
 				EntityType.VILLAGER,
 				CreatureSpawnEvent.SpawnReason.CUSTOM, this::setupAssistant);
+		ASSISTANT_UUID_MAP.put(assistant.getUniqueId(), this);
 		
 		findPlayer().ifPresent(player -> player.playSound(assistant.getLocation(),
 				Sound.ENTITY_VILLAGER_AMBIENT,

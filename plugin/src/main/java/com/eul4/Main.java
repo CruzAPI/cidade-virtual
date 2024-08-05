@@ -236,6 +236,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new EntityItemMoveListener(this), this);
+		pluginManager.registerEvents(new EntityRecyclerListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);

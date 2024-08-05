@@ -21,7 +21,7 @@ public enum CommonObjectType implements ObjectType
 	PLAYER_DATA((byte) 0, CommonExternalizerType.PLAYER_DATA),
 	POTION_EFFECT_COLLECTION((byte) 0, CommonExternalizerType.POTION_EFFECT_COLLECTION),
 	POTION_EFFECT((byte) 0, CommonExternalizerType.POTION_EFFECT),
-	TRANSLATED_HOLOGRAM_LINE((byte) 0, CommonExternalizerType.TRANSLATED_HOLOGRAM_LINE);
+	TRANSLATED_HOLOGRAM_LINE((byte) 1, CommonExternalizerType.TRANSLATED_HOLOGRAM_LINE);
 	
 	private final byte version;
 	private final CommonExternalizerType externalizerType;

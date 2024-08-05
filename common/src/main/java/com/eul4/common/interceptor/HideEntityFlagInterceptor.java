@@ -25,7 +25,7 @@ public class HideEntityFlagInterceptor extends PacketAdapter
 	public void onPacketSending(PacketEvent event)
 	{
 		final UUID entityUniqueId = event.getPacket().getUUIDs().readSafely(0);
-		Entity entity = plugin.getEntityRegisterListener().getEntityByUuid(entityUniqueId);
+		Entity entity = plugin.getServer().getEntity(entityUniqueId);
 		
 		if(entity == null)
 		{

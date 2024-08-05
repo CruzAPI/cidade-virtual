@@ -30,6 +30,7 @@ public interface TownTile
 	
 	Town getTown();
 	
+	void load();
 	void updateHologram();
 	
 	int getDepth();

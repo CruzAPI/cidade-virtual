@@ -4,7 +4,6 @@ import com.eul4.common.hologram.Hologram;
 import com.eul4.common.type.player.Writers;
 
 import java.io.IOException;
-import java.util.UUID;
 
 public class TranslatedHologramLineWriter extends ObjectWriter<Hologram.TranslatedHologramLine>
 {
@@ -16,9 +15,6 @@ public class TranslatedHologramLineWriter extends ObjectWriter<Hologram.Translat
 	@Override
 	protected void writeObject(Hologram.TranslatedHologramLine translatedHologramLine) throws IOException
 	{
-		UUID uuid = translatedHologramLine.getArmorStand().getUniqueId();
-		
-		out.writeLong(uuid.getMostSignificantBits());
-		out.writeLong(uuid.getLeastSignificantBits());
+		writers.getWriter(EntityWriter.class).writeReference(translatedHologramLine.getArmorStand());
 	}
 }

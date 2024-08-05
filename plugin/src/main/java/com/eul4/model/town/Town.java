@@ -21,6 +21,8 @@ import org.bukkit.util.BoundingBox;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +30,8 @@ import java.util.concurrent.Future;
 
 public interface Town
 {
+	Map<UUID, Town> ASSISTANT_UUID_MAP = new HashMap<>();
+	
 	int TOWN_RADIUS = 49;
 	int TOWN_FULL_RADIUS = 55;
 	int TOWN_FULL_RADIUS_EXCLUDING_WALLS = TOWN_FULL_RADIUS - 1;

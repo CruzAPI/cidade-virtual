@@ -172,6 +172,12 @@ public class CraftTownTile implements TownTile
 	}
 	
 	@Override
+	public void load()
+	{
+		Optional.ofNullable(hologram).ifPresent(Hologram::load);
+	}
+	
+	@Override
 	public void updateHologram()
 	{
 		if(hologram == null)

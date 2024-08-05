@@ -37,7 +37,6 @@ public abstract class Common extends JavaPlugin
 {
 	private HologramTranslatorAdapter hologramTranslatorAdapter;
 	
-	private EntityRegisterListener entityRegisterListener;
 	private SpawnEntityInterceptor spawnEntityInterceptor;
 	
 	private PlayerManager playerManager;
@@ -54,8 +53,6 @@ public abstract class Common extends JavaPlugin
 		registerListeners();
 		registerPacketAdapters();
 		registerCommand();
-		
-		entityRegisterListener.loadEntities();
 		
 		getLogger().info("Commons enabled!");
 	}
@@ -100,7 +97,6 @@ public abstract class Common extends JavaPlugin
 		
 		pluginManager.registerEvents(new RemoveOnChunkLoadListener(this), this);
 		
-		pluginManager.registerEvents(entityRegisterListener = new EntityRegisterListener(this), this);
 		pluginManager.registerEvents(new CommonAdminListener(this), this);
 		pluginManager.registerEvents(new CommonPlayerListener(this), this);
 		pluginManager.registerEvents(new GuiListener(this), this);

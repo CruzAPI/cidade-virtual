@@ -25,7 +25,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -57,13 +56,22 @@ public class CraftArmory extends CraftStructure implements Armory
 		super(town, centerTownBlock, isBuilt);
 		town.setArmory(this);
 		
-		this.npc = (Villager) centerTownBlock.getBlock().getWorld().spawnEntity(getDefaultNpcLocation(), VILLAGER, CUSTOM, this::setupNPC);
+		spawnNPC();
 		scheduleNPCWatcherTaskIfPossible();
 	}
 	
 	public CraftArmory(Town town)
 	{
 		super(town);
+	}
+	
+	private void spawnNPC()
+	{
+		npc = (Villager) getCenterTownBlock().getBlock().getWorld().spawnEntity(getDefaultNpcLocation(),
+				VILLAGER,
+				CUSTOM,
+				this::setupNPC);
+		NPC_UUID_MAP.put(npc.getUniqueId(), this);
 	}
 	
 	private void setupNPC(Entity villager)
@@ -291,6 +299,7 @@ public class CraftArmory extends CraftStructure implements Armory
 	{
 		super.load();
 		
+		NPC_UUID_MAP.put(npc.getUniqueId(), this);
 		scheduleNPCWatcherTaskIfPossible();
 	}
 	

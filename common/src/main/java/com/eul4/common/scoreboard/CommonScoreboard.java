@@ -7,4 +7,7 @@ public interface CommonScoreboard
 {
 	ScoreboardPlayer getScoreboardPlayer();
 	Scoreboard getBukkitScoreboard();
+	
+	void registerScores();
+	void registerIfNotRegistered();
 }

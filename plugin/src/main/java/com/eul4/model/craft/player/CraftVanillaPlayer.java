@@ -54,6 +54,8 @@ public class CraftVanillaPlayer extends CraftPhysicalPlayer implements VanillaPl
 		{
 			player.teleport(PluginWorldType.OVER_WORLD.getInstance().getSpawnLocation());
 		}
+		
+		scoreboard.registerIfNotRegistered();
 	}
 	
 	@Override

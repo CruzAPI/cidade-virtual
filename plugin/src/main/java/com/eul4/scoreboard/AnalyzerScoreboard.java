@@ -4,8 +4,6 @@ import com.eul4.common.scoreboard.CommonScoreboard;
 
 public interface AnalyzerScoreboard extends CommonScoreboard
 {
-	void register();
-	
 	void updateTitle();
 	void updatePlayerStatusTeam();
 	void updateTownHallLevelTeam();

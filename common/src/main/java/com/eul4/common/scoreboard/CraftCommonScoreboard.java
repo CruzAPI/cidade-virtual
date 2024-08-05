@@ -12,6 +12,8 @@ public abstract class CraftCommonScoreboard implements CommonScoreboard
 	protected final ScoreboardPlayer scoreboardPlayer;
 	protected final Scoreboard scoreboard;
 	
+	private boolean registered;
+	
 	public CraftCommonScoreboard(ScoreboardPlayer scoreboardPlayer, Supplier<Scoreboard> scoreboardSupplier)
 	{
 		this(scoreboardPlayer, scoreboardSupplier.get());
@@ -27,5 +29,17 @@ public abstract class CraftCommonScoreboard implements CommonScoreboard
 	public Scoreboard getBukkitScoreboard()
 	{
 		return scoreboard;
+	}
+	
+	@Override
+	public final void registerIfNotRegistered()
+	{
+		if(registered)
+		{
+			return;
+		}
+		
+		registered = true;
+		registerScores();
 	}
 }

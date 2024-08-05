@@ -56,6 +56,8 @@ public class CraftSpawnPlayer extends CraftPhysicalPlayer implements SpawnPlayer
 		{
 			player.teleport(PluginWorldType.OVER_WORLD.getInstance().getSpawnLocation());
 		}
+		
+		scoreboard.registerIfNotRegistered();
 	}
 	
 	@Override

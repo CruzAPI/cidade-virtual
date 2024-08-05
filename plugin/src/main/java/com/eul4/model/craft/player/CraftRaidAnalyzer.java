@@ -106,7 +106,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		player.teleport(town.getLocation().toHighestLocation());
 		player.showTitle(title);
 		
-		scoreboard.register();
+		scoreboard.registerIfNotRegistered();
 		new AnalyzingTownEvent(this).callEvent();
 	}
 	

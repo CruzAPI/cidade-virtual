@@ -51,7 +51,10 @@ public class ProtectableListener implements Listener
 			return;
 		}
 		
-		event.setCancelled(true);
+		if(event.getFoodLevel() < player.getFoodLevel())
+		{
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

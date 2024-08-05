@@ -296,7 +296,8 @@ public class SpawnProtectionListener implements Listener
 	{
 		Block clickedBlock = event.getClickedBlock();
 		
-		if(clickedBlock == null || Tag.DOORS.isTagged(clickedBlock.getType()))
+		if(clickedBlock == null || Tag.DOORS.isTagged(clickedBlock.getType())
+				|| !clickedBlock.getType().isInteractable())
 		{
 			return;
 		}

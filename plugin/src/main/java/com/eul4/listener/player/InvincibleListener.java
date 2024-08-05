@@ -48,6 +48,9 @@ public class InvincibleListener implements Listener
 			return;
 		}
 		
-		event.setCancelled(true);
+		if(event.getFoodLevel() < player.getFoodLevel())
+		{
+			event.setCancelled(true);
+		}
 	}
 }

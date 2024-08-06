@@ -1,10 +1,14 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.StructureType;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.enums.ItemBuilder;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureShopGui;
 import com.eul4.model.player.TownPlayer;
+import com.eul4.model.town.Town;
+import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -63,9 +67,21 @@ public class StructureShopGuiListener implements Listener
 		
 		if(gui.hasItemBuilder(currentItem))
 		{
-			ItemBuilder itemBuilder = gui.getItemBuilder(currentItem);
-			player.getInventory().addItem(itemBuilder.getItem(townPlayer));
 			player.closeInventory();
+			
+			ItemBuilder itemBuilder = gui.getItemBuilder(currentItem);
+			StructureType structureType = itemBuilder.getStructureType();
+			Town town = townPlayer.getTown();
+			
+			if(town.hasReachedStructureLimit(structureType))
+			{
+				SoundUtil.playPlong(player);
+				townPlayer.sendMessage(PluginMessage.STRUCTURE_LIMIT_REACHED, itemBuilder.getStructureType(),
+						town.countStructures(structureType), town.getStructureLimit(structureType));
+				return;
+			}
+			
+			player.getInventory().addItem(itemBuilder.getItem(townPlayer));
 		}
 	}
 }

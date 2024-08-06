@@ -1377,4 +1377,10 @@ public class CraftTown implements Town
 	{
 		return getPluginPlayer() instanceof TownPlayer && assistant != null && finishedTutorial;
 	}
+	
+	@Override
+	public boolean hasReachedStructureLimit(StructureType structureType)
+	{
+		return countStructures(structureType) >= getStructureLimit(structureType);
+	}
 }

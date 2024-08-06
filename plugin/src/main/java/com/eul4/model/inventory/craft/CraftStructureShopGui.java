@@ -7,6 +7,7 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.enums.ItemBuilder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureShopGui;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -61,7 +62,8 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 	private void setDisplayNameAndPriceInLore(ItemStack item, ItemBuilder itemBuilder)
 	{
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(itemBuilder.getStructureType().getNameMessage().translate(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_STRUCTURE_SHOP_GUI_STRUCTURE_DISPLAY_NAME
+				.translate(commonPlayer, itemBuilder.getStructureType(), ((PluginPlayer) commonPlayer).getTown()));
 		
 		Price price = itemBuilder.getStructureType().getRule((Main) commonPlayer.getPlugin())
 				.getAttribute(1).getPrice();

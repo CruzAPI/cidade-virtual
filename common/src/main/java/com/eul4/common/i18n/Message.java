@@ -144,6 +144,11 @@ public interface Message
 	
 	default Component translate(Locale locale, UnaryOperator<String> operator, Object... args)
 	{
+		if(isUntranslatable())
+		{
+			return getUntranslatableComponentBiFunction().apply(locale, args);
+		}
+		
 		final ResourceBundle bundle = ResourceBundleHandler.getBundle(getBundleBaseName(), locale);
 		final String template = getTemplate(bundle);
 		final Matcher matcher = PATTERN.matcher(template);
@@ -176,6 +181,21 @@ public interface Message
 	default MessageArgs withArgs(Object... args)
 	{
 		return new MessageArgs(this, args);
+	}
+	
+	default boolean hasTranslation()
+	{
+		return getKey() != null;
+	}
+	
+	default boolean isUntranslatable()
+	{
+		return getUntranslatableComponentBiFunction() != null;
+	}
+	
+	default BiFunction<Locale, Object[], Component> getUntranslatableComponentBiFunction()
+	{
+		return null;
 	}
 	
 	String name();

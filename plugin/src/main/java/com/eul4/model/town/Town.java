@@ -232,4 +232,6 @@ public interface Town
 	boolean canScheduleAssistantTargetTask();
 	
 	void setAssistant(Villager villager);
+	
+	boolean hasReachedStructureLimit(StructureType structureType);
 }

@@ -13,12 +13,14 @@ import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 
@@ -862,12 +864,28 @@ public enum PluginMessage implements Message
 	STRUCTURE_DISLIKE_DEPOSIT_SHOP_LORE("structure.dislike-deposit.shop-lore", empty().color(GRAY)),
 	STRUCTURE_ARMORY_SHOP_LORE("structure.armory.shop-lore", empty().color(GRAY)),
 	STRUCTURE_CANNON_SHOP_LORE("structure.cannon.shop-lore", empty().color(GRAY)),
-	STRUCTURE_TURRET_SHOP_LORE("structure.turret.shop-lore", empty().color(GRAY));
+	STRUCTURE_TURRET_SHOP_LORE("structure.turret.shop-lore", empty().color(GRAY)),
+	
+	INVENTORY_STRUCTURE_SHOP_GUI_STRUCTURE_DISPLAY_NAME((locale, args) ->
+	{
+		StructureType structureType = (StructureType) args[0];
+		Town town = (Town) args[1];
+		
+		final int current = town.countStructures(structureType);
+		final int max = town.getTownHall().getStructureLimitMap().getOrDefault(structureType, 0);
+		
+		NamedTextColor color = current >= max ? RED : GRAY;
+		
+		return structureType.getNameMessage().translate(locale)
+				.append(text(" "))
+				.append(text("(" + current + "/" + max + ")").color(color));
+	}),
 	
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;
 	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;
+	private final BiFunction<Locale, Object[], Component> untranslatableComponentBiFunction;
 	
 	PluginMessage(String key)
 	{
@@ -891,5 +909,16 @@ public enum PluginMessage implements Message
 		this.bundleBaseName = bundleBaseName;
 		this.key = key;
 		this.componentBiFunction = componentBiFunction;
+		
+		this.untranslatableComponentBiFunction = null;
+	}
+	
+	PluginMessage(BiFunction<Locale, Object[], Component> untranslatableComponentBiFunction)
+	{
+		this.untranslatableComponentBiFunction = untranslatableComponentBiFunction;
+		
+		this.bundleBaseName = null;
+		this.key = null;
+		this.componentBiFunction = null;
 	}
 }

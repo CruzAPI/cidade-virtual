@@ -47,15 +47,20 @@ public class TownManager
 	
 	private final Set<UUID> waitingCreation = new HashSet<>();
 	
+	@Getter
+	private boolean loaded;
+	
 	public void loadTowns() throws Exception
 	{
-		if(towns != null)
+		if(loaded || towns != null)
 		{
 			throw new Exception("Towns already loaded.");
 		}
 		
 		this.towns = plugin.getTownsFiler().loadTownsFromDisk();
 		this.towns.values().forEach(Town::load);
+		
+		loaded = true;
 	}
 	
 	public Future<Town> createNewTownAsync(UUID uuid)

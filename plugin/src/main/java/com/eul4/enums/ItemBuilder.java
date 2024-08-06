@@ -2,6 +2,7 @@ package com.eul4.enums;
 
 import com.eul4.StructureType;
 import com.eul4.common.constant.CommonNamespacedKey;
+import com.eul4.common.i18n.Message;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import lombok.Getter;
@@ -26,54 +27,71 @@ public enum ItemBuilder
 		ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureType.LIKE_GENERATOR),
+	}, StructureType.LIKE_GENERATOR,
+			PluginMessage.STRUCTURE_LIKE_GENERATOR_SHOP_PREVIEW_ATTRIBUTES,
+			PluginMessage.STRUCTURE_LIKE_GENERATOR_SHOP_LORE),
 	
 	DISLIKE_GENERATOR((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.RED_STAINED_GLASS);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureType.DISLIKE_GENERATOR),
+	}, StructureType.DISLIKE_GENERATOR,
+			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_SHOP_PREVIEW_ATTRIBUTES,
+			PluginMessage.STRUCTURE_DISLIKE_GENERATOR_SHOP_LORE),
 	
 	LIKE_DEPOSIT((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.LIME_CONCRETE);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureType.LIKE_DEPOSIT),
+	}, StructureType.LIKE_DEPOSIT,
+			PluginMessage.STRUCTURE_LIKE_DEPOSIT_SHOP_PREVIEW_ATTRIBUTES,
+			PluginMessage.STRUCTURE_LIKE_DEPOSIT_SHOP_LORE),
 	
 	DISLIKE_DEPOSIT((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.RED_CONCRETE);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureType.DISLIKE_DEPOSIT),
+	}, StructureType.DISLIKE_DEPOSIT,
+			PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_SHOP_PREVIEW_ATTRIBUTES,
+			PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_SHOP_LORE),
 	
 	ARMORY((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.IRON_BLOCK);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureType.ARMORY),
+	}, StructureType.ARMORY,
+			PluginMessage.STRUCTURE_ARMORY_SHOP_PREVIEW_ATTRIBUTES,
+			PluginMessage.STRUCTURE_ARMORY_SHOP_LORE),
 	
 	CANNON((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.DISPENSER);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureType.CANNON),
+	}, StructureType.CANNON,
+			PluginMessage.STRUCTURE_CANNON_SHOP_PREVIEW_ATTRIBUTES,
+			PluginMessage.STRUCTURE_CANNON_SHOP_LORE),
 	
 	TURRET((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.SMOOTH_STONE);
 		setItemBuilderTag(item, itemBuilder, commonPlayer);
 		return item;
-	}, StructureType.TURRET),
+	}, StructureType.TURRET,
+			PluginMessage.STRUCTURE_TURRET_SHOP_PREVIEW_ATTRIBUTES,
+			PluginMessage.STRUCTURE_TURRET_SHOP_LORE),
 	
 	;
 	
 	private final BiFunction<ItemBuilder, CommonPlayer, ItemStack> itemStackFunction;
 	private final StructureType structureType;
+	private final Message shopPreviewAttributesMessage;
+	private final Message shopLoreMessage;
+	
 	public ItemStack getItem(CommonPlayer commonPlayer)
 	{
 		return itemStackFunction.apply(this, commonPlayer);

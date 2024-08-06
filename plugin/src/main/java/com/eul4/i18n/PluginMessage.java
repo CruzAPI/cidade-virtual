@@ -1,5 +1,6 @@
 package com.eul4.i18n;
 
+import com.eul4.Main;
 import com.eul4.StructureType;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
@@ -762,6 +763,107 @@ public enum PluginMessage implements Message
 	MOVE_ASSISTANT_ITEM_LORE("move-assistant.item.lore", empty().color(GRAY)),
 	MOVE_ASSISTANT_INVENTORY_FULL("move-assistant.inventory-full", empty().color(RED)),
 	MOVE_ASSISTANT_CAN_NOT_MOVE_HERE("move-assistant.can-not-move-here", empty().color(RED)),
+	
+	STRUCTURE_LIKE_GENERATOR_SHOP_PREVIEW_ATTRIBUTES("structure.like-generator.shop-preview-attributes", (bundle, args) ->
+	{
+		LikeGeneratorAttribute attribute = (LikeGeneratorAttribute) StructureType.LIKE_GENERATOR.getRule((Main) args[0]).getAttributeOrDefault(1);
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(attribute.getCapacity()),
+			text(TickConverter.generationPerHour(attribute.getDelay())),
+			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+		};
+	}),
+	
+	STRUCTURE_DISLIKE_GENERATOR_SHOP_PREVIEW_ATTRIBUTES("structure.dislike-generator.shop-preview-attributes", (bundle, args) ->
+	{
+		DislikeGeneratorAttribute attribute = (DislikeGeneratorAttribute) StructureType.DISLIKE_GENERATOR.getRule((Main) args[0]).getAttributeOrDefault(1);
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(attribute.getCapacity()),
+			text(TickConverter.generationPerHour(attribute.getDelay())),
+			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+		};
+	}),
+	
+	STRUCTURE_LIKE_DEPOSIT_SHOP_PREVIEW_ATTRIBUTES("structure.like-deposit.shop-preview-attributes", (bundle, args) ->
+	{
+		LikeDepositAttribute attribute = (LikeDepositAttribute) StructureType.LIKE_DEPOSIT.getRule((Main) args[0]).getAttributeOrDefault(1);
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(attribute.getCapacity()),
+			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+		};
+	}),
+	
+	STRUCTURE_DISLIKE_DEPOSIT_SHOP_PREVIEW_ATTRIBUTES("structure.dislike-deposit.shop-preview-attributes", (bundle, args) ->
+	{
+		DislikeDepositAttribute attribute = (DislikeDepositAttribute) StructureType.DISLIKE_DEPOSIT.getRule((Main) args[0]).getAttributeOrDefault(1);
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(attribute.getCapacity()),
+			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+		};
+	}),
+	
+	STRUCTURE_ARMORY_SHOP_PREVIEW_ATTRIBUTES("structure.armory.shop-preview-attributes", (bundle, args) ->
+	{
+		ArmoryAttribute attribute = (ArmoryAttribute) StructureType.ARMORY.getRule((Main) args[0]).getAttributeOrDefault(1);
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+		};
+	}),
+	
+	STRUCTURE_TURRET_SHOP_PREVIEW_ATTRIBUTES("structure.turret.shop-preview-attributes", (bundle, args) ->
+	{
+		TurretAttribute attribute = (TurretAttribute) StructureType.TURRET.getRule((Main) args[0]).getAttributeOrDefault(1);
+		
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(bundle.getLocale());
+		DecimalFormat decimalFormat = new DecimalFormat("0.0", symbols);
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(decimalFormat.format(attribute.getAttackDamage())),
+			text(decimalFormat.format(attribute.getAttackSpeedPerSecond())),
+			text(decimalFormat.format(attribute.getMissileSpeedPerSecond())),
+			text(decimalFormat.format(attribute.getRange())),
+			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+		};
+	}),
+	
+	STRUCTURE_CANNON_SHOP_PREVIEW_ATTRIBUTES("structure.cannon.shop-preview-attributes", (bundle, args) ->
+	{
+		CannonAttribute attribute = (CannonAttribute) StructureType.CANNON.getRule((Main) args[0]).getAttributeOrDefault(1);
+		
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(bundle.getLocale());
+		DecimalFormat decimalFormat = new DecimalFormat("0.0", symbols);
+		//TODO....
+		return new Component[]
+		{
+			empty().color(GRAY),
+		};
+	}),
+	
+	STRUCTURE_LIKE_GENERATOR_SHOP_LORE("structure.like-generator.shop-lore", empty().color(GRAY)),
+	STRUCTURE_DISLIKE_GENERATOR_SHOP_LORE("structure.dislike-generator.shop-lore", empty().color(GRAY)),
+	STRUCTURE_LIKE_DEPOSIT_SHOP_LORE("structure.like-deposit.shop-lore", empty().color(GRAY)),
+	STRUCTURE_DISLIKE_DEPOSIT_SHOP_LORE("structure.dislike-deposit.shop-lore", empty().color(GRAY)),
+	STRUCTURE_ARMORY_SHOP_LORE("structure.armory.shop-lore", empty().color(GRAY)),
+	STRUCTURE_CANNON_SHOP_LORE("structure.cannon.shop-lore", empty().color(GRAY)),
+	STRUCTURE_TURRET_SHOP_LORE("structure.turret.shop-lore", empty().color(GRAY));
+	
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;

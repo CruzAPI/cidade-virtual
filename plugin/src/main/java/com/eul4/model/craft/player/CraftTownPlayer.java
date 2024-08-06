@@ -45,7 +45,7 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 		
 		if(hasTown())
 		{
-			townScoreboard.registerScores();
+			townScoreboard.registerIfNotRegistered();
 		}
 	}
 	

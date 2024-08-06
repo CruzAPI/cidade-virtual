@@ -27,16 +27,26 @@ public class CraftInitialScoreboard extends CraftCommonScoreboard implements Ini
 		
 		this.initialScoreboardPlayer = initialScoreboardPlayer;
 		
-		Objective objective = scoreboard.registerNewObjective("name", Criteria.DUMMY, Component.text("text"));
-		
-		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		
 		helloTeam = scoreboard.registerNewTeam("helloTeam");
 		welcome1Team = scoreboard.registerNewTeam("welcome1Team");
 		welcome2Team = scoreboard.registerNewTeam("welcome2Team");
 		useTown1Team = scoreboard.registerNewTeam("useTown1Team");
 		useTown2Team = scoreboard.registerNewTeam("useTown2Team");
 		footerTeam = scoreboard.registerNewTeam("footerTeam");
+		
+		helloTeam.suffix(HELLO_SUFFIX.translate(initialScoreboardPlayer, initialScoreboardPlayer.getPlayer().displayName()));
+		welcome1Team.suffix(WELCOME_1_SUFFIX.translate(initialScoreboardPlayer));
+		welcome2Team.suffix(WELCOME_2_SUFFIX.translate(initialScoreboardPlayer));
+		useTown1Team.suffix(USE_TOWN_1_SUFFIX.translate(initialScoreboardPlayer));
+		useTown2Team.suffix(USE_TOWN_2_SUFFIX.translate(initialScoreboardPlayer));
+	}
+	
+	@Override
+	public void registerScores()
+	{
+		Objective objective = scoreboard.registerNewObjective("name", Criteria.DUMMY, Component.text("text"));
+		
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
 		String helloEntry = HELLO_ENTRY.translateToLegacyText(initialScoreboardPlayer);
 		String welcome1Entry = WELCOME_1_ENTRY.translateToLegacyText(initialScoreboardPlayer);
@@ -46,20 +56,10 @@ public class CraftInitialScoreboard extends CraftCommonScoreboard implements Ini
 		String footerEntry = FOOTER_ENTRY.translateToLegacyText(initialScoreboardPlayer);
 		
 		helloTeam.addEntry(helloEntry);
-		helloTeam.suffix(HELLO_SUFFIX.translate(initialScoreboardPlayer, initialScoreboardPlayer.getPlayer().displayName()));
-		
 		welcome1Team.addEntry(welcome1Entry);
-		welcome1Team.suffix(WELCOME_1_SUFFIX.translate(initialScoreboardPlayer));
-		
 		welcome2Team.addEntry(welcome2Entry);
-		welcome2Team.suffix(WELCOME_2_SUFFIX.translate(initialScoreboardPlayer));
-		
 		useTown1Team.addEntry(useTown1Entry);
-		useTown1Team.suffix(USE_TOWN_1_SUFFIX.translate(initialScoreboardPlayer));
-		
 		useTown2Team.addEntry(useTown2Entry);
-		useTown2Team.suffix(USE_TOWN_2_SUFFIX.translate(initialScoreboardPlayer));
-		
 		footerTeam.addEntry(footerEntry);
 		
 		objective.displayName(TITLE.translate(initialScoreboardPlayer));

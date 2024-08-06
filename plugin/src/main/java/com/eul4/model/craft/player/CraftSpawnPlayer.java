@@ -50,11 +50,14 @@ public class CraftSpawnPlayer extends CraftPhysicalPlayer implements SpawnPlayer
 		
 		player.setGameMode(GameMode.SURVIVAL);
 		sendMessage(PluginMessage.SPAWN_PROTECTION_ENABLED);
+		sendMessage(PluginMessage.SPAWN_PROTECTION_WARN);
 		
 		if(!(getCommonWorld() instanceof OverWorld))
 		{
 			player.teleport(PluginWorldType.OVER_WORLD.getInstance().getSpawnLocation());
 		}
+		
+		scoreboard.registerIfNotRegistered();
 	}
 	
 	@Override

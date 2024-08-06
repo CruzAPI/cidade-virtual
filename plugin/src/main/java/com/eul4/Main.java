@@ -49,7 +49,7 @@ import java.util.logging.Level;
 public class Main extends Common
 {
 	private TownManager townManager;
-	public static Main instance;
+	
 	private DataFileManager dataFileManager;
 	private StructureUpgradeExecutor structureUpgradeExecutor;
 	private PurchaseExecutor purchaseExecutor;
@@ -87,7 +87,6 @@ public class Main extends Common
 	@Override
 	public void onEnable()
 	{
-		instance = this;
 		tryEnablePluginOrShutdown();
 	}
 	
@@ -291,6 +290,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new InventoryOrganizerPlayerListener(this), this);
 		pluginManager.registerEvents(new InvincibleListener(this), this);
 		pluginManager.registerEvents(new PluginPlayerListener(this), this);
+		pluginManager.registerEvents(new ProtectableListener(this), this);
 		pluginManager.registerEvents(new SpectatorListener(this), this);
 		pluginManager.registerEvents(new TutorialTownPlayerListener(this), this);
 	}

@@ -45,13 +45,8 @@ public class CraftAnalyzerScoreboard extends CraftCommonScoreboard implements An
 	}
 	
 	@Override
-	public void register()
+	public void registerScores()
 	{
-		if(registered)
-		{
-			return;
-		}
-		
 		registered = true;
 		
 		String playerStatusEntry = PLAYER_STATUS_ENTRY.translateToLegacyText(raidAnalyzer);

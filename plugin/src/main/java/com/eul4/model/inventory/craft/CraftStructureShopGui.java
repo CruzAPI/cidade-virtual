@@ -4,7 +4,6 @@ import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.common.model.inventory.craft.CraftGui;
 import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.enums.Currency;
 import com.eul4.enums.ItemBuilder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureShopGui;
@@ -14,12 +13,10 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
-
-import static com.eul4.i18n.PluginMessage.DECORATED_VALUE_CURRENCY;
-import static net.kyori.adventure.text.Component.empty;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 {
@@ -69,14 +66,22 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		Price price = itemBuilder.getStructureType().getRule((Main) commonPlayer.getPlugin())
 				.getAttribute(1).getPrice();
 		
+		List<Component> lore = new ArrayList<>();
+		
 		if(price != null)
 		{
-			meta.lore(MessageUtil.getPriceLore(price, commonPlayer));
+			lore.addAll(MessageUtil.getPriceLore(price, commonPlayer));
+			lore.add(Component.empty());
+			lore.addAll(itemBuilder.getShopLoreMessage().translateLore(commonPlayer));
+			lore.add(Component.empty());
+			lore.addAll(itemBuilder.getShopPreviewAttributesMessage().translateLore(commonPlayer, commonPlayer.getPlugin()));
 		}
 		else
 		{
-			meta.lore(List.of(PluginMessage.STRUCTURE_NOT_FOR_SALE.translate(commonPlayer)));
+			lore.add(PluginMessage.STRUCTURE_NOT_FOR_SALE.translate(commonPlayer));
 		}
+		
+		meta.lore(lore);
 		
 		item.setItemMeta(meta);
 		

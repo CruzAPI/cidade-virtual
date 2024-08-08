@@ -7,8 +7,7 @@ public interface DefenderSpectator extends
 		SpiritualPlayer,
 		Spectator,
 		Warder,
-		TownPerformer.TeleportOutside,
-		SpawnPerformer.Reincarnation
+		TownPerformer.TeleportOutside, SpawnPerformer.Reincarnate
 {
 	DefenderSpectatorHotbar getHotbar();
 	

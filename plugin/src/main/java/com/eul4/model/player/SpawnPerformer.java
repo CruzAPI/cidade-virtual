@@ -17,7 +17,7 @@ public interface SpawnPerformer extends PluginPlayer
 		}
 	}
 	
-	interface Reincarnation extends SpawnPerformer.Teleport
+	interface Reincarnate extends SpawnPerformer.Teleport
 	{
 		@Override
 		default void performSpawn()
@@ -28,6 +28,20 @@ public interface SpawnPerformer extends PluginPlayer
 			{
 				Teleport.super.performSpawn();
 			}
+		}
+	}
+	
+	interface ChannelReincarnation extends Reincarnate, Channeler
+	{
+		@Override
+		default void performSpawn()
+		{
+			channel(8L * 20L, Reincarnate.super::performSpawn);
+		}
+		
+		default void performSpawnSkipChanneling()
+		{
+			Reincarnate.super.performSpawn();
 		}
 	}
 }

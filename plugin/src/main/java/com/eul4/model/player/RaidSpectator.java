@@ -7,8 +7,7 @@ public interface RaidSpectator extends
 		SpiritualPlayer,
 		Spectator,
 		Warder,
-		TownPerformer.TeleportOutside,
-		SpawnPerformer.Reincarnation
+		TownPerformer.TeleportOutside, SpawnPerformer.Reincarnate
 {
 	RaidSpectatorHotbar getHotbar();
 	

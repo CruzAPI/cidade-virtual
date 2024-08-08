@@ -22,7 +22,7 @@ public class CraftConfirmationGui extends CraftGui implements ConfirmationGui
 	private final Runnable confirmRunnable;
 	private final Runnable cancelRunnable;
 	
-	private final ItemStack confirm;
+	private ItemStack confirm;
 	private final ItemStack cancel;
 	
 	public CraftConfirmationGui(CommonPlayer commonPlayer)
@@ -44,10 +44,7 @@ public class CraftConfirmationGui extends CraftGui implements ConfirmationGui
 		
 		ItemMeta meta;
 		
-		confirm = new ItemStack(Material.LIME_CONCRETE);
-		meta = confirm.getItemMeta();
-		meta.displayName(CONFIRM.translateWord(commonPlayer, WordUtils::capitalize).color(GREEN));
-		confirm.setItemMeta(meta);
+		confirm = getConfirmIcon();
 		
 		cancel = new ItemStack(Material.RED_CONCRETE);
 		meta = cancel.getItemMeta();
@@ -62,6 +59,30 @@ public class CraftConfirmationGui extends CraftGui implements ConfirmationGui
 	public void updateTitle()
 	{
 	
+	}
+	
+	public final ItemStack getConfirmIcon()
+	{
+		if(confirm != null)
+		{
+			return confirm.clone();
+		}
+		else
+		{
+			return confirm = getConfirm();
+		}
+	}
+	
+	public ItemStack getConfirm()
+	{
+		ItemMeta meta;
+		
+		confirm = ItemStack.of(Material.LIME_CONCRETE);
+		meta = confirm.getItemMeta();
+		meta.displayName(CONFIRM.translateWord(commonPlayer, WordUtils::capitalize).color(GREEN));
+		confirm.setItemMeta(meta);
+		
+		return confirm;
 	}
 	
 	@Override

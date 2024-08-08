@@ -20,8 +20,7 @@ import org.bukkit.attribute.AttributeModifier;
 import java.util.*;
 
 import static com.eul4.i18n.PluginMessage.DECORATED_VALUE_CURRENCY;
-import static net.kyori.adventure.text.format.NamedTextColor.DARK_GRAY;
-import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class MessageUtil
 {
@@ -30,6 +29,12 @@ public class MessageUtil
 		return offlinePlayer.isOnline()
 				? offlinePlayer.getPlayer().displayName()
 				: Component.text(Optional.ofNullable(offlinePlayer.getName()).orElse("Unknown")).color(DARK_GRAY);
+	}
+	
+	public static Component getDecrescentPercentageProgressBar(int percentage)
+	{
+		percentage = Math.max(0, Math.min(100, percentage));
+		return getPercentageProgressBar(100 - percentage);
 	}
 	
 	public static Component getPercentageProgressBar(int percentage)
@@ -100,6 +105,51 @@ public class MessageUtil
 			components.add(0, getBlankComponent()
 					.append(PluginMessage.PRICE.translateWord(commonPlayer, WordUtils::capitalizeFully))
 					.append(Component.text(":")));
+		}
+		
+		return components;
+	}
+	
+	public static List<Component> getCostLoreV2(Cost cost, CommonPlayer commonPlayer)
+	{
+		if(cost.isFree())
+		{
+			return Collections.emptyList();
+		}
+		
+		List<Component> components = new ArrayList<>();
+		
+		components.add(PluginMessage.COST.translateWord(commonPlayer, WordUtils::capitalize)
+				.append(Component.text(":"))
+				.color(GRAY));
+		
+		components.add(Component.empty());
+		
+		Price price = cost.getPrice();
+		
+		if(price.getLikes() > 0)
+		{
+			components.add(getPontuatedComponent()
+					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
+							Currency.LIKE,
+							price.getLikes())));
+		}
+		
+		if(price.getDislikes() > 0)
+		{
+			components.add(getPontuatedComponent()
+					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
+							Currency.DISLIKE,
+							price.getDislikes())));
+		}
+		
+		for(Map.Entry<Material, Integer> entry : cost.getResources().entrySet())
+		{
+			Material type = entry.getKey();
+			components.add(getPontuatedComponent()
+					.append(Component.text(entry.getValue()))
+					.append(Component.text(" "))
+					.append(Component.translatable(type.translationKey())));
 		}
 		
 		return components;

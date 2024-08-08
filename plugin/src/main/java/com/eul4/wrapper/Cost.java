@@ -22,4 +22,9 @@ public class Cost
 		this.price = price;
 		this.resources = Collections.emptyMap();
 	}
+	
+	public boolean isFree()
+	{
+		return price.isFree() && resources.isEmpty();
+	}
 }

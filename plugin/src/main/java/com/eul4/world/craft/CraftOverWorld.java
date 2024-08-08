@@ -55,4 +55,12 @@ public class CraftOverWorld extends CraftPluginWorld implements OverWorld
 				&& Math.abs(blockState.getX()) <= 100
 				&& Math.abs(blockState.getZ()) <= 100;
 	}
+	
+	@Override
+	public boolean isNearSpawn(Location location)
+	{
+		return location.getWorld() == world
+				&& Math.abs(location.getX()) <= NEAR_SPAWN_RADIUS
+				&& Math.abs(location.getZ()) <= NEAR_SPAWN_RADIUS;
+	}
 }

@@ -7,9 +7,14 @@ import lombok.NoArgsConstructor;
 
 @Builder
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class TownPlayerData
 {
 	private boolean test;
+	private boolean firstTimeJoiningTown;
+	
+	public TownPlayerData()
+	{
+		firstTimeJoiningTown = true;
+	}
 }

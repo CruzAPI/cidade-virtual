@@ -2,17 +2,23 @@ package com.eul4.i18n;
 
 import com.eul4.Main;
 import com.eul4.StructureType;
+import com.eul4.command.HomeCommand;
+import com.eul4.command.SetHomeCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.wrapper.TimerTranslater;
 import com.eul4.enums.Currency;
+import com.eul4.model.player.SetHomePerformer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Generator;
 import com.eul4.rule.attribute.*;
 import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
+import com.eul4.world.OverWorld;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
@@ -20,9 +26,12 @@ import org.bukkit.OfflinePlayer;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
 
 import static com.eul4.common.i18n.CommonMessage.USAGE;
 import static net.kyori.adventure.text.Component.*;
@@ -37,6 +46,7 @@ public enum PluginMessage implements Message
 	UPGRADE("upgrade"),
 	DURABILITY("durability"),
 	PRICE("price"),
+	COST("cost"),
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
 	STRUCTURE_CANNON_NAME("structure.cannon.name"),
@@ -289,9 +299,9 @@ public enum PluginMessage implements Message
 	
 	DECORATED_VALUE_CURRENCY("decorated-value-currency", (bundle, args) -> new Component[]
 	{
-		((Currency) args[0]).getBaseComponent(),
+		((Currency) args[0]).getBaseComponent().decorate(BOLD),
 		text((int) args[1]),
-		((Currency) args[0]).getPluralWord().translateWord(bundle),
+		((Currency) args[0]).getPluralWord().translateWord(bundle, String::toUpperCase),
 	}),
 	
 	BOLD_DECORATED_VALUE_CURRENCY("bold-decorated-value-currency", (bundle, args) -> new Component[]
@@ -879,6 +889,126 @@ public enum PluginMessage implements Message
 		return structureType.getNameMessage().translate(locale)
 				.append(text(" "))
 				.append(text("(" + current + "/" + max + ")").color(color));
+	}),
+	
+	COMMAND_SETHOME_MAX_HOME_REACHED("command.sethome.max-home-reached", empty().color(RED)),
+	COMMAND_SETHOME_NEED_TO_BE_IN_VANILLA("command.sethome.need-to-be-in-vanilla", empty().color(RED)),
+	COMMAND_SETHOME_NEED_TO_BE_AWAY_BLOCKS_FROM_SPAWN("command.sethome.need-to-be-away-blocks-from-spawn", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text(OverWorld.NEAR_SPAWN_RADIUS)
+	}),
+	COMMAND_SETHOME_HOME_NAME_MUST_NOT_BE_BLANK("command.sethome.home-name-must-not-be-blank", empty().color(RED)),
+	COMMAND_SETHOME_HOME_NAME_MAX_LENGTH("command.sethome.home-name-max-length", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text(SetHomePerformer.HOME_NAME_MAX_LENGTH)
+	}),
+	COMMAND_SETHOME_HOME_NAME_LETTERS_AND_NUMBERS("command.sethome.home-name-letters-and-numbers", empty().color(RED)),
+	COMMAND_SETHOME_HOME_NAME_KEY_WORD("command.sethome.home-name-key-word", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text((String) args[0])
+	}),
+	COMMAND_SETHOME_HOME_ALREADY_SET("command.sethome.home-already-set", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text((String) args[0])
+	}),
+	COMMAND_SETHOME_USAGE("command.sethome.usage", empty().color(RED)),
+	COMMAND_SETHOME_HOME_SET("command.sethome.home-set", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		text("/" + HomeCommand.COMMAND_NAME + " " + args[0]).color(WHITE)
+	}),
+	COMMAND_SETHOME_CONFIRMATION_LORE("command.sethome.confirmation-lore", empty().color(GRAY)),
+	
+	COMMAND_DELHOME_CAN_NOT_DELETE_RESPAWN("command.delhome.can-not-delete-respawn-point", empty().color(RED)),
+	COMMAND_DELHOME_USAGE("command.delhome.usage", empty().color(RED)),
+	COMMAND_DELHOME_HOME_DELETED("command.delhome.home-deleted", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		text("\"" + args[0] + "\"")
+	}),
+	
+	COMMAND_HOME_TELEPORTED_TO_HOME("command.home.teleported-to-home", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		text("\"" + args[0] + "\"")
+	}),
+	COMMAND_HOME_HOME_NOT_FOUND("command.home.home-not-found", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("\"" + args[0] + "\"")
+	}),
+	COMMAND_HOME_NO_HOME_FOUNDS("command.home.no-home-founds", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("/" + SetHomeCommand.COMMAND_NAME)
+	}),
+	COMMAND_HOME_USAGE("command.home.usage", empty().color(RED)),
+	
+	COMMAND_HOME_YOUR_HOMES_HOVER("command.home.your-homes.hover", (bundle, args) -> new Component[]
+	{
+		empty().color(GRAY),
+		text((String) args[0]),
+	}),
+	
+	COMMAND_HOME_EMPTY_HOMES("command.home.empty-homes", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("\"/" + SetHomeCommand.COMMAND_NAME + " <home>\""),
+	}),
+	
+	COMMAND_HOME_RESPAWN_POINT_NOT_FOUND("command.home.respawn-point-not-found", empty().color(RED)),
+	COMMAND_HOME_YOUR_HOMES("command.home.your-homes", (bundle, args) ->
+	{
+		Set<String> homeNames = (Set<String>) args[0];
+		
+		Component yourHomes = Component.empty().color(YELLOW);
+		Iterator<String> iterator = homeNames.iterator();
+		
+		while(iterator.hasNext())
+		{
+			final String homeName = iterator.next();
+			final String runCommand = "/" + HomeCommand.COMMAND_NAME + " " + homeName;
+			final ClickEvent clickEvent = ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, runCommand);
+			final HoverEventSource<Component> hoverEvent = COMMAND_HOME_YOUR_HOMES_HOVER.translate(bundle.getLocale(), homeName).asHoverEvent(UnaryOperator.identity());
+			final Component homeNameComponent = text(homeName).clickEvent(clickEvent).hoverEvent(hoverEvent);
+			
+			yourHomes = yourHomes.append(homeNameComponent);
+			
+			if(iterator.hasNext())
+			{
+				yourHomes = yourHomes.append(text(", ").color(GREEN));
+			}
+		}
+		
+		return new Component[]
+		{
+			empty().color(GREEN),
+			yourHomes,
+		};
+	}),
+	
+	CHANNELER_CHANNELING_CANCELLED("channeler.channeling-cancelled", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_SNEAK("channeler.cancel-reason.sneak", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_MOVE("channeler.cancel-reason.move", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_TAKE_DAMAGE("channeler.cancel-reason.take-damage", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_DEAL_DAMAGE("channeler.cancel-reason.deal-damage", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_DEAD("channeler.cancel-reason.dead", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_CHANGE_MODE("channeler.cancel-reason.change-mode", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_INTERACT("channeler.cancel-reason.interact", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_DROP_ITEM("channeler.cancel-reason.drop-item", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_PICKUP_ITEM("channeler.cancel-reason.pickup-item", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_OPEN_INVENTORY("channeler.cancel-reason.open-inventory", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_CHANNELING("channeler.cancel-reason.channeling", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_VEHICLE("channeler.cancel-reason.vehicle", empty().color(RED)),
+	CHANNELER_CANCEL_REASON_PASSENGERS("channeler.cancel-reason.passengers", empty().color(RED)),
+	CHANNELER_INITIALIZING_CHANNELING("channeler.initializing-channeling", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		TimerTranslater.translate(((Long) args[0]).intValue(), bundle)
 	}),
 	
 	;

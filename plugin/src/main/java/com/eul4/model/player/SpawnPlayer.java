@@ -6,7 +6,9 @@ public interface SpawnPlayer extends
 		SpawnPerformer.Teleport,
 		TownScoreboardPlayer,
 		InitialScoreboardPlayer,
-		Protectable
+		Protectable,
+		DelHomePerformer,
+		HomePerformer.InstantTeleport
 {
 	PluginPlayer removeProtection();
 }

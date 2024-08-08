@@ -4,8 +4,10 @@ import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.ObjectReader;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.ObjectType;
+import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
@@ -16,7 +18,7 @@ import java.io.IOException;
 public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 {
 	private final Reader<TownPlayerData> reader;
-	private final Readable<TownPlayerData> readable;
+	private final ParameterizedReadable<TownPlayerData, PluginPlayer> parameterizedReadable;
 	
 	public TownPlayerDataReader(Readers readers) throws InvalidVersionException
 	{
@@ -29,24 +31,47 @@ public class TownPlayerDataReader extends ObjectReader<TownPlayerData>
 		{
 		case 0:
 			this.reader = Reader.identity();
-			this.readable = this::readableVersion0;
+			this.parameterizedReadable = this::getParameterizedReadableVersion0;
+			break;
+		case 1:
+			this.reader = Reader.identity();
+			this.parameterizedReadable = this::getParameterizedReadableVersion1;
 			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
-	private TownPlayerData readableVersion0() throws IOException
+	private Readable<TownPlayerData> getParameterizedReadableVersion0(PluginPlayer pluginPlayer)
 	{
-		boolean test = in.readBoolean();
-		
-		return TownPlayerData.builder()
-				.test(test)
-				.build();
+		return () ->
+		{
+			final boolean test = in.readBoolean();
+			final boolean firstTimeJoiningTown = !pluginPlayer.hasTown();
+			
+			return TownPlayerData.builder()
+					.test(test)
+					.firstTimeJoiningTown(firstTimeJoiningTown)
+					.build();
+		};
 	}
 	
-	public TownPlayerData readReference() throws IOException, ClassNotFoundException
+	private Readable<TownPlayerData> getParameterizedReadableVersion1(PluginPlayer pluginPlayer)
 	{
-		return super.readReference(readable);
+		return () ->
+		{
+			final boolean test = in.readBoolean();
+			final boolean firstTimeJoiningTown = in.readBoolean();
+			
+			return TownPlayerData.builder()
+					.test(test)
+					.firstTimeJoiningTown(firstTimeJoiningTown)
+					.build();
+		};
+	}
+	
+	public TownPlayerData readReference(PluginPlayer pluginPlayer) throws IOException, ClassNotFoundException
+	{
+		return super.readReference(parameterizedReadable.getReadable(pluginPlayer));
 	}
 }

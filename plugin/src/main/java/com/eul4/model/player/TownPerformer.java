@@ -7,7 +7,6 @@ import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
-import net.minecraft.data.worldgen.placement.VegetationPlacements;
 
 import java.text.MessageFormat;
 import java.time.Duration;
@@ -45,17 +44,9 @@ public sealed interface TownPerformer extends PluginPlayer
 					
 					title = PluginMessage.TITLE_CREATING_TOWN.translate(this);
 					subtitle = PluginMessage.SUBTITLE_CREATING_TOWN.translate(this);
-					times = Title.Times.times(Duration.ZERO, Duration.ofDays(1L), Duration.ZERO);
+					times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(10L), Duration.ZERO);
 					
 					Title creatingTownTitle = Title.title(title, subtitle, times);
-					
-					title = PluginMessage.TITLE_TOWN_WELCOME.translate(this, getPlayer().displayName());
-					subtitle = Component.empty();
-					times = Title.Times.times(Duration.ofMillis(1000L),
-							Duration.ofMillis(1000L),
-							Duration.ofMillis(1000L));
-					
-					Title welcomeTitle = Title.title(title, subtitle, times);
 					
 					getPlayer().showTitle(creatingTownTitle);
 					
@@ -64,15 +55,13 @@ public sealed interface TownPerformer extends PluginPlayer
 					
 					getPlugin().getServer().getScheduler().callSyncMethod(getPlugin(), () ->
 					{
-						executeInNewlyCreation();
+						getPlayer().resetTitle();
+						execute();
 						
 						getPlugin().getPlayerManager()
 								.find(getPlayer())
 								.map(PluginPlayer.class::cast)
 								.ifPresent(PluginPlayer::onTownCreate);
-						
-						getPlayer().resetTitle();
-						getPlayer().showTitle(welcomeTitle);
 						
 						getPlayer().playSound(getPlayer().getLocation(), ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, getPitch(0));
 						
@@ -92,11 +81,6 @@ public sealed interface TownPerformer extends PluginPlayer
 	}
 	
 	void execute();
-	
-	default void executeInNewlyCreation()
-	{
-		execute();
-	}
 	
 	non-sealed interface TeleportInside extends TownPerformer
 	{
@@ -121,26 +105,24 @@ public sealed interface TownPerformer extends PluginPlayer
 		@Override
 		default void execute()
 		{
-			execute(false);
-		}
-		
-		@Override
-		default void executeInNewlyCreation()
-		{
-			execute(true);
-		}
-		
-		private void execute(boolean newlyCreated)
-		{
-			PluginPlayerType pluginPlayerType = newlyCreated
-					? PhysicalPlayerType.TUTORIAL_TOWN_PLAYER
-					: PhysicalPlayerType.TOWN_PLAYER;
+			PluginPlayerType pluginPlayerType = getTown().hasFinishedTutorial()
+					? PhysicalPlayerType.TOWN_PLAYER
+					: PhysicalPlayerType.TUTORIAL_TOWN_PLAYER;
 			CommonPlayer commonPlayer = getPlugin().getPlayerManager().register(this, pluginPlayerType);
 			
 			if(commonPlayer instanceof TownPlayer)
 			{
 				TeleportInside.super.execute();
 			}
+		}
+	}
+	
+	interface ChannelReincarnation extends Reincarnate, Channeler
+	{
+		@Override
+		default void execute()
+		{
+			channel(8L * 20L, Reincarnate.super::execute);
 		}
 	}
 }

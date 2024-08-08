@@ -11,9 +11,13 @@ import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
 import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.world.TownWorld;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+
+import java.time.Duration;
 
 public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 {
@@ -46,6 +50,22 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 		if(hasTown())
 		{
 			townScoreboard.registerIfNotRegistered();
+		}
+		
+		if(getTownPlayerData().isFirstTimeJoiningTown())
+		{
+			getTownPlayerData().setFirstTimeJoiningTown(false);
+			
+			Component title = PluginMessage.TITLE_TOWN_WELCOME.translate(this, getPlayer().displayName());
+			Component subtitle = Component.empty();
+			Title.Times times = Title.Times.times(Duration.ofMillis(1000L),
+					Duration.ofMillis(3000L),
+					Duration.ofMillis(1000L));
+			
+			Title welcomeTitle = Title.title(title, subtitle, times);
+			
+			player.resetTitle();
+			player.showTitle(welcomeTitle);
 		}
 	}
 	

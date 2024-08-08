@@ -17,5 +17,6 @@ public class TownPlayerDataWriter extends ObjectWriter<TownPlayerData>
 	protected void writeObject(TownPlayerData townPlayerData) throws IOException
 	{
 		out.writeBoolean(townPlayerData.isTest());
+		out.writeBoolean(townPlayerData.isFirstTimeJoiningTown());
 	}
 }

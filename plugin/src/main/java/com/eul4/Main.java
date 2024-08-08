@@ -210,13 +210,16 @@ public class Main extends Common
 	{
 		getCommand("admin").setExecutor(new AdminCommand(this));
 		getCommand("balance").setExecutor(new BalanceCommand(this));
+		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
+		getCommand(DelHomeCommand.COMMAND_NAME).setExecutor(new DelHomeCommand(this));
+		getCommand(HomeCommand.COMMAND_NAME).setExecutor(new HomeCommand(this));
 		getCommand(TownCommand.COMMAND_NAME).setExecutor(new TownCommand(this));
 		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
 		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
-		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand("macroid").setExecutor(new MacroidCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
+		getCommand(SetHomeCommand.COMMAND_NAME).setExecutor(new SetHomeCommand(this));
 //		getCommand(TutorialCommand.COMMAND_NAME).setExecutor(new TutorialCommand(this));
 	}
 	
@@ -233,6 +236,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new AssistantInteractListener(this), this);
 		pluginManager.registerEvents(new AssistantTargetTaskListener(this), this);
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
+		pluginManager.registerEvents(new ChannelingTaskListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new EntityItemMoveListener(this), this);
 		pluginManager.registerEvents(new EntityRecyclerListener(this), this);
@@ -293,6 +297,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new ProtectableListener(this), this);
 		pluginManager.registerEvents(new SpectatorListener(this), this);
 		pluginManager.registerEvents(new TutorialTownPlayerListener(this), this);
+		pluginManager.registerEvents(new VanillaListener(this), this);
 	}
 	
 	private void registerTutorialStepListeners()

@@ -28,6 +28,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	DISLIKE_GENERATOR(DislikeGeneratorReader::new, DislikeGeneratorReader.class, DislikeGeneratorWriter::new, DislikeGeneratorWriter.class),
 	GENERIC_PLUGIN_PLAYER(GenericPluginPlayerReader::new, GenericPluginPlayerReader.class, GenericPluginPlayerWriter::new, GenericPluginPlayerWriter.class),
 	GENERIC_STRUCTURE(GenericStructureReader::new, GenericStructureReader.class, GenericStructureWriter::new, GenericStructureWriter.class),
+	HOME_MAP(HomeMapReader::new, HomeMapReader.class, HomeMapWriter::new, HomeMapWriter.class),
 	INVENTORY_ORGANIZER_PLAYER(InventoryOrganizerPlayerReader::new, InventoryOrganizerPlayerReader.class, InventoryOrganizerPlayerWriter::new, InventoryOrganizerPlayerWriter.class),
 	LIKE_DEPOSIT(LikeDepositReader::new, LikeDepositReader.class, LikeDepositWriter::new, LikeDepositWriter.class),
 	LIKE_GENERATOR(LikeGeneratorReader::new, LikeGeneratorReader.class, LikeGeneratorWriter::new, LikeGeneratorWriter.class),
@@ -49,6 +50,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	TURRET(TurretReader::new, TurretReader.class, TurretWriter::new, TurretWriter.class),
 	TUTORIAL_TOWN_PLAYER_DATA(TutorialTownPlayerDataReader::new, TutorialTownPlayerDataReader.class, TutorialTownPlayerDataWriter::new, TutorialTownPlayerDataWriter.class),
 	TUTORIAL_TOWN_PLAYER(TutorialTownPlayerReader::new, TutorialTownPlayerReader.class, TutorialTownPlayerWriter::new, TutorialTownPlayerWriter.class),
+	VANILLA_PLAYER_DATA(VanillaPlayerDataReader::new, VanillaPlayerDataReader.class, VanillaPlayerDataWriter::new, VanillaPlayerDataWriter.class),
 	VANILLA_PLAYER(VanillaPlayerReader::new, VanillaPlayerReader.class, VanillaPlayerWriter::new, VanillaPlayerWriter.class),
 	VECTOR_3(Vector3Reader::new, Vector3Reader.class, Vector3Writer::new, Vector3Writer.class),
 	;

@@ -4,10 +4,13 @@ import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.model.playerdata.TownPlayerData;
 import com.eul4.model.playerdata.TutorialTownPlayerData;
+import com.eul4.model.playerdata.VanillaPlayerData;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
+import org.bukkit.Location;
 
+import java.util.Map;
 import java.util.Optional;
 
 public interface PluginPlayer extends CommonPlayer
@@ -16,6 +19,7 @@ public interface PluginPlayer extends CommonPlayer
 	
 	TownPlayerData getTownPlayerData();
 	TutorialTownPlayerData getTutorialTownPlayerData();
+	VanillaPlayerData getVanillaPlayerData();
 	
 	@Override
 	PluginPlayerType getPlayerType();
@@ -30,6 +34,7 @@ public interface PluginPlayer extends CommonPlayer
 	
 	void setTownPlayerData(TownPlayerData townPlayerData);
 	void setTutorialTownPlayerData(TutorialTownPlayerData tutorialTownPlayerData);
+	void setVanillaPlayerData(VanillaPlayerData vanillaPlayerData);
 	
 	PhysicalPlayerType getReincarnationType();
 	

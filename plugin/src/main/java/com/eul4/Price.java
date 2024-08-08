@@ -16,4 +16,9 @@ public class Price
 		this.likes = price;
 		this.dislikes = price;
 	}
+	
+	public boolean isFree()
+	{
+		return likes == 0 && dislikes == 0;
+	}
 }

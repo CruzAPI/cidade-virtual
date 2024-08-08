@@ -8,7 +8,10 @@ public interface Admin extends
 		PhysicalPlayer,
 		Invincible,
 		TownPerformer.TeleportInside,
-		SpawnPerformer.Teleport
+		SpawnPerformer.Teleport,
+		SetHomePerformer,
+		DelHomePerformer,
+		HomePerformer.InstantTeleport
 {
 
 }

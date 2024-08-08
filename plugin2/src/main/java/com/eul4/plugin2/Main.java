@@ -21,10 +21,10 @@ public class Main extends JavaPlugin
 		super.onEnable();
 		saveDefaultConfig();
 		// Passa a instância do plugin para os comandos
-		getCommand("sethome").setExecutor(new SethomeCommand(this));
-		getCommand("home").setExecutor(new HomeCommand(this));
-		getCommand("delhome").setExecutor(new DelHomeCommand(this));
-		getCommand("listhomes").setExecutor(new ListHomesCommand(this));
+//		getCommand("sethome").setExecutor(new SethomeCommand(this));
+//		getCommand("home").setExecutor(new HomeCommand(this));
+//		getCommand("delhome").setExecutor(new DelHomeCommand(this));
+//		getCommand("listhomes").setExecutor(new ListHomesCommand(this));
 
 		TpaCommand tpaCommand = new TpaCommand(this);
 		getCommand("tpa").setExecutor(tpaCommand);

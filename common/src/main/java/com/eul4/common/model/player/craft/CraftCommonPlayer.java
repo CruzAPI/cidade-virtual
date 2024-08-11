@@ -124,7 +124,8 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		}
 		catch(Exception e)
 		{
-			player.sendMessage(Component.text("Error while sending message: " + message.getKey()).color(NamedTextColor.RED));
+			String msgKey = Optional.ofNullable(message.getKey()).orElse(message.name());
+			player.sendMessage(Component.text("Error while sending message: " + msgKey).color(NamedTextColor.RED));
 			e.printStackTrace();
 		}
 	}

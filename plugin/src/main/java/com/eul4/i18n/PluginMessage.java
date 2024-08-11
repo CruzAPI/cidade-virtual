@@ -21,6 +21,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
@@ -217,13 +218,10 @@ public enum PluginMessage implements Message
 		text(args[0].toString()),
 	}),
 	
-	COMMAND_SPAWN_USAGE("command.spawn.usage",
-	(bundle, args) -> new Component[]
-	{
-		empty().color(RED),
-		USAGE.translateOne(bundle.getLocale()),
-		text(args[0].toString()),
-	}),
+	COMMAND_SPAWN_USAGE((locale, args) -> Collections.singletonList(
+			USAGE.translateOne(locale, WordUtils::capitalize)
+					.append(text(": /" + args[0]))
+					.color(RED))),
 	
 	STRUCTURE_READY_IN("structure.ready-in",
 	(bundle, args) -> new Component[]

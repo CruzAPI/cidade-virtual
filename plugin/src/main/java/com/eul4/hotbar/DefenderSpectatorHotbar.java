@@ -23,7 +23,7 @@ public class DefenderSpectatorHotbar
 		
 		quit = new ItemStack(Material.RED_BED);
 		meta = quit.getItemMeta();
-		meta.displayName(PluginMessage.DEFENDER_SPECTATOR_HOTBAR_QUIT.translate(defenderSpectator));
+		meta.displayName(PluginMessage.DEFENDER_SPECTATOR_HOTBAR_QUIT.translateOne(defenderSpectator));
 		quit.setItemMeta(meta);
 	}
 	

@@ -1,6 +1,6 @@
-package com.eul4.externalizer.filer;
+package com.eul4.common.externalizer.filer;
 
-import com.eul4.Main;
+import com.eul4.common.Common;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.type.player.ObjectType;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public abstract class Filer
 {
-	protected final Main plugin;
+	protected final Common plugin;
 	private final byte version;
 	
 	protected Map<ObjectType, Byte> readVersions(ObjectInput in) throws IOException, InvalidVersionException

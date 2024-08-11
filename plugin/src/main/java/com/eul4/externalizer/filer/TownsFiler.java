@@ -9,7 +9,7 @@ import com.eul4.common.type.player.Writers;
 import com.eul4.externalizer.reader.TownMapReader;
 import com.eul4.externalizer.writer.TownMapWriter;
 import com.eul4.type.player.PluginObjectType;
-import com.eul4.util.FileUtil;
+import com.eul4.common.util.FileUtil;
 import com.eul4.wrapper.TownMap;
 import com.google.common.io.ByteStreams;
 
@@ -17,7 +17,7 @@ import java.io.*;
 import java.text.MessageFormat;
 import java.util.logging.Level;
 
-public class TownsFiler extends Filer
+public class TownsFiler extends PluginFiler
 {
 	private static final byte VERSION = 1;
 	

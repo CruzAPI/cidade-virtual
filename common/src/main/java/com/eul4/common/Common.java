@@ -3,8 +3,11 @@ package com.eul4.common;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.eul4.common.command.BuildCommand;
+import com.eul4.common.command.PexCommand;
 import com.eul4.common.command.ScoreboardCommand;
 import com.eul4.common.event.WorldSaveOrStopEvent;
+import com.eul4.common.externalizer.filer.GroupMapFiler;
+import com.eul4.common.externalizer.filer.UserFiler;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.CommonBundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
@@ -15,10 +18,7 @@ import com.eul4.common.listener.*;
 import com.eul4.common.listener.container.RemoveItemOnCommonPlayerRegisterListener;
 import com.eul4.common.listener.container.RemoveItemOnPlayerJoinListener;
 import com.eul4.common.listener.container.RemoveOnChunkLoadListener;
-import com.eul4.common.service.CommonDataFileManager;
-import com.eul4.common.service.PlayerManager;
-import com.eul4.common.service.ServerTickCounter;
-import com.eul4.common.service.WorldManager;
+import com.eul4.common.service.*;
 import com.eul4.common.type.player.CommonWorldType;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 @Getter
 public abstract class Common extends JavaPlugin
@@ -42,19 +43,40 @@ public abstract class Common extends JavaPlugin
 	private PlayerManager playerManager;
 	private WorldManager worldManager;
 	private CommonDataFileManager commonDataFileManager;
+	private PermissionService permissionService;
 	private ServerTickCounter serverTickCounter;
+	
+	private GroupMapFiler groupMapFiler;
+	private UserFiler userFiler;
 	
 	@Override
 	public void onEnable()
 	{
-		loadServices();
-		
-		registerCommonResourceBundles();
-		registerListeners();
-		registerPacketAdapters();
-		registerCommand();
-		
-		getLogger().info("Commons enabled!");
+		try
+		{
+			loadServices();
+			
+			registerCommonResourceBundles();
+			registerListeners();
+			registerPacketAdapters();
+			registerCommand();
+			registerFilers();
+			
+			groupMapFiler.load();
+			
+			getLogger().info("Commons enabled!");
+		}
+		catch(Exception e)
+		{
+			getLogger().log(Level.SEVERE, "Failed to enable plugin! Server will shut down...", e);
+			getServer().shutdown();
+		}
+	}
+	
+	private void registerFilers()
+	{
+		groupMapFiler = new GroupMapFiler(this);
+		userFiler = new UserFiler(this);
 	}
 	
 	@SneakyThrows
@@ -63,12 +85,14 @@ public abstract class Common extends JavaPlugin
 		playerManager = new PlayerManager(this);
 		worldManager = new WorldManager(this);
 		commonDataFileManager = new CommonDataFileManager(this);
+		permissionService = new PermissionService(this);
 		serverTickCounter = new ServerTickCounter(this);
 	}
 	
 	private void registerCommand()
 	{
 		getCommand("build").setExecutor(new BuildCommand(this));
+		getCommand("pex").setExecutor(new PexCommand(this));
 		getCommand("scoreboard").setExecutor(new ScoreboardCommand(this));
 	}
 	
@@ -109,6 +133,7 @@ public abstract class Common extends JavaPlugin
 		pluginManager.registerEvents(new RemoveOnDropItemListener(this), this);
 		pluginManager.registerEvents(new RemoveItemOnPlayerJoinListener(this), this);
 		pluginManager.registerEvents(new CancelInteractionItemListener(this), this);
+		pluginManager.registerEvents(new WorldSaveListener(this), this);
 		pluginManager.registerEvents(new WorldSaveRecallListener(this), this);
 	}
 	
@@ -121,6 +146,9 @@ public abstract class Common extends JavaPlugin
 		}
 		
 		serverTickCounter.saveOrLogError();
+		groupMapFiler.save();
+		userFiler.saveMemoryUsers();
+		
 		getLogger().info("Commons disabled!");
 	}
 	

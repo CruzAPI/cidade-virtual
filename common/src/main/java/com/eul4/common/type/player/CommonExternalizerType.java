@@ -15,14 +15,22 @@ public enum CommonExternalizerType implements ExternalizerType
 	CHUNK(ChunkReader::new, ChunkReader.class, ChunkWriter::new, ChunkWriter.class),
 	COMMON_PLAYER_DATA(CommonPlayerDataReader::new, CommonPlayerDataReader.class, CommonPlayerDataWriter::new, CommonPlayerDataWriter.class),
 	ENTITY(EntityReader::new, EntityReader.class, EntityWriter::new, EntityWriter.class),
+	GROUP(GroupReader::new, GroupReader.class, GroupWriter::new, GroupWriter.class),
+	GROUP_MAP(GroupMapReader::new, GroupMapReader.class, GroupMapWriter::new, GroupMapWriter.class),
+	GROUP_USER(GroupUserReader::new, GroupUserReader.class, GroupUserWriter::new, GroupUserWriter.class),
+	GROUP_USER_MAP(GroupUserMapReader::new, GroupUserMapReader.class, GroupUserMapWriter::new, GroupUserMapWriter.class),
 	HOLOGRAM(HologramReader::new, HologramReader.class, HologramWriter::new, HologramWriter.class),
 	INVENTORY(InventoryReader::new, InventoryReader.class, InventoryWriter::new, InventoryWriter.class),
 	ITEM_STACK(ItemStackReader::new, ItemStackReader.class, ItemStackWriter::new, ItemStackWriter.class),
 	LOCATION(LocationReader::new, LocationReader.class, LocationWriter::new, LocationWriter.class),
+	PERMISSION(PermissionReader::new, PermissionReader.class, PermissionWriter::new, PermissionWriter.class),
+	PERMISSION_MAP(PermissionMapReader::new, PermissionMapReader.class, PermissionMapWriter::new, PermissionMapWriter.class),
 	PLAYER_DATA(PlayerDataReader::new, PlayerDataReader.class, PlayerDataWriter::new, PlayerDataWriter.class),
 	POTION_EFFECT_COLLECTION(PotionEffectCollectionReader::new, PotionEffectCollectionReader.class, PotionEffectCollectionWriter::new, PotionEffectCollectionWriter.class),
 	POTION_EFFECT(PotionEffectReader::new, PotionEffectReader.class, PotionEffectWriter::new, PotionEffectWriter.class),
-	TRANSLATED_HOLOGRAM_LINE(TranslatedHologramLineReader::new, TranslatedHologramLineReader.class, TranslatedHologramLineWriter::new, TranslatedHologramLineWriter.class);
+	TIMED_TICK(TimedTickReader::new, TimedTickReader.class, TimedTickWriter::new, TimedTickWriter.class),
+	TRANSLATED_HOLOGRAM_LINE(TranslatedHologramLineReader::new, TranslatedHologramLineReader.class, TranslatedHologramLineWriter::new, TranslatedHologramLineWriter.class),
+	USER(UserReader::new, UserReader.class, UserWriter::new, UserWriter.class);
 	
 	private final ReaderConstructor readerConstructor;
 	private final Class<? extends ObjectReader<?>> readerClass;

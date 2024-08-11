@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class BlockDataFiler extends Filer
+public class BlockDataFiler extends PluginFiler
 {
 	private static final byte VERSION = 0;
 	

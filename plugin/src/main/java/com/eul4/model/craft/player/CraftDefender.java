@@ -115,8 +115,8 @@ public class CraftDefender extends CraftFighter implements Defender
 	private Title getRespawnedTitle()
 	{
 		return Title.title(
-				PluginMessage.TITLE_RESPAWNED.translate(this),
-				PluginMessage.SUBTITLE_RESPAWNED.translate(this),
+				PluginMessage.TITLE_RESPAWNED.translateOne(this),
+				PluginMessage.SUBTITLE_RESPAWNED.translateOne(this),
 				Title.Times.times(
 						Duration.ZERO,
 						Duration.ofMillis(1500L),
@@ -126,8 +126,8 @@ public class CraftDefender extends CraftFighter implements Defender
 	private Title getDefenderModeTitle()
 	{
 		return Title.title(
-				PluginMessage.TITLE_DEFENDER_MODE.translate(this),
-				PluginMessage.SUBTITLE_RESPAWNED.translate(this),
+				PluginMessage.TITLE_DEFENDER_MODE.translateOne(this),
+				PluginMessage.SUBTITLE_RESPAWNED.translateOne(this),
 				Title.Times.times(
 						Duration.ZERO,
 						Duration.ofMillis(1500L),

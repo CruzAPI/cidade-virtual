@@ -17,7 +17,7 @@ public class CraftConsole implements Messageable
 	@Override
 	public void sendMessage(Message message, Object... args)
 	{
-		String plainText = LegacyComponentSerializer.legacySection().serialize(message.translate(ResourceBundleHandler.DEFAULT_LOCALE, args));
+		String plainText = LegacyComponentSerializer.legacySection().serialize(message.translateOne(ResourceBundleHandler.DEFAULT_LOCALE, args));
 		
 		String[] lines = plainText.split("\\n");
 		

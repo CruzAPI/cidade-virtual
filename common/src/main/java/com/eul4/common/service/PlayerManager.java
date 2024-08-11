@@ -159,6 +159,11 @@ public class PlayerManager
 		return commonPlayers.get(commonPlayer.getUniqueId()) == commonPlayer;
 	}
 	
+	public boolean isRegistered(UUID uuid)
+	{
+		return commonPlayers.containsKey(uuid);
+	}
+	
 	public Collection<CommonPlayer> getAll()
 	{
 		return commonPlayers.values();

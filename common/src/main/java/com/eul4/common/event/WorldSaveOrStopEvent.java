@@ -1,6 +1,5 @@
 package com.eul4.common.event;
 
-import com.eul4.common.model.player.CommonPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.World;

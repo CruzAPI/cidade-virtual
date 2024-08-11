@@ -7,7 +7,6 @@ import com.eul4.model.town.structure.Generator;
 import com.eul4.model.town.structure.Structure;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 
@@ -32,7 +31,7 @@ public class CraftDislikeGeneratorGui extends CraftGeneratorGui
 	{
 		Generator generator = (Generator) structure;
 		
-		return PluginMessage.STRUCTURE_GENERATOR_TITLE.translate(commonPlayer.getLocale(),
+		return PluginMessage.STRUCTURE_GENERATOR_TITLE.translateOne(commonPlayer.getLocale(),
 				NamedTextColor.DARK_RED,
 				PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME,
 				generator.getLevel());

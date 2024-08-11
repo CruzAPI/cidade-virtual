@@ -48,7 +48,7 @@ public enum AnalyzerScoreboardMessage implements Message
 		return new Component[]
 		{
 			empty(),
-			message.translate(bundle, String::toUpperCase),
+			message.translateOne(bundle, String::toUpperCase),
 		};
 	}),
 	

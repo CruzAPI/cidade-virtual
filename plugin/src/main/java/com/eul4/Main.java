@@ -32,7 +32,7 @@ import com.eul4.rule.serializer.*;
 import com.eul4.service.*;
 import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
-import com.eul4.util.FileUtil;
+import com.eul4.common.util.FileUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.PluginManager;

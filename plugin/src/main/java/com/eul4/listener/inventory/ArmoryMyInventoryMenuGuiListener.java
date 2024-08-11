@@ -101,8 +101,8 @@ public class ArmoryMyInventoryMenuGuiListener implements Listener
 			
 			if(plugin.getPlayerManager().register(newInstnace) instanceof InventoryOrganizerPlayer inventoryOrganizerPlayer)
 			{
-				Component mainTitle = PluginMessage.TITLE_OPEN_YOUR_INVENTORY.translate(inventoryOrganizerPlayer);
-				Component subTitle = PluginMessage.SUBTITLE_OPEN_YOUR_INVENTORY.translate(inventoryOrganizerPlayer);
+				Component mainTitle = PluginMessage.TITLE_OPEN_YOUR_INVENTORY.translateOne(inventoryOrganizerPlayer);
+				Component subTitle = PluginMessage.SUBTITLE_OPEN_YOUR_INVENTORY.translateOne(inventoryOrganizerPlayer);
 				
 				Title.Times times = Title.Times.times(
 						Duration.ZERO,

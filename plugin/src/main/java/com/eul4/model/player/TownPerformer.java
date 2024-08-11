@@ -42,8 +42,8 @@ public sealed interface TownPerformer extends PluginPlayer
 					Component subtitle;
 					Title.Times times;
 					
-					title = PluginMessage.TITLE_CREATING_TOWN.translate(this);
-					subtitle = PluginMessage.SUBTITLE_CREATING_TOWN.translate(this);
+					title = PluginMessage.TITLE_CREATING_TOWN.translateOne(this);
+					subtitle = PluginMessage.SUBTITLE_CREATING_TOWN.translateOne(this);
 					times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(10L), Duration.ZERO);
 					
 					Title creatingTownTitle = Title.title(title, subtitle, times);

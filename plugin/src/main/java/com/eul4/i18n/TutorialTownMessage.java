@@ -58,7 +58,7 @@ public enum TutorialTownMessage implements Message
 		Currency.LIKE.getBaseComponent()
 				.append(text((int) args[0]))
 				.append(text(" "))
-				.append(Currency.LIKE.getPluralWord().translate(bundle, String::toUpperCase))
+				.append(Currency.LIKE.getPluralWord().translateOne(bundle, String::toUpperCase))
 				.decorate(TextDecoration.BOLD),
 	}),
 	

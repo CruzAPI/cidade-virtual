@@ -10,18 +10,26 @@ public enum CommonObjectType implements ObjectType
 	BLOCK((byte) 0, CommonExternalizerType.BLOCK),
 	BLOCK_VECTOR((byte) 0, CommonExternalizerType.BLOCK_VECTOR),
 	CHUNK((byte) 0, CommonExternalizerType.CHUNK),
-	COMMON_PLAYER_DATA((byte) 1, CommonExternalizerType.COMMON_PLAYER_DATA),
 	COMMON_PLAYER((byte) 0, null),
+	COMMON_PLAYER_DATA((byte) 1, CommonExternalizerType.COMMON_PLAYER_DATA),
 	ENTITY((byte) 0, CommonExternalizerType.ENTITY),
+	GROUP((byte) 0, CommonExternalizerType.GROUP),
+	GROUP_MAP((byte) 0, CommonExternalizerType.GROUP_MAP),
+	GROUP_USER((byte) 0, CommonExternalizerType.GROUP_USER),
+	GROUP_USER_MAP((byte) 0, CommonExternalizerType.GROUP_USER_MAP),
 	HOLOGRAM((byte) 0, CommonExternalizerType.HOLOGRAM),
 	INVENTORY((byte) 0, CommonExternalizerType.INVENTORY),
 	ITEM_STACK((byte) 0, CommonExternalizerType.ITEM_STACK),
 	LOCATION((byte) 0, CommonExternalizerType.LOCATION),
 	OBJECT((byte) 0, null),
+	PERMISSION((byte) 0, CommonExternalizerType.PERMISSION),
+	PERMISSION_MAP((byte) 0, CommonExternalizerType.PERMISSION_MAP),
 	PLAYER_DATA((byte) 0, CommonExternalizerType.PLAYER_DATA),
-	POTION_EFFECT_COLLECTION((byte) 0, CommonExternalizerType.POTION_EFFECT_COLLECTION),
 	POTION_EFFECT((byte) 0, CommonExternalizerType.POTION_EFFECT),
-	TRANSLATED_HOLOGRAM_LINE((byte) 1, CommonExternalizerType.TRANSLATED_HOLOGRAM_LINE);
+	POTION_EFFECT_COLLECTION((byte) 0, CommonExternalizerType.POTION_EFFECT_COLLECTION),
+	TIMED_TICK((byte) 0, CommonExternalizerType.TIMED_TICK),
+	TRANSLATED_HOLOGRAM_LINE((byte) 1, CommonExternalizerType.TRANSLATED_HOLOGRAM_LINE),
+	USER((byte) 0, CommonExternalizerType.USER);
 	
 	private final byte version;
 	private final CommonExternalizerType externalizerType;

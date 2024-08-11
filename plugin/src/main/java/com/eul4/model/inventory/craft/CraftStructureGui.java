@@ -48,7 +48,7 @@ public abstract class CraftStructureGui extends CraftGui implements StructureGui
 		
 		move = ItemStack.of(Material.REPEATER);
 		meta = move.getItemMeta();
-		meta.displayName(PluginMessage.INVENTORY_STRUCTURE_GUI_MOVE_STRUCTURE.translate(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_STRUCTURE_GUI_MOVE_STRUCTURE.translateOne(commonPlayer));
 		move.setItemMeta(meta);
 	}
 	
@@ -81,20 +81,20 @@ public abstract class CraftStructureGui extends CraftGui implements StructureGui
 		
 		if(currentAttribute == null || nextAttribute == null || price == null)
 		{
-			meta.displayName(PluginMessage.STRUCTURE_MAX_UPGRADE_REACHED.translate(commonPlayer));
+			meta.displayName(PluginMessage.STRUCTURE_MAX_UPGRADE_REACHED.translateOne(commonPlayer));
 		}
 		else
 		{
 			if(structure.hasUpgradeUnlocked())
 			{
-				meta.displayName(PluginMessage.UPGRADE.translateWord(commonPlayer, WordUtils::capitalize)
+				meta.displayName(PluginMessage.UPGRADE.translateOne(commonPlayer, WordUtils::capitalize)
 						.color(GREEN)
 						.decorate(BOLD));
 			}
 			else
 			{
 				meta.displayName(PluginMessage.UPGRADE_LOCKED
-						.translate(commonPlayer, nextAttribute.getRequiresTownHallLevel()));
+						.translateOne(commonPlayer, nextAttribute.getRequiresTownHallLevel()));
 			}
 			
 			List<Component> lore = MessageUtil.getPriceLore(price, commonPlayer);

@@ -2,7 +2,6 @@ package com.eul4.model.craft.player.tutorial.step;
 
 import com.eul4.common.i18n.MessageArgs;
 import com.eul4.model.player.TutorialTownPlayer;
-import com.eul4.model.player.tutorial.step.CheckpointStepEnum;
 import com.eul4.model.player.tutorial.step.Step;
 import com.eul4.util.FaweUtil;
 import com.sk89q.worldedit.math.Vector3;
@@ -40,7 +39,7 @@ public abstract class CraftStep extends BukkitRunnable implements Step
 		this.messageArgs = messageArgs;
 		this.ticks = durationTicks;
 		this.maxTicks = durationTicks;
-		this.bossBar = BossBar.bossBar(bossBarMessageArgs.translate(tutorialTownPlayer),
+		this.bossBar = BossBar.bossBar(bossBarMessageArgs.translateOne(tutorialTownPlayer),
 				1.0F,
 				BossBar.Color.GREEN,
 				BossBar.Overlay.PROGRESS);

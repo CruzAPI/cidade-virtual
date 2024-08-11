@@ -6,11 +6,11 @@ import com.eul4.common.type.player.CommonObjectType;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.Writers;
+import com.eul4.common.util.FileUtil;
 import com.eul4.externalizer.reader.GenericPluginPlayerReader;
 import com.eul4.externalizer.writer.GenericPluginPlayerWriter;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.type.player.PluginObjectType;
-import com.eul4.util.FileUtil;
 import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 
-public class PlayerDataFiler extends Filer
+public class PlayerDataFiler extends PluginFiler
 {
 	private static final byte VERSION = 4;
 	

@@ -745,7 +745,7 @@ public class CraftArmoryWeaponShopGui extends CraftGui implements ArmoryWeaponSh
 	{
 		ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(PluginMessage.UNLOCKS_AT_LEVEL.translate(commonPlayer, level));
+		meta.displayName(PluginMessage.UNLOCKS_AT_LEVEL.translateOne(commonPlayer, level));
 		item.setItemMeta(meta);
 		
 		return item;

@@ -23,6 +23,9 @@ import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 @RequiredArgsConstructor
 public class AdminCommand implements TabExecutor
 {
+	private static final String COMMAND_NAME = "admin";
+	private static final String PERMISSION = "command." + COMMAND_NAME;
+	
 	private final Main plugin;
 	
 	@Override
@@ -41,7 +44,7 @@ public class AdminCommand implements TabExecutor
 		
 		final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
 		
-		if(!player.isOp())
+		if(!commonPlayer.hasPermission(PERMISSION))
 		{
 			commonPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
 			return false;

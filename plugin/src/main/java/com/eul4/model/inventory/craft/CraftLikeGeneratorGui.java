@@ -30,7 +30,7 @@ public class CraftLikeGeneratorGui extends CraftGeneratorGui
 	{
 		Generator generator = (Generator) structure;
 		
-		return PluginMessage.STRUCTURE_GENERATOR_TITLE.translate(commonPlayer.getLocale(),
+		return PluginMessage.STRUCTURE_GENERATOR_TITLE.translateOne(commonPlayer.getLocale(),
 				NamedTextColor.DARK_GREEN,
 				PluginMessage.STRUCTURE_LIKE_GENERATOR_NAME,
 				generator.getLevel());

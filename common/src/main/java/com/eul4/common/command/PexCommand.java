@@ -191,8 +191,8 @@ public class PexCommand implements TabExecutor
 				return true;
 			}
 			else if((args.length == 5)
-					&& args[0].equalsIgnoreCase("perm")
-					&& args[2].equalsIgnoreCase("user")
+					&& args[0].equalsIgnoreCase("group")
+					&& args[2].equalsIgnoreCase("perm")
 					&& args[3].equalsIgnoreCase("remove"))
 			{
 				final String groupName = args[1];

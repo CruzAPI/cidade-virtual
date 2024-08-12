@@ -31,7 +31,7 @@ public class CraftLikeDepositGui extends CraftStructureGui
 	{
 		Generator generator = (Generator) structure;
 		
-		return PluginMessage.COMPONENT_STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
+		return PluginMessage.COMPONENT_STRUCTURE_TITLE.translateOne(commonPlayer.getLocale(),
 				Component.empty().color(GREEN),
 				PluginMessage.STRUCTURE_LIKE_DEPOSIT_NAME,
 				generator.getLevel());

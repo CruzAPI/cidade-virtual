@@ -4,9 +4,10 @@ import com.eul4.Main;
 import com.eul4.StructureType;
 import com.eul4.command.HomeCommand;
 import com.eul4.command.SetHomeCommand;
+import com.eul4.command.TagCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
-import com.eul4.common.wrapper.TimerTranslater;
+import com.eul4.common.wrapper.TimerTranslator;
 import com.eul4.enums.Currency;
 import com.eul4.model.player.SetHomePerformer;
 import com.eul4.model.town.Town;
@@ -15,25 +16,26 @@ import com.eul4.rule.attribute.*;
 import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
 import com.eul4.world.OverWorld;
+import com.eul4.wrapper.Tag;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.eul4.common.i18n.CommonMessage.USAGE;
+import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
@@ -47,6 +49,15 @@ public enum PluginMessage implements Message
 	DURABILITY("durability"),
 	PRICE("price"),
 	COST("cost"),
+	
+	TAG_OWNER("tag.owner", empty().color(DARK_RED)),
+	TAG_ADMIN("tag.admin", empty().color(RED)),
+	TAG_VIP("tag.vip", empty().color(GREEN)),
+	TAG_MAYOR("tag.mayor", empty().color(YELLOW)),
+	TAG_DEPUTY_MAYOR("tag.deputy-mayor", empty().color(YELLOW)),
+	TAG_TOWNEE("tag.townee", empty().color(GRAY)),
+	TAG_INDIGENT("tag.indigent", empty().color(DARK_GRAY)),
+	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
 	STRUCTURE_CANNON_NAME("structure.cannon.name"),
@@ -77,7 +88,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(WHITE),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translateOne(bundle.getLocale(), String::toUpperCase))
 					.append(text(":"))
 					.decorate(BOLD),
 			text(generator.getBalance()),
@@ -93,7 +104,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(RED),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -108,7 +119,7 @@ public enum PluginMessage implements Message
 			generator.getCurrency().getBaseComponent()
 					.append(text(generator.getPossibleAmountToCollect()))
 					.append(text(" "))
-					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -124,7 +135,7 @@ public enum PluginMessage implements Message
 			generator.getCurrency().getBaseComponent()
 					.append(text(amountCollected))
 					.append(text(" "))
-					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -137,7 +148,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -150,7 +161,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -163,7 +174,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateWord(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -172,8 +183,8 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().color((TextColor) args[0]),
-		((Message) args[1]).translateWord(bundle.getLocale()),
-		ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
+		((Message) args[1]).translateOne(bundle.getLocale()),
+		ABBREVIATION_LEVEL.translateOne(bundle.getLocale(), String::toUpperCase),
 		text((int) args[2]),
 	}),
 	
@@ -181,8 +192,8 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty(),
-		((Message) args[0]).translateWord(bundle.getLocale()),
-		ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
+		((Message) args[0]).translateOne(bundle.getLocale()),
+		ABBREVIATION_LEVEL.translateOne(bundle.getLocale(), String::toUpperCase),
 		text((int) args[1]),
 	}),
 	
@@ -190,8 +201,8 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		(Component) args[0],
-		((Message) args[1]).translateWord(bundle.getLocale()),
-		ABBREVIATION_LEVEL.translateWord(bundle.getLocale(), String::toUpperCase),
+		((Message) args[1]).translateOne(bundle.getLocale()),
+		ABBREVIATION_LEVEL.translateOne(bundle.getLocale(), String::toUpperCase),
 		text((int) args[2]),
 	}),
 	
@@ -199,8 +210,8 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().decorate(BOLD),
-		((StructureType) args[0]).getNameMessage().translateWord(bundle, String::toUpperCase).color(((StructureType) args[0]).getColor()),
-		LEVEL.translateWord(bundle, String::toUpperCase),
+		((StructureType) args[0]).getNameMessage().translateOne(bundle, String::toUpperCase).color(((StructureType) args[0]).getColor()),
+		LEVEL.translateOne(bundle, String::toUpperCase),
 		text((int) args[1]),
 	}),
 	
@@ -216,23 +227,20 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		USAGE.translate(bundle.getLocale()),
+		USAGE.translateOne(bundle.getLocale()),
 		text(args[0].toString()),
 	}),
 	
-	COMMAND_SPAWN_USAGE("command.spawn.usage",
-	(bundle, args) -> new Component[]
-	{
-		empty().color(RED),
-		USAGE.translate(bundle.getLocale()),
-		text(args[0].toString()),
-	}),
+	COMMAND_SPAWN_USAGE((locale, args) -> singletonList(
+			USAGE.translateOne(locale, WordUtils::capitalize)
+					.append(text(": /" + args[0]))
+					.color(RED))),
 	
 	STRUCTURE_READY_IN("structure.ready-in",
 	(bundle, args) -> new Component[]
 	{
 		empty(),
-		TimerTranslater.translate((int) args[0], bundle.getLocale()),
+		TimerTranslator.translate((int) args[0], bundle.getLocale()),
 	}),
 	
 	CLICK_TO_FINISH_BUILD("click-to-finish-build"),
@@ -252,10 +260,10 @@ public enum PluginMessage implements Message
 	{
 		empty().color(RED),
 		text(args[0].toString()),
-		STRUCTURE.translate(bundle.getLocale()),
-		LEVEL.translate(bundle.getLocale()),
-		CURRENCY.translate(bundle.getLocale()),
-		VALUE.translate(bundle.getLocale()),
+		STRUCTURE.translateOne(bundle.getLocale()),
+		LEVEL.translateOne(bundle.getLocale()),
+		CURRENCY.translateOne(bundle.getLocale()),
+		VALUE.translateOne(bundle.getLocale()),
 	}),
 	
 	COMMAND_SETPRICE_VALUE_SET("command.setprice.value-set", (bundle, args) -> new Component[]
@@ -301,14 +309,14 @@ public enum PluginMessage implements Message
 	{
 		((Currency) args[0]).getBaseComponent().decorate(BOLD),
 		text((int) args[1]),
-		((Currency) args[0]).getPluralWord().translateWord(bundle, String::toUpperCase),
+		((Currency) args[0]).getPluralWord().translateOne(bundle, String::toUpperCase),
 	}),
 	
 	BOLD_DECORATED_VALUE_CURRENCY("bold-decorated-value-currency", (bundle, args) -> new Component[]
 	{
 		((Currency) args[0]).getBaseComponent().decorate(BOLD),
 		text((int) args[1]),
-		((Currency) args[0]).getPluralWord().translateWord(bundle, String::toUpperCase),
+		((Currency) args[0]).getPluralWord().translateOne(bundle, String::toUpperCase),
 	}),
 	
 	LIKES("likes"),
@@ -319,7 +327,7 @@ public enum PluginMessage implements Message
 	STRUCTURE_CONSTRUCTOR("structure-constructor", (bundle, args) -> new Component[]
 	{
 		empty(),
-		((Message) args[0]).translateWord(bundle).color(LIGHT_PURPLE),
+		((Message) args[0]).translateOne(bundle).color(LIGHT_PURPLE),
 	}),
 	
 	STRUCTURE_CONSTRUCTOR_LORE("structure-constructor-lore", empty().color(GRAY)),
@@ -342,7 +350,7 @@ public enum PluginMessage implements Message
 	STRUCTURE_LIMIT_REACHED("structure-limit-reached", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		((StructureType) args[0]).getNameMessage().translate(bundle),
+		((StructureType) args[0]).getNameMessage().translateOne(bundle),
 		text((int) args[1]),
 		text((int) args[2]),
 	}),
@@ -361,7 +369,7 @@ public enum PluginMessage implements Message
 			text(nextLevelAttributes.getLikeCapacity()),
 			text(currentLevelAttributes.getDislikeCapacity()),
 			text(nextLevelAttributes.getDislikeCapacity()),
-			TimerTranslater.translate(buildTicks, bundle),
+			TimerTranslator.translate(buildTicks, bundle),
 		};
 	}),
 	
@@ -376,7 +384,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			//TODO ...
-			TimerTranslater.translate(buildTicks, bundle),
+			TimerTranslator.translate(buildTicks, bundle),
 		};
 	}),
 	
@@ -391,7 +399,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			//TODO ...
-			TimerTranslater.translate(buildTicks, bundle),
+			TimerTranslator.translate(buildTicks, bundle),
 		};
 	}),
 	
@@ -414,7 +422,7 @@ public enum PluginMessage implements Message
 			text(decimalFormat.format(nextLevelAttributes.getMissileSpeedPerSecond())),
 			text(decimalFormat.format(currentLevelAttributes.getRange())),
 			text(decimalFormat.format(nextLevelAttributes.getRange())),
-			TimerTranslater.translate(nextLevelAttributes.getTotalBuildTicks(), bundle),
+			TimerTranslator.translate(nextLevelAttributes.getTotalBuildTicks(), bundle),
 		};
 	}),
 	
@@ -432,7 +440,7 @@ public enum PluginMessage implements Message
 			text(nextLevelAttributes.getCapacity()),
 			text(TickConverter.generationPerHour(currentLevelAttributes.getDelay())),
 			text(TickConverter.generationPerHour(nextLevelAttributes.getDelay())),
-			TimerTranslater.translate(buildTicks, bundle),
+			TimerTranslator.translate(buildTicks, bundle),
 		};
 	}),
 	
@@ -450,7 +458,7 @@ public enum PluginMessage implements Message
 			text(nextLevelAttributes.getCapacity()),
 			text(TickConverter.generationPerHour(currentLevelAttributes.getDelay())),
 			text(TickConverter.generationPerHour(nextLevelAttributes.getDelay())),
-			TimerTranslater.translate(buildTicks, bundle),
+			TimerTranslator.translate(buildTicks, bundle),
 		};
 	}),
 	
@@ -466,7 +474,7 @@ public enum PluginMessage implements Message
 			empty().color(GRAY),
 			text(currentLevelAttributes.getCapacity()),
 			text(nextLevelAttributes.getCapacity()),
-			TimerTranslater.translate(buildTicks, bundle),
+			TimerTranslator.translate(buildTicks, bundle),
 		};
 	}),
 	
@@ -482,7 +490,7 @@ public enum PluginMessage implements Message
 			empty().color(GRAY),
 			text(currentLevelAttributes.getCapacity()),
 			text(nextLevelAttributes.getCapacity()),
-			TimerTranslater.translate(buildTicks, bundle),
+			TimerTranslator.translate(buildTicks, bundle),
 		};
 	}),
 	
@@ -502,7 +510,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(WHITE).decorate(BOLD),
 			baseComponent.append(text((int) args[0])),
-			baseComponent.append(currency.getPluralWord().translateWord(bundle, String::toUpperCase))
+			baseComponent.append(currency.getPluralWord().translateOne(bundle, String::toUpperCase))
 		};
 	}),
 	
@@ -647,7 +655,7 @@ public enum PluginMessage implements Message
 	COMMAND_BALANCE_TRY_TOWN_COMMAND("command.balance.try-town-command", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		TOWN_COMMAND_NAME.translateWord(bundle),
+		TOWN_COMMAND_NAME.translateOne(bundle),
 	}),
 	
 	COMMAND_BALANCE_FOOTER("command.balance.footer", Component.empty().color(GRAY).decorate(STRIKETHROUGH)),
@@ -660,15 +668,15 @@ public enum PluginMessage implements Message
 		{
 			empty().color(WHITE),
 			text(" ]   ").color(GRAY).decorate(STRIKETHROUGH),
-			COMMAND_BALANCE_YOUR_RESOURCES.translate(bundle),
+			COMMAND_BALANCE_YOUR_RESOURCES.translateOne(bundle),
 			text("   [ ").color(GRAY).decorate(STRIKETHROUGH),
-			LIKES.translateWord(bundle, String::toUpperCase).color(GREEN).decorate(BOLD).append(text(":")),
+			LIKES.translateOne(bundle, String::toUpperCase).color(GREEN).decorate(BOLD).append(text(":")),
 			text(town.getLikes()),
 			text(town.getLikeCapacity()),
-			DISLIKES.translateWord(bundle, String::toUpperCase).color(RED).decorate(BOLD).append(text(":")),
+			DISLIKES.translateOne(bundle, String::toUpperCase).color(RED).decorate(BOLD).append(text(":")),
 			text(town.getDislikes()),
 			text(town.getDislikeCapacity()),
-			COMMAND_BALANCE_FOOTER.translate(bundle),
+			COMMAND_BALANCE_FOOTER.translateOne(bundle),
 		};
 	}),
 	
@@ -691,13 +699,13 @@ public enum PluginMessage implements Message
 	BATTLE_INVENTORY_UPDATED("battle-inventory-updated", (bundle, args) -> new Component[]
 	{
 		empty().color(GREEN),
-		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translate(bundle),
+		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translateOne(bundle),
 	}),
 	
 	BATTLE_INVENTORY_UNCHANGED("battle-inventory-unchanged", (bundle, args) -> new Component[]
 	{
 		empty().color(YELLOW),
-		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translate(bundle),
+		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translateOne(bundle),
 	}),
 	
 	STORAGE_AND_BATTLE_INVENTORY_UPDATED("storage-and-battle-inventory-updated", empty().color(GREEN)),
@@ -724,7 +732,7 @@ public enum PluginMessage implements Message
 	TOWN_HINT_BUY_STRUCTURE_COMMAND("town.hint.buy-structure-command", (bundle, args) -> new Component[]
 	{
 		empty().color(GRAY),
-		COMMAND_BUY_STRUCTURE_ALIASES.translateWord(bundle, string -> "/" + string).color(WHITE),
+		COMMAND_BUY_STRUCTURE_ALIASES.translateOne(bundle, string -> "/" + string).color(WHITE),
 	}),
 	
 	COMMAND_TOWN_FAILED_TO_CREATE_TOWN("command.town.failed-to-create-town", empty().color(RED)),
@@ -744,7 +752,7 @@ public enum PluginMessage implements Message
 	TOWN_HINT_BACK_TO_SPAWN("town.hint-back-to-spawn", (bundle, args) -> new Component[]
 	{
 		empty().color(GRAY),
-		SPAWN_COMMAND_NAME.translate(bundle, command -> "/" + command).color(WHITE),
+		SPAWN_COMMAND_NAME.translateOne(bundle, command -> "/" + command).color(WHITE),
 	}),
 	
 	STRUCTURE_ITEM_MOVE("structure.item-move", (bundle, args) ->
@@ -754,7 +762,7 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(AQUA),
-			structureType.getNameMessage().translate(bundle).color(structureType.getColor()),
+			structureType.getNameMessage().translateOne(bundle).color(structureType.getColor()),
 		};
 	}),
 	
@@ -785,7 +793,7 @@ public enum PluginMessage implements Message
 			empty().color(GRAY),
 			text(attribute.getCapacity()),
 			text(TickConverter.generationPerHour(attribute.getDelay())),
-			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+			TimerTranslator.translate(attribute.getTotalBuildTicks(), bundle),
 		};
 	}),
 	
@@ -798,7 +806,7 @@ public enum PluginMessage implements Message
 			empty().color(GRAY),
 			text(attribute.getCapacity()),
 			text(TickConverter.generationPerHour(attribute.getDelay())),
-			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+			TimerTranslator.translate(attribute.getTotalBuildTicks(), bundle),
 		};
 	}),
 	
@@ -810,7 +818,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			text(attribute.getCapacity()),
-			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+			TimerTranslator.translate(attribute.getTotalBuildTicks(), bundle),
 		};
 	}),
 	
@@ -822,7 +830,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			text(attribute.getCapacity()),
-			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+			TimerTranslator.translate(attribute.getTotalBuildTicks(), bundle),
 		};
 	}),
 	
@@ -833,7 +841,7 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(GRAY),
-			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+			TimerTranslator.translate(attribute.getTotalBuildTicks(), bundle),
 		};
 	}),
 	
@@ -851,7 +859,7 @@ public enum PluginMessage implements Message
 			text(decimalFormat.format(attribute.getAttackSpeedPerSecond())),
 			text(decimalFormat.format(attribute.getMissileSpeedPerSecond())),
 			text(decimalFormat.format(attribute.getRange())),
-			TimerTranslater.translate(attribute.getTotalBuildTicks(), bundle),
+			TimerTranslator.translate(attribute.getTotalBuildTicks(), bundle),
 		};
 	}),
 	
@@ -886,9 +894,9 @@ public enum PluginMessage implements Message
 		
 		NamedTextColor color = current >= max ? RED : GRAY;
 		
-		return structureType.getNameMessage().translate(locale)
+		return singletonList(structureType.getNameMessage().translateOne(locale)
 				.append(text(" "))
-				.append(text("(" + current + "/" + max + ")").color(color));
+				.append(text("(" + current + "/" + max + ")").color(color)));
 	}),
 	
 	COMMAND_SETHOME_MAX_HOME_REACHED("command.sethome.max-home-reached", empty().color(RED)),
@@ -973,7 +981,7 @@ public enum PluginMessage implements Message
 			final String homeName = iterator.next();
 			final String runCommand = "/" + HomeCommand.COMMAND_NAME + " " + homeName;
 			final ClickEvent clickEvent = ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, runCommand);
-			final HoverEventSource<Component> hoverEvent = COMMAND_HOME_YOUR_HOMES_HOVER.translate(bundle.getLocale(), homeName).asHoverEvent(UnaryOperator.identity());
+			final HoverEventSource<Component> hoverEvent = COMMAND_HOME_YOUR_HOMES_HOVER.translateOne(bundle.getLocale(), homeName).asHoverEvent(UnaryOperator.identity());
 			final Component homeNameComponent = text(homeName).clickEvent(clickEvent).hoverEvent(hoverEvent);
 			
 			yourHomes = yourHomes.append(homeNameComponent);
@@ -1008,14 +1016,72 @@ public enum PluginMessage implements Message
 	CHANNELER_INITIALIZING_CHANNELING("channeler.initializing-channeling", (bundle, args) -> new Component[]
 	{
 		empty().color(GREEN),
-		TimerTranslater.translate(((Long) args[0]).intValue(), bundle)
+		TimerTranslator.translate(((Long) args[0]).intValue(), bundle)
+	}),
+	
+	COMMAND_TAG_YOU_DO_NOT_HAVE_ANY_TAGS("command.tag.you-do-not-have-any-tags", empty().color(RED)),
+	COMMAND_TAG_SELECT_TAG_HOVER("command.tag.select-tag.hover", empty().color(WHITE)),
+	COMMAND_TAG_YOUR_TAGS("command.tag.your-tags", (bundle, args) ->
+	{
+		TreeSet<Tag> tags = (TreeSet<Tag>) args[0];
+		
+		Component yourTags = empty().color(WHITE);
+		Iterator<Tag> iterator = tags.iterator();
+		
+		while(iterator.hasNext())
+		{
+			final Tag tag = iterator.next();
+			final String runCommand = "/" + TagCommand.COMMAND_NAME + " " + tag.getName();
+			final ClickEvent clickEvent = ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, runCommand);
+			final HoverEvent<Component> hoverEvent = COMMAND_TAG_SELECT_TAG_HOVER.translateOne(bundle.getLocale()).asHoverEvent();
+			final Component tagComponent = tag.getMessage().translateOne(bundle.getLocale()).clickEvent(clickEvent).hoverEvent(hoverEvent);
+			
+			yourTags = yourTags.append(tagComponent);
+			
+			if(iterator.hasNext())
+			{
+				yourTags = yourTags.append(text(", "));
+			}
+		}
+		
+		return new Component[]
+		{
+			empty().color(GREEN),
+			yourTags,
+		};
+	}),
+	COMMAND_TAG_TAG_NOT_FOUND("command.tag.tag-not-found", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("\"" + args[0] + "\""),
+	}),
+	COMMAND_TAG_YOU_DO_NOT_HAVE_THIS_TAG("command.tag.you-do-not-have-this-tag", empty().color(RED)),
+	COMMAND_TAG_TAG_SET("command.tag.tag-set", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		((Tag) args[0]).getMessage().translateOne(bundle.getLocale()),
+	}),
+	
+	COMMAND_TAG_SUB_COMMAND_CLEAR("command.tag.sub-command.clear"),
+	COMMAND_TAG_TAG_CLEARED("command.tag.tag-cleared", empty().color(GREEN)),
+	COMMAND_TAG_NO_TAG_TO_CLEAR("command.tag.no-tag-to-clear", empty().color(RED)),
+	
+	COMMAND_TAG_USAGE((locale, args) ->
+	{
+		List<Component> components = new ArrayList<>();
+		
+		components.add(USAGE.translateOne(locale, WordUtils::capitalize).append(text(":")));
+		components.add(text("/" + args[0] + " [tag]"));
+		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_CLEAR.translateOne(locale)));
+		
+		return components;
 	}),
 	
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;
 	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;
-	private final BiFunction<Locale, Object[], Component> untranslatableComponentBiFunction;
+	private final BiFunction<Locale, Object[], List<Component>> untranslatableComponentBiFunction;
 	
 	PluginMessage(String key)
 	{
@@ -1043,7 +1109,7 @@ public enum PluginMessage implements Message
 		this.untranslatableComponentBiFunction = null;
 	}
 	
-	PluginMessage(BiFunction<Locale, Object[], Component> untranslatableComponentBiFunction)
+	PluginMessage(BiFunction<Locale, Object[], List<Component>> untranslatableComponentBiFunction)
 	{
 		this.untranslatableComponentBiFunction = untranslatableComponentBiFunction;
 		

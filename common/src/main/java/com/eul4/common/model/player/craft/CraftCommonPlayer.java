@@ -124,7 +124,8 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		}
 		catch(Exception e)
 		{
-			player.sendMessage(Component.text("Error while sending message: " + message.getKey()).color(NamedTextColor.RED));
+			String msgKey = Optional.ofNullable(message.getKey()).orElse(message.name());
+			player.sendMessage(Component.text("Error while sending message: " + msgKey).color(NamedTextColor.RED));
 			e.printStackTrace();
 		}
 	}
@@ -160,7 +161,7 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public Inventory createInventory(InventoryType inventoryType, Message message, Object... args)
 	{
-		return createInventory(inventoryType, message.translate(locale, args));
+		return createInventory(inventoryType, message.translateOne(locale, args));
 	}
 	
 	@Override
@@ -172,7 +173,7 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public Inventory createInventory(int size, Message message, Object... args)
 	{
-		return plugin.getServer().createInventory(player, size, message.translate(locale, args));
+		return plugin.getServer().createInventory(player, size, message.translateOne(locale, args));
 	}
 	
 	@Override
@@ -242,5 +243,11 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 		{
 			player.sendMessage(Component.empty());
 		}
+	}
+	
+	@Override
+	public boolean hasPermission(String perm)
+	{
+		return plugin.getPermissionService().hasPermission(this, perm);
 	}
 }

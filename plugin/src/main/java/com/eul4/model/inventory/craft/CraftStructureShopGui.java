@@ -63,7 +63,7 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 	{
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(PluginMessage.INVENTORY_STRUCTURE_SHOP_GUI_STRUCTURE_DISPLAY_NAME
-				.translate(commonPlayer, itemBuilder.getStructureType(), ((PluginPlayer) commonPlayer).getTown()));
+				.translateOne(commonPlayer, itemBuilder.getStructureType(), ((PluginPlayer) commonPlayer).getTown()));
 		
 		Price price = itemBuilder.getStructureType().getRule((Main) commonPlayer.getPlugin())
 				.getAttribute(1).getPrice();
@@ -80,7 +80,7 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		}
 		else
 		{
-			lore.add(PluginMessage.STRUCTURE_NOT_FOR_SALE.translate(commonPlayer));
+			lore.add(PluginMessage.STRUCTURE_NOT_FOR_SALE.translateOne(commonPlayer));
 		}
 		
 		meta.lore(lore);

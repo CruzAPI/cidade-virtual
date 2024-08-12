@@ -20,5 +20,7 @@ public class WorldSaveListener implements Listener
 		}
 		
 		plugin.getServerTickCounter().saveOrLogError();
+		plugin.getGroupMapFiler().save();
+		plugin.getUserFiler().saveMemoryUsers();
 	}
 }

@@ -32,7 +32,7 @@ import com.eul4.rule.serializer.*;
 import com.eul4.service.*;
 import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
-import com.eul4.util.FileUtil;
+import com.eul4.common.util.FileUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.PluginManager;
@@ -213,13 +213,14 @@ public class Main extends Common
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand(DelHomeCommand.COMMAND_NAME).setExecutor(new DelHomeCommand(this));
 		getCommand(HomeCommand.COMMAND_NAME).setExecutor(new HomeCommand(this));
-		getCommand(TownCommand.COMMAND_NAME).setExecutor(new TownCommand(this));
-		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
-		getCommand("test").setExecutor(new TestCommand(this));
-		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
 		getCommand("macroid").setExecutor(new MacroidCommand(this));
+		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
 		getCommand(SetHomeCommand.COMMAND_NAME).setExecutor(new SetHomeCommand(this));
+		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
+		getCommand(TagCommand.COMMAND_NAME).setExecutor(new TagCommand(this));
+		getCommand("test").setExecutor(new TestCommand(this));
+		getCommand(TownCommand.COMMAND_NAME).setExecutor(new TownCommand(this));
 //		getCommand(TutorialCommand.COMMAND_NAME).setExecutor(new TutorialCommand(this));
 	}
 	
@@ -237,6 +238,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new AssistantTargetTaskListener(this), this);
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(new ChannelingTaskListener(this), this);
+		pluginManager.registerEvents(new ChatListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new EntityItemMoveListener(this), this);
 		pluginManager.registerEvents(new EntityRecyclerListener(this), this);

@@ -34,11 +34,11 @@ public class CraftInitialScoreboard extends CraftCommonScoreboard implements Ini
 		useTown2Team = scoreboard.registerNewTeam("useTown2Team");
 		footerTeam = scoreboard.registerNewTeam("footerTeam");
 		
-		helloTeam.suffix(HELLO_SUFFIX.translate(initialScoreboardPlayer, initialScoreboardPlayer.getPlayer().displayName()));
-		welcome1Team.suffix(WELCOME_1_SUFFIX.translate(initialScoreboardPlayer));
-		welcome2Team.suffix(WELCOME_2_SUFFIX.translate(initialScoreboardPlayer));
-		useTown1Team.suffix(USE_TOWN_1_SUFFIX.translate(initialScoreboardPlayer));
-		useTown2Team.suffix(USE_TOWN_2_SUFFIX.translate(initialScoreboardPlayer));
+		helloTeam.suffix(HELLO_SUFFIX.translateOne(initialScoreboardPlayer, initialScoreboardPlayer.getPlayer().displayName()));
+		welcome1Team.suffix(WELCOME_1_SUFFIX.translateOne(initialScoreboardPlayer));
+		welcome2Team.suffix(WELCOME_2_SUFFIX.translateOne(initialScoreboardPlayer));
+		useTown1Team.suffix(USE_TOWN_1_SUFFIX.translateOne(initialScoreboardPlayer));
+		useTown2Team.suffix(USE_TOWN_2_SUFFIX.translateOne(initialScoreboardPlayer));
 	}
 	
 	@Override
@@ -48,12 +48,12 @@ public class CraftInitialScoreboard extends CraftCommonScoreboard implements Ini
 		
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
-		String helloEntry = HELLO_ENTRY.translateToLegacyText(initialScoreboardPlayer);
-		String welcome1Entry = WELCOME_1_ENTRY.translateToLegacyText(initialScoreboardPlayer);
-		String welcome2Entry = WELCOME_2_ENTRY.translateToLegacyText(initialScoreboardPlayer);
-		String useTown1Entry = USE_TOWN_1_ENTRY.translateToLegacyText(initialScoreboardPlayer);
-		String useTown2Entry = USE_TOWN_2_ENTRY.translateToLegacyText(initialScoreboardPlayer);
-		String footerEntry = FOOTER_ENTRY.translateToLegacyText(initialScoreboardPlayer);
+		String helloEntry = HELLO_ENTRY.translateLegacy(initialScoreboardPlayer);
+		String welcome1Entry = WELCOME_1_ENTRY.translateLegacy(initialScoreboardPlayer);
+		String welcome2Entry = WELCOME_2_ENTRY.translateLegacy(initialScoreboardPlayer);
+		String useTown1Entry = USE_TOWN_1_ENTRY.translateLegacy(initialScoreboardPlayer);
+		String useTown2Entry = USE_TOWN_2_ENTRY.translateLegacy(initialScoreboardPlayer);
+		String footerEntry = FOOTER_ENTRY.translateLegacy(initialScoreboardPlayer);
 		
 		helloTeam.addEntry(helloEntry);
 		welcome1Team.addEntry(welcome1Entry);
@@ -62,7 +62,7 @@ public class CraftInitialScoreboard extends CraftCommonScoreboard implements Ini
 		useTown2Team.addEntry(useTown2Entry);
 		footerTeam.addEntry(footerEntry);
 		
-		objective.displayName(TITLE.translate(initialScoreboardPlayer));
+		objective.displayName(TITLE.translateOne(initialScoreboardPlayer));
 		
 		objective.getScore("§0 ").setScore(8);
 		objective.getScore(helloEntry).setScore(7);

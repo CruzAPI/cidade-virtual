@@ -48,7 +48,7 @@ public class CraftConfirmationGui extends CraftGui implements ConfirmationGui
 		
 		cancel = new ItemStack(Material.RED_CONCRETE);
 		meta = cancel.getItemMeta();
-		meta.displayName(CANCEL.translateWord(commonPlayer, WordUtils::capitalize).color(RED));
+		meta.displayName(CANCEL.translateOne(commonPlayer, WordUtils::capitalize).color(RED));
 		cancel.setItemMeta(meta);
 		
 		inventory.setItem(1, confirm);
@@ -79,7 +79,7 @@ public class CraftConfirmationGui extends CraftGui implements ConfirmationGui
 		
 		confirm = ItemStack.of(Material.LIME_CONCRETE);
 		meta = confirm.getItemMeta();
-		meta.displayName(CONFIRM.translateWord(commonPlayer, WordUtils::capitalize).color(GREEN));
+		meta.displayName(CONFIRM.translateOne(commonPlayer, WordUtils::capitalize).color(GREEN));
 		confirm.setItemMeta(meta);
 		
 		return confirm;

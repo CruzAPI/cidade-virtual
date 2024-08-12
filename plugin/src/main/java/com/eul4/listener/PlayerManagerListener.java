@@ -40,7 +40,8 @@ public class PlayerManagerListener implements Listener
 			return;
 		}
 		
-		plugin.getPlayerManager().register(player, plugin, PhysicalPlayerType.SPAWN_PLAYER);
+		pluginPlayer = (PluginPlayer) plugin.getPlayerManager().register(player, plugin, PhysicalPlayerType.SPAWN_PLAYER);
+		pluginPlayer.setTag(pluginPlayer.getBestTag());
 		player.teleport(PluginWorldType.OVER_WORLD.getInstance().getSpawnLocation());
 	}
 	

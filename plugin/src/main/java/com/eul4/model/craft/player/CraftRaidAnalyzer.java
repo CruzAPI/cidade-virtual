@@ -94,8 +94,8 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		town.setAnalyzer(this);
 		
 		Title title = Title.title(
-				PluginMessage.TITLE_OWNER_TOWN.translate(this, town.getOwner()),
-				PluginMessage.SUBTITLE_SECONDS_TO_ANALYZE.translate(this, 50),
+				PluginMessage.TITLE_OWNER_TOWN.translateOne(this, town.getOwner()),
+				PluginMessage.SUBTITLE_SECONDS_TO_ANALYZE.translateOne(this, 50),
 				Title.Times.times(
 						Duration.ofMillis(0L),
 						Duration.ofMillis(2500L),
@@ -226,7 +226,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		{
 			int percentage = (int) ((double) ++i / size * 100.0D);
 			player.showTitle(Title.title(
-					PluginMessage.TITLE_SEARCHING.translate(this),
+					PluginMessage.TITLE_SEARCHING.translateOne(this),
 					MessageUtil.getPercentageProgressBar(percentage),
 					Title.Times.times(
 							Duration.ZERO,
@@ -292,7 +292,7 @@ public class CraftRaidAnalyzer extends CraftSpiritualPlayer implements RaidAnaly
 		private int ticks = 50 * 20;
 		private final int maxTicks = ticks;
 		private final BossBar bossBar = BossBar.bossBar(
-				PluginMessage.ANALYZING_TOWN.translate(CraftRaidAnalyzer.this, analyzingTown.getOwner()),
+				PluginMessage.ANALYZING_TOWN.translateOne(CraftRaidAnalyzer.this, analyzingTown.getOwner()),
 				1.0F,
 				BossBar.Color.PURPLE,
 				BossBar.Overlay.PROGRESS);

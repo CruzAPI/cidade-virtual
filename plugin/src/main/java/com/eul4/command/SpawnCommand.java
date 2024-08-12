@@ -57,7 +57,7 @@ public class SpawnCommand implements TabExecutor
 			return true;
 		}
 		
-		commonPlayer.sendMessage(PluginMessage.COMMAND_SPAWN_USAGE);
+		commonPlayer.sendMessage(PluginMessage.COMMAND_SPAWN_USAGE, label);
 		return false;
 	}
 }

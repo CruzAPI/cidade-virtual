@@ -7,10 +7,7 @@ import com.eul4.model.town.structure.Armory;
 import com.eul4.model.town.structure.Structure;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 @Getter
 public class CraftArmoryGui extends CraftStructureGui implements ArmoryGui
@@ -31,7 +28,7 @@ public class CraftArmoryGui extends CraftStructureGui implements ArmoryGui
 	@Override
 	public Component getUpdatedTitleComponent()
 	{
-		return PluginMessage.STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
+		return PluginMessage.STRUCTURE_TITLE.translateOne(commonPlayer.getLocale(),
 				PluginMessage.STRUCTURE_ARMORY_NAME,
 				structure.getLevel());
 	}

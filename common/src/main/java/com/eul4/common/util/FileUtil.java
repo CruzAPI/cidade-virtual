@@ -1,4 +1,4 @@
-package com.eul4.util;
+package com.eul4.common.util;
 
 import java.io.File;
 import java.util.logging.Logger;

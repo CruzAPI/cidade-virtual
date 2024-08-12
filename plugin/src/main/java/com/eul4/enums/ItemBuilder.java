@@ -124,7 +124,7 @@ public enum ItemBuilder
 		ItemMeta meta = item.getItemMeta();
 		
 		meta.displayName(PluginMessage.STRUCTURE_CONSTRUCTOR
-				.translate(commonPlayer, itemBuilder.getStructureType().getNameMessage()));
+				.translateOne(commonPlayer, itemBuilder.getStructureType().getNameMessage()));
 		meta.lore(PluginMessage.STRUCTURE_CONSTRUCTOR_LORE.translateLore(commonPlayer));
 		meta.addEnchant(Enchantment.UNBREAKING, 1, true);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

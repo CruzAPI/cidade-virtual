@@ -11,6 +11,7 @@ commands:
     aliases: [cidade, home, casa, cv]
   spawn:
     aliases: [vanilla, survival]
+  tag:
   test:
   admin:
   build:
@@ -20,6 +21,7 @@ commands:
   macroid:
   raid:
     aliases: [ataque, attack, atacar]
+  pex:
   scoreboard:
     aliases: [score]
   sethome:

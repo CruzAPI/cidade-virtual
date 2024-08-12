@@ -51,6 +51,8 @@ public interface CommonPlayer extends Messageable
 	Optional<CommonPlayer> findOldInstance();
 	CommonPlayer getOldInstance();
 	
+	boolean hasPermission(String perm);
+	
 	void clearChat();
 	void clearChat(int emptyLines);
 }

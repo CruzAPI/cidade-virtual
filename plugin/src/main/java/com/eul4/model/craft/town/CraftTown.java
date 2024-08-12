@@ -185,7 +185,7 @@ public class CraftTown implements Town
 		assistant.setInvulnerable(true);
 		assistant.setRemoveWhenFarAway(false);
 		assistant.setCustomNameVisible(true);
-		assistant.customName(PluginMessage.TOWN_VIRTUAL_ASSISTANT.translate(findPluginPlayer()
+		assistant.customName(PluginMessage.TOWN_VIRTUAL_ASSISTANT.translateOne(findPluginPlayer()
 				.map(PluginPlayer::getLocale)
 				.orElse(ResourceBundleHandler.DEFAULT_LOCALE)));
 		

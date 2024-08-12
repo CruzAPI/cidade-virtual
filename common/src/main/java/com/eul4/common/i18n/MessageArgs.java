@@ -21,18 +21,36 @@ public class MessageArgs
 		this.args = args;
 	}
 	
-	public Component translate(Locale locale)
+	public MessageArgs moreArgs(Object... args)
 	{
-		return message.translate(locale, args);
+		Object[] combinedArgs = new Object[this.args.length + args.length];
+		System.arraycopy(this.args, 0, combinedArgs, 0, this.args.length);
+		System.arraycopy(args, 0, combinedArgs, this.args.length, args.length);
+		return new MessageArgs(message, combinedArgs);
 	}
 	
-	public Component translate(CommonPlayer commonPlayer)
+	public Component translateOne(Locale locale)
 	{
-		return message.translate(commonPlayer, args);
+		return message.translateOne(locale, args);
+	}
+	
+	public Component translateOne(CommonPlayer commonPlayer)
+	{
+		return message.translateOne(commonPlayer, args);
 	}
 	
 	public List<Component> translateLore(CommonPlayer commonPlayer)
 	{
 		return message.translateLore(commonPlayer, args);
+	}
+	
+	public String translatePlain(Locale locale)
+	{
+		return message.translatePlain(locale, args);
+	}
+	
+	public String translateLegacy(Locale locale)
+	{
+		return message.translateLegacy(locale, args);
 	}
 }

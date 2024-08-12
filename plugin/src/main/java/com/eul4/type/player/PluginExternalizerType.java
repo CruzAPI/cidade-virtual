@@ -6,7 +6,6 @@ import com.eul4.common.externalizer.writer.ObjectWriter;
 import com.eul4.common.type.player.*;
 import com.eul4.externalizer.reader.*;
 import com.eul4.externalizer.writer.*;
-import com.eul4.model.player.TutorialTownPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -32,11 +31,13 @@ public enum PluginExternalizerType implements ExternalizerType
 	INVENTORY_ORGANIZER_PLAYER(InventoryOrganizerPlayerReader::new, InventoryOrganizerPlayerReader.class, InventoryOrganizerPlayerWriter::new, InventoryOrganizerPlayerWriter.class),
 	LIKE_DEPOSIT(LikeDepositReader::new, LikeDepositReader.class, LikeDepositWriter::new, LikeDepositWriter.class),
 	LIKE_GENERATOR(LikeGeneratorReader::new, LikeGeneratorReader.class, LikeGeneratorWriter::new, LikeGeneratorWriter.class),
+	PLUGIN_PLAYER_DATA(PluginPlayerDataReader::new, PluginPlayerDataReader.class, PluginPlayerDataWriter::new, PluginPlayerDataWriter.class),
 	RAID_ANALYZER(RaidAnalyzerReader::new, RaidAnalyzerReader.class, RaidAnalyzerWriter::new, RaidAnalyzerWriter.class),
 	RAID_SPECTATOR(RaidSpectatorReader::new, RaidSpectatorReader.class, RaidSpectatorWriter::new, RaidSpectatorWriter.class),
 	SHORT_COORDINATE_BLOCK_CHUNK(ShortCoordinateBlockChunkReader::new, ShortCoordinateBlockChunkReader.class, ShortCoordinateBlockChunkWriter::new, ShortCoordinateBlockChunkWriter.class),
 	SPAWN_PLAYER(SpawnPlayerReader::new, SpawnPlayerReader.class, SpawnPlayerWriter::new, SpawnPlayerWriter.class),
 	STRUCTURE_MAP(StructureMapReader::new, StructureMapReader.class, StructureMapWriter::new, StructureMapWriter.class),
+	TAG(TagReader::new, TagReader.class, TagWriter::new, TagWriter.class),
 	TOWN_BLOCK_MAP(TownBlockMapReader::new, TownBlockMapReader.class, TownBlockMapWriter::new, TownBlockMapWriter.class),
 	TOWN_BLOCK(TownBlockReader::new, TownBlockReader.class, TownBlockWriter::new, TownBlockWriter.class),
 	TOWN_BLOCK_SET(TownBlockSetReader::new, TownBlockSetReader.class, TownBlockSetWriter::new, TownBlockSetWriter.class),

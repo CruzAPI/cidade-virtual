@@ -22,7 +22,7 @@ import java.util.logging.Level;
 
 public class PlayerDataFiler extends PluginFiler
 {
-	private static final byte VERSION = 4;
+	private static final byte VERSION = 5;
 	
 	private static final ObjectType[]
 	
@@ -156,6 +156,39 @@ public class PlayerDataFiler extends PluginFiler
 		PluginObjectType.SPIRITUAL_PLAYER,
 		PluginObjectType.RAID_ANALYZER,
 		PluginObjectType.RAID_SPECTATOR,
+		PluginObjectType.TOWN_PLAYER_DATA,
+		PluginObjectType.TOWN_PLAYER,
+		PluginObjectType.TUTORIAL_TOWN_PLAYER_DATA,
+		PluginObjectType.TUTORIAL_TOWN_PLAYER,
+		PluginObjectType.VANILLA_PLAYER_DATA,
+		PluginObjectType.VANILLA_PLAYER,
+	},
+	
+	OBJECT_TYPES_V5 = new ObjectType[]
+	{
+		CommonObjectType.COMMON_PLAYER_DATA,
+		CommonObjectType.COMMON_PLAYER,
+		CommonObjectType.INVENTORY,
+		CommonObjectType.ITEM_STACK,
+		CommonObjectType.LOCATION,
+		CommonObjectType.OBJECT,
+		CommonObjectType.PLAYER_DATA,
+		CommonObjectType.POTION_EFFECT_COLLECTION,
+		CommonObjectType.POTION_EFFECT,
+		PluginObjectType.ADMIN,
+		PluginObjectType.ATTACKER,
+		PluginObjectType.CHECKPOINT_STEP_ENUM,
+		PluginObjectType.DEFENDER,
+		PluginObjectType.GENERIC_PLUGIN_PLAYER,
+		PluginObjectType.HOME_MAP,
+		PluginObjectType.PLUGIN_PLAYER,
+		PluginObjectType.PLUGIN_PLAYER_DATA,
+		PluginObjectType.PHYSICAL_PLAYER,
+		PluginObjectType.SPAWN_PLAYER,
+		PluginObjectType.SPIRITUAL_PLAYER,
+		PluginObjectType.RAID_ANALYZER,
+		PluginObjectType.RAID_SPECTATOR,
+		PluginObjectType.TAG,
 		PluginObjectType.TOWN_PLAYER_DATA,
 		PluginObjectType.TOWN_PLAYER,
 		PluginObjectType.TUTORIAL_TOWN_PLAYER_DATA,
@@ -320,6 +353,7 @@ public class PlayerDataFiler extends PluginFiler
 			case 2 -> OBJECT_TYPES_V2;
 			case 3 -> OBJECT_TYPES_V3;
 			case 4 -> OBJECT_TYPES_V4;
+			case 5 -> OBJECT_TYPES_V5;
 			default -> throw new InvalidVersionException(MessageFormat.format(
 					"Invalid {0} version: {1}",
 					getClass().getSimpleName(),

@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.StructureType;
 import com.eul4.command.HomeCommand;
 import com.eul4.command.SetHomeCommand;
+import com.eul4.command.TagCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.wrapper.TimerTranslator;
@@ -15,9 +16,11 @@ import com.eul4.rule.attribute.*;
 import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
 import com.eul4.world.OverWorld;
+import com.eul4.wrapper.Tag;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -32,6 +35,7 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.eul4.common.i18n.CommonMessage.USAGE;
+import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
@@ -45,6 +49,15 @@ public enum PluginMessage implements Message
 	DURABILITY("durability"),
 	PRICE("price"),
 	COST("cost"),
+	
+	TAG_OWNER("tag.owner", empty().color(DARK_RED)),
+	TAG_ADMIN("tag.admin", empty().color(RED)),
+	TAG_VIP("tag.vip", empty().color(GREEN)),
+	TAG_MAYOR("tag.mayor", empty().color(YELLOW)),
+	TAG_DEPUTY_MAYOR("tag.deputy-mayor", empty().color(YELLOW)),
+	TAG_TOWNEE("tag.townee", empty().color(GRAY)),
+	TAG_INDIGENT("tag.indigent", empty().color(DARK_GRAY)),
+	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
 	STRUCTURE_CANNON_NAME("structure.cannon.name"),
@@ -218,7 +231,7 @@ public enum PluginMessage implements Message
 		text(args[0].toString()),
 	}),
 	
-	COMMAND_SPAWN_USAGE((locale, args) -> Collections.singletonList(
+	COMMAND_SPAWN_USAGE((locale, args) -> singletonList(
 			USAGE.translateOne(locale, WordUtils::capitalize)
 					.append(text(": /" + args[0]))
 					.color(RED))),
@@ -881,7 +894,7 @@ public enum PluginMessage implements Message
 		
 		NamedTextColor color = current >= max ? RED : GRAY;
 		
-		return Collections.singletonList(structureType.getNameMessage().translateOne(locale)
+		return singletonList(structureType.getNameMessage().translateOne(locale)
 				.append(text(" "))
 				.append(text("(" + current + "/" + max + ")").color(color)));
 	}),
@@ -1004,6 +1017,64 @@ public enum PluginMessage implements Message
 	{
 		empty().color(GREEN),
 		TimerTranslator.translate(((Long) args[0]).intValue(), bundle)
+	}),
+	
+	COMMAND_TAG_YOU_DO_NOT_HAVE_ANY_TAGS("command.tag.you-do-not-have-any-tags", empty().color(RED)),
+	COMMAND_TAG_SELECT_TAG_HOVER("command.tag.select-tag.hover", empty().color(WHITE)),
+	COMMAND_TAG_YOUR_TAGS("command.tag.your-tags", (bundle, args) ->
+	{
+		TreeSet<Tag> tags = (TreeSet<Tag>) args[0];
+		
+		Component yourTags = empty().color(WHITE);
+		Iterator<Tag> iterator = tags.iterator();
+		
+		while(iterator.hasNext())
+		{
+			final Tag tag = iterator.next();
+			final String runCommand = "/" + TagCommand.COMMAND_NAME + " " + tag.getName();
+			final ClickEvent clickEvent = ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, runCommand);
+			final HoverEvent<Component> hoverEvent = COMMAND_TAG_SELECT_TAG_HOVER.translateOne(bundle.getLocale()).asHoverEvent();
+			final Component tagComponent = tag.getMessage().translateOne(bundle.getLocale()).clickEvent(clickEvent).hoverEvent(hoverEvent);
+			
+			yourTags = yourTags.append(tagComponent);
+			
+			if(iterator.hasNext())
+			{
+				yourTags = yourTags.append(text(", "));
+			}
+		}
+		
+		return new Component[]
+		{
+			empty().color(GREEN),
+			yourTags,
+		};
+	}),
+	COMMAND_TAG_TAG_NOT_FOUND("command.tag.tag-not-found", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("\"" + args[0] + "\""),
+	}),
+	COMMAND_TAG_YOU_DO_NOT_HAVE_THIS_TAG("command.tag.you-do-not-have-this-tag", empty().color(RED)),
+	COMMAND_TAG_TAG_SET("command.tag.tag-set", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		((Tag) args[0]).getMessage().translateOne(bundle.getLocale()),
+	}),
+	
+	COMMAND_TAG_SUB_COMMAND_CLEAR("command.tag.sub-command.clear"),
+	COMMAND_TAG_TAG_CLEARED("command.tag.tag-cleared", empty().color(GREEN)),
+	COMMAND_TAG_NO_TAG_TO_CLEAR("command.tag.no-tag-to-clear", empty().color(RED)),
+	
+	COMMAND_TAG_USAGE((locale, args) ->
+	{
+		List<Component> components = new ArrayList<>();
+		
+		components.add(USAGE.translateOne(locale, WordUtils::capitalize).append(text(":")));
+		components.add(text("/" + args[0] + " [tag]"));
+		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_CLEAR.translateOne(locale)));
+		
+		return components;
 	}),
 	
 	;

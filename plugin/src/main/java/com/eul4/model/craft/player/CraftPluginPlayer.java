@@ -5,10 +5,12 @@ import com.eul4.command.TownCommand;
 import com.eul4.common.model.player.craft.CraftCommonPlayer;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
+import com.eul4.model.playerdata.PluginPlayerData;
 import com.eul4.model.playerdata.TownPlayerData;
 import com.eul4.model.playerdata.TutorialTownPlayerData;
 import com.eul4.model.playerdata.VanillaPlayerData;
 import com.eul4.model.town.Town;
+import com.eul4.wrapper.Tag;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +19,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
+import java.util.TreeSet;
 
 @Getter
 @Setter
@@ -28,6 +31,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	protected TownPlayerData townPlayerData;
 	protected TutorialTownPlayerData tutorialTownPlayerData;
 	protected VanillaPlayerData vanillaPlayerData;
+	protected PluginPlayerData pluginPlayerData;
 	
 	private transient int lastAttackCooldownTick;
 	
@@ -38,6 +42,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 		this.townPlayerData = new TownPlayerData();
 		this.tutorialTownPlayerData = new TutorialTownPlayerData();
 		this.vanillaPlayerData = new VanillaPlayerData(plugin);
+		this.pluginPlayerData = new PluginPlayerData(getBestTag());
 	}
 	
 	protected CraftPluginPlayer(Player player, PluginPlayer pluginPlayer)
@@ -47,6 +52,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 		this.townPlayerData = pluginPlayer.getTownPlayerData();
 		this.tutorialTownPlayerData = pluginPlayer.getTutorialTownPlayerData();
 		this.vanillaPlayerData = pluginPlayer.getVanillaPlayerData();
+		this.pluginPlayerData = pluginPlayer.getPluginPlayerData();
 	}
 	
 	public void onStartingTownAttack()
@@ -127,5 +133,65 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	public void onTownCreate()
 	{
 	
+	}
+	
+	@Override
+	public Tag getTag()
+	{
+		refreshTag();
+		return pluginPlayerData.getTag();
+	}
+	
+	@Override
+	public TreeSet<Tag> getTags()
+	{
+		TreeSet<Tag> tags = new TreeSet<>();
+		
+		for(Tag tag : Tag.values())
+		{
+			if(tag.hasTag(this))
+			{
+				tags.add(tag);
+			}
+		}
+		
+		return tags;
+	}
+	
+	@Override
+	public boolean hasTag()
+	{
+		return getTag() != null;
+	}
+	
+	@Override
+	public Tag getBestTag()
+	{
+		TreeSet<Tag> tags = getTags();
+		return tags.isEmpty() ? null : tags.first();
+	}
+	
+	@Override
+	public void refreshTag()
+	{
+		if(isValidTag())
+		{
+			return;
+		}
+		
+		setTag(getBestTag());
+	}
+	
+	@Override
+	public boolean isValidTag()
+	{
+		Tag tag = pluginPlayerData.getTag();
+		return tag == null || tag.hasTag(this);
+	}
+	
+	@Override
+	public void setTag(Tag tag)
+	{
+		pluginPlayerData.setTag(tag);
 	}
 }

@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
@@ -17,6 +18,19 @@ import org.bukkit.inventory.ItemStack;
 public class PluginPlayerListener implements Listener
 {
 	private final Main plugin;
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void on(PlayerJoinEvent event)
+	{
+		Player player = event.getPlayer();
+		
+		if(!(plugin.getPlayerManager().get(player) instanceof PluginPlayer pluginPlayer))
+		{
+			return;
+		}
+		
+		pluginPlayer.refreshTag();
+	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void on(PlayerItemHeldEvent event)

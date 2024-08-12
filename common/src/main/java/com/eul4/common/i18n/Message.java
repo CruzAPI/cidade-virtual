@@ -104,7 +104,12 @@ public interface Message
 		return LegacyComponentSerializer.legacySection().serialize(translateOne(locale, args));
 	}
 	
-	default String translatePlain(Locale locale, Object[] args)
+	default String translatePlain(CommonPlayer commonPlayer, Object... args)
+	{
+		return translatePlain(commonPlayer.getLocale(), args);
+	}
+	
+	default String translatePlain(Locale locale, Object... args)
 	{
 		return PlainTextComponentSerializer.plainText().serialize(translateOne(locale, args));
 	}

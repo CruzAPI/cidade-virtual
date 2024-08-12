@@ -2,16 +2,17 @@ package com.eul4.model.player;
 
 import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.model.playerdata.PluginPlayerData;
 import com.eul4.model.playerdata.TownPlayerData;
 import com.eul4.model.playerdata.TutorialTownPlayerData;
 import com.eul4.model.playerdata.VanillaPlayerData;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.PluginPlayerType;
-import org.bukkit.Location;
+import com.eul4.wrapper.Tag;
 
-import java.util.Map;
 import java.util.Optional;
+import java.util.TreeSet;
 
 public interface PluginPlayer extends CommonPlayer
 {
@@ -20,6 +21,7 @@ public interface PluginPlayer extends CommonPlayer
 	TownPlayerData getTownPlayerData();
 	TutorialTownPlayerData getTutorialTownPlayerData();
 	VanillaPlayerData getVanillaPlayerData();
+	PluginPlayerData getPluginPlayerData();
 	
 	@Override
 	PluginPlayerType getPlayerType();
@@ -35,6 +37,7 @@ public interface PluginPlayer extends CommonPlayer
 	void setTownPlayerData(TownPlayerData townPlayerData);
 	void setTutorialTownPlayerData(TutorialTownPlayerData tutorialTownPlayerData);
 	void setVanillaPlayerData(VanillaPlayerData vanillaPlayerData);
+	void setPluginPlayerData(PluginPlayerData pluginPlayerData);
 	
 	PhysicalPlayerType getReincarnationType();
 	
@@ -59,4 +62,12 @@ public interface PluginPlayer extends CommonPlayer
 	boolean hasTown();
 	
 	void onTownCreate();
+	
+	TreeSet<Tag> getTags();
+	Tag getTag();
+	void setTag(Tag tag);
+	boolean isValidTag();
+	boolean hasTag();
+	Tag getBestTag();
+	void refreshTag();
 }

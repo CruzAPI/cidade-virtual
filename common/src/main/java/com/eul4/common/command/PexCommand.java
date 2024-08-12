@@ -13,15 +13,14 @@ import com.eul4.common.util.LongUtil;
 import com.eul4.common.wrapper.GroupPermPage;
 import com.eul4.common.wrapper.GroupUserPage;
 import com.eul4.common.wrapper.UserPermPage;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.eul4.common.i18n.CommonMessage.*;
 
@@ -41,9 +40,193 @@ public class PexCommand implements TabExecutor
 	}
 	
 	@Override
-	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
+	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args)
 	{
-		return Collections.emptyList();
+		if(!(commandSender instanceof Player player))
+		{
+			return Collections.emptyList();
+		}
+		
+		List<String> suggestions = new ArrayList<>();
+		
+		GroupMap groupMap = permissionService.getGroupMap();
+		Set<Group> groups = groupMap.getGroups().keySet();
+		User user;
+		Group groupArg;
+		
+		if(args.length == 1)
+		{
+			for(String subCommand : new String[] { "group", "user" })
+			{
+				if(subCommand.startsWith(args[0].toLowerCase()))
+				{
+					suggestions.add(subCommand);
+				}
+			}
+		}
+		else if(args.length == 2 && args[0].equalsIgnoreCase("group"))
+		{
+			for(Group group : groups)
+			{
+				if(group.getName().toLowerCase().startsWith(args[1].toLowerCase()))
+				{
+					suggestions.add(group.getName());
+				}
+			}
+		}
+		else if(args.length == 2 && args[0].equalsIgnoreCase("user"))
+		{
+			for(String username : plugin.getOfflineUsernames())
+			{
+				if(username.toLowerCase().startsWith(args[1].toLowerCase()))
+				{
+					suggestions.add(username);
+				}
+			}
+		}
+		else if(args.length == 3
+				&& args[0].equalsIgnoreCase("group")
+				&& !groupMap.containsGroupName(args[1].toLowerCase()))
+		{
+			for(String subCommand : new String[] { "create" })
+			{
+				if(subCommand.startsWith(args[2].toLowerCase()))
+				{
+					suggestions.add(subCommand);
+				}
+			}
+		}
+		else if(args.length == 3
+				&& args[0].equalsIgnoreCase("group")
+				&& groupMap.containsGroupName(args[1].toLowerCase()))
+		{
+			for(String subCommand : new String[] { "delete", "perm", "user" })
+			{
+				if(subCommand.startsWith(args[2].toLowerCase()))
+				{
+					suggestions.add(subCommand);
+				}
+			}
+		}
+		else if(args.length == 4
+				&& args[0].equalsIgnoreCase("group")
+				&& groupMap.containsGroupName(args[1].toLowerCase())
+				&& args[2].equalsIgnoreCase("perm"))
+		{
+			for(String subCommand : new String[] { "add", "remove", "list" })
+			{
+				if(subCommand.startsWith(args[3].toLowerCase()))
+				{
+					suggestions.add(subCommand);
+				}
+			}
+		}
+		else if(args.length == 4
+				&& args[0].equalsIgnoreCase("group")
+				&& groupMap.containsGroupName(args[1].toLowerCase())
+				&& args[2].equalsIgnoreCase("user"))
+		{
+			for(String subCommand : new String[] { "add", "remove", "list" })
+			{
+				if(subCommand.startsWith(args[3].toLowerCase()))
+				{
+					suggestions.add(subCommand);
+				}
+			}
+		}
+		else if(args.length == 5
+				&& args[0].equalsIgnoreCase("group")
+				&& (groupArg = permissionService.getGroup(args[1].toLowerCase())) != null
+				&& args[2].equalsIgnoreCase("perm")
+				&& args[3].equalsIgnoreCase("remove"))
+		{
+			for(String perm : groupArg.getPermissionMap().getPermissions().keySet())
+			{
+				if(perm.toLowerCase().startsWith(args[4].toLowerCase()))
+				{
+					suggestions.add(perm);
+				}
+			}
+		}
+		else if(args.length == 5
+				&& args[0].equalsIgnoreCase("group")
+				&& (groupArg = permissionService.getGroup(args[1].toLowerCase())) != null
+				&& args[2].equalsIgnoreCase("user")
+				&& args[3].equalsIgnoreCase("add"))
+		{
+			for(String username : plugin.getOfflineUsernames())
+			{
+				if(username.toLowerCase().startsWith(args[4].toLowerCase()))
+				{
+					suggestions.add(username);
+				}
+			}
+		}
+		else if(args.length == 5
+				&& args[0].equalsIgnoreCase("group")
+				&& (groupArg = permissionService.getGroup(args[1].toLowerCase())) != null
+				&& args[2].equalsIgnoreCase("user")
+				&& args[3].equalsIgnoreCase("remove"))
+		{
+			for(GroupUser groupUser : groupArg.getGroupUserMap().getGroupUsers().values())
+			{
+				String groupUserName = groupUser.getName(plugin);
+				
+				if(groupUserName != null && groupUserName.toLowerCase().startsWith(args[4].toLowerCase()))
+				{
+					suggestions.add(groupUserName);
+				}
+			}
+		}
+		else if(args.length == 3
+				&& args[0].equalsIgnoreCase("user")
+				&& plugin.getOfflineUsernames().contains(args[1]))
+		{
+			for(String subCommand : new String[] { "perm" })
+			{
+				if(subCommand.startsWith(args[2].toLowerCase()))
+				{
+					suggestions.add(subCommand);
+				}
+			}
+		}
+		else if(args.length == 4
+				&& args[0].equalsIgnoreCase("user")
+				&& plugin.getOfflineUsernames().contains(args[1])
+				&& args[2].equalsIgnoreCase("perm"))
+		{
+			for(String subCommand : new String[] { "add", "remove", "list" })
+			{
+				if(subCommand.startsWith(args[3].toLowerCase()))
+				{
+					suggestions.add(subCommand);
+				}
+			}
+		}
+		else if(args.length == 5
+				&& args[0].equalsIgnoreCase("user")
+				&& (user = getUserFromMemoryOrDisk(args[1])) != null
+				&& args[2].equalsIgnoreCase("perm")
+				&& args[3].equalsIgnoreCase("remove"))
+		{
+			for(String permission : user.getPermissionMap().getPermissions().keySet())
+			{
+				if(permission.startsWith(args[4].toLowerCase()))
+				{
+					suggestions.add(permission);
+				}
+			}
+		}
+		
+		return suggestions;
+	}
+	
+	private User getUserFromMemoryOrDisk(String userName)
+	{
+		return Optional.ofNullable(plugin.getOfflinePlayerIfCached(userName))
+				.map(OfflinePlayer::getUniqueId)
+				.flatMap(plugin.getUserFiler()::getFromMemoryOrDisk)
+				.orElse(null);
 	}
 	
 	@Override

@@ -144,6 +144,11 @@ public class UserFiler extends Filer
 		return getFromMemoryOrDiskOrCreateNewOne(player.getUniqueId());
 	}
 	
+	public Optional<User> getFromMemoryOrDisk(UUID uuid)
+	{
+		return Optional.ofNullable(memoryUsers.get(uuid)).or(() -> loadFromDisk(uuid));
+	}
+	
 	public User getFromMemoryOrDiskOrCreateNewOne(UUID uuid)
 	{
 		return memoryUsers.computeIfAbsent(uuid, (key) -> Optional

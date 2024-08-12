@@ -20,6 +20,11 @@ public class GroupMap
 		groups.put(group, group);
 	}
 	
+	public boolean containsGroupName(String groupName)
+	{
+		return containsKeyEqual(new Group(groupName));
+	}
+	
 	public boolean containsKeyEqual(Group group)
 	{
 		return getEqual(group) != null;

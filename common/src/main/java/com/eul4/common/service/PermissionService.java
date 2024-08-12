@@ -149,7 +149,7 @@ public class PermissionService
 	
 	public Group getGroupOrElseThrow(String groupName) throws GroupNotFoundException
 	{
-		Group group = getGroupMap().getEqual(new Group(groupName));
+		Group group = getGroup(groupName);
 		
 		if(group == null)
 		{
@@ -159,6 +159,11 @@ public class PermissionService
 		return group;
 	}
 	
+	public Group getGroup(String groupName)
+	{
+		return getGroupMap().getEqual(new Group(groupName));
+	}
+	
 	public UUID getUserUniqueIdOrElseThrow(String userName) throws UserNotFoundException
 	{
 		return getOfflinePlayerOrElseThrow(userName).getUniqueId();
@@ -166,7 +171,7 @@ public class PermissionService
 	
 	public OfflinePlayer getOfflinePlayerOrElseThrow(String userName) throws UserNotFoundException
 	{
-		OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayerIfCached(userName);
+		OfflinePlayer offlinePlayer = plugin.getOfflinePlayerIfCached(userName);
 		
 		if(offlinePlayer == null)
 		{

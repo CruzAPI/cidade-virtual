@@ -54,6 +54,7 @@ public enum PluginMessage implements Message
 	TAG_ADMIN("tag.admin", empty().color(RED)),
 	TAG_VIP("tag.vip", empty().color(GREEN)),
 	TAG_MAYOR("tag.mayor", empty().color(YELLOW)),
+	TAG_ALPHA("tag.alpha", empty().color(DARK_PURPLE)),
 	TAG_DEPUTY_MAYOR("tag.deputy-mayor", empty().color(YELLOW)),
 	TAG_TOWNEE("tag.townee", empty().color(GRAY)),
 	TAG_INDIGENT("tag.indigent", empty().color(DARK_GRAY)),
@@ -1063,16 +1064,26 @@ public enum PluginMessage implements Message
 	}),
 	
 	COMMAND_TAG_SUB_COMMAND_CLEAR("command.tag.sub-command.clear"),
+	COMMAND_TAG_SUB_COMMAND_HIDE("command.tag.sub-command.hide"),
+	COMMAND_TAG_SUB_COMMAND_SHOW("command.tag.sub-command.show"),
 	COMMAND_TAG_TAG_CLEARED("command.tag.tag-cleared", empty().color(GREEN)),
 	COMMAND_TAG_NO_TAG_TO_CLEAR("command.tag.no-tag-to-clear", empty().color(RED)),
+	COMMAND_TAG_HIDDEN("command.tag.tag-hidden", empty().color(GREEN)),
+	COMMAND_TAG_SHOWN("command.tag.tag-shown", empty().color(GREEN)),
+	COMMAND_TAG_ALREADY_HIDDEN("command.tag.tag-already-hidden", empty().color(RED)),
+	COMMAND_TAG_ALREADY_SHOWN("command.tag.tag-already-shown", empty().color(RED)),
 	
 	COMMAND_TAG_USAGE((locale, args) ->
 	{
 		List<Component> components = new ArrayList<>();
 		
-		components.add(USAGE.translateOne(locale, WordUtils::capitalize).append(text(":")));
-		components.add(text("/" + args[0] + " [tag]"));
-		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_CLEAR.translateOne(locale)));
+		TextColor baseColor = RED;
+		
+		components.add(USAGE.translateOne(locale, WordUtils::capitalize).append(text(":")).color(baseColor));
+		components.add(text("/" + args[0] + " [tag]").color(baseColor));
+		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_CLEAR.translateOne(locale)).color(baseColor));
+		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_HIDE.translateOne(locale)).color(baseColor));
+		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_SHOW.translateOne(locale)).color(baseColor));
 		
 		return components;
 	}),

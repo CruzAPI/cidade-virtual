@@ -110,7 +110,7 @@ public class TestCommand implements TabExecutor
 		}
 		else if(args.length == 2)
 		{
-			OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayerIfCached(args[0]);
+			OfflinePlayer offlinePlayer = plugin.getOfflinePlayerIfCached(args[0]);
 			
 			Town town = plugin.getTownManager().getTown(offlinePlayer.getUniqueId());
 			

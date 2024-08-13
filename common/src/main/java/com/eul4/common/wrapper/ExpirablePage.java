@@ -20,7 +20,7 @@ public abstract class ExpirablePage<E extends Expirable> extends Page<E>
 	
 	protected Component getComponentTranslated(E expirable, Locale locale)
 	{
-		String name = expirable.getName(plugin);
+		String name = expirable.getNameOrUnknown(plugin);
 		Component timer = Component.empty();
 		NamedTextColor color;
 		

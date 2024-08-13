@@ -27,6 +27,7 @@ public enum Tag
 	VIP(TAG_VIP, empty().color(GREEN), Set.of("vip")),
 	MAYOR(TAG_MAYOR, empty().color(YELLOW), Set.of("mayor", "prefeito")),
 	DEPUTY_MAYOR(TAG_DEPUTY_MAYOR, empty().color(YELLOW), Set.of("deputy-mayor", "vice-prefeito")),
+	ALPHA(TAG_ALPHA, empty().color(DARK_PURPLE), Set.of("alpha")),
 	
 	TOWNEE(TAG_TOWNEE, empty().color(GRAY), Set.of("townee", "cidadão"))
 	{

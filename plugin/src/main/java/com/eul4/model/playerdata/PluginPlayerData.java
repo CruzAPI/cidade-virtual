@@ -11,4 +11,10 @@ import lombok.Data;
 public class PluginPlayerData
 {
 	private Tag tag;
+	private boolean tagHidden;
+	
+	public PluginPlayerData(Tag tag)
+	{
+		this.tag = tag;
+	}
 }

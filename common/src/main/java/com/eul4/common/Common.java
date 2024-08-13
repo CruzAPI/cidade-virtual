@@ -2,6 +2,7 @@ package com.eul4.common;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.eul4.common.command.BroadcastCommand;
 import com.eul4.common.command.BuildCommand;
 import com.eul4.common.command.PexCommand;
 import com.eul4.common.command.ScoreboardCommand;
@@ -22,16 +23,16 @@ import com.eul4.common.service.*;
 import com.eul4.common.type.player.CommonWorldType;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 @Getter
 public abstract class Common extends JavaPlugin
@@ -49,6 +50,8 @@ public abstract class Common extends JavaPlugin
 	private GroupMapFiler groupMapFiler;
 	private UserFiler userFiler;
 	
+	private Set<String> offlineUsernames;
+	
 	@Override
 	public void onEnable()
 	{
@@ -63,6 +66,10 @@ public abstract class Common extends JavaPlugin
 			registerFilers();
 			
 			groupMapFiler.load();
+			
+			offlineUsernames = Arrays.stream(getServer().getOfflinePlayers())
+					.map(OfflinePlayer::getName)
+					.collect(Collectors.toSet());
 			
 			getLogger().info("Commons enabled!");
 		}
@@ -91,6 +98,7 @@ public abstract class Common extends JavaPlugin
 	
 	private void registerCommand()
 	{
+		getCommand(BroadcastCommand.COMMAND_NAME).setExecutor(new BroadcastCommand(this));
 		getCommand("build").setExecutor(new BuildCommand(this));
 		getCommand("pex").setExecutor(new PexCommand(this));
 		getCommand("scoreboard").setExecutor(new ScoreboardCommand(this));
@@ -168,6 +176,18 @@ public abstract class Common extends JavaPlugin
 	public long getTotalTick()
 	{
 		return serverTickCounter.getTotalTick();
+	}
+	
+	public OfflinePlayer getOfflinePlayerIfCached(String name)
+	{
+		OfflinePlayer offlinePlayer = getServer().getOfflinePlayerIfCached(name);
+		
+		if(offlinePlayer != null)
+		{
+			offlineUsernames.add(offlinePlayer.getName());
+		}
+		
+		return offlinePlayer;
 	}
 	
 	public abstract CommonWorldType getMainWorldType();

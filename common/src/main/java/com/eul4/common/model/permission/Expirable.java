@@ -3,6 +3,8 @@ package com.eul4.common.model.permission;
 import com.eul4.common.Common;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Optional;
+
 public interface Expirable
 {
 	TimedTick getTimedTick();
@@ -33,4 +35,9 @@ public interface Expirable
 	}
 	
 	String getName(Plugin plugin);
+	
+	default String getNameOrUnknown(Plugin plugin)
+	{
+		return Optional.ofNullable(getName(plugin)).orElse("???");
+	}
 }

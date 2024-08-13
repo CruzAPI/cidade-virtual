@@ -32,6 +32,10 @@ public class PluginPlayerDataReader extends ObjectReader<PluginPlayerData>
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion0;
 			break;
+		case 1:
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion1;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -43,6 +47,17 @@ public class PluginPlayerDataReader extends ObjectReader<PluginPlayerData>
 		
 		return PluginPlayerData.builder()
 				.tag(tag)
+				.build();
+	}
+	
+	private PluginPlayerData readableVersion1() throws IOException, ClassNotFoundException
+	{
+		final Tag tag = readers.getReader(TagReader.class).readReference();
+		final boolean tagHidden = in.readBoolean();
+		
+		return PluginPlayerData.builder()
+				.tag(tag)
+				.tagHidden(tagHidden)
 				.build();
 	}
 	

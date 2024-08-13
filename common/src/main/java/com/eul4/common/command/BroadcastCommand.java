@@ -3,6 +3,7 @@ package com.eul4.common.command;
 import com.eul4.common.Common;
 import com.eul4.common.event.BroadcastReceiveEvent;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.util.ComponentUtil;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -55,11 +56,8 @@ public class BroadcastCommand implements TabExecutor
 				msg += args[i] + " ";
 			}
 			
-			msg = msg.substring(0, msg.length() - 1).replace('&', '§');
-			
-			Component component = msg.contains("§")
-					? Component.text(msg)
-					: MiniMessage.miniMessage().deserialize(msg);
+			msg = msg.substring(0, msg.length() - 1);
+			Component component = ComponentUtil.chatInputToComponent(msg);
 			
 			for(CommonPlayer allCommonPlayer : plugin.getPlayerManager().getAll())
 			{

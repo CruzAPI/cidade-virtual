@@ -42,7 +42,7 @@ public class PexCommand implements TabExecutor
 	@Override
 	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args)
 	{
-		if(!(commandSender instanceof Player player))
+		if(!(commandSender instanceof Player player) || !player.isOp())
 		{
 			return Collections.emptyList();
 		}

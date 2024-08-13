@@ -2,6 +2,7 @@ package com.eul4.common;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.eul4.common.command.BroadcastCommand;
 import com.eul4.common.command.BuildCommand;
 import com.eul4.common.command.PexCommand;
 import com.eul4.common.command.ScoreboardCommand;
@@ -97,6 +98,7 @@ public abstract class Common extends JavaPlugin
 	
 	private void registerCommand()
 	{
+		getCommand(BroadcastCommand.COMMAND_NAME).setExecutor(new BroadcastCommand(this));
 		getCommand("build").setExecutor(new BuildCommand(this));
 		getCommand("pex").setExecutor(new PexCommand(this));
 		getCommand("scoreboard").setExecutor(new ScoreboardCommand(this));

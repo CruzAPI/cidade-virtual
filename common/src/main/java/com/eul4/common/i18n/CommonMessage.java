@@ -1,5 +1,6 @@
 package com.eul4.common.i18n;
 
+import com.eul4.common.command.BroadcastCommand;
 import com.eul4.common.command.PexCommand;
 import com.eul4.common.model.permission.Group;
 import com.eul4.common.wrapper.Page;
@@ -8,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang.WordUtils;
 
 import java.text.DecimalFormat;
@@ -26,6 +28,7 @@ public enum CommonMessage implements Message
 	ADMINISTRATOR("administrator"),
 	PLAYER("player"),
 	SPECTATOR("spectator"),
+	BROADCAST("broadcast"),
 	USAGE("usage", empty().color(RED)),
 	
 	ONLINE("online", empty().color(GREEN).decorate(BOLD)),
@@ -297,6 +300,25 @@ public enum CommonMessage implements Message
 		
 		return components;
 	}),
+	
+	COMMAND_BROADCAST((locale, args) ->
+	{
+		Component broadcast = BROADCAST.translateOne(locale, WordUtils::capitalize).color(AQUA).decorate(BOLD);
+		Component colon = text("»").color(GRAY);
+		Component message = (Component) args[0];
+		
+		Component component = empty()
+				.append(broadcast)
+				.appendSpace()
+				.append(colon)
+				.appendSpace()
+				.append(message);
+		
+		return Collections.singletonList(component);
+	}),
+	
+	COMMAND_BROADCAST_USAGE((locale, args) -> Collections
+			.singletonList(Component.text("/" + BroadcastCommand.COMMAND_NAME + " <msg...>").color(RED))),
 	;
 	
 	private final BundleBaseName bundleBaseName;

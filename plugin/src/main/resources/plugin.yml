@@ -7,6 +7,8 @@ depend: [ProtocolLib]
 commands:
   balance:
     aliases: [bal, saldo]
+  broadcast:
+    aliases: [bc]
   town:
     aliases: [cidade, home, casa, cv]
   spawn:

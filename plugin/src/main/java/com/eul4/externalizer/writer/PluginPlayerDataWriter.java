@@ -17,5 +17,6 @@ public class PluginPlayerDataWriter extends ObjectWriter<PluginPlayerData>
 	protected void writeObject(PluginPlayerData pluginPlayerData) throws IOException
 	{
 		writers.getWriter(TagWriter.class).writeReference(pluginPlayerData.getTag());
+		out.writeBoolean(pluginPlayerData.isTagHidden());
 	}
 }

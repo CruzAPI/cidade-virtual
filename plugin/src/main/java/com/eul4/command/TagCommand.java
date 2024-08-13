@@ -17,6 +17,8 @@ public class TagCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "tag";
 	public static final Set<String> CLEAR_ALIASES = Set.of("clear", "remover");
+	public static final Set<String> HIDE_ALIASES = Set.of("hide", "esconder");
+	public static final Set<String> SHOW_ALIASES = Set.of("show", "mostrar");
 	
 	private final Common plugin;
 	
@@ -34,6 +36,8 @@ public class TagCommand implements TabExecutor
 		if(args.length == 1)
 		{
 			String subCommandClearTranslated = PluginMessage.COMMAND_TAG_SUB_COMMAND_CLEAR.translatePlain(pluginPlayer);
+			String subCommandHideTranslated = PluginMessage.COMMAND_TAG_SUB_COMMAND_HIDE.translatePlain(pluginPlayer);
+			String subCommandShowTranslated = PluginMessage.COMMAND_TAG_SUB_COMMAND_SHOW.translatePlain(pluginPlayer);
 			
 			for(Tag tag : pluginPlayer.getTags())
 			{
@@ -45,7 +49,17 @@ public class TagCommand implements TabExecutor
 				}
 			}
 			
-			if(subCommandClearTranslated.toLowerCase().startsWith(args[0].toLowerCase()))
+			if(pluginPlayer.isTagShown() && subCommandHideTranslated.toLowerCase().startsWith(args[0].toLowerCase()))
+			{
+				suggestions.add(subCommandHideTranslated);
+			}
+			
+			if(pluginPlayer.isTagHidden() && subCommandShowTranslated.toLowerCase().startsWith(args[0].toLowerCase()))
+			{
+				suggestions.add(subCommandShowTranslated);
+			}
+			
+			if(pluginPlayer.hasTag() && subCommandClearTranslated.toLowerCase().startsWith(args[0].toLowerCase()))
 			{
 				suggestions.add(subCommandClearTranslated);
 			}
@@ -87,6 +101,30 @@ public class TagCommand implements TabExecutor
 			
 			pluginPlayer.setTag(null);
 			pluginPlayer.sendMessage(PluginMessage.COMMAND_TAG_TAG_CLEARED);
+			return true;
+		}
+		else if(args.length == 1 && HIDE_ALIASES.contains(args[0].toLowerCase()))
+		{
+			if(pluginPlayer.isTagHidden())
+			{
+				pluginPlayer.sendMessage(PluginMessage.COMMAND_TAG_ALREADY_HIDDEN);
+				return false;
+			}
+			
+			pluginPlayer.hideTag();
+			pluginPlayer.sendMessage(PluginMessage.COMMAND_TAG_HIDDEN);
+			return true;
+		}
+		else if(args.length == 1 && SHOW_ALIASES.contains(args[0].toLowerCase()))
+		{
+			if(pluginPlayer.isTagShown())
+			{
+				pluginPlayer.sendMessage(PluginMessage.COMMAND_TAG_ALREADY_SHOWN);
+				return false;
+			}
+			
+			pluginPlayer.showTag();
+			pluginPlayer.sendMessage(PluginMessage.COMMAND_TAG_SHOWN);
 			return true;
 		}
 		else if(args.length == 1)

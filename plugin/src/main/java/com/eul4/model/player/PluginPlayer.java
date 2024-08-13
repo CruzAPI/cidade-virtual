@@ -70,4 +70,8 @@ public interface PluginPlayer extends CommonPlayer
 	boolean hasTag();
 	Tag getBestTag();
 	void refreshTag();
+	boolean isTagHidden();
+	boolean isTagShown();
+	void hideTag();
+	void showTag();
 }

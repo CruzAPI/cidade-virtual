@@ -194,4 +194,28 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	{
 		pluginPlayerData.setTag(tag);
 	}
+	
+	@Override
+	public boolean isTagHidden()
+	{
+		return pluginPlayerData.isTagHidden();
+	}
+	
+	@Override
+	public boolean isTagShown()
+	{
+		return !isTagHidden();
+	}
+	
+	@Override
+	public void hideTag()
+	{
+		pluginPlayerData.setTagHidden(true);
+	}
+	
+	@Override
+	public void showTag()
+	{
+		pluginPlayerData.setTagHidden(false);
+	}
 }

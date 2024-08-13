@@ -30,7 +30,7 @@ public enum PluginObjectType implements ObjectType
 	LIKE_GENERATOR((byte) 0, PluginExternalizerType.LIKE_GENERATOR),
 	PHYSICAL_PLAYER((byte) 0, null),
 	PLUGIN_PLAYER((byte) 3, null),
-	PLUGIN_PLAYER_DATA((byte) 0, PluginExternalizerType.PLUGIN_PLAYER_DATA),
+	PLUGIN_PLAYER_DATA((byte) 1, PluginExternalizerType.PLUGIN_PLAYER_DATA),
 	RAID_ANALYZER((byte) 0, PluginExternalizerType.RAID_ANALYZER),
 	RAID_SPECTATOR((byte) 0, PluginExternalizerType.RAID_SPECTATOR),
 	SHORT_COORDINATE_BLOCK_CHUNK((byte) 0, PluginExternalizerType.SHORT_COORDINATE_BLOCK_CHUNK),

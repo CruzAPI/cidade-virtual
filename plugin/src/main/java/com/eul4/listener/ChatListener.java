@@ -44,7 +44,9 @@ public class ChatListener implements Listener, ChatRenderer
 		
 		Tag tag = pluginPlayer.getTag();
 		
-		Component tagComponent = tag == null ? Component.empty() : tag.getTagComponentTranslated(pluginPlayer).appendSpace();
+		Component tagComponent = tag == null || pluginPlayer.isTagHidden()
+				? Component.empty()
+				: tag.getTagComponentTranslated(pluginPlayer).appendSpace();
 		Component displayNameBase = Optional.ofNullable(tag).map(Tag::getDisplayNameComponent).orElse(empty().color(GRAY));
 		Component displayName = displayNameBase.append(text(player.getName()));
 		Component message;

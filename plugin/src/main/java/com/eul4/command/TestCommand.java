@@ -1,6 +1,8 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.i18n.message.test.TestMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
@@ -13,15 +15,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
@@ -58,6 +58,24 @@ public class TestCommand implements TabExecutor
 		if(args.length == 0)
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
+		}
+		else if((args.length == 2) && args[0].equals("mini"))
+		{
+			Locale locale;
+			if(args[1].equalsIgnoreCase("BR"))
+			{
+				locale = ResourceBundleHandler.DEFAULT_LOCALE;
+				player.sendMessage(TestMessage.TEST.translate(locale, 4));
+			}
+			else if(args[1].equalsIgnoreCase("US"))
+			{
+				locale = Locale.US;
+				player.sendMessage(TestMessage.TEST.translate(locale, 6));
+			}
+			else
+			{
+				Bukkit.broadcastMessage("C");
+			}
 		}
 		else if((args.length == 1) && args[0].equals("debug"))
 		{

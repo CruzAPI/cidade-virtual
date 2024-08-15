@@ -1,6 +1,7 @@
 package com.eul4.common.i18n;
 
 import com.eul4.common.command.BroadcastCommand;
+import com.eul4.common.command.ClearChatCommand;
 import com.eul4.common.command.PexCommand;
 import com.eul4.common.model.permission.Group;
 import com.eul4.common.wrapper.Page;
@@ -319,6 +320,17 @@ public enum CommonMessage implements Message
 	
 	COMMAND_BROADCAST_USAGE((locale, args) -> Collections
 			.singletonList(Component.text("/" + BroadcastCommand.COMMAND_NAME + " <msg...>").color(RED))),
+	
+	COMMAND_CLEAR_CHAT_USAGE((locale, args) -> Collections
+			.singletonList(Component.text("/" + args[0]).color(RED))),
+	
+	COMMAND_CHAT_USAGE((locale, args) -> Collections
+			.singletonList(Component.text("/" + args[0] + " <on:off>").color(RED))),
+	COMMAND_CHAT_CHAT_ENABLED("command.chat.chat-enabled", empty().color(GREEN)),
+	COMMAND_CHAT_CHAT_DISABLED("command.chat.chat-disabled", empty().color(GREEN)),
+	COMMAND_CHAT_CHAT_ALREADY_ENABLED("command.chat.chat-already-enabled", empty().color(RED)),
+	COMMAND_CHAT_CHAT_ALREADY_DISABLED("command.chat.chat-already-disabled", empty().color(RED)),
+	COMMAND_CHAT_CHAT_IS_DISABLED("command.chat.chat-is-disabled", empty().color(RED)),
 	;
 	
 	private final BundleBaseName bundleBaseName;

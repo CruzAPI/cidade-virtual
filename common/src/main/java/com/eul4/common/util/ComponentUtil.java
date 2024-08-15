@@ -25,7 +25,8 @@ public class ComponentUtil
 	
 	private static boolean hasExtraSpaces(Component component)
 	{
-		String plain = toPlain(component);
-		return plain.startsWith(" ") || plain.endsWith(" ") || plain.contains("  ");
+		return true;
+//		String plain = toPlain(component);
+//		return plain.startsWith(" ") || plain.endsWith(" ") || plain.contains("  ") || plain.isBlank();
 	}
 }

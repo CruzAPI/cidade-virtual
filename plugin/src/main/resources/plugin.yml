@@ -9,6 +9,9 @@ commands:
     aliases: [bal, saldo]
   broadcast:
     aliases: [bc]
+  clear-chat:
+    aliases: [cc]
+  chat:
   town:
     aliases: [cidade, home, casa, cv]
   spawn:

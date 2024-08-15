@@ -13,20 +13,8 @@ public class ComponentUtil
 	
 	public static Component chatInputToComponent(String chatInput)
 	{
-		final String originalChatInput = chatInput;
-		chatInput = chatInput.replace('&', '§');
-		
-		Component component = chatInput.contains("§")
+		return chatInput.replace('&', '§').contains("§")
 				? Component.text(chatInput)
 				: MiniMessage.miniMessage().deserialize(chatInput);
-		
-		return hasExtraSpaces(component) ? Component.text(originalChatInput) : component;
-	}
-	
-	private static boolean hasExtraSpaces(Component component)
-	{
-		return true;
-//		String plain = toPlain(component);
-//		return plain.startsWith(" ") || plain.endsWith(" ") || plain.contains("  ") || plain.isBlank();
 	}
 }

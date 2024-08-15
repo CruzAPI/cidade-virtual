@@ -1,6 +1,7 @@
 package com.eul4.common.i18n;
 
 import com.eul4.common.command.BroadcastCommand;
+import com.eul4.common.command.ClearChatCommand;
 import com.eul4.common.command.PexCommand;
 import com.eul4.common.model.permission.Group;
 import com.eul4.common.wrapper.Page;
@@ -319,6 +320,9 @@ public enum CommonMessage implements Message
 	
 	COMMAND_BROADCAST_USAGE((locale, args) -> Collections
 			.singletonList(Component.text("/" + BroadcastCommand.COMMAND_NAME + " <msg...>").color(RED))),
+	
+	COMMAND_CLEAR_CHAT_USAGE((locale, args) -> Collections
+			.singletonList(Component.text("/" + args[0]).color(RED))),
 	;
 	
 	private final BundleBaseName bundleBaseName;

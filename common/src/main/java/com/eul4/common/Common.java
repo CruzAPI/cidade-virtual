@@ -2,10 +2,7 @@ package com.eul4.common;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.eul4.common.command.BroadcastCommand;
-import com.eul4.common.command.BuildCommand;
-import com.eul4.common.command.PexCommand;
-import com.eul4.common.command.ScoreboardCommand;
+import com.eul4.common.command.*;
 import com.eul4.common.event.WorldSaveOrStopEvent;
 import com.eul4.common.externalizer.filer.GroupMapFiler;
 import com.eul4.common.externalizer.filer.UserFiler;
@@ -100,6 +97,7 @@ public abstract class Common extends JavaPlugin
 	{
 		getCommand(BroadcastCommand.COMMAND_NAME).setExecutor(new BroadcastCommand(this));
 		getCommand("build").setExecutor(new BuildCommand(this));
+		getCommand(ClearChatCommand.COMMAND_NAME).setExecutor(new ClearChatCommand(this));
 		getCommand("pex").setExecutor(new PexCommand(this));
 		getCommand("scoreboard").setExecutor(new ScoreboardCommand(this));
 	}

@@ -38,6 +38,8 @@ public abstract class Common extends JavaPlugin
 	
 	private SpawnEntityInterceptor spawnEntityInterceptor;
 	
+	private ChatCommand chatCommand;
+	
 	private PlayerManager playerManager;
 	private WorldManager worldManager;
 	private CommonDataFileManager commonDataFileManager;
@@ -97,6 +99,7 @@ public abstract class Common extends JavaPlugin
 	{
 		getCommand(BroadcastCommand.COMMAND_NAME).setExecutor(new BroadcastCommand(this));
 		getCommand("build").setExecutor(new BuildCommand(this));
+		getCommand(ChatCommand.COMMAND_NAME).setExecutor(chatCommand = new ChatCommand(this));
 		getCommand(ClearChatCommand.COMMAND_NAME).setExecutor(new ClearChatCommand(this));
 		getCommand("pex").setExecutor(new PexCommand(this));
 		getCommand("scoreboard").setExecutor(new ScoreboardCommand(this));

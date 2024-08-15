@@ -323,6 +323,14 @@ public enum CommonMessage implements Message
 	
 	COMMAND_CLEAR_CHAT_USAGE((locale, args) -> Collections
 			.singletonList(Component.text("/" + args[0]).color(RED))),
+	
+	COMMAND_CHAT_USAGE((locale, args) -> Collections
+			.singletonList(Component.text("/" + args[0] + " <on:off>").color(RED))),
+	COMMAND_CHAT_CHAT_ENABLED("command.chat.chat-enabled", empty().color(GREEN)),
+	COMMAND_CHAT_CHAT_DISABLED("command.chat.chat-disabled", empty().color(GREEN)),
+	COMMAND_CHAT_CHAT_ALREADY_ENABLED("command.chat.chat-already-enabled", empty().color(RED)),
+	COMMAND_CHAT_CHAT_ALREADY_DISABLED("command.chat.chat-already-disabled", empty().color(RED)),
+	COMMAND_CHAT_CHAT_IS_DISABLED("command.chat.chat-is-disabled", empty().color(RED)),
 	;
 	
 	private final BundleBaseName bundleBaseName;

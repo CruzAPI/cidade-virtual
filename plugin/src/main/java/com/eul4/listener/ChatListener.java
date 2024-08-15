@@ -68,7 +68,7 @@ public class ChatListener implements Listener, ChatRenderer
 		if(pluginPlayer.hasPermission("chat.colored"))
 		{
 			String originalPlainMessage = ComponentUtil.toPlain(originalMessageComponent);
-			message = ComponentUtil.chatInputToComponent(originalPlainMessage).color(WHITE);
+			message = ComponentUtil.chatInputToComponent(originalPlainMessage).applyFallbackStyle(WHITE);
 		}
 		else
 		{

@@ -6,8 +6,6 @@ import com.eul4.model.player.PluginPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.Locale;
 import java.util.Set;
@@ -91,7 +89,7 @@ public enum Tag
 	public Component getTagComponentTranslated(Locale locale)
 	{
 		return text("[")
-				.append(message.translateOne(locale))
+				.append(message.translate(locale))
 				.append(text("]"))
 				.color(GRAY);
 	}

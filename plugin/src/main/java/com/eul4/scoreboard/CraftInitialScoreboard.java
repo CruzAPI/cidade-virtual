@@ -34,11 +34,11 @@ public class CraftInitialScoreboard extends CraftCommonScoreboard implements Ini
 		useTown2Team = scoreboard.registerNewTeam("useTown2Team");
 		footerTeam = scoreboard.registerNewTeam("footerTeam");
 		
-		helloTeam.suffix(HELLO_SUFFIX.translateOne(initialScoreboardPlayer, initialScoreboardPlayer.getPlayer().displayName()));
-		welcome1Team.suffix(WELCOME_1_SUFFIX.translateOne(initialScoreboardPlayer));
-		welcome2Team.suffix(WELCOME_2_SUFFIX.translateOne(initialScoreboardPlayer));
-		useTown1Team.suffix(USE_TOWN_1_SUFFIX.translateOne(initialScoreboardPlayer));
-		useTown2Team.suffix(USE_TOWN_2_SUFFIX.translateOne(initialScoreboardPlayer));
+		helloTeam.suffix(HELLO_SUFFIX.translate(initialScoreboardPlayer, initialScoreboardPlayer.getPlayer().displayName()));
+		welcome1Team.suffix(WELCOME_1_SUFFIX.translate(initialScoreboardPlayer));
+		welcome2Team.suffix(WELCOME_2_SUFFIX.translate(initialScoreboardPlayer));
+		useTown1Team.suffix(USE_TOWN_1_SUFFIX.translate(initialScoreboardPlayer));
+		useTown2Team.suffix(USE_TOWN_2_SUFFIX.translate(initialScoreboardPlayer));
 	}
 	
 	@Override
@@ -62,7 +62,7 @@ public class CraftInitialScoreboard extends CraftCommonScoreboard implements Ini
 		useTown2Team.addEntry(useTown2Entry);
 		footerTeam.addEntry(footerEntry);
 		
-		objective.displayName(TITLE.translateOne(initialScoreboardPlayer));
+		objective.displayName(TITLE.translate(initialScoreboardPlayer));
 		
 		objective.getScore("§0 ").setScore(8);
 		objective.getScore(helloEntry).setScore(7);

@@ -15,7 +15,7 @@ public class CraftArmorySelectOrStorageItemsGui extends CraftGui implements Armo
 	
 	public CraftArmorySelectOrStorageItemsGui(PluginPlayer pluginPlayer, Armory armory)
 	{
-		super(pluginPlayer, armory.getStorageInventoryClone(INVENTORY_ARMORY_STORAGE_TITLE.translateOne(pluginPlayer)));
+		super(pluginPlayer, armory.getStorageInventoryClone(INVENTORY_ARMORY_STORAGE_TITLE.translate(pluginPlayer)));
 		
 		this.armory = armory;
 	}

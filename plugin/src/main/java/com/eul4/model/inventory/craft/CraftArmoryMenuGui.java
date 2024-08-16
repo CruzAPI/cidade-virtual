@@ -35,12 +35,12 @@ public class CraftArmoryMenuGui extends CraftGui implements ArmoryMenuGui
 		
 		shop = new ItemStack(Material.EMERALD);
 		meta = shop.getItemMeta();
-		meta.displayName(PluginMessage.INVENTORY_ARMORY_MENU_SHOP.translateOne(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_ARMORY_MENU_SHOP.translate(commonPlayer));
 		shop.setItemMeta(meta);
 		
 		myInventory = new ItemStack(Material.CHEST);
 		meta = myInventory.getItemMeta();
-		meta.displayName(PluginMessage.INVENTORY_ARMORY_MENU_MY_INVENTORY.translateOne(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_ARMORY_MENU_MY_INVENTORY.translate(commonPlayer));
 		myInventory.setItemMeta(meta);
 		
 		inventory.setContents(new ItemStack[]

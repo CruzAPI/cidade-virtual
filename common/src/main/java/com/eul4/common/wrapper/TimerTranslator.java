@@ -51,25 +51,25 @@ public class TimerTranslator
 		
 		if(days != 0L)
 		{
-			translated = translated.append(text((appended ? " " : "") + days)).append(DAYS_CHAR.translateOne(locale));
+			translated = translated.append(text((appended ? " " : "") + days)).append(DAYS_CHAR.translate(locale));
 			appended = true;
 		}
 		
 		if(hours != 0L)
 		{
-			translated = translated.append(text((appended ? " " : "") + hours)).append(HOURS_CHAR.translateOne(locale));
+			translated = translated.append(text((appended ? " " : "") + hours)).append(HOURS_CHAR.translate(locale));
 			appended = true;
 		}
 		
 		if(minutes != 0L)
 		{
-			translated = translated.append(text((appended ? " " : "") + minutes)).append(MINUTES_CHAR.translateOne(locale));
+			translated = translated.append(text((appended ? " " : "") + minutes)).append(MINUTES_CHAR.translate(locale));
 			appended = true;
 		}
 		
 		if(seconds != 0L || (days == 0L && hours == 0L && minutes == 0L))
 		{
-			translated = translated.append(text((appended ? " " : "") + seconds)).append(SECONDS_CHAR.translateOne(locale));
+			translated = translated.append(text((appended ? " " : "") + seconds)).append(SECONDS_CHAR.translate(locale));
 		}
 		
 		return translated;

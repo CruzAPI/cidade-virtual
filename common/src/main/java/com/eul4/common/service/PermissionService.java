@@ -7,6 +7,9 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.wrapper.*;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -14,6 +17,21 @@ import java.util.*;
 public class PermissionService
 {
 	private final Common plugin;
+	
+	public boolean hasPermission(CommandSender commandSender, String permissionName)
+	{
+		if(commandSender instanceof ConsoleCommandSender)
+		{
+			return true;
+		}
+		
+		if(commandSender instanceof Player player)
+		{
+			return plugin.getPlayerManager().get(player).hasPermission(permissionName);
+		}
+		
+		return false;
+	}
 	
 	public boolean hasPermission(CommonPlayer commonPlayer, String permissionName)
 	{

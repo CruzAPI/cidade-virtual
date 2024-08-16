@@ -56,7 +56,7 @@ public class CraftTownPlayer extends CraftPhysicalPlayer implements TownPlayer
 		{
 			getTownPlayerData().setFirstTimeJoiningTown(false);
 			
-			Component title = PluginMessage.TITLE_TOWN_WELCOME.translateOne(this, getPlayer().displayName());
+			Component title = PluginMessage.TITLE_TOWN_WELCOME.translate(this, getPlayer().displayName());
 			Component subtitle = Component.empty();
 			Title.Times times = Title.Times.times(Duration.ofMillis(1000L),
 					Duration.ofMillis(3000L),

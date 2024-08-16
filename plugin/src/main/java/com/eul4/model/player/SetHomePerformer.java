@@ -59,7 +59,7 @@ public interface SetHomePerformer extends PluginPlayer
 					
 					lore.addAll(MessageUtil.getCostLoreV2(purchase.getCost(), SetHomePerformer.this));
 					lore.add(Component.empty());
-					lore.addAll(PluginMessage.COMMAND_SETHOME_CONFIRMATION_LORE.translateLore(SetHomePerformer.this, purchase.getCost()));
+					lore.addAll(PluginMessage.COMMAND_SETHOME_CONFIRMATION_LORE.translateLines(SetHomePerformer.this, purchase.getCost()));
 					
 					meta.lore(lore);
 					

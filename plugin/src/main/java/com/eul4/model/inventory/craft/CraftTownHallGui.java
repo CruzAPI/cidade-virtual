@@ -27,7 +27,7 @@ public class CraftTownHallGui extends CraftStructureGui implements TownHallGui
 		
 		assistantMenu = ItemStack.of(Material.VILLAGER_SPAWN_EGG);
 		meta = assistantMenu.getItemMeta();
-		meta.displayName(PluginMessage.INVENTORY_TOWN_HALL_ASSISTANT_MENU.translateOne(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_TOWN_HALL_ASSISTANT_MENU.translate(commonPlayer));
 		assistantMenu.setItemMeta(meta);
 		
 		inventory.setItem(1, move);
@@ -37,7 +37,7 @@ public class CraftTownHallGui extends CraftStructureGui implements TownHallGui
 	@Override
 	public Component getUpdatedTitleComponent()
 	{
-		return PluginMessage.STRUCTURE_TITLE.translateOne(commonPlayer.getLocale(),
+		return PluginMessage.STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
 				PluginMessage.STRUCTURE_TOWN_HALL_NAME,
 				structure.getLevel());
 	}

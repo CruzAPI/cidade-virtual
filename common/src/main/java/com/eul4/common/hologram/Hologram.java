@@ -167,7 +167,7 @@ public class Hologram
 			this.message = message;
 			this.args = args;
 			
-			this.armorStand.customName(message.translateOne(ResourceBundleHandler.DEFAULT_LOCALE, args));
+			this.armorStand.customName(message.translate(ResourceBundleHandler.DEFAULT_LOCALE, args));
 		}
 		
 		public void setCustomName(Component component)
@@ -181,7 +181,7 @@ public class Hologram
 		{
 			return LegacyComponentSerializer.legacySection().serialize(message == null
 					? this.armorStand.customName()
-					: message.translateOne(locale, args));
+					: message.translate(locale, args));
 		}
 		
 		public Common getPlugin()

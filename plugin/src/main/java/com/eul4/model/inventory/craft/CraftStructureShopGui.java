@@ -63,7 +63,7 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 	{
 		ItemMeta meta = item.getItemMeta();
 		meta.displayName(PluginMessage.INVENTORY_STRUCTURE_SHOP_GUI_STRUCTURE_DISPLAY_NAME
-				.translateOne(commonPlayer, itemBuilder.getStructureType(), ((PluginPlayer) commonPlayer).getTown()));
+				.translate(commonPlayer, itemBuilder.getStructureType(), ((PluginPlayer) commonPlayer).getTown()));
 		
 		Price price = itemBuilder.getStructureType().getRule((Main) commonPlayer.getPlugin())
 				.getAttribute(1).getPrice();
@@ -74,13 +74,13 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		{
 			lore.addAll(MessageUtil.getPriceLore(price, commonPlayer));
 			lore.add(Component.empty());
-			lore.addAll(itemBuilder.getShopLoreMessage().translateLore(commonPlayer));
+			lore.addAll(itemBuilder.getShopLoreMessage().translateLines(commonPlayer));
 			lore.add(Component.empty());
-			lore.addAll(itemBuilder.getShopPreviewAttributesMessage().translateLore(commonPlayer, commonPlayer.getPlugin()));
+			lore.addAll(itemBuilder.getShopPreviewAttributesMessage().translateLines(commonPlayer, commonPlayer.getPlugin()));
 		}
 		else
 		{
-			lore.add(PluginMessage.STRUCTURE_NOT_FOR_SALE.translateOne(commonPlayer));
+			lore.add(PluginMessage.STRUCTURE_NOT_FOR_SALE.translate(commonPlayer));
 		}
 		
 		meta.lore(lore);

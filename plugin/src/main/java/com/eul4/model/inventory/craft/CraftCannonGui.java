@@ -28,7 +28,7 @@ public class CraftCannonGui extends CraftStructureGui implements CannonGui
 	@Override
 	public Component getUpdatedTitleComponent()
 	{
-		return PluginMessage.STRUCTURE_TITLE.translateOne(commonPlayer.getLocale(),
+		return PluginMessage.STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
 				PluginMessage.STRUCTURE_CANNON_NAME,
 				structure.getLevel());
 	}

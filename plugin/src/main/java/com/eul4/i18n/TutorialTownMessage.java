@@ -5,7 +5,6 @@ import com.eul4.common.i18n.Message;
 import com.eul4.enums.Currency;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ResourceBundle;
@@ -58,7 +57,7 @@ public enum TutorialTownMessage implements Message
 		Currency.LIKE.getBaseComponent()
 				.append(text((int) args[0]))
 				.append(text(" "))
-				.append(Currency.LIKE.getPluralWord().translateOne(bundle, String::toUpperCase))
+				.append(Currency.LIKE.getPluralWord().translate(bundle, String::toUpperCase))
 				.decorate(TextDecoration.BOLD),
 	}),
 	

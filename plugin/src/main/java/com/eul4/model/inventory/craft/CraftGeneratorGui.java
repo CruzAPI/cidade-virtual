@@ -35,15 +35,15 @@ public abstract class CraftGeneratorGui extends CraftStructureGui implements Gen
 		ItemMeta meta;
 		
 		meta = collect.getItemMeta();
-		meta.displayName(INVENTORY_GENERATOR_COLLECT.translateOne(commonPlayer.getLocale(), generator));
+		meta.displayName(INVENTORY_GENERATOR_COLLECT.translate(commonPlayer.getLocale(), generator));
 		
 		if(generator.hasReachedMaxTownBalanceCapacity())
 		{
-			meta.lore(INVENTORY_GENERATOR_COLLECT_LORE_DEPOSIT_FULL.translateLore(commonPlayer.getLocale(), generator));
+			meta.lore(INVENTORY_GENERATOR_COLLECT_LORE_DEPOSIT_FULL.translateLines(commonPlayer.getLocale(), generator));
 		}
 		else
 		{
-			meta.lore(INVENTORY_GENERATOR_COLLECT_LORE.translateLore(commonPlayer.getLocale(), generator));
+			meta.lore(INVENTORY_GENERATOR_COLLECT_LORE.translateLines(commonPlayer.getLocale(), generator));
 		}
 		
 		collect.setItemMeta(meta);

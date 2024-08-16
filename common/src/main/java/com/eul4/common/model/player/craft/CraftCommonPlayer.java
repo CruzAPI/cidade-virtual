@@ -1,22 +1,23 @@
 package com.eul4.common.model.player.craft;
 
 import com.eul4.common.Common;
-import com.eul4.common.event.GuiCloseEvent;
 import com.eul4.common.event.GuiOpenEvent;
 import com.eul4.common.factory.GuiEnum;
 import com.eul4.common.i18n.Message;
+import com.eul4.common.i18n.RichMessage;
+import com.eul4.common.i18n.TranslatableMessage;
 import com.eul4.common.model.data.CommonPlayerData;
 import com.eul4.common.model.data.PlayerData;
 import com.eul4.common.model.inventory.Gui;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.model.player.ScoreboardPlayer;
+import com.eul4.common.util.LoggerUtil;
 import com.eul4.common.world.CommonWorld;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -112,21 +113,27 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	}
 	
 	@Override
-	public void sendMessage(Message message, Object... args)
+	public void sendMessage(TranslatableMessage translatableMessage, Object... args)
 	{
 		try
 		{
-			message.translateLore(locale, args).forEach(player::sendMessage);
+			translatableMessage.translateLines(locale, args).forEach(player::sendMessage);
 		}
 		catch(MissingResourceException e)
 		{
 			player.sendMessage(Component.text("Message not found: " + e.getKey()).color(NamedTextColor.RED));
+			LoggerUtil.warning(plugin, e,
+					"Message not found while sending to player! key={0} player={1}",
+					e.getKey(),
+					player.getName());
 		}
 		catch(Exception e)
 		{
-			String msgKey = Optional.ofNullable(message.getKey()).orElse(message.name());
-			player.sendMessage(Component.text("Error while sending message: " + msgKey).color(NamedTextColor.RED));
-			e.printStackTrace();
+			player.sendMessage(Component.text("Error while sending message: " + translatableMessage.name()).color(NamedTextColor.RED));
+			LoggerUtil.warning(plugin, e,
+					"Error while sending Message to player! message={0} player={1}",
+					translatableMessage.name(),
+					player.getName());
 		}
 	}
 	
@@ -161,7 +168,7 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public Inventory createInventory(InventoryType inventoryType, Message message, Object... args)
 	{
-		return createInventory(inventoryType, message.translateOne(locale, args));
+		return createInventory(inventoryType, message.translate(locale, args));
 	}
 	
 	@Override
@@ -173,7 +180,7 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public Inventory createInventory(int size, Message message, Object... args)
 	{
-		return plugin.getServer().createInventory(player, size, message.translateOne(locale, args));
+		return plugin.getServer().createInventory(player, size, message.translate(locale, args));
 	}
 	
 	@Override

@@ -7,17 +7,18 @@ import net.kyori.adventure.text.Component;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 @Getter
 @Builder
 public class MessageArgs
 {
-	private final Message message;
+	private final TranslatableMessage translatableMessage;
 	private final Object[] args;
 	
-	public MessageArgs(Message message, Object... args)
+	public MessageArgs(TranslatableMessage translatableMessage, Object... args)
 	{
-		this.message = message;
+		this.translatableMessage = translatableMessage;
 		this.args = args;
 	}
 	
@@ -26,31 +27,66 @@ public class MessageArgs
 		Object[] combinedArgs = new Object[this.args.length + args.length];
 		System.arraycopy(this.args, 0, combinedArgs, 0, this.args.length);
 		System.arraycopy(args, 0, combinedArgs, this.args.length, args.length);
-		return new MessageArgs(message, combinedArgs);
+		return new MessageArgs(translatableMessage, combinedArgs);
 	}
 	
-	public Component translateOne(Locale locale)
+	public Component translate(ResourceBundle bundle)
 	{
-		return message.translateOne(locale, args);
+		return translatableMessage.translate(bundle, args);
 	}
 	
-	public Component translateOne(CommonPlayer commonPlayer)
+	public Component translate(CommonPlayer commonPlayer)
 	{
-		return message.translateOne(commonPlayer, args);
+		return translatableMessage.translate(commonPlayer, args);
 	}
 	
-	public List<Component> translateLore(CommonPlayer commonPlayer)
+	public Component translate(Locale locale)
 	{
-		return message.translateLore(commonPlayer, args);
+		return translatableMessage.translate(locale, args);
+	}
+	
+	public List<Component> translateLines(ResourceBundle bundle)
+	{
+		return translatableMessage.translateLines(bundle, args);
+	}
+	
+	public List<Component> translateLines(CommonPlayer commonPlayer)
+	{
+		return translatableMessage.translateLines(commonPlayer, args);
+	}
+	
+	public List<Component> translateLines(Locale locale)
+	{
+		return translatableMessage.translateLines(locale, args);
+	}
+	
+	public String translatePlain(ResourceBundle bundle)
+	{
+		return translatableMessage.translatePlain(bundle, args);
+	}
+	
+	public String translatePlain(CommonPlayer commonPlayer)
+	{
+		return translatableMessage.translatePlain(commonPlayer, args);
 	}
 	
 	public String translatePlain(Locale locale)
 	{
-		return message.translatePlain(locale, args);
+		return translatableMessage.translatePlain(locale, args);
+	}
+	
+	public String translateLegacy(ResourceBundle bundle)
+	{
+		return translatableMessage.translateLegacy(bundle, args);
+	}
+	
+	public String translateLegacy(CommonPlayer commonPlayer)
+	{
+		return translatableMessage.translateLegacy(commonPlayer, args);
 	}
 	
 	public String translateLegacy(Locale locale)
 	{
-		return message.translateLegacy(locale, args);
+		return translatableMessage.translateLegacy(locale, args);
 	}
 }

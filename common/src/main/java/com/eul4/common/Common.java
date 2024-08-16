@@ -16,6 +16,8 @@ import com.eul4.common.listener.*;
 import com.eul4.common.listener.container.RemoveItemOnCommonPlayerRegisterListener;
 import com.eul4.common.listener.container.RemoveItemOnPlayerJoinListener;
 import com.eul4.common.listener.container.RemoveOnChunkLoadListener;
+import com.eul4.common.model.console.Console;
+import com.eul4.common.model.console.CraftConsole;
 import com.eul4.common.service.*;
 import com.eul4.common.type.player.CommonWorldType;
 import lombok.Getter;
@@ -43,6 +45,7 @@ public abstract class Common extends JavaPlugin
 	private PlayerManager playerManager;
 	private WorldManager worldManager;
 	private CommonDataFileManager commonDataFileManager;
+	private MessageableService messageableService;
 	private PermissionService permissionService;
 	private ServerTickCounter serverTickCounter;
 	
@@ -51,11 +54,15 @@ public abstract class Common extends JavaPlugin
 	
 	private Set<String> offlineUsernames;
 	
+	private Console console;
+	
 	@Override
 	public void onEnable()
 	{
 		try
 		{
+			console = new CraftConsole(getServer().getConsoleSender());
+			
 			loadServices();
 			
 			registerCommonResourceBundles();
@@ -91,6 +98,7 @@ public abstract class Common extends JavaPlugin
 		playerManager = new PlayerManager(this);
 		worldManager = new WorldManager(this);
 		commonDataFileManager = new CommonDataFileManager(this);
+		messageableService = new MessageableService(this);
 		permissionService = new PermissionService(this);
 		serverTickCounter = new ServerTickCounter(this);
 	}

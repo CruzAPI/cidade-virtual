@@ -54,14 +54,14 @@ public class MessageUtil
 		
 		if(price.getLikes() > 0)
 		{
-			components.add(DECORATED_VALUE_CURRENCY.translateOne(commonPlayer,
+			components.add(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
 					Currency.LIKE,
 					price.getLikes()));
 		}
 		
 		if(price.getDislikes() > 0)
 		{
-			components.add(DECORATED_VALUE_CURRENCY.translateOne(commonPlayer,
+			components.add(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
 					Currency.DISLIKE,
 					price.getDislikes()));
 		}
@@ -78,7 +78,7 @@ public class MessageUtil
 		if(price.getLikes() > 0)
 		{
 			components.add(getPontuatedComponent()
-					.append(DECORATED_VALUE_CURRENCY.translateOne(commonPlayer,
+					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
 					Currency.LIKE,
 					price.getLikes())));
 		}
@@ -86,7 +86,7 @@ public class MessageUtil
 		if(price.getDislikes() > 0)
 		{
 			components.add(getPontuatedComponent()
-					.append(DECORATED_VALUE_CURRENCY.translateOne(commonPlayer,
+					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
 					Currency.DISLIKE,
 					price.getDislikes())));
 		}
@@ -103,7 +103,7 @@ public class MessageUtil
 		if(!components.isEmpty())
 		{
 			components.add(0, getBlankComponent()
-					.append(PluginMessage.PRICE.translateOne(commonPlayer, WordUtils::capitalizeFully))
+					.append(PluginMessage.PRICE.translate(commonPlayer, WordUtils::capitalizeFully))
 					.append(Component.text(":")));
 		}
 		
@@ -119,7 +119,7 @@ public class MessageUtil
 		
 		List<Component> components = new ArrayList<>();
 		
-		components.add(PluginMessage.COST.translateOne(commonPlayer, WordUtils::capitalize)
+		components.add(PluginMessage.COST.translate(commonPlayer, WordUtils::capitalize)
 				.append(Component.text(":"))
 				.color(GRAY));
 		
@@ -130,7 +130,7 @@ public class MessageUtil
 		if(price.getLikes() > 0)
 		{
 			components.add(getPontuatedComponent()
-					.append(DECORATED_VALUE_CURRENCY.translateOne(commonPlayer,
+					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
 							Currency.LIKE,
 							price.getLikes())));
 		}
@@ -138,7 +138,7 @@ public class MessageUtil
 		if(price.getDislikes() > 0)
 		{
 			components.add(getPontuatedComponent()
-					.append(DECORATED_VALUE_CURRENCY.translateOne(commonPlayer,
+					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
 							Currency.DISLIKE,
 							price.getDislikes())));
 		}
@@ -163,7 +163,7 @@ public class MessageUtil
 		}
 		
 		return List.of(getBlankComponent()
-				.append(PluginMessage.DURABILITY.translateOne(pluginPlayer, WordUtils::capitalizeFully))
+				.append(PluginMessage.DURABILITY.translate(pluginPlayer, WordUtils::capitalizeFully))
 				.append(Component.text(": ")
 				.append(Component.text(durability))));
 	}

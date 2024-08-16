@@ -1,7 +1,6 @@
 package com.eul4.common.i18n;
 
 import com.eul4.common.command.BroadcastCommand;
-import com.eul4.common.command.ClearChatCommand;
 import com.eul4.common.command.PexCommand;
 import com.eul4.common.model.permission.Group;
 import com.eul4.common.wrapper.Page;
@@ -10,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang.WordUtils;
 
 import java.text.DecimalFormat;
@@ -39,7 +37,7 @@ public enum CommonMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().color(GREEN),
-		((CommonMessage) args[1]).translateOne(bundle.getLocale(), String::toUpperCase).color((TextColor) args[0]),
+		((CommonMessage) args[1]).translate(bundle.getLocale(), String::toUpperCase).color((TextColor) args[0]),
 	}),
 	
 	COMMAND_BUILD_ENABLED("command.build.enabled", empty().color(GREEN)),
@@ -235,7 +233,7 @@ public enum CommonMessage implements Message
 		
 		TextColor baseColor = RED;
 		
-		components.add(USAGE.translateOne(locale, word -> WordUtils.capitalize(word + ":")).color(baseColor));
+		components.add(USAGE.translate(locale, word -> WordUtils.capitalize(word + ":")).color(baseColor));
 		components.add(text("/pex group").color(baseColor));
 		components.add(text("/pex group <group> create").color(baseColor));
 		components.add(text("/pex group <group> delete").color(baseColor));
@@ -254,12 +252,12 @@ public enum CommonMessage implements Message
 	SHOW_PAGE((locale, args) ->
 	{
 		Page<?> page = (Page<?>) args[0];
-		Component title = ((MessageArgs) args[1]).translateOne(locale);
+		Component title = ((MessageArgs) args[1]).translate(locale);
 		MessageArgs runCommand = (MessageArgs) args[2];
 		
 		List<Component> components = new ArrayList<>();
 		
-		HoverEvent<Component> clickToNavigate = CLICK_TO_NAVIGATE.translateOne(locale).asHoverEvent();
+		HoverEvent<Component> clickToNavigate = CLICK_TO_NAVIGATE.translate(locale).asHoverEvent();
 		
 		ClickEvent runPreviousPage = ClickEvent.runCommand(runCommand.moreArgs(page.getDisplayIndex() - 1).translatePlain(locale));
 		ClickEvent runNextPage = ClickEvent.runCommand(runCommand.moreArgs(page.getDisplayIndex() + 1).translatePlain(locale));
@@ -280,7 +278,7 @@ public enum CommonMessage implements Message
 						.hoverEvent(clickToNavigate))
 				: Component.empty();
 		
-		Component pageIndex = PAGE_INDEX.translateOne(locale, page.getDisplayIndex(), page.getAmountOfPages());
+		Component pageIndex = PAGE_INDEX.translate(locale, page.getDisplayIndex(), page.getAmountOfPages());
 		
 		Component leftTraces = Component.text("============ ").color(GRAY);
 		Component rightTraces = Component.text(" ============").color(GRAY);
@@ -304,7 +302,7 @@ public enum CommonMessage implements Message
 	
 	COMMAND_BROADCAST((locale, args) ->
 	{
-		Component broadcast = BROADCAST.translateOne(locale, WordUtils::capitalize).color(AQUA).decorate(BOLD);
+		Component broadcast = BROADCAST.translate(locale, WordUtils::capitalize).color(AQUA).decorate(BOLD);
 		Component colon = text("»").color(GRAY);
 		Component message = (Component) args[0];
 		

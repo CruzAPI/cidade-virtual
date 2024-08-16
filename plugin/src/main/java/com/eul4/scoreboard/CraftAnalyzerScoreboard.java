@@ -81,18 +81,18 @@ public class CraftAnalyzerScoreboard extends CraftCommonScoreboard implements An
 	@Override
 	public void updateTitle()
 	{
-		objective.displayName(TITLE.translateOne(raidAnalyzer, raidAnalyzer.getAnalyzingTown()));
+		objective.displayName(TITLE.translate(raidAnalyzer, raidAnalyzer.getAnalyzingTown()));
 	}
 	
 	@Override
 	public void updatePlayerStatusTeam()
 	{
-		playerStatusTeam.prefix(PLAYER_STATUS_PREFIX.translateOne(raidAnalyzer, raidAnalyzer
+		playerStatusTeam.prefix(PLAYER_STATUS_PREFIX.translate(raidAnalyzer, raidAnalyzer
 				.findAnalyzingTown()
 				.map(Town::getOwnerDisplayName)
 				.orElse(Component.text("???"))));
 		
-		playerStatusTeam.suffix(PLAYER_STATUS_SUFFIX.translateOne(raidAnalyzer, raidAnalyzer
+		playerStatusTeam.suffix(PLAYER_STATUS_SUFFIX.translate(raidAnalyzer, raidAnalyzer
 				.findAnalyzingTown()
 				.map(Town::getOwner)
 				.map(OfflinePlayer::isOnline)
@@ -102,7 +102,7 @@ public class CraftAnalyzerScoreboard extends CraftCommonScoreboard implements An
 	@Override
 	public void updateTownHallLevelTeam()
 	{
-		townHallLevelTeam.suffix(TOWN_HALL_LEVEL_SUFFIX.translateOne(raidAnalyzer, raidAnalyzer
+		townHallLevelTeam.suffix(TOWN_HALL_LEVEL_SUFFIX.translate(raidAnalyzer, raidAnalyzer
 				.findAnalyzingTown()
 				.map(Town::getBuiltLevel)
 				.orElse(0)));
@@ -111,18 +111,18 @@ public class CraftAnalyzerScoreboard extends CraftCommonScoreboard implements An
 	@Override
 	public void updateLikesTeam()
 	{
-		likesTeam.suffix(LIKES_SUFFIX.translateOne(raidAnalyzer, raidAnalyzer.getAnalyzingTown()));
+		likesTeam.suffix(LIKES_SUFFIX.translate(raidAnalyzer, raidAnalyzer.getAnalyzingTown()));
 	}
 	
 	@Override
 	public void updateDislikesTeam()
 	{
-		dislikesTeam.suffix(DISLIKES_SUFFIX.translateOne(raidAnalyzer, raidAnalyzer.getAnalyzingTown()));
+		dislikesTeam.suffix(DISLIKES_SUFFIX.translate(raidAnalyzer, raidAnalyzer.getAnalyzingTown()));
 	}
 	
 	@Override
 	public void updateHardnessTeam()
 	{
-		hardnessTeam.suffix(HARDNESS_SUFFIX.translateOne(raidAnalyzer, raidAnalyzer.getAnalyzingTown()));
+		hardnessTeam.suffix(HARDNESS_SUFFIX.translate(raidAnalyzer, raidAnalyzer.getAnalyzingTown()));
 	}
 }

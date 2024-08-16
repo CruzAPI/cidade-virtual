@@ -28,7 +28,7 @@ public class CraftArmoryGui extends CraftStructureGui implements ArmoryGui
 	@Override
 	public Component getUpdatedTitleComponent()
 	{
-		return PluginMessage.STRUCTURE_TITLE.translateOne(commonPlayer.getLocale(),
+		return PluginMessage.STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
 				PluginMessage.STRUCTURE_ARMORY_NAME,
 				structure.getLevel());
 	}

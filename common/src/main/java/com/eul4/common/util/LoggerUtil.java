@@ -43,4 +43,27 @@ public class LoggerUtil
 			logger.log(level, MessageFormat.format(msg, args));
 		}
 	}
+	
+	public static void warning(Plugin plugin, Throwable cause, String msg, Object... args)
+	{
+		log(plugin, Level.WARNING, cause, msg, args);
+	}
+	
+	public static void severe(Plugin plugin, Throwable cause, String msg, Object... args)
+	{
+		log(plugin, Level.SEVERE, cause, msg, args);
+	}
+	
+	public static void log(Plugin plugin, Level level, Throwable cause, String msg, Object... args)
+	{
+		log(true, plugin.getLogger(), level, cause, msg, args);
+	}
+	
+	public static void log(boolean flag, Logger logger, Level level, Throwable cause, String msg, Object... args)
+	{
+		if(flag)
+		{
+			logger.log(level, MessageFormat.format(msg, args), cause);
+		}
+	}
 }

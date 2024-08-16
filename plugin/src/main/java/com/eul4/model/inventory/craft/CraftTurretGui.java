@@ -28,7 +28,7 @@ public class CraftTurretGui extends CraftStructureGui implements TurretGui
 	@Override
 	public Component getUpdatedTitleComponent()
 	{
-		return PluginMessage.STRUCTURE_TITLE.translateOne(commonPlayer.getLocale(),
+		return PluginMessage.STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
 				PluginMessage.STRUCTURE_TURRET_NAME,
 				structure.getLevel());
 	}

@@ -48,7 +48,7 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 		Objective objective = scoreboard.registerNewObjective("name", Criteria.DUMMY, Component.text("text"));
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		
-		objective.displayName(TITLE.translateOne(townScoreboardPlayer));
+		objective.displayName(TITLE.translate(townScoreboardPlayer));
 		
 		objective.getScore("§0 ").setScore(6);
 		objective.getScore(likesEntry).setScore(5);
@@ -62,19 +62,19 @@ public class CraftTownScoreboard extends CraftCommonScoreboard implements TownSc
 	@Override
 	public void updateLikesTeam()
 	{
-		likesTeam.suffix(LIKES_SUFFIX.translateOne(townScoreboardPlayer, townScoreboardPlayer.getTown()));
+		likesTeam.suffix(LIKES_SUFFIX.translate(townScoreboardPlayer, townScoreboardPlayer.getTown()));
 	}
 	
 	@Override
 	public void updateDislikesTeam()
 	{
-		dislikesTeam.suffix(DISLIKES_SUFFIX.translateOne(townScoreboardPlayer, townScoreboardPlayer.getTown()));
+		dislikesTeam.suffix(DISLIKES_SUFFIX.translate(townScoreboardPlayer, townScoreboardPlayer.getTown()));
 	}
 	
 	@Override
 	public void updateHardnessTeam()
 	{
-		hardnessTeam.suffix(HARDNESS_SUFFIX.translateOne(townScoreboardPlayer, townScoreboardPlayer.getTown()));
+		hardnessTeam.suffix(HARDNESS_SUFFIX.translate(townScoreboardPlayer, townScoreboardPlayer.getTown()));
 	}
 	
 	@Override

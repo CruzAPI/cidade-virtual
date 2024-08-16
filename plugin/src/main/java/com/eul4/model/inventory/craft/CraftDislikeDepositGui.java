@@ -31,7 +31,7 @@ public class CraftDislikeDepositGui extends CraftStructureGui
 	{
 		Generator generator = (Generator) structure;
 		
-		return PluginMessage.COMPONENT_STRUCTURE_TITLE.translateOne(commonPlayer.getLocale(),
+		return PluginMessage.COMPONENT_STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
 				Component.empty().color(RED),
 				PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_NAME,
 				generator.getLevel());

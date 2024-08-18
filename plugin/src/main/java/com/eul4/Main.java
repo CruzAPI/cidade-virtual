@@ -371,6 +371,7 @@ public class Main extends Common
 		super.onDisable();
 		
 		townsFiler.saveTowns();
+		playerDataFiler.saveMemoryPlayers();
 		getServer().getWorlds().forEach(blockDataFiler::saveChunks);
 		
 		getLogger().info("Plugin disabled.");

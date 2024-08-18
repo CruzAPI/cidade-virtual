@@ -11,7 +11,7 @@ public enum CommonObjectType implements ObjectType
 	BLOCK_VECTOR((byte) 0, CommonExternalizerType.BLOCK_VECTOR),
 	CHUNK((byte) 0, CommonExternalizerType.CHUNK),
 	COMMON_PLAYER((byte) 0, null),
-	COMMON_PLAYER_DATA((byte) 1, CommonExternalizerType.COMMON_PLAYER_DATA),
+	COMMON_PLAYER_DATA((byte) 2, CommonExternalizerType.COMMON_PLAYER_DATA),
 	ENTITY((byte) 0, CommonExternalizerType.ENTITY),
 	GROUP((byte) 0, CommonExternalizerType.GROUP),
 	GROUP_MAP((byte) 0, CommonExternalizerType.GROUP_MAP),
@@ -29,7 +29,9 @@ public enum CommonObjectType implements ObjectType
 	POTION_EFFECT_COLLECTION((byte) 0, CommonExternalizerType.POTION_EFFECT_COLLECTION),
 	TIMED_TICK((byte) 0, CommonExternalizerType.TIMED_TICK),
 	TRANSLATED_HOLOGRAM_LINE((byte) 1, CommonExternalizerType.TRANSLATED_HOLOGRAM_LINE),
-	USER((byte) 0, CommonExternalizerType.USER);
+	USER((byte) 0, CommonExternalizerType.USER),
+	UUID((byte) 0, CommonExternalizerType.UUID),
+	UUID_HASH_SET((byte) 0, CommonExternalizerType.UUID_HASH_SET);
 	
 	private final byte version;
 	private final CommonExternalizerType externalizerType;

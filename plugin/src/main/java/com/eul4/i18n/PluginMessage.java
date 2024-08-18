@@ -7,6 +7,7 @@ import com.eul4.command.SetHomeCommand;
 import com.eul4.command.TagCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
+import com.eul4.common.util.CommonMessageUtil;
 import com.eul4.common.wrapper.TimerTranslator;
 import com.eul4.enums.Currency;
 import com.eul4.model.player.SetHomePerformer;
@@ -521,7 +522,7 @@ public enum PluginMessage implements Message
 	TITLE_OWNER_TOWN("title.owner-town", (bundle, args) -> new Component[]
 	{
 		empty().color(GRAY),
-		MessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
+		CommonMessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
 	}),
 	
 	SUBTITLE_SECONDS_TO_ANALYZE("subtitle.seconds-to-analyze", (bundle, args) -> new Component[]
@@ -533,7 +534,7 @@ public enum PluginMessage implements Message
 	ANALYZING_TOWN("analyzing-town", (bundle, args) -> new Component[]
 	{
 		empty(),
-		MessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
+		CommonMessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
 	}),
 	
 	NO_TOWNS_FOUND("no-towns-found", empty().color(RED)),

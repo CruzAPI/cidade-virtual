@@ -1,6 +1,8 @@
 package com.eul4.common.model.player;
 
 import com.eul4.common.Common;
+import com.eul4.common.exception.UserAlreadyMutedException;
+import com.eul4.common.exception.UserIsNotMutedException;
 import com.eul4.common.factory.GuiEnum;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.i18n.Messageable;
@@ -8,7 +10,9 @@ import com.eul4.common.model.data.CommonPlayerData;
 import com.eul4.common.model.inventory.Gui;
 import com.eul4.common.type.player.PlayerType;
 import com.eul4.common.world.CommonWorld;
+import com.eul4.common.wrapper.UUIDHashSet;
 import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -55,4 +59,16 @@ public interface CommonPlayer extends Messageable
 	
 	void clearChat();
 	void clearChat(int emptyLines);
+	
+	UUIDHashSet getIgnoredPlayers();
+	void addIgnoredPlayerOrElseThrow(OfflinePlayer ignoredPlayer) throws UserAlreadyMutedException;
+	void removeIgnoredPlayerOrElseThrow(OfflinePlayer ignoredPlayer) throws UserIsNotMutedException;
+	boolean hasIgnored(OfflinePlayer offlinePlayer);
+	
+	boolean isTellEnabled();
+	void setTellEnabled(boolean enabled);
+	boolean isChatEnabled();
+	void setChatEnabled(boolean enabled);
+	OfflinePlayer getLastReplied();
+	void setLastReplied(Player player);
 }

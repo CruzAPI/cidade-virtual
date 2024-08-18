@@ -24,13 +24,6 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class MessageUtil
 {
-	public static Component getOfflinePlayerDisplayName(OfflinePlayer offlinePlayer)
-	{
-		return offlinePlayer.isOnline()
-				? offlinePlayer.getPlayer().displayName()
-				: Component.text(Optional.ofNullable(offlinePlayer.getName()).orElse("Unknown")).color(DARK_GRAY);
-	}
-	
 	public static Component getDecrescentPercentageProgressBar(int percentage)
 	{
 		percentage = Math.max(0, Math.min(100, percentage));

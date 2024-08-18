@@ -1089,6 +1089,7 @@ public enum PluginMessage implements Message
 		return components;
 	}),
 	
+	PLAYER_RAID_SPECTATOR_CAN_NOT_RESPAWN_ANYMORE("player.raid-spectator.can-not-respawn-anymore", empty().color(RED)),
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;

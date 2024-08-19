@@ -252,7 +252,9 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
+		pluginManager.registerEvents(new ItemDamageAttributeListener(this), this);
 		pluginManager.registerEvents(new MacroidListener(this), this);
+		pluginManager.registerEvents(new PlayerAttackSpeedListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
@@ -371,6 +373,7 @@ public class Main extends Common
 		super.onDisable();
 		
 		townsFiler.saveTowns();
+		playerDataFiler.saveMemoryPlayers();
 		getServer().getWorlds().forEach(blockDataFiler::saveChunks);
 		
 		getLogger().info("Plugin disabled.");

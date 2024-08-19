@@ -3,6 +3,7 @@ package com.eul4.common.type.player;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.*;
 import com.eul4.common.externalizer.writer.*;
+import com.eul4.common.wrapper.UUIDHashSet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -30,8 +31,10 @@ public enum CommonExternalizerType implements ExternalizerType
 	POTION_EFFECT(PotionEffectReader::new, PotionEffectReader.class, PotionEffectWriter::new, PotionEffectWriter.class),
 	TIMED_TICK(TimedTickReader::new, TimedTickReader.class, TimedTickWriter::new, TimedTickWriter.class),
 	TRANSLATED_HOLOGRAM_LINE(TranslatedHologramLineReader::new, TranslatedHologramLineReader.class, TranslatedHologramLineWriter::new, TranslatedHologramLineWriter.class),
-	USER(UserReader::new, UserReader.class, UserWriter::new, UserWriter.class);
-	
+	USER(UserReader::new, UserReader.class, UserWriter::new, UserWriter.class),
+	UUID(UUIDReader::new, UUIDReader.class, UUIDWriter::new, UUIDWriter.class),
+	UUID_HASH_SET(UUIDHashSetReader::new, UUIDHashSetReader.class, UUIDHashSetWriter::new, UUIDHashSetWriter.class),
+	;
 	private final ReaderConstructor readerConstructor;
 	private final Class<? extends ObjectReader<?>> readerClass;
 	private final WriterConstructor writerConstructor;

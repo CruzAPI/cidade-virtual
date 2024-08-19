@@ -25,17 +25,17 @@ public class RaidAnalyzerHotbar
 		
 		attack = new ItemStack(Material.IRON_SWORD);
 		meta = attack.getItemMeta();
-		meta.displayName(PluginMessage.RAID_ANALYZER_HOTBAR_ATTACK.translateOne(raidAnalyzer));
+		meta.displayName(PluginMessage.RAID_ANALYZER_HOTBAR_ATTACK.translate(raidAnalyzer));
 		attack.setItemMeta(meta);
 		
 		reroll = new ItemStack(Material.ARROW);
 		meta = reroll.getItemMeta();
-		meta.displayName(PluginMessage.RAID_ANALYZER_HOTBAR_REROLL.translateOne(raidAnalyzer));
+		meta.displayName(PluginMessage.RAID_ANALYZER_HOTBAR_REROLL.translate(raidAnalyzer));
 		reroll.setItemMeta(meta);
 		
 		cancel = new ItemStack(Material.RED_BED);
 		meta = cancel.getItemMeta();
-		meta.displayName(PluginMessage.RAID_ANALYZER_HOTBAR_CANCEL.translateOne(raidAnalyzer));
+		meta.displayName(PluginMessage.RAID_ANALYZER_HOTBAR_CANCEL.translate(raidAnalyzer));
 		cancel.setItemMeta(meta);
 	}
 	

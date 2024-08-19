@@ -1,7 +1,6 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
-import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.util.ComponentUtil;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.wrapper.Tag;
@@ -12,13 +11,9 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
@@ -28,20 +23,8 @@ public class ChatListener implements Listener, ChatRenderer
 {
 	private final Main plugin;
 	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void cancelIfDisabled(AsyncChatEvent event)
-	{
-		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(event.getPlayer());
-		
-		if(!plugin.getChatCommand().isEnabled() && !pluginPlayer.hasPermission("chat.bypass"))
-		{
-			pluginPlayer.sendMessage(CommonMessage.COMMAND_CHAT_CHAT_IS_DISABLED);
-			event.setCancelled(true);
-		}
-	}
-	
 	@EventHandler(ignoreCancelled = true)
-	public void on(AsyncChatEvent event)
+	public void render(AsyncChatEvent event)
 	{
 		event.renderer(this);
 	}
@@ -54,15 +37,12 @@ public class ChatListener implements Listener, ChatRenderer
 	{
 		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
 		
-		pluginPlayer.refreshTag();
-		
-		Tag tag = pluginPlayer.getTag();
+		Tag tag = pluginPlayer.getFreshTag();
 		
 		Component tagComponent = tag == null || pluginPlayer.isTagHidden()
 				? Component.empty()
 				: tag.getTagComponentTranslated(pluginPlayer).appendSpace();
-		Component displayNameBase = Optional.ofNullable(tag).map(Tag::getDisplayNameComponent).orElse(empty().color(GRAY));
-		Component displayName = displayNameBase.append(text(player.getName()));
+		Component displayName = player.displayName();
 		Component message;
 		
 		if(pluginPlayer.hasPermission("chat.colored"))

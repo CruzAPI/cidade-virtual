@@ -32,3 +32,19 @@ commands:
   sethome:
   delhome:
   home:
+  mute:
+    aliases: [mutar, ignorar, ignore]
+  unmute:
+    aliases: [desmutar]
+  tell:
+    aliases: [msg, w]
+  reply:
+    aliases: [responder, r]
+  disable-tell:
+    aliases: [disabletell, desativar-tell, desativartell]
+  enable-tell:
+    aliases: [enabletell, ativar-tell, ativartell]
+  disable-chat:
+    aliases: [disablechat, desativar-chat, desativarchat]
+  enable-chat:
+    aliases: [enablechat, ativar-chat, ativarchat]

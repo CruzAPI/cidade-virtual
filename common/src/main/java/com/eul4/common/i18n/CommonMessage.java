@@ -1,35 +1,40 @@
 package com.eul4.common.i18n;
 
 import com.eul4.common.command.BroadcastCommand;
-import com.eul4.common.command.ClearChatCommand;
 import com.eul4.common.command.PexCommand;
 import com.eul4.common.model.permission.Group;
+import com.eul4.common.util.CommonMessageUtil;
+import com.eul4.common.util.CommonWordUtil;
 import com.eul4.common.wrapper.Page;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.OfflinePlayer;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 import java.util.function.BiFunction;
 
-import static net.kyori.adventure.text.Component.empty;
-import static net.kyori.adventure.text.Component.text;
+import static com.eul4.common.util.CommonMessageUtil.*;
+import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 
 @Getter
 public enum CommonMessage implements Message
 {
 	ADMINISTRATOR("administrator"),
 	PLAYER("player"),
+	USER("user"),
 	SPECTATOR("spectator"),
 	BROADCAST("broadcast"),
+	MESSAGE("message"),
+	
 	USAGE("usage", empty().color(RED)),
 	
 	ONLINE("online", empty().color(GREEN).decorate(BOLD)),
@@ -39,7 +44,7 @@ public enum CommonMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().color(GREEN),
-		((CommonMessage) args[1]).translateOne(bundle.getLocale(), String::toUpperCase).color((TextColor) args[0]),
+		((CommonMessage) args[1]).translate(bundle.getLocale(), String::toUpperCase).color((TextColor) args[0]),
 	}),
 	
 	COMMAND_BUILD_ENABLED("command.build.enabled", empty().color(GREEN)),
@@ -49,7 +54,7 @@ public enum CommonMessage implements Message
 	PERCENTAGE("percentage", (bundle, args) -> new Component[]
 	{
 		Component.empty(),
-		Component.text(new DecimalFormat(args[0].toString(), new DecimalFormatSymbols(bundle.getLocale()))
+		text(new DecimalFormat(args[0].toString(), new DecimalFormatSymbols(bundle.getLocale()))
 				.format((double) args[1]).concat("%"))
 	}),
 	
@@ -64,6 +69,205 @@ public enum CommonMessage implements Message
 	SCOREBOARD_ENABLED("command.scoreboard.enabled", empty().color(GREEN)),
 	SCOREBOARD_DISABLED("command.scoreboard.disabled", empty().color(GREEN)),
 	
+	COMMAND_MUTE_NAME("command.mute.name"),
+	COMMAND_MUTE_YOURSELF("command.mute.yourself", empty().color(RED)),
+	COMMAND_MUTE_USER_MUTED("command.mute.user-muted", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		CommonMessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
+	}),
+	
+	COMMAND_UNMUTE_NAME("command.unmute.name"),
+	COMMAND_UNMUTE_USER_UNMUTED("command.unmute.user-unmuted", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		CommonMessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
+	}),
+	
+	COMMAND_DISABLE_TELL_NAME("command.disable-tell.name"),
+	COMMAND_ENABLE_TELL_NAME("command.enable-tell.name"),
+	COMMAND_DISABLE_CHAT_NAME("command.disable-chat.name"),
+	COMMAND_ENABLE_CHAT_NAME("command.enable-chat.name"),
+	
+	COMMAND_TELL_NAME("command.tell.name"),
+	
+	COMMAND_BROADCAST_USAGE((locale, args) -> Collections
+			.singletonList(text("/" + BroadcastCommand.COMMAND_NAME + " <msg...>").color(RED))),
+	
+	COMMAND_CLEAR_CHAT_USAGE((locale, args) -> Collections
+			.singletonList(text("/" + args[0]).color(RED))),
+	COMMAND_CHAT_USAGE((locale, args) -> Collections
+			.singletonList(text("/" + args[0] + " <on:off>").color(RED))),
+	COMMAND_MUTE_USAGE((locale, args) -> Collections
+			.singletonList(text("/" + args[0] + " <")
+					.append(argToComponent(args[1]))
+					.append(text(">"))
+					.color(RED))),
+	COMMAND_MUTE_USE((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendNewline()
+					.append(COMMAND_MUTE_USAGE.translate(locale, args[0], USER.translate(locale)))
+					.color(RED))),
+	COMMAND_ENABLE_TELL_USAGE((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(getArgument(args, 0).orElseGet(() -> COMMAND_ENABLE_TELL_NAME.translate(locale))))
+					.color(RED))),
+	COMMAND_ENABLE_TELL_USE((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendSpace()
+					.append(COMMAND_ENABLE_TELL_USAGE.translate(locale, args[0]))
+					.color(RED))),
+	COMMAND_DISABLE_TELL_USAGE((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(getArgument(args, 0).orElseGet(() -> COMMAND_DISABLE_TELL_NAME.translate(locale))))
+					.color(RED))),
+	COMMAND_DISABLE_TELL_USE((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendSpace()
+					.append(COMMAND_DISABLE_TELL_USAGE.translate(locale, args[0]))
+					.color(RED))),
+	COMMAND_ENABLE_CHAT_USAGE((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(getArgument(args, 0).orElseGet(() -> COMMAND_ENABLE_CHAT_NAME.translate(locale))))
+					.color(RED))),
+	COMMAND_ENABLE_CHAT_USE((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendSpace()
+					.append(COMMAND_ENABLE_CHAT_USAGE.translate(locale, args[0]))
+					.color(RED))),
+	COMMAND_DISABLE_CHAT_USAGE((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(getArgument(args, 0).orElseGet(() -> COMMAND_DISABLE_CHAT_NAME.translate(locale))))
+					.color(RED))),
+	COMMAND_DISABLE_CHAT_USE((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendSpace()
+					.append(COMMAND_DISABLE_CHAT_USAGE.translate(locale, args[0]))
+					.color(RED))),
+	COMMAND_UNMUTE_USAGE((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(args[0]))
+					.appendSpace()
+					.append(usageRequiredArg(USER.translate(locale)))
+					.color(RED))),
+	COMMAND_UNMUTE_USAGE_$ALIASES_$PLAYER((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(args[0]))
+					.appendSpace()
+					.append(argToComponent(args[1]))
+					.color(RED))),
+	COMMAND_UNMUTE_USE((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendNewline()
+					.append(COMMAND_UNMUTE_USAGE.translate(locale, args[0]))
+					.color(RED))),
+	COMMAND_TELL_USAGE((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(COMMAND_TELL_NAME.translate(locale))
+					.appendSpace()
+					.append(usageRequiredArg(PLAYER.translate(locale)))
+					.appendSpace()
+					.append(usageRequiredVarArgs(MESSAGE.translate(locale)))
+					.color(RED))),
+	COMMAND_TELL_USAGE_$ALIASES((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(args[0]))
+					.appendSpace()
+					.append(usageRequiredArg(PLAYER.translate(locale)))
+					.appendSpace()
+					.append(usageRequiredVarArgs(MESSAGE.translate(locale)))
+					.color(RED))),
+	COMMAND_TELL_USE_$ALIASES((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendNewline()
+					.append(COMMAND_TELL_USAGE_$ALIASES.translate(locale, args[0]))
+					.color(RED))),
+	COMMAND_TELL_USAGE_$ALIASES_$PLAYER_NAME((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(args[0]))
+					.appendSpace()
+					.append(argToComponent(args[1]))
+					.appendSpace()
+					.append(usageRequiredVarArgs(MESSAGE.translate(locale)))
+					.color(RED))),
+	COMMAND_TELL_USE_$ALIASES_$PLAYER_NAME((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendNewline()
+					.append(COMMAND_TELL_USAGE_$ALIASES_$PLAYER_NAME.translate(locale, args[0], args[1]))
+					.color(RED))),
+	
+	COMMAND_TELL_$SENDER_$RECEIVER_$MESSAGE((locale, args) -> Collections.singletonList(text("[")
+			.append(displayName(args[0]))
+			.appendSpace()
+			.append(text("»"))
+			.appendSpace()
+			.append(displayName(args[1]))
+			.append(text("]"))
+			.append(space().decorate(BOLD))
+			.append(text(args[2].toString()).color(GRAY).decorate(ITALIC))
+			.applyFallbackStyle(GRAY))),
+	
+	COMMAND_TELL_BUSY_$PLAYER("command.tell.busy", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		playerName(args[0]),
+	}),
+	COMMAND_TELL_YOURSELF("command.tell.yourself", empty().color(RED)),
+	COMMAND_TELL_CAN_NOT_TELL_IGNORED_PLAYER("command.tell.can-not-tell-ignored-player", empty().color(RED)),
+	COMMAND_TELL_YOU_DISABLED_TELL("command.tell.you-disabled-tell", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		COMMAND_ENABLE_TELL_USAGE.translate(bundle),
+	}),
+	
+	COMMAND_REPLY_NAME("command.reply.name"),
+	COMMAND_REPLY_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+		.append(argToComponent(args[0]))
+		.appendSpace()
+		.append(usageRequiredVarArgs(MESSAGE.translate(locale)))
+	)),
+	COMMAND_REPLY_NO_CHATTING_$ALIASES("command.reply.no-chatting", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		COMMAND_TELL_USAGE.translate(bundle, args[0]),
+	}),
+	COMMAND_REPLY_GONE_OFFLINE_$PLAYER("command.reply.gone-offline", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		playerName(args[0]),
+	}),
+	
+	COMMAND_DISABLE_TELL_ALREADY_DISABLED("command.disable-tell.already-disabled", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		COMMAND_ENABLE_TELL_USAGE.translate(bundle),
+	}),
+	COMMAND_DISABLE_TELL_DISABLED("command.disable-tell.disabled", empty().color(GREEN)),
+	COMMAND_DISABLE_TELL_THIS_PLAYER_DISABLED_TELL("command.disable-tell.this-player-disabled-tell", empty().color(RED)),
+	
+	COMMAND_ENABLED_TELL_ALREADY_ENABLED("command.enable-tell.already-enabled", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		COMMAND_DISABLE_TELL_USAGE.translate(bundle),
+	}),
+	COMMAND_ENABLED_TELL_ENABLED("command.enable-tell.enabled", empty().color(GREEN)),
+	
+	COMMAND_DISABLE_CHAT_ALREADY_DISABLED("command.disable-chat.already-disabled", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		COMMAND_ENABLE_CHAT_USAGE.translate(bundle),
+	}),
+	COMMAND_DISABLE_CHAT_DISABLED("command.disable-chat.disabled", empty().color(GREEN)),
+	
+	COMMAND_ENABLE_CHAT_ALREADY_ENABLED("command.enable-chat.already-enabled", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		COMMAND_DISABLE_CHAT_USAGE.translate(bundle),
+	}),
+	COMMAND_ENABLE_CHAT_ENABLED("command.enable-chat.enabled", empty().color(GREEN)),
+	
 	EXCEPTION_GROUP_NOT_FOUND("exception.group-not-found", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
@@ -77,6 +281,12 @@ public enum CommonMessage implements Message
 	}),
 	
 	EXCEPTION_USER_NOT_FOUND("exception.user-not-found", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("\"" + args[0] + "\""),
+	}),
+	
+	EXCEPTION_PLAYER_NOT_FOUND("exception.player-not-found", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
 		text("\"" + args[0] + "\""),
@@ -106,6 +316,25 @@ public enum CommonMessage implements Message
 	EXCEPTION_NUMBER_FORMAT("exception.number-format", empty().color(RED)),
 	EXCEPTION_PAGE_NOT_FOUND("exception.page-not-found", empty().color(RED)),
 	EXCEPTION_EMPTY_LIST("exception.empty-list", empty().color(RED)),
+	
+	EXCEPTION_USER_ALREADY_MUTED("exception.user-already-muted", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("\"" + args[0] + "\""),
+		COMMAND_UNMUTE_USAGE_$ALIASES_$PLAYER.translate(bundle, COMMAND_UNMUTE_NAME.translate(bundle), args[0]),
+	}),
+	
+	EXCEPTION_USER_IS_NOT_MUTED("exception.user-is-not-muted", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("\"" + args[0] + "\""),
+	}),
+	
+	EXCEPTION_MAX_MUTE_REACHED("exception.max-mute-reached", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text((int) args[0]),
+	}),
 	
 	COMMAND_PEX_USER_ADDED_TO_GROUP("command.pex.user-added-to-group", (bundle, args) -> new Component[]
 	{
@@ -235,7 +464,7 @@ public enum CommonMessage implements Message
 		
 		TextColor baseColor = RED;
 		
-		components.add(USAGE.translateOne(locale, word -> WordUtils.capitalize(word + ":")).color(baseColor));
+		components.add(USAGE.translate(locale, word -> WordUtils.capitalize(word + ":")).color(baseColor));
 		components.add(text("/pex group").color(baseColor));
 		components.add(text("/pex group <group> create").color(baseColor));
 		components.add(text("/pex group <group> delete").color(baseColor));
@@ -254,18 +483,18 @@ public enum CommonMessage implements Message
 	SHOW_PAGE((locale, args) ->
 	{
 		Page<?> page = (Page<?>) args[0];
-		Component title = ((MessageArgs) args[1]).translateOne(locale);
+		Component title = ((MessageArgs) args[1]).translate(locale);
 		MessageArgs runCommand = (MessageArgs) args[2];
 		
 		List<Component> components = new ArrayList<>();
 		
-		HoverEvent<Component> clickToNavigate = CLICK_TO_NAVIGATE.translateOne(locale).asHoverEvent();
+		HoverEvent<Component> clickToNavigate = CLICK_TO_NAVIGATE.translate(locale).asHoverEvent();
 		
 		ClickEvent runPreviousPage = ClickEvent.runCommand(runCommand.moreArgs(page.getDisplayIndex() - 1).translatePlain(locale));
 		ClickEvent runNextPage = ClickEvent.runCommand(runCommand.moreArgs(page.getDisplayIndex() + 1).translatePlain(locale));
 		
 		Component previousPage = page.hasPreviousPage()
-				? Component.text("<<<")
+				? text("<<<")
 						.color(GOLD)
 						.clickEvent(runPreviousPage)
 						.hoverEvent(clickToNavigate)
@@ -273,17 +502,17 @@ public enum CommonMessage implements Message
 				: Component.empty();
 		
 		Component nextPage = page.hasNextPage()
-				? Component.text(" ")
+				? text(" ")
 						.append(text(">>>")
 						.color(GOLD)
 						.clickEvent(runNextPage)
 						.hoverEvent(clickToNavigate))
 				: Component.empty();
 		
-		Component pageIndex = PAGE_INDEX.translateOne(locale, page.getDisplayIndex(), page.getAmountOfPages());
+		Component pageIndex = PAGE_INDEX.translate(locale, page.getDisplayIndex(), page.getAmountOfPages());
 		
-		Component leftTraces = Component.text("============ ").color(GRAY);
-		Component rightTraces = Component.text(" ============").color(GRAY);
+		Component leftTraces = text("============ ").color(GRAY);
+		Component rightTraces = text(" ============").color(GRAY);
 		
 		Component header = leftTraces
 				.append(title)
@@ -304,7 +533,7 @@ public enum CommonMessage implements Message
 	
 	COMMAND_BROADCAST((locale, args) ->
 	{
-		Component broadcast = BROADCAST.translateOne(locale, WordUtils::capitalize).color(AQUA).decorate(BOLD);
+		Component broadcast = BROADCAST.translate(locale, WordUtils::capitalize).color(AQUA).decorate(BOLD);
 		Component colon = text("»").color(GRAY);
 		Component message = (Component) args[0];
 		
@@ -318,19 +547,17 @@ public enum CommonMessage implements Message
 		return Collections.singletonList(component);
 	}),
 	
-	COMMAND_BROADCAST_USAGE((locale, args) -> Collections
-			.singletonList(Component.text("/" + BroadcastCommand.COMMAND_NAME + " <msg...>").color(RED))),
-	
-	COMMAND_CLEAR_CHAT_USAGE((locale, args) -> Collections
-			.singletonList(Component.text("/" + args[0]).color(RED))),
-	
-	COMMAND_CHAT_USAGE((locale, args) -> Collections
-			.singletonList(Component.text("/" + args[0] + " <on:off>").color(RED))),
 	COMMAND_CHAT_CHAT_ENABLED("command.chat.chat-enabled", empty().color(GREEN)),
 	COMMAND_CHAT_CHAT_DISABLED("command.chat.chat-disabled", empty().color(GREEN)),
 	COMMAND_CHAT_CHAT_ALREADY_ENABLED("command.chat.chat-already-enabled", empty().color(RED)),
 	COMMAND_CHAT_CHAT_ALREADY_DISABLED("command.chat.chat-already-disabled", empty().color(RED)),
 	COMMAND_CHAT_CHAT_IS_DISABLED("command.chat.chat-is-disabled", empty().color(RED)),
+	
+	COMMAND_DISABLE_CHAT_CHAT_IS_DISABLED("command.disable-chat.chat-is-disabled", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		COMMAND_ENABLE_CHAT_USAGE.translate(bundle),
+	}),
 	;
 	
 	private final BundleBaseName bundleBaseName;

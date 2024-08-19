@@ -13,7 +13,9 @@ public class ComponentUtil
 	
 	public static Component chatInputToComponent(String chatInput)
 	{
-		return chatInput.replace('&', '§').contains("§")
+		chatInput = chatInput.replace('&', '§');
+		
+		return chatInput.contains("§")
 				? Component.text(chatInput)
 				: MiniMessage.miniMessage().deserialize(chatInput);
 	}

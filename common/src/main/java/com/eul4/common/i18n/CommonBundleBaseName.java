@@ -2,7 +2,9 @@ package com.eul4.common.i18n;
 
 public enum CommonBundleBaseName implements BundleBaseName
 {
-	COMMON("common");
+	COMMON("common"),
+	COMMON_RICH_MESSAGE("common_rich_message"),
+	;
 	
 	private final String bundleBaseName;
 	

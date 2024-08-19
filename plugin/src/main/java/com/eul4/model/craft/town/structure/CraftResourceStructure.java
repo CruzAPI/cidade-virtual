@@ -107,7 +107,7 @@ public abstract class CraftResourceStructure extends CraftStructure implements R
 						
 						pluginPlayer.getPlayer().sendMessage(currency.getBaseComponent()
 								.append(Component.text("+" + amountStolen + " "))
-								.append(currency.getPluralWord().translateOne(pluginPlayer, String::toUpperCase)));
+								.append(currency.getPluralWord().translate(pluginPlayer, String::toUpperCase)));
 					});
 				});
 		onSteal();

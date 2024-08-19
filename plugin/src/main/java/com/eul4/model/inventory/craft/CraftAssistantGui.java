@@ -40,17 +40,17 @@ public class CraftAssistantGui extends CraftGui implements AssistantGui
 		
 		moveAssistant = ItemStack.of(Material.VILLAGER_SPAWN_EGG);
 		meta = moveAssistant.getItemMeta();
-		meta.displayName(PluginMessage.INVENTORY_ASSISTANT_MOVE_ASSISTANT.translateOne(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_ASSISTANT_MOVE_ASSISTANT.translate(commonPlayer));
 		moveAssistant.setItemMeta(meta);
 		
 		structureShop = ItemStack.of(Material.BLACK_CONCRETE);
 		meta = structureShop.getItemMeta();
-		meta.displayName(PluginMessage.INVENTORY_ASSISTANT_STRUCTURE_SHOP.translateOne(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_ASSISTANT_STRUCTURE_SHOP.translate(commonPlayer));
 		structureShop.setItemMeta(meta);
 		
 		backToSpawn = ItemStack.of(Material.GRASS_BLOCK);
 		meta = backToSpawn.getItemMeta();
-		meta.displayName(PluginMessage.INVENTORY_ASSISTANT_BACK_TO_SPAWN.translateOne(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_ASSISTANT_BACK_TO_SPAWN.translate(commonPlayer));
 		backToSpawn.setItemMeta(meta);
 		
 		inventory.setItem(0, moveAssistant);

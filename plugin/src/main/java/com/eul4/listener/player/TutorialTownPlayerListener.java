@@ -3,6 +3,7 @@ package com.eul4.listener.player;
 import com.eul4.Main;
 import com.eul4.common.event.BroadcastReceiveEvent;
 import com.eul4.common.event.GuiClickEvent;
+import com.eul4.common.event.TellEvent;
 import com.eul4.event.AssistantInteractEvent;
 import com.eul4.event.StructureInteractEvent;
 import com.eul4.event.TileInteractEvent;
@@ -32,6 +33,15 @@ public class TutorialTownPlayerListener implements Listener
 	{
 		event.viewers().removeIf(viewer -> viewer instanceof Player player
 				&& plugin.getPlayerManager().get(player) instanceof TutorialTownPlayer);
+	}
+	
+	@EventHandler
+	public void cancelTell(TellEvent event)
+	{
+		if(event.getCommonPlayerTarget() instanceof TutorialTownPlayer)
+		{
+			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler

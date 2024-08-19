@@ -39,7 +39,7 @@ public abstract class CraftStep extends BukkitRunnable implements Step
 		this.messageArgs = messageArgs;
 		this.ticks = durationTicks;
 		this.maxTicks = durationTicks;
-		this.bossBar = BossBar.bossBar(bossBarMessageArgs.translateOne(tutorialTownPlayer),
+		this.bossBar = BossBar.bossBar(bossBarMessageArgs.translate(tutorialTownPlayer),
 				1.0F,
 				BossBar.Color.GREEN,
 				BossBar.Overlay.PROGRESS);

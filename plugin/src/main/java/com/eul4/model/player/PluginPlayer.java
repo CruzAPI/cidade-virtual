@@ -65,6 +65,7 @@ public interface PluginPlayer extends CommonPlayer
 	
 	TreeSet<Tag> getTags();
 	Tag getTag();
+	Tag getFreshTag();
 	void setTag(Tag tag);
 	boolean isValidTag();
 	boolean hasTag();

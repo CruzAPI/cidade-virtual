@@ -17,6 +17,9 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @RequiredArgsConstructor
 public class CommonPlayerListener implements Listener
 {
@@ -44,7 +47,11 @@ public class CommonPlayerListener implements Listener
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void on(PlayerCommandPreprocessEvent event)
 	{
-		event.setMessage(event.getMessage().toLowerCase());
+		String commandLowerCased = Pattern.compile("^(\\S*)")
+				.matcher(event.getMessage())
+				.replaceAll(m -> m.group().toLowerCase());
+		
+		event.setMessage(commandLowerCased);
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)

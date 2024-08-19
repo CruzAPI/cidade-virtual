@@ -37,8 +37,8 @@ public class CraftArmoryMyInventoryMenuGui extends CraftGui implements ArmoryMyI
 		
 		organizeBattleInventory = new ItemStack(Material.BOOKSHELF);
 		meta = organizeBattleInventory.getItemMeta();
-		meta.displayName(PluginMessage.INVENTORY_ARMORY_MY_INVENTORY_MENU_ARRANGE.translateOne(commonPlayer));
-		meta.lore(PluginMessage.INVENTORY_ARMORY_MY_INVENTORY_MENU_ARRANGE_LORE.translateLore(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_ARMORY_MY_INVENTORY_MENU_ARRANGE.translate(commonPlayer));
+		meta.lore(PluginMessage.INVENTORY_ARMORY_MY_INVENTORY_MENU_ARRANGE_LORE.translateLines(commonPlayer));
 		organizeBattleInventory.setItemMeta(meta);
 		
 		//TODO
@@ -49,8 +49,8 @@ public class CraftArmoryMyInventoryMenuGui extends CraftGui implements ArmoryMyI
 		
 		selectOrStorageItems = new ItemStack(Material.BARREL);
 		meta = selectOrStorageItems.getItemMeta();
-		meta.displayName(PluginMessage.INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR.translateOne(commonPlayer));
-		meta.lore(PluginMessage.INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR_LORE.translateLore(commonPlayer));
+		meta.displayName(PluginMessage.INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR.translate(commonPlayer));
+		meta.lore(PluginMessage.INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR_LORE.translateLines(commonPlayer));
 		selectOrStorageItems.setItemMeta(meta);
 		
 		inventory.setContents(new ItemStack[]

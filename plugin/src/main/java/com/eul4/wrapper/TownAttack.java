@@ -204,7 +204,7 @@ public class TownAttack
 				BossBar.Overlay.PROGRESS);
 
 		private final BossBar attackerBossBar = BossBar.bossBar(
-				PluginMessage.YOU_ATTACKING_TOW.translateOne(attacker, town.getOwner().getName()),
+				PluginMessage.YOU_ATTACKING_TOW.translate(attacker, town.getOwner().getName()),
 				1.0F,
 				BossBar.Color.GREEN,
 				BossBar.Overlay.PROGRESS);
@@ -231,7 +231,7 @@ public class TownAttack
 			}
 			else
 			{
-				bossBar.name(PluginMessage.TOWN_UNDER_ATTACK.translateOne(defender, attacker.getPlayer().displayName()));
+				bossBar.name(PluginMessage.TOWN_UNDER_ATTACK.translate(defender, attacker.getPlayer().displayName()));
 			}
 
 			attackerBossBar.progress((float) ticks / maxTicks);
@@ -286,7 +286,7 @@ public class TownAttack
 		
 		private void sendTitle(DefenderSpectator defenderSpectator)
 		{
-			Component componentTitle = PluginMessage.TITLE_RESPAWNING_IN.translateOne(defenderSpectator, ticks / 20);
+			Component componentTitle = PluginMessage.TITLE_RESPAWNING_IN.translate(defenderSpectator, ticks / 20);
 			
 			defenderSpectator.getPlayer().showTitle(Title.title(
 					componentTitle,

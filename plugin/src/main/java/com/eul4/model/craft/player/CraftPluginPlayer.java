@@ -13,6 +13,7 @@ import com.eul4.model.town.Town;
 import com.eul4.wrapper.Tag;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.format.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -138,6 +139,12 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	@Override
 	public Tag getTag()
 	{
+		return pluginPlayerData.getTag();
+	}
+	
+	@Override
+	public Tag getFreshTag()
+	{
 		refreshTag();
 		return pluginPlayerData.getTag();
 	}
@@ -161,7 +168,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	@Override
 	public boolean hasTag()
 	{
-		return getTag() != null;
+		return getFreshTag() != null;
 	}
 	
 	@Override
@@ -174,12 +181,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	@Override
 	public void refreshTag()
 	{
-		if(isValidTag())
-		{
-			return;
-		}
-		
-		setTag(getBestTag());
+		setTag(isValidTag() ? getTag() : getBestTag());
 	}
 	
 	@Override
@@ -193,6 +195,7 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	public void setTag(Tag tag)
 	{
 		pluginPlayerData.setTag(tag);
+		player.displayName(player.displayName().style(tag == null ? Style.empty() : tag.getStyle()));
 	}
 	
 	@Override

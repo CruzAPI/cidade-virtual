@@ -24,12 +24,12 @@ public class RaidSpectatorHotbar
 		
 		defend = new ItemStack(Material.SHIELD);
 		meta = defend.getItemMeta();
-		meta.displayName(PluginMessage.RAID_SPECTATOR_HOTBAR_DEFEND.translateOne(raidSpectator));
+		meta.displayName(PluginMessage.RAID_SPECTATOR_HOTBAR_DEFEND.translate(raidSpectator));
 		defend.setItemMeta(meta);
 		
 		vanilla = new ItemStack(Material.RED_BED);
 		meta = vanilla.getItemMeta();
-		meta.displayName(PluginMessage.RAID_SPECTATOR_HOTBAR_VANILLA.translateOne(raidSpectator));
+		meta.displayName(PluginMessage.RAID_SPECTATOR_HOTBAR_VANILLA.translate(raidSpectator));
 		vanilla.setItemMeta(meta);
 	}
 	

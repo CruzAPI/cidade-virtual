@@ -20,8 +20,8 @@ public class AssistantItemMove extends EntityItemMove
 		
 		ItemMeta meta = item.getItemMeta();
 		
-		meta.displayName(PluginMessage.MOVE_ASSISTANT_ITEM.translateOne(town.getPluginPlayer()));
-		meta.lore(PluginMessage.MOVE_ASSISTANT_ITEM_LORE.translateLore(town.getPluginPlayer()));
+		meta.displayName(PluginMessage.MOVE_ASSISTANT_ITEM.translate(town.getPluginPlayer()));
+		meta.lore(PluginMessage.MOVE_ASSISTANT_ITEM_LORE.translateLines(town.getPluginPlayer()));
 		
 		var container = meta.getPersistentDataContainer();
 		

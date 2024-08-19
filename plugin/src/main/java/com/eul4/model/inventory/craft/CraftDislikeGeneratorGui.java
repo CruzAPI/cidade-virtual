@@ -31,7 +31,7 @@ public class CraftDislikeGeneratorGui extends CraftGeneratorGui
 	{
 		Generator generator = (Generator) structure;
 		
-		return PluginMessage.STRUCTURE_GENERATOR_TITLE.translateOne(commonPlayer.getLocale(),
+		return PluginMessage.STRUCTURE_GENERATOR_TITLE.translate(commonPlayer.getLocale(),
 				NamedTextColor.DARK_RED,
 				PluginMessage.STRUCTURE_DISLIKE_GENERATOR_NAME,
 				generator.getLevel());

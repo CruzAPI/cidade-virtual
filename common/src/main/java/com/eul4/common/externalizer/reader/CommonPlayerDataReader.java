@@ -9,10 +9,12 @@ import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import com.eul4.common.wrapper.UUIDHashSet;
 import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 {
@@ -36,6 +38,10 @@ public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 		case 1:
 			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion1;
+			break;
+		case 2:
+			this.reader = Reader.identity();
+			this.parameterizedReadable = this::parameterizedReadableVersion2;
 			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
@@ -64,6 +70,28 @@ public class CommonPlayerDataReader extends ObjectReader<CommonPlayerData>
 			return CommonPlayerData.builder()
 					.playerData(playerData)
 					.scoreboardEnabled(scoreboardEnabled)
+					.build();
+		};
+	}
+	
+	private Readable<CommonPlayerData> parameterizedReadableVersion2(Plugin plugin) throws IOException, ClassNotFoundException
+	{
+		return () ->
+		{
+			PlayerData playerData = readers.getReader(PlayerDataReader.class).readReference(plugin);
+			boolean scoreboardEnabled = in.readBoolean();
+			boolean chatEnabled = in.readBoolean();
+			boolean tellEnabled = in.readBoolean();
+			UUIDHashSet ignoredPlayers = readers.getReader(UUIDHashSetReader.class).readReference();
+			UUID lastReplied = readers.getReader(UUIDReader.class).readReference();
+			
+			return CommonPlayerData.builder()
+					.playerData(playerData)
+					.scoreboardEnabled(scoreboardEnabled)
+					.chatEnabled(chatEnabled)
+					.tellEnabled(tellEnabled)
+					.ignoredPlayers(ignoredPlayers)
+					.lastReplied(lastReplied)
 					.build();
 		};
 	}

@@ -2,6 +2,7 @@ package com.eul4.model.craft.player;
 
 import com.eul4.Main;
 import com.eul4.hotbar.RaidSpectatorHotbar;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.RaidSpectator;
 import com.eul4.type.player.PhysicalPlayerType;
@@ -64,7 +65,7 @@ public class CraftRaidSpectator extends CraftSpiritualPlayer implements RaidSpec
 	{
 		if(!getTown().getCurrentAttack().canDefenderRespawn())
 		{
-			player.sendMessage("message"); //TODO create message
+			sendMessage(PluginMessage.PLAYER_RAID_SPECTATOR_CAN_NOT_RESPAWN_ANYMORE);
 			return;
 		}
 		plugin.getPlayerManager().register(this, SpiritualPlayerType.DEFENDER);

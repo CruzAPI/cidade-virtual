@@ -439,8 +439,8 @@ public abstract class CraftStructure implements Structure
 	{
 		ItemStack item = ItemStack.of(getStructureType().getIcon());
 		ItemMeta meta = item.getItemMeta();
-		meta.displayName(PluginMessage.STRUCTURE_ITEM_MOVE.translateOne(pluginPlayer, getStructureType()));
-		meta.lore(PluginMessage.STRUCTURE_ITEM_MOVE_LORE.translateLore(pluginPlayer));
+		meta.displayName(PluginMessage.STRUCTURE_ITEM_MOVE.translate(pluginPlayer, getStructureType()));
+		meta.lore(PluginMessage.STRUCTURE_ITEM_MOVE_LORE.translateLines(pluginPlayer));
 		meta.addEnchant(Enchantment.UNBREAKING, 1, true);
 		meta.addItemFlags(ItemFlag.values());
 		

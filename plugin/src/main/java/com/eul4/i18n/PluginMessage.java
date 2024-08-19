@@ -7,6 +7,7 @@ import com.eul4.command.SetHomeCommand;
 import com.eul4.command.TagCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
+import com.eul4.common.util.CommonMessageUtil;
 import com.eul4.common.wrapper.TimerTranslator;
 import com.eul4.enums.Currency;
 import com.eul4.model.player.SetHomePerformer;
@@ -89,7 +90,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(WHITE),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateOne(bundle.getLocale(), String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translate(bundle.getLocale(), String::toUpperCase))
 					.append(text(":"))
 					.decorate(BOLD),
 			text(generator.getBalance()),
@@ -105,7 +106,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(RED),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -120,7 +121,7 @@ public enum PluginMessage implements Message
 			generator.getCurrency().getBaseComponent()
 					.append(text(generator.getPossibleAmountToCollect()))
 					.append(text(" "))
-					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -136,7 +137,7 @@ public enum PluginMessage implements Message
 			generator.getCurrency().getBaseComponent()
 					.append(text(amountCollected))
 					.append(text(" "))
-					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -149,7 +150,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -162,7 +163,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -175,7 +176,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translateOne(bundle, String::toUpperCase))
+					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
 					.decorate(BOLD),
 		};
 	}),
@@ -184,8 +185,8 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().color((TextColor) args[0]),
-		((Message) args[1]).translateOne(bundle.getLocale()),
-		ABBREVIATION_LEVEL.translateOne(bundle.getLocale(), String::toUpperCase),
+		((Message) args[1]).translate(bundle.getLocale()),
+		ABBREVIATION_LEVEL.translate(bundle.getLocale(), String::toUpperCase),
 		text((int) args[2]),
 	}),
 	
@@ -193,8 +194,8 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty(),
-		((Message) args[0]).translateOne(bundle.getLocale()),
-		ABBREVIATION_LEVEL.translateOne(bundle.getLocale(), String::toUpperCase),
+		((Message) args[0]).translate(bundle.getLocale()),
+		ABBREVIATION_LEVEL.translate(bundle.getLocale(), String::toUpperCase),
 		text((int) args[1]),
 	}),
 	
@@ -202,8 +203,8 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		(Component) args[0],
-		((Message) args[1]).translateOne(bundle.getLocale()),
-		ABBREVIATION_LEVEL.translateOne(bundle.getLocale(), String::toUpperCase),
+		((Message) args[1]).translate(bundle.getLocale()),
+		ABBREVIATION_LEVEL.translate(bundle.getLocale(), String::toUpperCase),
 		text((int) args[2]),
 	}),
 	
@@ -211,8 +212,8 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().decorate(BOLD),
-		((StructureType) args[0]).getNameMessage().translateOne(bundle, String::toUpperCase).color(((StructureType) args[0]).getColor()),
-		LEVEL.translateOne(bundle, String::toUpperCase),
+		((StructureType) args[0]).getNameMessage().translate(bundle, String::toUpperCase).color(((StructureType) args[0]).getColor()),
+		LEVEL.translate(bundle, String::toUpperCase),
 		text((int) args[1]),
 	}),
 	
@@ -228,12 +229,12 @@ public enum PluginMessage implements Message
 	(bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		USAGE.translateOne(bundle.getLocale()),
+		USAGE.translate(bundle.getLocale()),
 		text(args[0].toString()),
 	}),
 	
 	COMMAND_SPAWN_USAGE((locale, args) -> singletonList(
-			USAGE.translateOne(locale, WordUtils::capitalize)
+			USAGE.translate(locale, WordUtils::capitalize)
 					.append(text(": /" + args[0]))
 					.color(RED))),
 	
@@ -261,10 +262,10 @@ public enum PluginMessage implements Message
 	{
 		empty().color(RED),
 		text(args[0].toString()),
-		STRUCTURE.translateOne(bundle.getLocale()),
-		LEVEL.translateOne(bundle.getLocale()),
-		CURRENCY.translateOne(bundle.getLocale()),
-		VALUE.translateOne(bundle.getLocale()),
+		STRUCTURE.translate(bundle.getLocale()),
+		LEVEL.translate(bundle.getLocale()),
+		CURRENCY.translate(bundle.getLocale()),
+		VALUE.translate(bundle.getLocale()),
 	}),
 	
 	COMMAND_SETPRICE_VALUE_SET("command.setprice.value-set", (bundle, args) -> new Component[]
@@ -310,14 +311,14 @@ public enum PluginMessage implements Message
 	{
 		((Currency) args[0]).getBaseComponent().decorate(BOLD),
 		text((int) args[1]),
-		((Currency) args[0]).getPluralWord().translateOne(bundle, String::toUpperCase),
+		((Currency) args[0]).getPluralWord().translate(bundle, String::toUpperCase),
 	}),
 	
 	BOLD_DECORATED_VALUE_CURRENCY("bold-decorated-value-currency", (bundle, args) -> new Component[]
 	{
 		((Currency) args[0]).getBaseComponent().decorate(BOLD),
 		text((int) args[1]),
-		((Currency) args[0]).getPluralWord().translateOne(bundle, String::toUpperCase),
+		((Currency) args[0]).getPluralWord().translate(bundle, String::toUpperCase),
 	}),
 	
 	LIKES("likes"),
@@ -328,7 +329,7 @@ public enum PluginMessage implements Message
 	STRUCTURE_CONSTRUCTOR("structure-constructor", (bundle, args) -> new Component[]
 	{
 		empty(),
-		((Message) args[0]).translateOne(bundle).color(LIGHT_PURPLE),
+		((Message) args[0]).translate(bundle).color(LIGHT_PURPLE),
 	}),
 	
 	STRUCTURE_CONSTRUCTOR_LORE("structure-constructor-lore", empty().color(GRAY)),
@@ -351,7 +352,7 @@ public enum PluginMessage implements Message
 	STRUCTURE_LIMIT_REACHED("structure-limit-reached", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		((StructureType) args[0]).getNameMessage().translateOne(bundle),
+		((StructureType) args[0]).getNameMessage().translate(bundle),
 		text((int) args[1]),
 		text((int) args[2]),
 	}),
@@ -511,7 +512,7 @@ public enum PluginMessage implements Message
 		{
 			empty().color(WHITE).decorate(BOLD),
 			baseComponent.append(text((int) args[0])),
-			baseComponent.append(currency.getPluralWord().translateOne(bundle, String::toUpperCase))
+			baseComponent.append(currency.getPluralWord().translate(bundle, String::toUpperCase))
 		};
 	}),
 	
@@ -521,7 +522,7 @@ public enum PluginMessage implements Message
 	TITLE_OWNER_TOWN("title.owner-town", (bundle, args) -> new Component[]
 	{
 		empty().color(GRAY),
-		MessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
+		CommonMessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
 	}),
 	
 	SUBTITLE_SECONDS_TO_ANALYZE("subtitle.seconds-to-analyze", (bundle, args) -> new Component[]
@@ -533,7 +534,7 @@ public enum PluginMessage implements Message
 	ANALYZING_TOWN("analyzing-town", (bundle, args) -> new Component[]
 	{
 		empty(),
-		MessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
+		CommonMessageUtil.getOfflinePlayerDisplayName((OfflinePlayer) args[0]),
 	}),
 	
 	NO_TOWNS_FOUND("no-towns-found", empty().color(RED)),
@@ -656,7 +657,7 @@ public enum PluginMessage implements Message
 	COMMAND_BALANCE_TRY_TOWN_COMMAND("command.balance.try-town-command", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		TOWN_COMMAND_NAME.translateOne(bundle),
+		TOWN_COMMAND_NAME.translate(bundle),
 	}),
 	
 	COMMAND_BALANCE_FOOTER("command.balance.footer", Component.empty().color(GRAY).decorate(STRIKETHROUGH)),
@@ -669,15 +670,15 @@ public enum PluginMessage implements Message
 		{
 			empty().color(WHITE),
 			text(" ]   ").color(GRAY).decorate(STRIKETHROUGH),
-			COMMAND_BALANCE_YOUR_RESOURCES.translateOne(bundle),
+			COMMAND_BALANCE_YOUR_RESOURCES.translate(bundle),
 			text("   [ ").color(GRAY).decorate(STRIKETHROUGH),
-			LIKES.translateOne(bundle, String::toUpperCase).color(GREEN).decorate(BOLD).append(text(":")),
+			LIKES.translate(bundle, String::toUpperCase).color(GREEN).decorate(BOLD).append(text(":")),
 			text(town.getLikes()),
 			text(town.getLikeCapacity()),
-			DISLIKES.translateOne(bundle, String::toUpperCase).color(RED).decorate(BOLD).append(text(":")),
+			DISLIKES.translate(bundle, String::toUpperCase).color(RED).decorate(BOLD).append(text(":")),
 			text(town.getDislikes()),
 			text(town.getDislikeCapacity()),
-			COMMAND_BALANCE_FOOTER.translateOne(bundle),
+			COMMAND_BALANCE_FOOTER.translate(bundle),
 		};
 	}),
 	
@@ -700,13 +701,13 @@ public enum PluginMessage implements Message
 	BATTLE_INVENTORY_UPDATED("battle-inventory-updated", (bundle, args) -> new Component[]
 	{
 		empty().color(GREEN),
-		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translateOne(bundle),
+		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translate(bundle),
 	}),
 	
 	BATTLE_INVENTORY_UNCHANGED("battle-inventory-unchanged", (bundle, args) -> new Component[]
 	{
 		empty().color(YELLOW),
-		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translateOne(bundle),
+		YOU_RECEIVED_YOUR_VANILLA_INVENTORY_BACK.translate(bundle),
 	}),
 	
 	STORAGE_AND_BATTLE_INVENTORY_UPDATED("storage-and-battle-inventory-updated", empty().color(GREEN)),
@@ -733,7 +734,7 @@ public enum PluginMessage implements Message
 	TOWN_HINT_BUY_STRUCTURE_COMMAND("town.hint.buy-structure-command", (bundle, args) -> new Component[]
 	{
 		empty().color(GRAY),
-		COMMAND_BUY_STRUCTURE_ALIASES.translateOne(bundle, string -> "/" + string).color(WHITE),
+		COMMAND_BUY_STRUCTURE_ALIASES.translate(bundle, string -> "/" + string).color(WHITE),
 	}),
 	
 	COMMAND_TOWN_FAILED_TO_CREATE_TOWN("command.town.failed-to-create-town", empty().color(RED)),
@@ -753,7 +754,7 @@ public enum PluginMessage implements Message
 	TOWN_HINT_BACK_TO_SPAWN("town.hint-back-to-spawn", (bundle, args) -> new Component[]
 	{
 		empty().color(GRAY),
-		SPAWN_COMMAND_NAME.translateOne(bundle, command -> "/" + command).color(WHITE),
+		SPAWN_COMMAND_NAME.translate(bundle, command -> "/" + command).color(WHITE),
 	}),
 	
 	STRUCTURE_ITEM_MOVE("structure.item-move", (bundle, args) ->
@@ -763,7 +764,7 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(AQUA),
-			structureType.getNameMessage().translateOne(bundle).color(structureType.getColor()),
+			structureType.getNameMessage().translate(bundle).color(structureType.getColor()),
 		};
 	}),
 	
@@ -895,7 +896,7 @@ public enum PluginMessage implements Message
 		
 		NamedTextColor color = current >= max ? RED : GRAY;
 		
-		return singletonList(structureType.getNameMessage().translateOne(locale)
+		return singletonList(structureType.getNameMessage().translate(locale)
 				.append(text(" "))
 				.append(text("(" + current + "/" + max + ")").color(color)));
 	}),
@@ -982,7 +983,7 @@ public enum PluginMessage implements Message
 			final String homeName = iterator.next();
 			final String runCommand = "/" + HomeCommand.COMMAND_NAME + " " + homeName;
 			final ClickEvent clickEvent = ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, runCommand);
-			final HoverEventSource<Component> hoverEvent = COMMAND_HOME_YOUR_HOMES_HOVER.translateOne(bundle.getLocale(), homeName).asHoverEvent(UnaryOperator.identity());
+			final HoverEventSource<Component> hoverEvent = COMMAND_HOME_YOUR_HOMES_HOVER.translate(bundle.getLocale(), homeName).asHoverEvent(UnaryOperator.identity());
 			final Component homeNameComponent = text(homeName).clickEvent(clickEvent).hoverEvent(hoverEvent);
 			
 			yourHomes = yourHomes.append(homeNameComponent);
@@ -1034,8 +1035,8 @@ public enum PluginMessage implements Message
 			final Tag tag = iterator.next();
 			final String runCommand = "/" + TagCommand.COMMAND_NAME + " " + tag.getName();
 			final ClickEvent clickEvent = ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, runCommand);
-			final HoverEvent<Component> hoverEvent = COMMAND_TAG_SELECT_TAG_HOVER.translateOne(bundle.getLocale()).asHoverEvent();
-			final Component tagComponent = tag.getMessage().translateOne(bundle.getLocale()).clickEvent(clickEvent).hoverEvent(hoverEvent);
+			final HoverEvent<Component> hoverEvent = COMMAND_TAG_SELECT_TAG_HOVER.translate(bundle.getLocale()).asHoverEvent();
+			final Component tagComponent = tag.getMessage().translate(bundle.getLocale()).clickEvent(clickEvent).hoverEvent(hoverEvent);
 			
 			yourTags = yourTags.append(tagComponent);
 			
@@ -1060,7 +1061,7 @@ public enum PluginMessage implements Message
 	COMMAND_TAG_TAG_SET("command.tag.tag-set", (bundle, args) -> new Component[]
 	{
 		empty().color(GREEN),
-		((Tag) args[0]).getMessage().translateOne(bundle.getLocale()),
+		((Tag) args[0]).getMessage().translate(bundle.getLocale()),
 	}),
 	
 	COMMAND_TAG_SUB_COMMAND_CLEAR("command.tag.sub-command.clear"),
@@ -1079,15 +1080,16 @@ public enum PluginMessage implements Message
 		
 		TextColor baseColor = RED;
 		
-		components.add(USAGE.translateOne(locale, WordUtils::capitalize).append(text(":")).color(baseColor));
+		components.add(USAGE.translate(locale, WordUtils::capitalize).append(text(":")).color(baseColor));
 		components.add(text("/" + args[0] + " [tag]").color(baseColor));
-		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_CLEAR.translateOne(locale)).color(baseColor));
-		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_HIDE.translateOne(locale)).color(baseColor));
-		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_SHOW.translateOne(locale)).color(baseColor));
+		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_CLEAR.translate(locale)).color(baseColor));
+		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_HIDE.translate(locale)).color(baseColor));
+		components.add(text("/" + args[0] + " ").append(COMMAND_TAG_SUB_COMMAND_SHOW.translate(locale)).color(baseColor));
 		
 		return components;
 	}),
 	
+	PLAYER_RAID_SPECTATOR_CAN_NOT_RESPAWN_ANYMORE("player.raid-spectator.can-not-respawn-anymore", empty().color(RED)),
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;

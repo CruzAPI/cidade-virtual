@@ -6,30 +6,29 @@ import com.eul4.model.player.PluginPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.Style;
 
 import java.util.Locale;
 import java.util.Set;
 
 import static com.eul4.i18n.PluginMessage.*;
-import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.Style.style;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 
 @RequiredArgsConstructor
 @Getter
 public enum Tag
 {
-	OWNER(TAG_OWNER, empty().color(DARK_RED).decorate(ITALIC), Set.of("owner", "dono")),
-	ADMIN(TAG_ADMIN, empty().color(RED), Set.of("admin")),
-	VIP(TAG_VIP, empty().color(GREEN), Set.of("vip")),
-	MAYOR(TAG_MAYOR, empty().color(YELLOW), Set.of("mayor", "prefeito")),
-	DEPUTY_MAYOR(TAG_DEPUTY_MAYOR, empty().color(YELLOW), Set.of("deputy-mayor", "vice-prefeito")),
-	ALPHA(TAG_ALPHA, empty().color(DARK_PURPLE), Set.of("alpha")),
+	OWNER(TAG_OWNER, style(DARK_RED, ITALIC), Set.of("owner", "dono")),
+	ADMIN(TAG_ADMIN, style(RED), Set.of("admin")),
+	VIP(TAG_VIP, style(GREEN), Set.of("vip")),
+	MAYOR(TAG_MAYOR, style(YELLOW), Set.of("mayor", "prefeito")),
+	DEPUTY_MAYOR(TAG_DEPUTY_MAYOR, style(YELLOW), Set.of("deputy-mayor", "vice-prefeito")),
+	ALPHA(TAG_ALPHA, style(DARK_PURPLE), Set.of("alpha")),
 	
-	TOWNEE(TAG_TOWNEE, empty().color(GRAY), Set.of("townee", "cidadão"))
+	TOWNEE(TAG_TOWNEE, style(GRAY), Set.of("townee", "cidadão"))
 	{
 		@Override
 		public boolean hasTag(PluginPlayer pluginPlayer)
@@ -38,7 +37,7 @@ public enum Tag
 		}
 	},
 	
-	INDIGENT(TAG_INDIGENT, empty().color(DARK_GRAY), Set.of("indigent", "indigente"))
+	INDIGENT(TAG_INDIGENT, style(DARK_GRAY), Set.of("indigent", "indigente"))
 	{
 		@Override
 		public boolean hasTag(PluginPlayer pluginPlayer)
@@ -50,7 +49,7 @@ public enum Tag
 	;
 	
 	private final Message message;
-	private final Component displayNameComponent;
+	private final Style style;
 	private final Set<String> aliases;
 	
 	public boolean hasTag(PluginPlayer pluginPlayer)
@@ -91,7 +90,7 @@ public enum Tag
 	public Component getTagComponentTranslated(Locale locale)
 	{
 		return text("[")
-				.append(message.translateOne(locale))
+				.append(message.translate(locale))
 				.append(text("]"))
 				.color(GRAY);
 	}

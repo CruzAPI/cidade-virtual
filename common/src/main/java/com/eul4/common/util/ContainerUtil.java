@@ -101,4 +101,9 @@ public class ContainerUtil
 		setUUID(container, namespacedKey, uuid);
 		return uuid;
 	}
+	
+	public static boolean isEmpty(ItemStack itemStack)
+	{
+		return itemStack.getItemMeta().getPersistentDataContainer().getKeys().isEmpty();
+	}
 }

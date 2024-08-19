@@ -4,6 +4,8 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.eul4.common.command.*;
 import com.eul4.common.event.WorldSaveOrStopEvent;
+import com.eul4.common.exception.PlayerNotFoundException;
+import com.eul4.common.exception.UserNotFoundException;
 import com.eul4.common.externalizer.filer.GroupMapFiler;
 import com.eul4.common.externalizer.filer.UserFiler;
 import com.eul4.common.i18n.BundleBaseName;
@@ -16,12 +18,15 @@ import com.eul4.common.listener.*;
 import com.eul4.common.listener.container.RemoveItemOnCommonPlayerRegisterListener;
 import com.eul4.common.listener.container.RemoveItemOnPlayerJoinListener;
 import com.eul4.common.listener.container.RemoveOnChunkLoadListener;
+import com.eul4.common.model.console.Console;
+import com.eul4.common.model.console.CraftConsole;
 import com.eul4.common.service.*;
 import com.eul4.common.type.player.CommonWorldType;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -39,10 +44,12 @@ public abstract class Common extends JavaPlugin
 	private SpawnEntityInterceptor spawnEntityInterceptor;
 	
 	private ChatCommand chatCommand;
+	private TellCommand tellCommand;
 	
 	private PlayerManager playerManager;
 	private WorldManager worldManager;
 	private CommonDataFileManager commonDataFileManager;
+	private MessageableService messageableService;
 	private PermissionService permissionService;
 	private ServerTickCounter serverTickCounter;
 	
@@ -51,11 +58,15 @@ public abstract class Common extends JavaPlugin
 	
 	private Set<String> offlineUsernames;
 	
+	private Console console;
+	
 	@Override
 	public void onEnable()
 	{
 		try
 		{
+			console = new CraftConsole(getServer().getConsoleSender());
+			
 			loadServices();
 			
 			registerCommonResourceBundles();
@@ -91,6 +102,7 @@ public abstract class Common extends JavaPlugin
 		playerManager = new PlayerManager(this);
 		worldManager = new WorldManager(this);
 		commonDataFileManager = new CommonDataFileManager(this);
+		messageableService = new MessageableService(this);
 		permissionService = new PermissionService(this);
 		serverTickCounter = new ServerTickCounter(this);
 	}
@@ -101,8 +113,16 @@ public abstract class Common extends JavaPlugin
 		getCommand("build").setExecutor(new BuildCommand(this));
 		getCommand(ChatCommand.COMMAND_NAME).setExecutor(chatCommand = new ChatCommand(this));
 		getCommand(ClearChatCommand.COMMAND_NAME).setExecutor(new ClearChatCommand(this));
+		getCommand(DisableChatCommand.COMMAND_NAME).setExecutor(new DisableChatCommand(this));
+		getCommand(DisableTellCommand.COMMAND_NAME).setExecutor(new DisableTellCommand(this));
+		getCommand(EnableChatCommand.COMMAND_NAME).setExecutor(new EnableChatCommand(this));
+		getCommand(EnableTellCommand.COMMAND_NAME).setExecutor(new EnableTellCommand(this));
+		getCommand(MuteCommand.COMMAND_NAME).setExecutor(new MuteCommand(this));
 		getCommand("pex").setExecutor(new PexCommand(this));
+		getCommand(ReplyCommand.COMMAND_NAME).setExecutor(new ReplyCommand(this));
 		getCommand("scoreboard").setExecutor(new ScoreboardCommand(this));
+		getCommand(TellCommand.COMMAND_NAME).setExecutor(tellCommand = new TellCommand(this));
+		getCommand(UnmuteCommand.COMMAND_NAME).setExecutor(new UnmuteCommand(this));
 	}
 	
 	private void registerPacketAdapters()
@@ -131,6 +151,7 @@ public abstract class Common extends JavaPlugin
 		pluginManager.registerEvents(new RemoveOnChunkLoadListener(this), this);
 		
 		pluginManager.registerEvents(new CommonAdminListener(this), this);
+		pluginManager.registerEvents(new CommonChatListener(this), this);
 		pluginManager.registerEvents(new CommonPlayerListener(this), this);
 		pluginManager.registerEvents(new GuiListener(this), this);
 		pluginManager.registerEvents(new FixInventoryVisualBugListener(this), this);
@@ -179,6 +200,18 @@ public abstract class Common extends JavaPlugin
 		return serverTickCounter.getTotalTick();
 	}
 	
+	public OfflinePlayer getOfflinePlayerIfCachedOrElseThrow(String name) throws UserNotFoundException
+	{
+		OfflinePlayer offlinePlayer = getOfflinePlayerIfCached(name);
+		
+		if(offlinePlayer == null)
+		{
+			throw new UserNotFoundException(name);
+		}
+		
+		return offlinePlayer;
+	}
+	
 	public OfflinePlayer getOfflinePlayerIfCached(String name)
 	{
 		OfflinePlayer offlinePlayer = getServer().getOfflinePlayerIfCached(name);
@@ -189,6 +222,19 @@ public abstract class Common extends JavaPlugin
 		}
 		
 		return offlinePlayer;
+	}
+	
+	public Player getOnlinePlayerOrElseThrow(String name) throws PlayerNotFoundException, UserNotFoundException
+	{
+		OfflinePlayer offlinePlayer = getOfflinePlayerIfCachedOrElseThrow(name);
+		Player player = offlinePlayer.getPlayer();
+		
+		if(player == null)
+		{
+			throw new PlayerNotFoundException(offlinePlayer.getName());
+		}
+		
+		return player;
 	}
 	
 	public abstract CommonWorldType getMainWorldType();

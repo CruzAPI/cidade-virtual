@@ -252,7 +252,9 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
+		pluginManager.registerEvents(new ItemDamageAttributeListener(this), this);
 		pluginManager.registerEvents(new MacroidListener(this), this);
+		pluginManager.registerEvents(new PlayerAttackSpeedListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);

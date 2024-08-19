@@ -18,9 +18,11 @@ public class GroupWriter extends ObjectWriter<Group>
 	@Override
 	protected void writeObject(Group group) throws IOException
 	{
+		writers.getWriter(UUIDWriter.class).writeReference(group.getGroupUniqueId());
 		out.writeUTF(group.getName());
 		writers.getWriter(PermissionMapWriter.class).writeReference(group.getPermissionMap());
 		writers.getWriter(GroupUserMapWriter.class).writeReference(group.getGroupUserMap());
+		writers.getWriter(GroupGroupMapWriter.class).writeReference(group.getGroupGroupMap());
 		out.writeInt(group.getOrder());
 	}
 }

@@ -21,7 +21,7 @@ import java.util.logging.Level;
 
 public class GroupMapFiler extends Filer
 {
-	private static final byte VERSION = 0;
+	private static final byte VERSION = 1;
 	
 	private static final ObjectType[]
 	
@@ -35,6 +35,21 @@ public class GroupMapFiler extends Filer
 		CommonObjectType.PERMISSION,
 		CommonObjectType.PERMISSION_MAP,
 		CommonObjectType.TIMED_TICK,
+	},
+	
+	OBJECT_TYPES_V1 = new ObjectType[]
+	{
+		CommonObjectType.GROUP,
+		CommonObjectType.GROUP_GROUP,
+		CommonObjectType.GROUP_GROUP_MAP,
+		CommonObjectType.GROUP_MAP,
+		CommonObjectType.GROUP_USER,
+		CommonObjectType.GROUP_USER_MAP,
+		CommonObjectType.OBJECT,
+		CommonObjectType.PERMISSION,
+		CommonObjectType.PERMISSION_MAP,
+		CommonObjectType.TIMED_TICK,
+		CommonObjectType.UUID,
 	};
 	
 	@Getter
@@ -70,7 +85,7 @@ public class GroupMapFiler extends Filer
 			{
 				Writers.of(plugin, out, writeVersions(out))
 						.getWriter(GroupMapWriter.class)
-						.writeReference(memoryGroupMap);
+						.writeReferenceNotNull(memoryGroupMap);
 				out.flush();
 				fileOutputStream.write(byteArrayOutputStream.toByteArray());
 			}
@@ -134,6 +149,7 @@ public class GroupMapFiler extends Filer
 		return switch(version)
 		{
 			case 0 -> OBJECT_TYPES_V0;
+			case 1 -> OBJECT_TYPES_V1;
 			default -> throw new InvalidVersionException(MessageFormat.format(
 					"Invalid {0} version: {1}",
 					getClass().getSimpleName(),

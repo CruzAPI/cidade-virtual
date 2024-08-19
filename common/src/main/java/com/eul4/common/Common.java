@@ -110,7 +110,7 @@ public abstract class Common extends JavaPlugin
 	private void registerCommand()
 	{
 		getCommand(BroadcastCommand.COMMAND_NAME).setExecutor(new BroadcastCommand(this));
-		getCommand("build").setExecutor(new BuildCommand(this));
+		getCommand(BuildCommand.COMMAND_NAME).setExecutor(new BuildCommand(this));
 		getCommand(ChatCommand.COMMAND_NAME).setExecutor(chatCommand = new ChatCommand(this));
 		getCommand(ClearChatCommand.COMMAND_NAME).setExecutor(new ClearChatCommand(this));
 		getCommand(DisableChatCommand.COMMAND_NAME).setExecutor(new DisableChatCommand(this));
@@ -118,7 +118,7 @@ public abstract class Common extends JavaPlugin
 		getCommand(EnableChatCommand.COMMAND_NAME).setExecutor(new EnableChatCommand(this));
 		getCommand(EnableTellCommand.COMMAND_NAME).setExecutor(new EnableTellCommand(this));
 		getCommand(MuteCommand.COMMAND_NAME).setExecutor(new MuteCommand(this));
-		getCommand("pex").setExecutor(new PexCommand(this));
+		getCommand(PexCommand.COMMAND_NAME).setExecutor(new PexCommand(this));
 		getCommand(ReplyCommand.COMMAND_NAME).setExecutor(new ReplyCommand(this));
 		getCommand("scoreboard").setExecutor(new ScoreboardCommand(this));
 		getCommand(TellCommand.COMMAND_NAME).setExecutor(tellCommand = new TellCommand(this));

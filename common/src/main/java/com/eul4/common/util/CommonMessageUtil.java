@@ -49,6 +49,13 @@ public class CommonMessageUtil
 				.append(text("]"));
 	}
 	
+	public static Component inParentheses(Object arg)
+	{
+		return text("(")
+				.append(argToComponent(arg))
+				.append(text(")"));
+	}
+	
 	public static Optional<Object> getArgument(Object[] args, int index)
 	{
 		try

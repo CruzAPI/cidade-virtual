@@ -2,11 +2,13 @@ package com.eul4.common.type.player;
 
 import com.eul4.common.Common;
 import com.eul4.common.externalizer.writer.ObjectWriter;
+import com.eul4.common.util.LoggerUtil;
 import lombok.Getter;
 
 import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Writers
@@ -47,6 +49,6 @@ public class Writers
 	
 	public <W extends ObjectWriter> W getWriter(Class<W> type)
 	{
-		return type.cast(writers.get(type));
+		return Objects.requireNonNull(type.cast(writers.get(type)), "Did you forget to add " + type.getSimpleName() + " in filer?");
 	}
 }

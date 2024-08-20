@@ -221,4 +221,16 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	{
 		pluginPlayerData.setTagHidden(false);
 	}
+	
+	@Override
+	public boolean hasAttackSpeed()
+	{
+		return pluginPlayerData.isNewCombat();
+	}
+	
+	@Override
+	public void setAttackSpeed(boolean attackSpeed)
+	{
+		pluginPlayerData.setNewCombat(attackSpeed);
+	}
 }

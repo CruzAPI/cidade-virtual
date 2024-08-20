@@ -12,6 +12,7 @@ public class PluginPlayerData
 {
 	private Tag tag;
 	private boolean tagHidden;
+	private boolean newCombat;
 	
 	public PluginPlayerData(Tag tag)
 	{

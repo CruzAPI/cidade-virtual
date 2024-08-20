@@ -18,5 +18,6 @@ public class PluginPlayerDataWriter extends ObjectWriter<PluginPlayerData>
 	{
 		writers.getWriter(TagWriter.class).writeReference(pluginPlayerData.getTag());
 		out.writeBoolean(pluginPlayerData.isTagHidden());
+		out.writeBoolean(pluginPlayerData.isNewCombat());
 	}
 }

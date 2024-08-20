@@ -8,13 +8,13 @@ import com.eul4.command.TagCommand;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.util.CommonMessageUtil;
+import com.eul4.common.util.CommonWordUtil;
 import com.eul4.common.wrapper.TimerTranslator;
 import com.eul4.enums.Currency;
 import com.eul4.model.player.SetHomePerformer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Generator;
 import com.eul4.rule.attribute.*;
-import com.eul4.util.MessageUtil;
 import com.eul4.util.TickConverter;
 import com.eul4.world.OverWorld;
 import com.eul4.wrapper.Tag;
@@ -36,6 +36,7 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.eul4.common.i18n.CommonMessage.USAGE;
+import static com.eul4.common.util.CommonMessageUtil.*;
 import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -1090,6 +1091,28 @@ public enum PluginMessage implements Message
 	}),
 	
 	PLAYER_RAID_SPECTATOR_CAN_NOT_RESPAWN_ANYMORE("player.raid-spectator.can-not-respawn-anymore", empty().color(RED)),
+	
+	COMMAND_COOLDOWN_$TICKS("command-cooldown", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		TimerTranslator.translate((long) args[0], bundle),
+	}),
+	
+	COMMAND_TOGGLE_COMBAT_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+		.append(argToComponent(args[0]))
+		.color(RED)
+	)),
+	
+	COMMAND_TOGGLE_COMBAT_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+		.appendNewline()
+		.append(COMMAND_TOGGLE_COMBAT_USAGE_$ALIASES.translate(locale, args[0]))
+		.color(RED)
+	)),
+	
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;

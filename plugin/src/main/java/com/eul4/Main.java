@@ -75,6 +75,9 @@ public class Main extends Common
 	
 	private BuyStructureCommand buyStructureCommand;
 	private RaidCommand	raidCommand;
+	private ToggleCombatCommand	toggleCombatCommand;
+	
+	private ItemDamageAttributeListener itemDamageAttributeListener;
 	
 	private BlockDataFiler blockDataFiler;
 	private PlayerDataFiler playerDataFiler;
@@ -210,6 +213,7 @@ public class Main extends Common
 	{
 		getCommand("admin").setExecutor(new AdminCommand(this));
 		getCommand("balance").setExecutor(new BalanceCommand(this));
+		getCommand("debug").setExecutor(new DebugCommand(this));
 		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
 		getCommand(DelHomeCommand.COMMAND_NAME).setExecutor(new DelHomeCommand(this));
 		getCommand(HomeCommand.COMMAND_NAME).setExecutor(new HomeCommand(this));
@@ -220,6 +224,7 @@ public class Main extends Common
 		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
 		getCommand(TagCommand.COMMAND_NAME).setExecutor(new TagCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));
+		getCommand(ToggleCombatCommand.COMMAND_NAME).setExecutor(toggleCombatCommand = new ToggleCombatCommand(this));
 		getCommand(TownCommand.COMMAND_NAME).setExecutor(new TownCommand(this));
 //		getCommand(TutorialCommand.COMMAND_NAME).setExecutor(new TutorialCommand(this));
 	}
@@ -252,7 +257,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
-		pluginManager.registerEvents(new ItemDamageAttributeListener(this), this);
+		pluginManager.registerEvents(itemDamageAttributeListener = new ItemDamageAttributeListener(this), this);
 		pluginManager.registerEvents(new MacroidListener(this), this);
 		pluginManager.registerEvents(new PlayerAttackSpeedListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);

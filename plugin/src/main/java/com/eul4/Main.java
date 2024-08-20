@@ -221,6 +221,7 @@ public class Main extends Common
 		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
 		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
 		getCommand(SetHomeCommand.COMMAND_NAME).setExecutor(new SetHomeCommand(this));
+		getCommand(SetRarityCommand.COMMAND_NAME).setExecutor(new SetRarityCommand(this));
 		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
 		getCommand(TagCommand.COMMAND_NAME).setExecutor(new TagCommand(this));
 		getCommand("test").setExecutor(new TestCommand(this));

@@ -11,6 +11,7 @@ import com.eul4.common.util.CommonMessageUtil;
 import com.eul4.common.util.CommonWordUtil;
 import com.eul4.common.wrapper.TimerTranslator;
 import com.eul4.enums.Currency;
+import com.eul4.enums.Rarity;
 import com.eul4.model.player.SetHomePerformer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Generator;
@@ -36,7 +37,8 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.eul4.common.i18n.CommonMessage.USAGE;
-import static com.eul4.common.util.CommonMessageUtil.*;
+import static com.eul4.common.util.CommonMessageUtil.argToComponent;
+import static com.eul4.common.util.CommonMessageUtil.usageRequiredArg;
 import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -51,6 +53,10 @@ public enum PluginMessage implements Message
 	DURABILITY("durability"),
 	PRICE("price"),
 	COST("cost"),
+	COMMON("common"),
+	RARE("rare"),
+	LEGENDARY("legendary"),
+	RARITY("rarity"),
 	
 	TAG_OWNER("tag.owner", empty().color(DARK_RED)),
 	TAG_ADMIN("tag.admin", empty().color(RED)),
@@ -60,6 +66,21 @@ public enum PluginMessage implements Message
 	TAG_DEPUTY_MAYOR("tag.deputy-mayor", empty().color(YELLOW)),
 	TAG_TOWNEE("tag.townee", empty().color(GRAY)),
 	TAG_INDIGENT("tag.indigent", empty().color(DARK_GRAY)),
+	
+	RARITY_COMMON((locale, args) -> singletonList
+	(
+		COMMON.translate(locale, String::toUpperCase).style(Rarity.COMMON.getStyle())
+	)),
+	
+	RARITY_RARE((locale, args) -> singletonList
+	(
+		RARE.translate(locale, String::toUpperCase).style(Rarity.RARE.getStyle())
+	)),
+	
+	RARITY_LEGENDARY((locale, args) -> singletonList
+	(
+		LEGENDARY.translate(locale, String::toUpperCase).style(Rarity.LEGENDARY.getStyle())
+	)),
 	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
@@ -1113,6 +1134,26 @@ public enum PluginMessage implements Message
 		.color(RED)
 	)),
 	
+	COMMAND_SET_RARITY_RARITY_SET("command.set-rarity.rarity-set", (bundle, args) -> new Component[]
+	{
+		empty().color(GRAY),
+		((Rarity) args[0]).getStylizedMessage().translate(bundle),
+	}),
+	COMMAND_SET_RARITY_RARITY_NOT_FOUND("command.set-rarity.rarity-not-found", empty().color(RED)),
+	COMMAND_SET_RARITY_USAGE_$ALIASES((locale, args) -> singletonList
+	(
+		text("/")
+		.append(argToComponent(args[0]))
+		.appendSpace()
+		.append(usageRequiredArg(RARITY.translate(locale)))
+	)),
+	
+	COMMAND_SET_RARITY_USE_$ALIASES((locale, args) -> singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+		.appendNewline()
+		.append(COMMAND_SET_RARITY_USAGE_$ALIASES.translate(locale, args[0]))
+	)),
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;

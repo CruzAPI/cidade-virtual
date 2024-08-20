@@ -245,6 +245,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new ChannelingTaskListener(this), this);
 		pluginManager.registerEvents(new ChatListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
+		pluginManager.registerEvents(new DebugListener(this), this);
 		pluginManager.registerEvents(new EntityItemMoveListener(this), this);
 		pluginManager.registerEvents(new EntityRecyclerListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);

@@ -19,6 +19,10 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,6 +73,29 @@ public class TestCommand implements TabExecutor
 		if(args.length == 0)
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
+		}
+		else if((args.length == 1) && args[0].equals("1"))
+		{
+			ItemStack item = ItemStack.of(Material.DIAMOND_SWORD);
+			ItemMeta meta = item.getItemMeta();
+			meta.setAttributeModifiers(null);
+			item.setItemMeta(meta);
+			player.getInventory().addItem(item);
+		}
+		else if((args.length == 1) && args[0].equals("2"))
+		{
+			ItemStack item = ItemStack.of(Material.IRON_SWORD);
+			ItemMeta meta = item.getItemMeta();
+			
+			if(meta instanceof Damageable damageable)
+			{
+				damageable.setDamage(10);
+			}
+			
+			meta.setAttributeModifiers(ItemType.IRON_SWORD.getDefaultAttributeModifiers());
+			
+			item.setItemMeta(meta);
+			player.getInventory().addItem(item);
 		}
 		else if((args.length == 1) && args[0].equals("debug"))
 		{

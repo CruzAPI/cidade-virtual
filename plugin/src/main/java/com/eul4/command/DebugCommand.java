@@ -7,8 +7,10 @@ import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.type.PluginWorldType;
+import com.google.common.collect.Multimap;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
+import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,12 +21,15 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class DebugCommand implements TabExecutor
@@ -69,8 +74,20 @@ public class DebugCommand implements TabExecutor
 		if(args.length == 1 && args[0].equalsIgnoreCase("toggle-combat-map"))
 		{
 			player.sendMessage(plugin.getToggleCombatCommand().getCooldownMap().toString());
+			return true;
 		}
-		
+		else if(args.length == 1 && args[0].equalsIgnoreCase("item-attributes"))
+		{
+			player.sendMessage
+			(
+				Optional
+				.of(player.getInventory().getItemInMainHand())
+				.map(ItemStack::getItemMeta)
+				.map(ItemMeta::getAttributeModifiers)
+				.map(Multimap::toString)
+				.orElse("null")
+			);
+		}
 		return false;
 	}
 }

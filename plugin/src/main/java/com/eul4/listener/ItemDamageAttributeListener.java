@@ -21,11 +21,13 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.eul4.util.AttributeModifierUtil.of;
 import static org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE;
@@ -217,9 +219,13 @@ public class ItemDamageAttributeListener implements Listener
 		{
 			ItemMeta meta = itemStack.getItemMeta();
 			
+			Multimap<Attribute, AttributeModifier> modifiers = meta.getAttributeModifiers();
+			
 			meta.setAttributeModifiers
 			(
-				attackSpeed ? null : TYPE_DAMAGES.get(itemStack.getType())
+				attackSpeed
+						? itemStack.getType().asItemType().getDefaultAttributeModifiers()
+						: TYPE_DAMAGES.get(itemStack.getType())
 			);
 			
 			itemStack.setItemMeta(meta);

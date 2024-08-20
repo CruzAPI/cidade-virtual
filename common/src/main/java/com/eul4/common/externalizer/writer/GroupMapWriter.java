@@ -1,13 +1,11 @@
 package com.eul4.common.externalizer.writer;
 
 import com.eul4.common.model.permission.Group;
-import com.eul4.common.model.permission.Permission;
 import com.eul4.common.model.permission.GroupMap;
 import com.eul4.common.type.player.Writers;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Collection;
 
 public class GroupMapWriter extends ObjectWriter<GroupMap>
 {
@@ -21,11 +19,11 @@ public class GroupMapWriter extends ObjectWriter<GroupMap>
 	{
 		GroupWriter groupWriter = writers.getWriter(GroupWriter.class);
 		
-		TreeMap<Group, Group> groups = groupMap.getGroups();
+		Collection<Group> groups = groupMap.getGroups().values();
 		
 		out.writeInt(groups.size());
 		
-		for(Group group : groups.values())
+		for(Group group : groups)
 		{
 			groupWriter.writeReference(group);
 		}

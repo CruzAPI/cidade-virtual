@@ -2,27 +2,53 @@ package com.eul4.common.i18n;
 
 import com.eul4.common.util.CommonMessageUtil;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import java.util.Locale;
 import java.util.function.BiFunction;
 
+import static com.eul4.common.i18n.CommonMessage.COMMAND_REPLY_USAGE_$ALIASES;
+import static com.eul4.common.util.CommonMessageUtil.*;
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.DARK_PURPLE;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.unparsed;
 
 @Getter
 public enum CommonRichMessage implements RichMessage
 {
-	HELLO_WORLD("hello.world"),
-	HELLO_PLAYER("hello.player", (locale, args) -> new TagResolver[]
-	{
-		unparsed("player", args[0].toString()),
-	}),
-	HELLO_WORLD_LORE("hello.world.lore"),
 	COMMAND_REPLY_STATUS_$PLAYER_$ALIASES("command.reply.status", (locale, args) -> new TagResolver[]
 	{
-		Placeholder.component("player", CommonMessageUtil.displayName(args[0])),
-		Placeholder.component("usage", CommonMessage.COMMAND_REPLY_USAGE_$ALIASES.translate(locale, args[1])),
+		component("player", displayName(args[0])),
+		component("usage", COMMAND_REPLY_USAGE_$ALIASES.translate(locale, args[1])),
+	}),
+	
+	PAGE_GROUP_GROUP_TITLE("page.group-group.title", (bundle, args) -> new TagResolver[]
+	{
+		component("amount", argToComponent(args[0])),
+		component("name", inParentheses(args[1])),
+	}),
+	
+	PAGE_GROUP_USER_TITLE("page.group-user.title", (bundle, args) -> new TagResolver[]
+	{
+		component("amount", argToComponent(args[0])),
+		component("name", inParentheses(args[1])),
+	}),
+	
+	PAGE_GROUP_PERM_TITLE("page.group-perm.title", (bundle, args) -> new TagResolver[]
+	{
+		component("amount", argToComponent(args[0])),
+		component("name", inParentheses(args[1])),
+	}),
+	
+	PAGE_USER_PERM_TITLE("page.user-perm.title", (bundle, args) -> new TagResolver[]
+	{
+		component("amount", argToComponent(args[0])),
+		component("name", inParentheses(args[1])),
 	}),
 	;
 	

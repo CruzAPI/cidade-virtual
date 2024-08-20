@@ -274,6 +274,8 @@ public enum CommonMessage implements Message
 		text("\"" + args[0] + "\""),
 	}),
 	
+	EXCEPTION_GROUP_SELF_ADD_EXCEPTION("exception.group-self-add", empty().color(RED)),
+	
 	EXCEPTION_GROUP_ALREADY_EXISTS("exception.group-already-exists", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
@@ -293,6 +295,13 @@ public enum CommonMessage implements Message
 	}),
 	
 	EXCEPTION_USER_NOT_FOUND_IN_GROUP("exception.user-not-found-in-group", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("\"" + args[0] + "\""),
+		text("\"" + args[1] + "\""),
+	}),
+	
+	EXCEPTION_GROUP_NOT_FOUND_IN_GROUP("exception.group-not-found-in-group", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
 		text("\"" + args[0] + "\""),
@@ -364,6 +373,20 @@ public enum CommonMessage implements Message
 		text("\"" +  args[1] + "\""),
 	}),
 	
+	COMMAND_PEX_GROUP_ADDED_TO_GROUP("command.pex.group-added-to-group", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		text("\"" +  args[0] + "\""),
+		text("\"" +  args[1] + "\""),
+	}),
+	
+	COMMAND_PEX_GROUP_REMOVED_FROM_GROUP("command.pex.group-removed-from-group", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		text("\"" +  args[0] + "\""),
+		text("\"" +  args[1] + "\""),
+	}),
+	
 	COMMAND_PEX_PERM_ADDED_TO_USER("command.pex.perm-added-to-user", (bundle, args) -> new Component[]
 	{
 		empty().color(GREEN),
@@ -392,7 +415,7 @@ public enum CommonMessage implements Message
 	
 	COMMAND_PEX_LIST_GROUPS("command.pex.list-groups", (bundle, args) ->
 	{
-		Set<Group> groups = (Set<Group>) args[0];
+		Collection<Group> groups = (Collection<Group>) args[0];
 		
 		Component groupsComponent = Component.empty().color(YELLOW);
 		Iterator<Group> iterator = groups.iterator();
@@ -401,10 +424,7 @@ public enum CommonMessage implements Message
 		{
 			final Group group = iterator.next();
 			final String groupName = group.getName();
-			final String runCommand = PexCommand.getSubCommandGroupIncrease(groupName);
-			
-			final ClickEvent clickEvent = ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, runCommand);
-			final Component groupComponent = text(groupName).clickEvent(clickEvent);
+			final Component groupComponent = text(groupName);
 			
 			groupsComponent = groupsComponent.append(groupComponent);
 			
@@ -434,29 +454,10 @@ public enum CommonMessage implements Message
 			text("/" + PexCommand.COMMAND_NAME + " group " + args[0] + " user list " + args[1]))),
 	COMMAND_PEX_RUN_COMMAND_GROUP_PERM_LIST((locale, args) -> Collections.singletonList(
 			text("/" + PexCommand.COMMAND_NAME + " group " + args[0] + " perm list " + args[1]))),
+	COMMAND_PEX_RUN_COMMAND_GROUP_GROUP_LIST((locale, args) -> Collections.singletonList(
+			text("/" + PexCommand.COMMAND_NAME + " group " + args[0] + " group list " + args[1]))),
 	COMMAND_PEX_RUN_COMMAND_USER_PERM_LIST((locale, args) -> Collections.singletonList(
 			text("/" + PexCommand.COMMAND_NAME + " user " + args[0] + " perm list " + args[1]))),
-	
-	PAGE_GROUP_USER_TITLE("page.group-user.title", (bundle, args) -> new Component[]
-	{
-		empty().color(GRAY),
-		text((int) args[0]).color(GOLD),
-		text("(" + args[1] + ")").color(GOLD),
-	}),
-	
-	PAGE_GROUP_PERM_TITLE("page.group-perm.title", (bundle, args) -> new Component[]
-	{
-		empty().color(GRAY),
-		text((int) args[0]).color(DARK_RED),
-		text("(" + args[1] + ")").color(DARK_RED),
-	}),
-	
-	PAGE_USER_PERM_TITLE("page.user-perm.title", (bundle, args) -> new Component[]
-	{
-		empty().color(GRAY),
-		text((int) args[0]).color(DARK_PURPLE),
-		text("(" + args[1] + ")").color(DARK_PURPLE),
-	}),
 	
 	COMMAND_PEX_USAGE((locale, args) ->
 	{

@@ -17,6 +17,8 @@ public enum CommonExternalizerType implements ExternalizerType
 	COMMON_PLAYER_DATA(CommonPlayerDataReader::new, CommonPlayerDataReader.class, CommonPlayerDataWriter::new, CommonPlayerDataWriter.class),
 	ENTITY(EntityReader::new, EntityReader.class, EntityWriter::new, EntityWriter.class),
 	GROUP(GroupReader::new, GroupReader.class, GroupWriter::new, GroupWriter.class),
+	GROUP_GROUP(GroupGroupReader::new, GroupGroupReader.class, GroupGroupWriter::new, GroupGroupWriter.class),
+	GROUP_GROUP_MAP(GroupGroupMapReader::new, GroupGroupMapReader.class, GroupGroupMapWriter::new, GroupGroupMapWriter.class),
 	GROUP_MAP(GroupMapReader::new, GroupMapReader.class, GroupMapWriter::new, GroupMapWriter.class),
 	GROUP_USER(GroupUserReader::new, GroupUserReader.class, GroupUserWriter::new, GroupUserWriter.class),
 	GROUP_USER_MAP(GroupUserMapReader::new, GroupUserMapReader.class, GroupUserMapWriter::new, GroupUserMapWriter.class),

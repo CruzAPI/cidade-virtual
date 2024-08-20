@@ -1,9 +1,13 @@
 package com.eul4.common.model.permission;
 
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -11,10 +15,13 @@ import java.util.Objects;
 @ToString(onlyExplicitlyIncluded = true)
 public class Group implements Permissible, Comparable<Group>
 {
+	@EqualsAndHashCode.Include
+	private final UUID groupUniqueId;
+	
 	private final PermissionMap permissionMap;
 	private final GroupUserMap groupUserMap;
+	private final GroupGroupMap groupGroupMap;
 	
-	@EqualsAndHashCode.Include
 	@ToString.Include
 	private String name;
 	@ToString.Include
@@ -27,14 +34,39 @@ public class Group implements Permissible, Comparable<Group>
 	
 	public Group(String name, int order)
 	{
-		this(new PermissionMap(), new GroupUserMap(), name, order);
+		this(UUID.randomUUID(),
+				new PermissionMap(),
+				new GroupUserMap(),
+				new GroupGroupMap(),
+				name,
+				order);
 	}
 	
-	@Builder
-	public Group(PermissionMap permissionMap, GroupUserMap groupUserMap, String name, int order)
+	public Group(PermissionMap permissionMap,
+			GroupUserMap groupUserMap,
+			String name,
+			int order)
 	{
+		this(UUID.randomUUID(),
+				permissionMap,
+				groupUserMap,
+				new GroupGroupMap(),
+				name,
+				order);
+	}
+	
+	public Group(UUID groupUniqueId,
+			PermissionMap permissionMap,
+			GroupUserMap groupUserMap,
+			GroupGroupMap groupGroupMap,
+			String name,
+			int order)
+	{
+		this.groupUniqueId = Objects.requireNonNull(groupUniqueId);
+		
 		this.permissionMap = Objects.requireNonNull(permissionMap);
 		this.groupUserMap = Objects.requireNonNull(groupUserMap);
+		this.groupGroupMap = Objects.requireNonNull(groupGroupMap);
 		
 		this.name = Objects.requireNonNull(name);
 		this.order = order;

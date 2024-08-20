@@ -4,16 +4,17 @@ import com.eul4.common.Common;
 import com.eul4.common.exception.CommonException;
 import com.eul4.common.exception.CommonRuntimeException;
 import com.eul4.common.i18n.CommonMessage;
+import com.eul4.common.i18n.CommonRichMessage;
 import com.eul4.common.i18n.Messageable;
 import com.eul4.common.model.permission.*;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.service.PermissionService;
 import com.eul4.common.util.IntegerUtil;
 import com.eul4.common.util.LongUtil;
+import com.eul4.common.wrapper.GroupGroupPage;
 import com.eul4.common.wrapper.GroupPermPage;
 import com.eul4.common.wrapper.GroupUserPage;
 import com.eul4.common.wrapper.UserPermPage;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -23,6 +24,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 import static com.eul4.common.i18n.CommonMessage.*;
+import static com.eul4.common.i18n.CommonRichMessage.*;
 
 public class PexCommand implements TabExecutor
 {
@@ -50,7 +52,7 @@ public class PexCommand implements TabExecutor
 		List<String> suggestions = new ArrayList<>();
 		
 		GroupMap groupMap = permissionService.getGroupMap();
-		Set<Group> groups = groupMap.getGroups().keySet();
+		Collection<Group> groups = groupMap.getGroups().values();
 		User user;
 		Group groupArg;
 		
@@ -86,7 +88,7 @@ public class PexCommand implements TabExecutor
 		}
 		else if(args.length == 3
 				&& args[0].equalsIgnoreCase("group")
-				&& !groupMap.containsGroupName(args[1].toLowerCase()))
+				&& !groupMap.containsByName(args[1].toLowerCase()))
 		{
 			for(String subCommand : new String[] { "create" })
 			{
@@ -98,9 +100,9 @@ public class PexCommand implements TabExecutor
 		}
 		else if(args.length == 3
 				&& args[0].equalsIgnoreCase("group")
-				&& groupMap.containsGroupName(args[1].toLowerCase()))
+				&& groupMap.containsByName(args[1].toLowerCase()))
 		{
-			for(String subCommand : new String[] { "delete", "perm", "user" })
+			for(String subCommand : new String[] { "delete", "perm", "user", "group" })
 			{
 				if(subCommand.startsWith(args[2].toLowerCase()))
 				{
@@ -110,21 +112,8 @@ public class PexCommand implements TabExecutor
 		}
 		else if(args.length == 4
 				&& args[0].equalsIgnoreCase("group")
-				&& groupMap.containsGroupName(args[1].toLowerCase())
-				&& args[2].equalsIgnoreCase("perm"))
-		{
-			for(String subCommand : new String[] { "add", "remove", "list" })
-			{
-				if(subCommand.startsWith(args[3].toLowerCase()))
-				{
-					suggestions.add(subCommand);
-				}
-			}
-		}
-		else if(args.length == 4
-				&& args[0].equalsIgnoreCase("group")
-				&& groupMap.containsGroupName(args[1].toLowerCase())
-				&& args[2].equalsIgnoreCase("user"))
+				&& groupMap.containsByName(args[1].toLowerCase())
+				&& args[2].toLowerCase().matches("perm|user|group"))
 		{
 			for(String subCommand : new String[] { "add", "remove", "list" })
 			{
@@ -136,7 +125,7 @@ public class PexCommand implements TabExecutor
 		}
 		else if(args.length == 5
 				&& args[0].equalsIgnoreCase("group")
-				&& (groupArg = permissionService.getGroup(args[1].toLowerCase())) != null
+				&& (groupArg = permissionService.getGroupByName(args[1].toLowerCase())) != null
 				&& args[2].equalsIgnoreCase("perm")
 				&& args[3].equalsIgnoreCase("remove"))
 		{
@@ -150,7 +139,7 @@ public class PexCommand implements TabExecutor
 		}
 		else if(args.length == 5
 				&& args[0].equalsIgnoreCase("group")
-				&& (groupArg = permissionService.getGroup(args[1].toLowerCase())) != null
+				&& (groupArg = permissionService.getGroupByName(args[1].toLowerCase())) != null
 				&& args[2].equalsIgnoreCase("user")
 				&& args[3].equalsIgnoreCase("add"))
 		{
@@ -164,7 +153,7 @@ public class PexCommand implements TabExecutor
 		}
 		else if(args.length == 5
 				&& args[0].equalsIgnoreCase("group")
-				&& (groupArg = permissionService.getGroup(args[1].toLowerCase())) != null
+				&& (groupArg = permissionService.getGroupByName(args[1].toLowerCase())) != null
 				&& args[2].equalsIgnoreCase("user")
 				&& args[3].equalsIgnoreCase("remove"))
 		{
@@ -175,6 +164,34 @@ public class PexCommand implements TabExecutor
 				if(groupUserName != null && groupUserName.toLowerCase().startsWith(args[4].toLowerCase()))
 				{
 					suggestions.add(groupUserName);
+				}
+			}
+		}
+		else if(args.length == 5
+				&& args[0].equalsIgnoreCase("group")
+				&& (groupArg = permissionService.getGroupByName(args[1].toLowerCase())) != null
+				&& args[2].equalsIgnoreCase("group")
+				&& args[3].equalsIgnoreCase("add"))
+		{
+			for(Group group : groups)
+			{
+				if(group != groupArg && group.getName().toLowerCase().startsWith(args[4].toLowerCase()))
+				{
+					suggestions.add(group.getName());
+				}
+			}
+		}
+		else if(args.length == 5
+				&& args[0].equalsIgnoreCase("group")
+				&& (groupArg = permissionService.getGroupByName(args[1].toLowerCase())) != null
+				&& args[2].equalsIgnoreCase("group")
+				&& args[3].equalsIgnoreCase("remove"))
+		{
+			for(Group group : permissionService.getGroupsSlightly(groupArg))
+			{
+				if(group.getName().toLowerCase().startsWith(args[4].toLowerCase()))
+				{
+					suggestions.add(group.getName());
 				}
 			}
 		}
@@ -268,15 +285,6 @@ public class PexCommand implements TabExecutor
 				String groupName = args[1].toLowerCase();
 				permissionService.deleteGroup(groupName);
 				commonPlayer.sendMessage(CommonMessage.COMMAND_PEX_GROUP_DELETED, groupName);
-				return true;
-			}
-			else if(args.length == 3
-					&& args[0].equalsIgnoreCase("group")
-					&& args[2].equalsIgnoreCase("increase"))
-			{
-				String groupName = args[1].toLowerCase();
-				permissionService.increaseGroup(groupName);
-				listGroups(commonPlayer, permissionService.listGroupsOrIfEmptyThrow());
 				return true;
 			}
 			else if((args.length == 4 || args.length == 5)
@@ -388,6 +396,61 @@ public class PexCommand implements TabExecutor
 				return true;
 			}
 			else if((args.length == 4 || args.length == 5)
+					&& args[0].equalsIgnoreCase("group")
+					&& args[2].equalsIgnoreCase("group")
+					&& args[3].equalsIgnoreCase("list"))
+			{
+				final String groupName = args[1];
+				final int page = args.length == 5 ? IntegerUtil.parseInt(args[4]) - 1 : 0;
+				
+				Group group = permissionService.getGroupOrElseThrow(groupName);
+				GroupGroupPage groupGroupPage = permissionService.getGroupGroupPage(group, page, 5);
+				
+				commonPlayer.sendMessage(SHOW_PAGE,
+						groupGroupPage,
+						PAGE_GROUP_GROUP_TITLE.withArgs(groupGroupPage.getFullList().size(), group.getName()),
+						COMMAND_PEX_RUN_COMMAND_GROUP_GROUP_LIST.withArgs(group.getName()));
+				return true;
+			}
+			else if((args.length == 5 || args.length == 6)
+					&& args[0].equalsIgnoreCase("group")
+					&& args[2].equalsIgnoreCase("group")
+					&& args[3].equalsIgnoreCase("add"))
+			{
+				final String groupName = args[1].toLowerCase();
+				final String subGroupName = args[4].toLowerCase();
+				final long durationTicks = args.length == 6 ? LongUtil.parseLong(args[5]) : Long.MAX_VALUE;
+				
+				Group group = permissionService.getGroupOrElseThrow(groupName);
+				Group subGroup = permissionService.getGroupOrElseThrow(subGroupName);
+				
+				TimedTick timedTick = new TimedTick(plugin, durationTicks);
+				
+				GroupGroup groupGroup = GroupGroup.builder()
+						.groupUniqueId(subGroup.getGroupUniqueId())
+						.timedTick(timedTick)
+						.build();
+				
+				permissionService.addGroupGroup(group, groupGroup);
+				commonPlayer.sendMessage(COMMAND_PEX_GROUP_ADDED_TO_GROUP, subGroup.getName(), group.getName());
+				return true;
+			}
+			else if((args.length == 5)
+					&& args[0].equalsIgnoreCase("group")
+					&& args[2].equalsIgnoreCase("group")
+					&& args[3].equalsIgnoreCase("remove"))
+			{
+				final String groupName = args[1].toLowerCase();
+				final String subGroupName = args[4].toLowerCase();
+				
+				Group group = permissionService.getGroupOrElseThrow(groupName);
+				Group subGroup = permissionService.getGroupOrElseThrow(subGroupName);
+				
+				permissionService.removeSubGroup(group, subGroup);
+				commonPlayer.sendMessage(COMMAND_PEX_PERM_REMOVED_FROM_GROUP, subGroup.getName(), group.getName());
+				return true;
+			}
+			else if((args.length == 4 || args.length == 5)
 					&& args[0].equalsIgnoreCase("user")
 					&& args[2].equalsIgnoreCase("perm")
 					&& args[3].equalsIgnoreCase("list"))
@@ -457,12 +520,7 @@ public class PexCommand implements TabExecutor
 		}
 	}
 	
-	public static String getSubCommandGroupIncrease(String groupName)
-	{
-		return "/" + COMMAND_NAME + " group " + groupName + " increase";
-	}
-	
-	private void listGroups(Messageable messageable, Set<Group> groups)
+	private void listGroups(Messageable messageable, Collection<Group> groups)
 	{
 		messageable.sendMessage(CommonMessage.COMMAND_PEX_LIST_GROUPS, groups);
 	}

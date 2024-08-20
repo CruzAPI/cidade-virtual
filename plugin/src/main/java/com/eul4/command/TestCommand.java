@@ -2,7 +2,6 @@ package com.eul4.command;
 
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
-import com.eul4.common.i18n.CommonRichMessage;
 import com.eul4.common.i18n.Messageable;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
@@ -10,14 +9,16 @@ import com.eul4.model.town.Town;
 import com.eul4.type.PluginWorldType;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +61,6 @@ public class TestCommand implements TabExecutor
 		
 		if(!(commandSender instanceof Player player))
 		{
-			messageable.sendMessage(CommonRichMessage.HELLO_WORLD_LORE);
 			return true;
 		}
 		
@@ -69,24 +69,6 @@ public class TestCommand implements TabExecutor
 		if(args.length == 0)
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
-		}
-		else if((args.length == 1) && args[0].equals("1"))
-		{
-			pluginPlayer.sendMessage(CommonRichMessage.HELLO_WORLD);
-		}
-		else if((args.length == 1) && args[0].equals("2"))
-		{
-			pluginPlayer.sendMessage(CommonRichMessage.HELLO_PLAYER, player.getName());
-		}
-		else if((args.length == 1) && args[0].equals("3"))
-		{
-			ItemStack item = ItemStack.of(Material.STONE);
-			ItemMeta meta = item.getItemMeta();
-			meta.lore(CommonRichMessage.HELLO_WORLD_LORE.translateLines(pluginPlayer));
-			item.setItemMeta(meta);
-			
-			player.getInventory().addItem(item);
-			pluginPlayer.sendMessage(CommonRichMessage.HELLO_WORLD_LORE);
 		}
 		else if((args.length == 1) && args[0].equals("debug"))
 		{

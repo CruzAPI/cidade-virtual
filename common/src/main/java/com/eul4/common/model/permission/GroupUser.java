@@ -1,9 +1,9 @@
 package com.eul4.common.model.permission;
 
+import com.eul4.common.Common;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.plugin.Plugin;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -23,7 +23,7 @@ public class GroupUser implements Expirable
 	}
 	
 	@Override
-	public String getName(Plugin plugin)
+	public String getName(Common plugin)
 	{
 		return plugin.getServer().getOfflinePlayer(userUniqueId).getName();
 	}

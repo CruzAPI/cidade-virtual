@@ -1,9 +1,9 @@
 package com.eul4.common.model.permission;
 
+import com.eul4.common.Common;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.plugin.Plugin;
 
 @Setter
 @Getter
@@ -14,7 +14,7 @@ public class Permission implements Expirable
 	private TimedTick timedTick;
 	
 	@Override
-	public String getName(Plugin plugin)
+	public String getName(Common plugin)
 	{
 		return name;
 	}

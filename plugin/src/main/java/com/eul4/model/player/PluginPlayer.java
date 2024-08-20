@@ -75,4 +75,6 @@ public interface PluginPlayer extends CommonPlayer
 	boolean isTagShown();
 	void hideTag();
 	void showTag();
+	boolean hasAttackSpeed();
+	void setAttackSpeed(boolean attackSpeed);
 }

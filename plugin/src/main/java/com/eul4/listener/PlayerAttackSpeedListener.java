@@ -2,6 +2,7 @@ package com.eul4.listener;
 
 import com.eul4.Main;
 import com.eul4.common.util.ItemStackUtil;
+import com.eul4.model.player.PluginPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ public class PlayerAttackSpeedListener implements Listener
 	{
 		if(event.getAction().isLeftClick())
 		{
-			resetPlayerAttackSpeed(event.getPlayer());
+			resetPlayerAttackSpeed((PluginPlayer) plugin.getPlayerManager().get(event.getPlayer()));
 		}
 	}
 	
@@ -34,22 +35,28 @@ public class PlayerAttackSpeedListener implements Listener
 	public void on(PlayerItemHeldEvent event)
 	{
 		Player player = event.getPlayer();
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		
 		ItemStack newItem = player.getInventory().getItem(event.getNewSlot());
-		resetPlayerAttackSpeed(event.getPlayer(), newItem);
+		resetPlayerAttackSpeed(pluginPlayer, newItem);
 	}
 	
-	private void resetPlayerAttackSpeed(Player player)
+	private void resetPlayerAttackSpeed(PluginPlayer pluginPlayer)
 	{
-		resetPlayerAttackSpeed(player, player.getInventory().getItemInMainHand());
+		resetPlayerAttackSpeed(pluginPlayer, pluginPlayer.getPlayer().getInventory().getItemInMainHand());
 	}
 	
-	private void resetPlayerAttackSpeed(Player player, ItemStack itemInMainHand)
+	private void resetPlayerAttackSpeed(PluginPlayer pluginPlayer, ItemStack itemInMainHand)
 	{
+		Player player = pluginPlayer.getPlayer();
 		boolean itemInMainHandHasAttackSpeed = ItemStackUtil.hasAttackSpeed(itemInMainHand);
 		
 		Optional.ofNullable(player.getAttribute(Attribute.GENERIC_ATTACK_SPEED))
-				.ifPresent(attribute -> attribute.setBaseValue(itemInMainHandHasAttackSpeed
-						? attribute.getDefaultValue()
-						: MAX_ATTACK_SPEED));
+				.ifPresent(attribute -> attribute.setBaseValue
+				(
+					pluginPlayer.hasAttackSpeed() || itemInMainHandHasAttackSpeed
+					? attribute.getDefaultValue()
+					: MAX_ATTACK_SPEED
+				));
 	}
 }

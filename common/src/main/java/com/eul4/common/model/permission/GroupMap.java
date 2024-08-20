@@ -2,56 +2,67 @@ package com.eul4.common.model.permission;
 
 import lombok.Getter;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Getter
 public class GroupMap
 {
-	private final TreeMap<Group, Group> groups;
+	private final HashMap<UUID, Group> groups;
 	
 	public GroupMap()
 	{
-		groups = new TreeMap<>();
+		groups = new HashMap<>();
 	}
 	
 	public void put(Group group)
 	{
-		groups.put(group, group);
+		groups.put(group.getGroupUniqueId(), group);
 	}
 	
-	public boolean containsGroupName(String groupName)
+	public boolean containsByName(String groupName)
 	{
-		return containsKeyEqual(new Group(groupName));
+		return getByName(groupName) != null;
 	}
 	
-	public boolean containsKeyEqual(Group group)
+	public Group getByName(String groupName)
 	{
-		return getEqual(group) != null;
-	}
-	
-	public Group getEqual(Group group)
-	{
-		for(Map.Entry<Group, Group> entry : groups.entrySet())
+		for(Map.Entry<UUID, Group> entry : groups.entrySet())
 		{
-			if(entry.getKey().equals(group))
+			Group group = entry.getValue();
+			
+			if(groupName.equals(group.getName()))
 			{
-				return entry.getKey();
+				return group;
 			}
 		}
 		
 		return null;
 	}
 	
-	public Group removeEqual(Group group)
+	public Group removeByName(String groupName)
 	{
-		Group groupToRemove = getEqual(group);
+		Group groupToRemove = getByName(groupName);
 		
 		if(groupToRemove == null)
 		{
 			return null;
 		}
 		
-		return groups.remove(groupToRemove);
+		return groups.remove(groupToRemove.getGroupUniqueId());
+	}
+	
+	public Group remove(UUID groupUniqueId)
+	{
+		return groups.remove(groupUniqueId);
+	}
+	
+	public boolean containsKey(UUID groupUniqueId)
+	{
+		return groups.containsKey(groupUniqueId);
+	}
+	
+	public Group get(UUID groupUniqueId)
+	{
+		return groups.get(groupUniqueId);
 	}
 }

@@ -48,3 +48,6 @@ commands:
     aliases: [disablechat, desativar-chat, desativarchat]
   enable-chat:
     aliases: [enablechat, ativar-chat, ativarchat]
+  toggle-combat:
+    aliases: [togglecombat, alternar-combate, alternarcombate]
+  debug:

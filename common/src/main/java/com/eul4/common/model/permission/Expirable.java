@@ -34,9 +34,9 @@ public interface Expirable
 		return getTimedTick().getRemainingTicks(plugin);
 	}
 	
-	String getName(Plugin plugin);
+	String getName(Common plugin);
 	
-	default String getNameOrUnknown(Plugin plugin)
+	default String getNameOrUnknown(Common plugin)
 	{
 		return Optional.ofNullable(getName(plugin)).orElse("???");
 	}

@@ -52,7 +52,7 @@ public class PermissionService
 			return true;
 		}
 		
-		for(Group group : getGroupHierarchy(user))
+		for(Group group : getGroupsDeeply(user))
 		{
 			if(hasAnyPermission(group, wildCardVariants))
 			{
@@ -66,6 +66,24 @@ public class PermissionService
 	public void addPermission(Permissible permissible, Permission permission)
 	{
 		permissible.getPermissionMap().compute(plugin, permission);
+	}
+	
+	public void addGroupGroup(Group group, GroupGroup groupGroup) throws GroupSelfAddException
+	{
+		if(group.getGroupUniqueId().equals(groupGroup.getGroupUniqueId()))
+		{
+			throw new GroupSelfAddException();
+		}
+		
+		group.getGroupGroupMap().put(groupGroup);
+	}
+	
+	public void removeSubGroup(Group group, Group subGroup) throws GroupNotFoundInGroupException
+	{
+		if(group.getGroupGroupMap().remove(subGroup.getGroupUniqueId()) == null)
+		{
+			throw new GroupNotFoundInGroupException(subGroup.getName(), group.getName());
+		}
 	}
 	
 	public void removePermission(Group group, String permName) throws PermNotFoundInGroupException
@@ -107,52 +125,28 @@ public class PermissionService
 	public void createGroup(String groupName) throws GroupAlreadyExistsException
 	{
 		GroupMap groupMap = getGroupMap();
-		TreeMap<Group, Group> groups = groupMap.getGroups();
 		
-		Group newGroup = new Group(groupName, groups.isEmpty() ? 0 : groups.lastKey().getOrder() + 1);
-		
-		if(groupMap.containsKeyEqual(newGroup))
+		if(groupMap.containsByName(groupName))
 		{
 			throw new GroupAlreadyExistsException(groupName);
 		}
 		
-		groups.put(newGroup, newGroup);
+		groupMap.put(new Group(groupName));
 	}
 	
 	public void deleteGroup(String groupName) throws GroupNotFoundException
 	{
-		if(getGroupMap().removeEqual(new Group(groupName)) == null)
-		{
-			throw new GroupNotFoundException(groupName);
-		}
-	}
-	
-	public void increaseGroup(String groupName) throws GroupNotFoundException
-	{
-		GroupMap groupMap = getGroupMap();
-		TreeMap<Group, Group> groups = groupMap.getGroups();
+		Group removedGroup = getGroupMap().removeByName(groupName);
 		
-		Group groupToIncrease = groupMap.getEqual(new Group(groupName));
-		
-		if(groupToIncrease == null)
+		if(removedGroup == null)
 		{
 			throw new GroupNotFoundException(groupName);
 		}
 		
-		Group lower = groups.lowerKey(groupToIncrease);
-		
-		if(lower == null)
+		for(Group group : getGroups().values())
 		{
-			return;
+			group.getGroupGroupMap().remove(removedGroup.getGroupUniqueId());
 		}
-		
-		groups.remove(lower);
-		groups.remove(groupToIncrease);
-		
-		Group.swapOrder(groupToIncrease, lower);
-		
-		groups.put(lower, lower);
-		groups.put(groupToIncrease, groupToIncrease);
 	}
 	
 	public User getUser(UUID userUniqueId)
@@ -167,7 +161,7 @@ public class PermissionService
 	
 	public Group getGroupOrElseThrow(String groupName) throws GroupNotFoundException
 	{
-		Group group = getGroup(groupName);
+		Group group = getGroupByName(groupName);
 		
 		if(group == null)
 		{
@@ -177,9 +171,9 @@ public class PermissionService
 		return group;
 	}
 	
-	public Group getGroup(String groupName)
+	public Group getGroupByName(String groupName)
 	{
-		return getGroupMap().getEqual(new Group(groupName));
+		return getGroupMap().getByName(groupName);
 	}
 	
 	public UUID getUserUniqueIdOrElseThrow(String userName) throws UserNotFoundException
@@ -204,19 +198,19 @@ public class PermissionService
 		return plugin.getGroupMapFiler().getMemoryGroupMap();
 	}
 	
-	public TreeMap<Group, Group> getGroups()
+	public HashMap<UUID, Group> getGroups()
 	{
 		return plugin.getGroupMapFiler().getMemoryGroupMap().getGroups();
 	}
 	
-	public Set<Group> listGroups()
+	public Collection<Group> listGroups()
 	{
-		return plugin.getGroupMapFiler().getMemoryGroupMap().getGroups().keySet();
+		return plugin.getGroupMapFiler().getMemoryGroupMap().getGroups().values();
 	}
 	
-	public Set<Group> listGroupsOrIfEmptyThrow() throws EmptyListException
+	public Collection<Group> listGroupsOrIfEmptyThrow() throws EmptyListException
 	{
-		Set<Group> groups = listGroups();
+		Collection<Group> groups = listGroups();
 		
 		if(groups.isEmpty())
 		{
@@ -242,6 +236,12 @@ public class PermissionService
 			throws PageNotFoundException, EmptyListException
 	{
 		return (GroupPermPage) getPage(new ArrayList<>(group.getPermissionMap().getPermissions().values()), page, pageSize, GroupPermPage::new);
+	}
+	
+	public GroupGroupPage getGroupGroupPage(Group group, int page, int pageSize)
+			throws PageNotFoundException, EmptyListException
+	{
+		return (GroupGroupPage) getPage(new ArrayList<>(group.getGroupGroupMap().getGroupGroups().values()), page, pageSize, GroupGroupPage::new);
 	}
 	
 	private <T> Page<T> getPage(List<T> list, int page, int pageSize, PageConstructor<T> pageConstructor)
@@ -275,21 +275,59 @@ public class PermissionService
 				.isPresent();
 	}
 	
-	private Set<Group> getGroupHierarchy(User user)
+	private Set<Group> getGroupsDeeply(User user)
 	{
-		TreeMap<Group, Group> groups = plugin.getGroupMapFiler().getMemoryGroupMap().getGroups();
+		Set<Group> userGroups = new HashSet<>();
 		
-		for(Group group : groups.keySet())
+		for(Group group : getGroups().values())
 		{
 			if(hasUser(group, user))
 			{
-				return groups.tailMap(group).keySet();
+				getGroups(group, userGroups);
 			}
 		}
 		
-		return Collections.emptySet();
+		return userGroups;
 	}
 	
+	private Set<Group> getGroups(Group group, Set<Group> groups)
+	{
+		groups.add(group);
+		
+		for(GroupGroup groupGroup : group.getGroupGroupMap().getGroupGroups().values())
+		{
+			Group subGroup = getGroup(groupGroup);
+			
+			if(!groups.contains(subGroup) && groupGroup.isValid(plugin))
+			{
+				return getGroups(subGroup, groups);
+			}
+		}
+		
+		return groups;
+	}
+	
+	public Set<Group> getGroupsSlightly(Group group)
+	{
+		Set<Group> groups = new HashSet<>();
+		
+		for(GroupGroup groupGroup : group.getGroupGroupMap().getGroupGroups().values())
+		{
+			groups.add(getGroup(groupGroup));
+		}
+		
+		return groups;
+	}
+	
+	public Group getGroup(GroupGroup groupGroup)
+	{
+		return getGroup(groupGroup.getGroupUniqueId());
+	}
+	
+	public Group getGroup(UUID groupUniqueId)
+	{
+		return getGroupMap().get(groupUniqueId);
+	}
 	
 	private List<String> getWildCardVariants(String permissionName)
 	{

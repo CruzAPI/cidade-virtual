@@ -16,6 +16,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BuildCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "build";
+	public static final String PERMISSION = "command." + COMMAND_NAME;
+	
 	private final Common plugin;
 	
 	@Override
@@ -34,7 +37,7 @@ public class BuildCommand implements TabExecutor
 		
 		final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
 		
-		if(!player.isOp())
+		if(!commonPlayer.hasPermission(PERMISSION))
 		{
 			commonPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
 			return false;

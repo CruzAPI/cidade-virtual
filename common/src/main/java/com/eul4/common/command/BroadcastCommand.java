@@ -2,6 +2,7 @@ package com.eul4.common.command;
 
 import com.eul4.common.Common;
 import com.eul4.common.event.BroadcastReceiveEvent;
+import com.eul4.common.i18n.Messageable;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.util.ComponentUtil;
 import lombok.RequiredArgsConstructor;
@@ -34,16 +35,16 @@ public class BroadcastCommand implements TabExecutor
 	@Override
 	public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args)
 	{
-		if(!(commandSender instanceof Player player))
+		Messageable messageable = plugin.getMessageableService().getMessageable(commandSender);
+		
+		if(messageable == null)
 		{
 			return false;
 		}
 		
-		final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
-		
-		if(!commonPlayer.hasPermission(PERMISSION))
+		if(!plugin.getPermissionService().hasPermission(commandSender, PERMISSION))
 		{
-			commonPlayer.sendMessage(YOU_DO_NOT_HAVE_PERMISSION);
+			messageable.sendMessage(YOU_DO_NOT_HAVE_PERMISSION);
 			return false;
 		}
 		
@@ -71,7 +72,7 @@ public class BroadcastCommand implements TabExecutor
 		}
 		else
 		{
-			commonPlayer.sendMessage(COMMAND_BROADCAST_USAGE);
+			messageable.sendMessage(COMMAND_BROADCAST_USAGE);
 			return false;
 		}
 	}

@@ -1,7 +1,6 @@
 plugins {
     id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.papermc.paperweight.userdev") version "1.7.1"
 }
 
 group = "com.eul4"
@@ -19,7 +18,6 @@ repositories {
 dependencies {
     implementation(project(":plugin"))
     implementation(project(":common"))
-    paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
     implementation(platform("com.intellectualsites.bom:bom-newest:1.46"))
 //    implementation(project(mapOf("path" to ":plugin-validator"))) // Ref: https://github.com/IntellectualSites/bom
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")

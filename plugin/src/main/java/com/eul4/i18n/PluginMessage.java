@@ -82,6 +82,8 @@ public enum PluginMessage implements Message
 		LEGENDARY.translate(locale, String::toUpperCase).style(Rarity.LEGENDARY.getStyle())
 	)),
 	
+	INCOMPATIBLE_RARITY("incompatible-rarity", empty().color(RED)),
+	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
 	STRUCTURE_CANNON_NAME("structure.cannon.name"),

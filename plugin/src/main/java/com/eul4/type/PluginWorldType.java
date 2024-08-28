@@ -38,7 +38,7 @@ public enum PluginWorldType implements CommonWorldType
 			.generator(new ChunkGenerator() {})
 			.createWorld())),
 	
-	//TODO: Remove
+	@Deprecated(forRemoval = true)
 	CIDADE_VIRTUAL(new CraftTownWorld(WorldCreator.name("old_cidade_virtual")
 			.environment(World.Environment.NORMAL)
 			.generator(new ChunkGenerator() {})

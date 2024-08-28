@@ -6,13 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
 public class MessageableService
 {
 	private final Common plugin;
 	
-	public Messageable getMessageable(CommandSender commandSender)
+	public @NotNull Messageable getMessageable(CommandSender commandSender)
 	{
 		if(commandSender instanceof ConsoleCommandSender)
 		{
@@ -23,6 +24,6 @@ public class MessageableService
 			return plugin.getPlayerManager().get(player);
 		}
 		
-		return null;
+		return plugin.getDeafenMessageable();
 	}
 }

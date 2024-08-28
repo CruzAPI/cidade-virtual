@@ -13,10 +13,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -74,13 +76,26 @@ public class TestCommand implements TabExecutor
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
 		}
+		else if((args.length == 1) && args[0].equals("pref"))
+		{
+			ItemStack tool = player.getInventory().getItemInMainHand();
+			Block block = player.getTargetBlockExact(5);
+			
+			if(block == null)
+			{
+				player.sendMessage("null");
+				return false;
+			}
+			
+			boolean isPref = block.getBlockData().isPreferredTool(tool);
+			player.sendMessage("target: " + block.getType() +  " isPref: " + isPref);
+		}
 		else if((args.length == 1) && args[0].equals("1"))
 		{
-			ItemStack item = ItemStack.of(Material.DIAMOND_SWORD);
-			ItemMeta meta = item.getItemMeta();
-			meta.setAttributeModifiers(null);
-			item.setItemMeta(meta);
-			player.getInventory().addItem(item);
+			ItemStack item = player.getInventory().getItemInMainHand();
+			net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+			int enchantibility = nmsStack.getItem().getEnchantmentValue();
+			Bukkit.broadcastMessage("enchantiblity: " + enchantibility);
 		}
 		else if((args.length == 1) && args[0].equals("2"))
 		{

@@ -6,12 +6,14 @@ import com.eul4.command.*;
 import com.eul4.common.Common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.interceptor.HideEntityFlagInterceptor;
 import com.eul4.common.type.player.CommonWorldType;
 import com.eul4.common.util.FileUtil;
 import com.eul4.externalizer.filer.BlockDataFiler;
 import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.externalizer.filer.TownsFiler;
 import com.eul4.i18n.PluginBundleBaseName;
+import com.eul4.interceptor.HideEnchantInterceptor;
 import com.eul4.listener.*;
 import com.eul4.listener.container.entity.CancelDropOnDeathListener;
 import com.eul4.listener.container.entity.FakeShulkerBulletListener;
@@ -31,8 +33,13 @@ import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
 import com.eul4.service.*;
+import com.eul4.task.RarityBossBarTask;
 import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.bootstrap.BootstrapContext;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.PluginManager;
@@ -200,6 +207,7 @@ public class Main extends Common
 	private void registerPacketInterceptors()
 	{
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+		protocolManager.addPacketListener(new HideEnchantInterceptor(this));
 	}
 	
 	private void scheduleTasks()
@@ -207,27 +215,28 @@ public class Main extends Common
 		SpawnProtectionTask spawnProtectionTask = new SpawnProtectionTask(this);
 		
 		spawnProtectionTask.runTaskTimer(this, 20L, 20L);
+		new RarityBossBarTask(this).runTaskTimer(this, 0L, 1L);
 	}
 	
 	private void registerCommands()
 	{
-		getCommand("admin").setExecutor(new AdminCommand(this));
-		getCommand("balance").setExecutor(new BalanceCommand(this));
-		getCommand("debug").setExecutor(new DebugCommand(this));
-		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
-		getCommand(DelHomeCommand.COMMAND_NAME).setExecutor(new DelHomeCommand(this));
-		getCommand(HomeCommand.COMMAND_NAME).setExecutor(new HomeCommand(this));
-		getCommand("macroid").setExecutor(new MacroidCommand(this));
-		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
-		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
-		getCommand(SetHomeCommand.COMMAND_NAME).setExecutor(new SetHomeCommand(this));
-		getCommand(SetRarityCommand.COMMAND_NAME).setExecutor(new SetRarityCommand(this));
-		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
-		getCommand(TagCommand.COMMAND_NAME).setExecutor(new TagCommand(this));
-		getCommand("test").setExecutor(new TestCommand(this));
-		getCommand(ToggleCombatCommand.COMMAND_NAME).setExecutor(toggleCombatCommand = new ToggleCombatCommand(this));
-		getCommand(TownCommand.COMMAND_NAME).setExecutor(new TownCommand(this));
-//		getCommand(TutorialCommand.COMMAND_NAME).setExecutor(new TutorialCommand(this));
+		registerCommand(new AdminCommand(this), "admin");
+		registerCommand(new BalanceCommand(this), "balance");
+		registerCommand(new DebugCommand(this), "debug");
+		registerCommand(buyStructureCommand = new BuyStructureCommand(this), "buystructure");
+		registerCommand(new DelHomeCommand(this), DelHomeCommand.COMMAND_NAME);
+		registerCommand(new HomeCommand(this), HomeCommand.COMMAND_NAME);
+		registerCommand(new MacroidCommand(this), "macroid");
+		registerCommand(raidCommand = new RaidCommand(this), "raid");
+		registerCommand(new ReloadRuleCommand(this), "rulereload");
+		registerCommand(new SetHomeCommand(this), SetHomeCommand.COMMAND_NAME);
+		registerCommand(new SetRarityCommand(this), SetRarityCommand.COMMAND_NAME);
+		registerCommand(new SpawnCommand(this), SpawnCommand.COMMAND_NAME);
+		registerCommand(new TagCommand(this), TagCommand.COMMAND_NAME);
+		registerCommand(new TestCommand(this), "test");
+		registerCommand(toggleCombatCommand = new ToggleCombatCommand(this), ToggleCombatCommand.COMMAND_NAME);
+		registerCommand(new TownCommand(this), TownCommand.COMMAND_NAME);
+		registerCommand(new TutorialCommand(this), TutorialCommand.COMMAND_NAME);
 	}
 	
 	private void registerListeners()
@@ -243,16 +252,20 @@ public class Main extends Common
 		pluginManager.registerEvents(new AssistantInteractListener(this), this);
 		pluginManager.registerEvents(new AssistantTargetTaskListener(this), this);
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
+		pluginManager.registerEvents(new BlockRarityListener(this), this);
 		pluginManager.registerEvents(new ChannelingTaskListener(this), this);
 		pluginManager.registerEvents(new ChatListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new DebugListener(this), this);
+		pluginManager.registerEvents(new EnchantmentListener(this), this);
 		pluginManager.registerEvents(new EntityItemMoveListener(this), this);
+		pluginManager.registerEvents(new EntityRarityListener(this), this);
 		pluginManager.registerEvents(new EntityRecyclerListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);
 		pluginManager.registerEvents(new StructureShopGuiListener(this), this);
+		pluginManager.registerEvents(new TestListener(this), this);
 		pluginManager.registerEvents(new GeneratorGuiListener(this), this);
 		pluginManager.registerEvents(new StructureMoveListener(this), this);
 		pluginManager.registerEvents(new TownAttackListener(this), this);

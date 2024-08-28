@@ -1,7 +1,11 @@
 package com.eul4.util;
 
+import com.eul4.Main;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.enums.Rarity;
+import com.eul4.service.BlockData;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -13,24 +17,34 @@ import static org.bukkit.persistence.PersistentDataType.BYTE;
 
 public class RarityUtil
 {
-	public static void setRarity(ItemStack item, Rarity rarity)
+	public static ItemStack setRarity(ItemStack item, Rarity rarity)
 	{
 		if(item == null)
 		{
-			return;
+			return null;
 		}
 		
 		ItemMeta meta = item.getItemMeta();
 		
 		if(meta == null)
 		{
-			return;
+			return item;
 		}
 		
 		var container = meta.getPersistentDataContainer();
 		container.set(RARITY, BYTE, rarity.getId());
 		meta.lore(rarity.getStylizedMessage().translateLines(ResourceBundleHandler.DEFAULT_LOCALE));
 		item.setItemMeta(meta);
+		
+		return item;
+	}
+	
+	public static Rarity getRarity(Main plugin, Block block)
+	{
+		return Optional.of(plugin.getBlockDataFiler())
+				.map(blockDataFiler -> blockDataFiler.loadBlockData(block))
+				.map(BlockData::getRarity)
+				.orElse(Rarity.DEFAULT_RARITY);
 	}
 	
 	public static Rarity getRarity(ItemStack item)
@@ -41,6 +55,21 @@ public class RarityUtil
 				.map(RarityUtil::getRarityId)
 				.map(Rarity::getRarityById)
 				.orElse(Rarity.DEFAULT_RARITY);
+	}
+	
+	public static Rarity getRarity(Entity entity)
+	{
+		return getRarity(entity.getPersistentDataContainer());
+	}
+	
+	public static void setRarity(Entity entity, Rarity rarity)
+	{
+		entity.getPersistentDataContainer().set(RARITY, BYTE, rarity.getId());
+	}
+	
+	private static Rarity getRarity(PersistentDataContainer container)
+	{
+		return Rarity.getRarityById(getRarityId(container));
 	}
 	
 	private static byte getRarityId(PersistentDataContainer container)

@@ -35,11 +35,14 @@ public class ChatCommand implements TabExecutor
 	@Override
 	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args)
 	{
-		List<String> suggestions = Collections.emptyList();
+		if(!plugin.getPermissionService().hasPermission(commandSender, PERMISSION))
+		{
+			return Collections.emptyList();
+		}
 		
 		if(args.length == 1)
 		{
-			suggestions = new ArrayList<>();
+			List<String> suggestions = new ArrayList<>();
 			
 			final String off = "off";
 			final String on = "on";
@@ -56,31 +59,17 @@ public class ChatCommand implements TabExecutor
 			return suggestions;
 		}
 		
-		return suggestions;
+		return Collections.emptyList();
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender commandSender, Command command, String aliases, String[] args)
 	{
-		final Messageable messageable;
+		final Messageable messageable = plugin.getMessageableService().getMessageable(commandSender);
 		
-		if(commandSender instanceof Player player)
+		if(plugin.getPermissionService().hasPermission(commandSender, PERMISSION))
 		{
-			final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
-			messageable = commonPlayer;
-			
-			if(!commonPlayer.hasPermission(PERMISSION))
-			{
-				commonPlayer.sendMessage(YOU_DO_NOT_HAVE_PERMISSION);
-				return false;
-			}
-		}
-		else if(commandSender instanceof ConsoleCommandSender consoleCommandSender)
-		{
-			messageable = new CraftConsole(consoleCommandSender);
-		}
-		else
-		{
+			messageable.sendMessage(YOU_DO_NOT_HAVE_PERMISSION);
 			return false;
 		}
 		

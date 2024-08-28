@@ -6,6 +6,7 @@ import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import com.eul4.enums.Rarity;
 import com.eul4.service.BlockData;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
@@ -31,6 +32,14 @@ public class BlockDataReader extends ObjectReader<BlockData>
 			this.reader = this::readerVersion0;
 			this.readable = this::readableVersion0;
 			break;
+		case 1:
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion1;
+			break;
+		case 2:
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion2;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -53,6 +62,28 @@ public class BlockDataReader extends ObjectReader<BlockData>
 	private BlockData readableVersion0()
 	{
 		return new BlockData();
+	}
+	
+	private BlockData readableVersion1() throws IOException
+	{
+		boolean hasHardness = in.readBoolean();
+		Rarity rarity = Rarity.getRarityById(in.readByte());
+		float health = in.readFloat();
+		boolean willDrop = in.readBoolean();
+		
+		return new BlockData(hasHardness, rarity, health, willDrop);
+	}
+	
+	private BlockData readableVersion2() throws IOException
+	{
+		boolean hasHardness = in.readBoolean();
+		Rarity rarity = Rarity.getRarityById(in.readByte());
+		float health = in.readFloat();
+		boolean willDrop = in.readBoolean();
+		byte[] enchantmens = new byte[BlockData.Enchant.values().length];
+		in.read(enchantmens);
+		
+		return new BlockData(hasHardness, rarity, health, willDrop, enchantmens);
 	}
 	
 	public BlockData readReference() throws IOException, ClassNotFoundException

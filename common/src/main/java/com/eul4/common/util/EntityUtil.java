@@ -2,14 +2,39 @@ package com.eul4.common.util;
 
 import com.eul4.common.constant.CommonNamespacedKey;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class EntityUtil
 {
+	public static Map<Material, EntityType> ENTITY_TYPE_NAME = new HashMap<>();
+	
+	static
+	{
+		for(EntityType entityType : EntityType.values())
+		{
+			Material material = Material.getMaterial(entityType.name() + "_SPAWN_EGG");
+			
+			if(material != null)
+			{
+				ENTITY_TYPE_NAME.put(material, entityType);
+			}
+		}
+	}
+	
+	public static EntityType getEntityTypeBySpawnerEgg(Material material)
+	{
+		return ENTITY_TYPE_NAME.get(material);
+	}
+	
 	public static void hideNullable(Plugin plugin, Entity entity)
 	{
 		if(entity != null)

@@ -18,7 +18,8 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
-    paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
+//    paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+    paperweight.devBundle("com.eul4", "1.21.1-R0.1-SNAPSHOT")
     implementation(platform("com.intellectualsites.bom:bom-newest:1.46"))
     implementation(project(mapOf("path" to ":plugin-validator"))) // Ref: https://github.com/IntellectualSites/bom
     compileOnly("com.fastasyncworldedit:FastAsyncWorldEdit-Core")

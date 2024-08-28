@@ -1,6 +1,7 @@
 package com.eul4.common.i18n;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ArrayList;
@@ -11,6 +12,9 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
+import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 
 public interface Message extends TranslatableProcessableMessage
 {
@@ -35,7 +39,14 @@ public interface Message extends TranslatableProcessableMessage
 	{
 		if(isUntranslatable())
 		{
-			return getUntranslatableComponentBiFunction().apply(locale, args);
+			List<Component> lines = new ArrayList<>();
+			
+			for(Component component : getUntranslatableComponentBiFunction().apply(locale, args))
+			{
+				lines.add(component.applyFallbackStyle(ITALIC.withState(false), WHITE));
+			}
+			
+			return lines;
 		}
 		
 		final ResourceBundle bundle = ResourceBundleHandler.getBundle(getBundleBaseName(), locale);
@@ -76,9 +87,9 @@ public interface Message extends TranslatableProcessableMessage
 			}
 		}
 		
-		if(!component.hasDecoration(TextDecoration.ITALIC))
+		if(!component.hasDecoration(ITALIC))
 		{
-			component = component.decoration(TextDecoration.ITALIC, false);
+			component = component.decoration(ITALIC, false);
 		}
 		
 		return component;

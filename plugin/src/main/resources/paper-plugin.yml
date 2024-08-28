@@ -1,0 +1,14 @@
+name: Plugin
+version: '1.0'
+main: com.eul4.Main
+description: Plugin
+api-version: '1.21.1'
+bootstrapper: com.eul4.enchantment.TestBootstrap
+dependencies:
+  server:
+    ProtocolLib:
+      load: BEFORE
+      required: true
+    FastAsyncWorldEdit:
+      load: BEFORE
+      required: true

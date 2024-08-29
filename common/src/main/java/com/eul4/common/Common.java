@@ -127,7 +127,7 @@ public abstract class Common extends JavaPlugin
 	private void registerCommand()
 	{
 		registerCommand(new BuildCommand(this), BuildCommand.NAME_AND_ALIASES);
-		registerCommand(new ChatCommand(this), ChatCommand.NAME_AND_ALIASES);
+		registerCommand(chatCommand = new ChatCommand(this), ChatCommand.NAME_AND_ALIASES);
 		registerCommand(new ClearChatCommand(this), ClearChatCommand.NAME_AND_ALIASES);
 		registerCommand(new DisableChatCommand(this), DisableChatCommand.NAME_AND_ALIASES);
 		registerCommand(new DisableTellCommand(this), DisableTellCommand.NAME_AND_ALIASES);
@@ -137,7 +137,7 @@ public abstract class Common extends JavaPlugin
 		registerCommand(new PexCommand(this), PexCommand.NAME_AND_ALIASES);
 		registerCommand(new ReplyCommand(this), ReplyCommand.NAME_AND_ALIASES);
 		registerCommand(new ScoreboardCommand(this), ScoreboardCommand.NAME_AND_ALIASES);
-		registerCommand(new TellCommand(this), TellCommand.NAME_AND_ALIASES);
+		registerCommand(tellCommand = new TellCommand(this), TellCommand.NAME_AND_ALIASES);
 		registerCommand(new UnmuteCommand(this), UnmuteCommand.NAME_AND_ALIASES);
 	}
 	

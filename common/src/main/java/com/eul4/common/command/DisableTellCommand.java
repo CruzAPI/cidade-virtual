@@ -22,6 +22,7 @@ import static com.eul4.common.i18n.CommonMessage.*;
 public class DisableTellCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "disable-tell";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "desativar-tell" };
 	
 	private final Common plugin;
 	

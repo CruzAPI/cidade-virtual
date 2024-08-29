@@ -17,6 +17,7 @@ import static com.eul4.common.i18n.CommonMessage.*;
 public class DisableChatCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "disable-chat";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "desativar-chat" };
 	
 	private final Common plugin;
 	

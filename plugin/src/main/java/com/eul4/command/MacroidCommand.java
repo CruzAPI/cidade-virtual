@@ -27,6 +27,9 @@ import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 @RequiredArgsConstructor
 public class MacroidCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "macroid";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
+	
 	private final Main plugin;
 	
 	@Override

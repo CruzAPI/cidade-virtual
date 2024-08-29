@@ -25,6 +25,7 @@ public class AdminCommand implements TabExecutor
 {
 	private static final String COMMAND_NAME = "admin";
 	private static final String PERMISSION = "command." + COMMAND_NAME;
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	
 	private final Main plugin;
 	

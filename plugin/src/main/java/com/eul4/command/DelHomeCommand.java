@@ -18,6 +18,7 @@ import java.util.List;
 public class DelHomeCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "delhome";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	
 	private final Main plugin;
 	

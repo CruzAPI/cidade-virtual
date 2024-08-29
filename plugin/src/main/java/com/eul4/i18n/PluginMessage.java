@@ -37,8 +37,7 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.eul4.common.i18n.CommonMessage.USAGE;
-import static com.eul4.common.util.CommonMessageUtil.argToComponent;
-import static com.eul4.common.util.CommonMessageUtil.usageRequiredArg;
+import static com.eul4.common.util.CommonMessageUtil.*;
 import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -83,6 +82,21 @@ public enum PluginMessage implements Message
 	)),
 	
 	INCOMPATIBLE_RARITY("incompatible-rarity", empty().color(RED)),
+	COMMON_INCOMPATIBILITY_$CONTAINER_TITLE("common.container-incompatibility", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		translateTranslatableComponent(args[0], bundle.getLocale())
+	}),
+	RARE_INCOMPATIBILITY_$CONTAINER_TITLE("rare.container-incompatibility", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		translateTranslatableComponent(args[0], bundle.getLocale())
+	}),
+	LEGENDARY_INCOMPATIBILITY_$CONTAINER_TITLE("legendary.container-incompatibility", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		translateTranslatableComponent(args[0], bundle.getLocale())
+	}),
 	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),

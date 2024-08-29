@@ -34,6 +34,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DebugCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "debug";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
+	
 	private final Main plugin;
 	
 	@Override

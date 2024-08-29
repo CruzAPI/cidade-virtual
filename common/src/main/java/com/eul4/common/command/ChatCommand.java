@@ -23,6 +23,7 @@ import static com.eul4.common.i18n.CommonMessage.*;
 public class ChatCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "chat";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	public static final String PERMISSION = "command." + COMMAND_NAME;
 	public static final Set<String> OFF_ALIASES = Set.of("off", "false");
 	public static final Set<String> ON_ALIASES = Set.of("on", "true");

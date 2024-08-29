@@ -19,6 +19,7 @@ import static com.eul4.common.i18n.CommonMessage.YOU_DO_NOT_HAVE_PERMISSION;
 public class ClearChatCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "clear-chat";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "cc" };
 	public static final String PERMISSION = "command." + COMMAND_NAME;
 	
 	private final Common plugin;

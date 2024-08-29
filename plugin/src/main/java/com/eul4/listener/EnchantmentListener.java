@@ -5,6 +5,7 @@ import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.Rarity;
 import com.eul4.util.RarityUtil;
 import com.eul4.wrapper.EnchantType;
+import com.eul4.wrapper.EnchantmentInstanceWrapper;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
@@ -16,7 +17,6 @@ import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -39,8 +39,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static net.minecraft.world.item.enchantment.EnchantmentHelper.filterCompatibleEnchantments;
 
 @RequiredArgsConstructor
 public class EnchantmentListener implements Listener
@@ -191,6 +189,8 @@ public class EnchantmentListener implements Listener
 	
 	private ItemStack enchantItem(ItemStack itemStack, int level)
 	{
+		final Rarity rarity = RarityUtil.getRarity(itemStack);
+		
 		final net.minecraft.core.RegistryAccess registryAccess = net.minecraft.server.MinecraftServer.getServer().registryAccess();
 		final net.minecraft.core.Registry<net.minecraft.world.item.enchantment.Enchantment> enchantments = registryAccess.registryOrThrow(Registries.ENCHANTMENT);
 		
@@ -198,6 +198,7 @@ public class EnchantmentListener implements Listener
 		
 		net.minecraft.world.item.ItemStack enchanted = enchantItem
 		(
+			rarity,
 			new RandomSourceWrapper(random),
 			nmsStack,
 			level,
@@ -211,36 +212,39 @@ public class EnchantmentListener implements Listener
 	
 	private static net.minecraft.world.item.ItemStack enchantItem
 	(
+		Rarity rarity,
 		RandomSource random,
 		net.minecraft.world.item.ItemStack stack,
 		int level,
 		List<Holder<net.minecraft.world.item.enchantment.Enchantment>> possibleEnchantments
 	)
 	{
-		List<EnchantmentInstance> list = selectEnchantment(random, stack, level, possibleEnchantments);
+		List<EnchantmentInstanceWrapper> list = selectEnchantment(rarity, random, stack, level, possibleEnchantments);
 		
 		if(stack.is(Items.BOOK))
 		{
 			stack = new net.minecraft.world.item.ItemStack(Items.ENCHANTED_BOOK);
 		}
 		
-		for(EnchantmentInstance enchantmentInstance : list)
+		for(EnchantmentInstanceWrapper wrapper : list)
 		{
+			EnchantmentInstance enchantmentInstance = wrapper.getEnchantmentInstance();
 			stack.enchant(enchantmentInstance.enchantment, enchantmentInstance.level);
 		}
 		
 		return stack;
 	}
 	
-	private static List<EnchantmentInstance> selectEnchantment
+	private static List<EnchantmentInstanceWrapper> selectEnchantment
 	(
+		Rarity rarity,
 		RandomSource random,
 		net.minecraft.world.item.ItemStack stack,
 		int level,
 		List<Holder<net.minecraft.world.item.enchantment.Enchantment>> possibleEnchantments
 	)
 	{
-		List<EnchantmentInstance> list = new ArrayList<>();
+		List<EnchantmentInstanceWrapper> list = new ArrayList<>();
 		
 		Item item = stack.getItem();
 		int i = item.getEnchantmentValue();
@@ -255,13 +259,13 @@ public class EnchantmentListener implements Listener
 			float f = (random.nextFloat() + random.nextFloat() - 1.0F) * 0.15F;
 			level = Mth.clamp(Math.round((float) level + (float) level * f), 1, Integer.MAX_VALUE);
 			
-			List<EnchantmentInstance> list2 = getAvailableEnchantmentResults2(level, stack, possibleEnchantments);
+			List<EnchantmentInstanceWrapper> list2 = getAvailableEnchantmentResults(rarity, level, stack, possibleEnchantments);
 			
 			if(!list2.isEmpty())
 			{
 				WeightedRandom.getRandomItem(random, list2).ifPresent(list::add);
 				
-				while(random.nextInt(50) <= level)
+				while(random.nextInt(rarity.getEnchantmentRandomBound()) <= level)
 				{
 					if(!list.isEmpty())
 					{
@@ -282,89 +286,48 @@ public class EnchantmentListener implements Listener
 		}
 	}
 	
-//	public static List<EnchantmentInstance> getAvailableEnchantmentResults(int level,
-//			net.minecraft.world.item.ItemStack stack,
-//			Stream<Holder<net.minecraft.world.item.enchantment.Enchantment>> possibleEnchantments)
-//	{
-//		Bukkit.broadcastMessage("level: " + level);
-//		List<EnchantmentInstance> list = Lists.newArrayList();
-//		boolean bl = stack.is(Items.BOOK);
-//		possibleEnchantments.filter(enchantment -> enchantment.value().isPrimaryItem(stack) || bl)
-//				.forEach(enchantmentx ->
-//				{
-//					net.minecraft.world.item.enchantment.Enchantment enchantment = enchantmentx.value();
-//
-//					for(int j = enchantment.getMaxLevel(); j >= enchantment.getMinLevel(); j--)
-//					{
-//						Bukkit.broadcastMessage
-//						(
-//							enchantmentx.getRegisteredName() + " j: " + j
-//							+ " minCost: " + enchantment.getMinCost(j) + " >= " + level
-//							+ " && maxCost: " + enchantment.getMaxCost(j) + " <= " + level
-//						);
-//						if(level >= enchantment.getMinCost(j) && level <= enchantment.getMaxCost(j))
-//						{
-//							Bukkit.broadcastMessage("added: " + enchantmentx.getRegisteredName() + " " + j);
-//							list.add(new EnchantmentInstance(enchantmentx, j));
-//							break;
-//						}
-//					}
-//				});
-//		return list;
-//	}
-//
-	public static List<EnchantmentInstance> getAvailableEnchantmentResults2
+	public static List<EnchantmentInstanceWrapper> getAvailableEnchantmentResults
 	(
+		Rarity rarity,
 		int level,
 		net.minecraft.world.item.ItemStack nmsStack,
 		List<Holder<net.minecraft.world.item.enchantment.Enchantment>> possibleEnchantments
 	)
 	{
-		final List<EnchantmentInstance> enchantmentInstances = new ArrayList<>();
-		
 		final ItemStack bukkitStack = CraftItemStack.asCraftMirror(nmsStack);
-		final Rarity rarity = RarityUtil.getRarity(bukkitStack);
-		
-		final net.minecraft.core.RegistryAccess registryAccess = net.minecraft.server.MinecraftServer.getServer().registryAccess();
-		final net.minecraft.core.Registry<net.minecraft.world.item.enchantment.Enchantment> enchantments = registryAccess.registryOrThrow(Registries.ENCHANTMENT);
+		final List<EnchantmentInstanceWrapper> enchantmentInstances = new ArrayList<>();
 		
 		for(Holder<net.minecraft.world.item.enchantment.Enchantment> holder : possibleEnchantments)
 		{
-			net.minecraft.world.item.enchantment.Enchantment enchantment = holder.value();
+			EnchantType enchantType = EnchantType.asMirror(holder);
 			
-			if(!enchantment.isPrimaryItem(nmsStack) && !nmsStack.is(Items.BOOK))
+			if(!enchantType.canEnchantItem(bukkitStack) && !nmsStack.is(Items.BOOK))
 			{
 				continue;
 			}
 			
-			String enchantTypeName = holder.getRegisteredName().replaceAll(".*:", "").toUpperCase();
-			
-			EnchantType enchantType = EnchantType.valueOf(enchantTypeName);
-			
-			int maxLevel = enchantType.getMaxLevel(rarity);
-			Bukkit.broadcastMessage
-			(
-				rarity.name() + " "
-				+ enchantType.name()
-				+ " maxLvl: " + maxLevel
-			);
-			
-			for(int j = maxLevel; j >= 1; j--)
+			for(int j = enchantType.getMaxLevel(rarity); j >= 1; j--)
 			{
-				int minCost = enchantType.getMinCost(j, rarity);
-				int maxCost = enchantType.getMaxCost(j, rarity);
-				
-				Bukkit.broadcastMessage("j: " + j + " min: " + minCost + " max: " + maxCost + " lvl: " + level);
+				final int minCost = enchantType.getMinCost(j, rarity);
+				final int maxCost = enchantType.getMaxCost(j, rarity);
 				
 				if(level >= minCost && level <= maxCost)
 				{
-					Bukkit.broadcastMessage("added: " + enchantType.name() + " " + j);
-					enchantmentInstances.add(new EnchantmentInstance(holder, j));
+					enchantmentInstances.add(EnchantmentInstanceWrapper.wrap(new EnchantmentInstance(holder, j), rarity));
 					break;
 				}
 			}
 		}
 		
 		return enchantmentInstances;
+	}
+	
+	public static void filterCompatibleEnchantments
+	(
+		List<EnchantmentInstanceWrapper> possibleEntries,
+		EnchantmentInstanceWrapper pickedEntry
+	)
+	{
+		possibleEntries.removeIf(wrapper -> wrapper.getEnchantType().conflictsWith(pickedEntry.getEnchantType()));
 	}
 }

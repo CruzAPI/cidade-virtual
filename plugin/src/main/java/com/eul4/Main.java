@@ -6,7 +6,6 @@ import com.eul4.command.*;
 import com.eul4.common.Common;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
-import com.eul4.common.interceptor.HideEntityFlagInterceptor;
 import com.eul4.common.type.player.CommonWorldType;
 import com.eul4.common.util.FileUtil;
 import com.eul4.externalizer.filer.BlockDataFiler;
@@ -36,10 +35,6 @@ import com.eul4.service.*;
 import com.eul4.task.RarityBossBarTask;
 import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
-import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.plugin.bootstrap.BootstrapContext;
-import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.PluginManager;
@@ -220,23 +215,23 @@ public class Main extends Common
 	
 	private void registerCommands()
 	{
-		registerCommand(new AdminCommand(this), "admin");
-		registerCommand(new BalanceCommand(this), "balance");
-		registerCommand(new DebugCommand(this), "debug");
-		registerCommand(buyStructureCommand = new BuyStructureCommand(this), "buystructure");
-		registerCommand(new DelHomeCommand(this), DelHomeCommand.COMMAND_NAME);
-		registerCommand(new HomeCommand(this), HomeCommand.COMMAND_NAME);
-		registerCommand(new MacroidCommand(this), "macroid");
-		registerCommand(raidCommand = new RaidCommand(this), "raid");
-		registerCommand(new ReloadRuleCommand(this), "rulereload");
-		registerCommand(new SetHomeCommand(this), SetHomeCommand.COMMAND_NAME);
-		registerCommand(new SetRarityCommand(this), SetRarityCommand.COMMAND_NAME);
-		registerCommand(new SpawnCommand(this), SpawnCommand.COMMAND_NAME);
-		registerCommand(new TagCommand(this), TagCommand.COMMAND_NAME);
-		registerCommand(new TestCommand(this), "test");
-		registerCommand(toggleCombatCommand = new ToggleCombatCommand(this), ToggleCombatCommand.COMMAND_NAME);
-		registerCommand(new TownCommand(this), TownCommand.COMMAND_NAME);
-		registerCommand(new TutorialCommand(this), TutorialCommand.COMMAND_NAME);
+		registerCommand(new AdminCommand(this), AdminCommand.NAME_AND_ALIASES);
+		registerCommand(new BalanceCommand(this), BalanceCommand.NAME_AND_ALIASES);
+		registerCommand(new DebugCommand(this), DebugCommand.NAME_AND_ALIASES);
+		registerCommand(buyStructureCommand = new BuyStructureCommand(this), BuyStructureCommand.NAME_AND_ALIASES);
+		registerCommand(new DelHomeCommand(this), DelHomeCommand.NAME_AND_ALIASES);
+		registerCommand(new HomeCommand(this), HomeCommand.NAME_AND_ALIASES);
+		registerCommand(new MacroidCommand(this), MacroidCommand.NAME_AND_ALIASES);
+		registerCommand(raidCommand = new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
+		registerCommand(new ReloadRuleCommand(this), ReloadRuleCommand.NAME_AND_ALIASES);
+		registerCommand(new SetHomeCommand(this), SetHomeCommand.NAME_AND_ALIASES);
+		registerCommand(new SetRarityCommand(this), SetRarityCommand.NAME_AND_ALIASES);
+		registerCommand(new SpawnCommand(this), SpawnCommand.NAME_AND_ALIASES);
+		registerCommand(new TagCommand(this), TagCommand.NAME_AND_ALIASES);
+		registerCommand(new TestCommand(this), TestCommand.NAME_AND_ALIASES);
+		registerCommand(toggleCombatCommand = new ToggleCombatCommand(this), ToggleCombatCommand.NAME_AND_ALIASES);
+		registerCommand(new TownCommand(this), TownCommand.NAME_AND_ALIASES);
+		registerCommand(new TutorialCommand(this), TutorialCommand.NAME_AND_ALIASES);
 	}
 	
 	private void registerListeners()
@@ -256,6 +251,8 @@ public class Main extends Common
 		pluginManager.registerEvents(new ChannelingTaskListener(this), this);
 		pluginManager.registerEvents(new ChatListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
+		pluginManager.registerEvents(new ContainerRarityListener(this), this);
+		pluginManager.registerEvents(new CraftRarityListener(this), this);
 		pluginManager.registerEvents(new DebugListener(this), this);
 		pluginManager.registerEvents(new EnchantmentListener(this), this);
 		pluginManager.registerEvents(new EntityItemMoveListener(this), this);

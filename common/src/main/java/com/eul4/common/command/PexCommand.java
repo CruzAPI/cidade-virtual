@@ -26,6 +26,7 @@ import static com.eul4.common.i18n.CommonRichMessage.*;
 public class PexCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "pex";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	public static final String PERMISSION = "command." + COMMAND_NAME;
 	
 	private final Common plugin;

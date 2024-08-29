@@ -25,6 +25,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
 public class TutorialCommand implements TabExecutor
 {
 	public static String COMMAND_NAME = "tutorial";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	
 	private final Main plugin;
 	

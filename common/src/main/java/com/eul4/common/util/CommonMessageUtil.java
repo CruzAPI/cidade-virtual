@@ -2,9 +2,12 @@ package com.eul4.common.util;
 
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
+import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.OfflinePlayer;
 
+import java.util.Locale;
 import java.util.Optional;
 
 import static net.kyori.adventure.text.Component.text;
@@ -71,6 +74,13 @@ public class CommonMessageUtil
 	public static Component argToComponent(Object arg)
 	{
 		return arg instanceof Component component ? component : text(arg.toString());
+	}
+	
+	public static Component translateTranslatableComponent(Object arg, Locale locale)
+	{
+		return arg instanceof TranslatableComponent translatableComponent
+				? GlobalTranslator.translator().translate(translatableComponent, locale)
+				: argToComponent(arg);
 	}
 	
 	public static Component getOfflinePlayerDisplayName(OfflinePlayer offlinePlayer)

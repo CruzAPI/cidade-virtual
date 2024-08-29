@@ -21,6 +21,7 @@ import java.util.List;
 public class SetRarityCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "set-rarity";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	private static final String PERMISSION = "command." + COMMAND_NAME;
 	
 	private final Main plugin;

@@ -126,19 +126,19 @@ public abstract class Common extends JavaPlugin
 	
 	private void registerCommand()
 	{
-		registerCommand(new BuildCommand(this), BuildCommand.COMMAND_NAME);
-		registerCommand(new ChatCommand(this), ChatCommand.COMMAND_NAME);
-		registerCommand(new ClearChatCommand(this), ClearChatCommand.COMMAND_NAME);
-		registerCommand(new DisableChatCommand(this), DisableChatCommand.COMMAND_NAME);
-		registerCommand(new DisableTellCommand(this), DisableTellCommand.COMMAND_NAME);
-		registerCommand(new EnableChatCommand(this), EnableChatCommand.COMMAND_NAME);
-		registerCommand(new EnableTellCommand(this), EnableTellCommand.COMMAND_NAME);
-		registerCommand(new MuteCommand(this), MuteCommand.COMMAND_NAME);
-		registerCommand(new PexCommand(this), PexCommand.COMMAND_NAME);
-		registerCommand(new ReplyCommand(this), ReplyCommand.COMMAND_NAME);
-		registerCommand(new ScoreboardCommand(this), "scoreboard");
-		registerCommand(new TellCommand(this), TellCommand.COMMAND_NAME);
-		registerCommand(new UnmuteCommand(this), UnmuteCommand.COMMAND_NAME);
+		registerCommand(new BuildCommand(this), BuildCommand.NAME_AND_ALIASES);
+		registerCommand(new ChatCommand(this), ChatCommand.NAME_AND_ALIASES);
+		registerCommand(new ClearChatCommand(this), ClearChatCommand.NAME_AND_ALIASES);
+		registerCommand(new DisableChatCommand(this), DisableChatCommand.NAME_AND_ALIASES);
+		registerCommand(new DisableTellCommand(this), DisableTellCommand.NAME_AND_ALIASES);
+		registerCommand(new EnableChatCommand(this), EnableChatCommand.NAME_AND_ALIASES);
+		registerCommand(new EnableTellCommand(this), EnableTellCommand.NAME_AND_ALIASES);
+		registerCommand(new MuteCommand(this), MuteCommand.NAME_AND_ALIASES);
+		registerCommand(new PexCommand(this), PexCommand.NAME_AND_ALIASES);
+		registerCommand(new ReplyCommand(this), ReplyCommand.NAME_AND_ALIASES);
+		registerCommand(new ScoreboardCommand(this), ScoreboardCommand.NAME_AND_ALIASES);
+		registerCommand(new TellCommand(this), TellCommand.NAME_AND_ALIASES);
+		registerCommand(new UnmuteCommand(this), UnmuteCommand.NAME_AND_ALIASES);
 	}
 	
 	private void registerPacketAdapters()

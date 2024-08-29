@@ -22,6 +22,7 @@ import static com.eul4.common.i18n.CommonMessage.*;
 public class UnmuteCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "unmute";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "desmutar" };
 	
 	private final Common plugin;
 	

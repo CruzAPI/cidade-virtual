@@ -16,6 +16,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RaidCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "raid";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "atacar" };
+	
 	private final Main plugin;
 	
 	@Override

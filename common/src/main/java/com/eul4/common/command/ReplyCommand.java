@@ -20,6 +20,7 @@ import static com.eul4.common.i18n.CommonRichMessage.COMMAND_REPLY_STATUS_$PLAYE
 public class ReplyCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "reply";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "r", "responder" };
 	
 	private final Common plugin;
 	

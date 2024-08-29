@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.enums.Rarity;
 import com.eul4.service.BlockData;
+import lombok.experimental.UtilityClass;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import static com.eul4.enums.PluginNamespacedKey.RARITY;
 import static org.bukkit.persistence.PersistentDataType.BYTE;
 
+@UtilityClass
 public class RarityUtil
 {
 	public static ItemStack setRarity(ItemStack item, Rarity rarity)
@@ -47,14 +49,28 @@ public class RarityUtil
 				.orElse(Rarity.DEFAULT_RARITY);
 	}
 	
-	public static Rarity getRarity(ItemStack item)
+	public static Optional<Rarity> findRarity(ItemStack item)
 	{
 		return Optional.ofNullable(item)
 				.map(ItemStack::getItemMeta)
 				.map(ItemMeta::getPersistentDataContainer)
 				.map(RarityUtil::getRarityId)
-				.map(Rarity::getRarityById)
-				.orElse(Rarity.DEFAULT_RARITY);
+				.map(Rarity::getRarityById);
+	}
+	
+	public static boolean hasRarity(ItemStack item)
+	{
+		return findRarity(item).isPresent();
+	}
+	
+	public static Rarity getRarityOrNull(ItemStack item)
+	{
+		return findRarity(item).orElse(null);
+	}
+	
+	public static Rarity getRarity(ItemStack item)
+	{
+		return findRarity(item).orElse(Rarity.DEFAULT_RARITY);
 	}
 	
 	public static Rarity getRarity(Entity entity)

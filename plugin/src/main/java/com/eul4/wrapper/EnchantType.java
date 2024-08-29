@@ -6,10 +6,16 @@ import com.eul4.enums.Rarity;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
+import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import lombok.Getter;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
+import org.bukkit.Tag;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
@@ -316,7 +322,29 @@ public enum EnchantType
 		Definition.def(4, Cost.costInfinityRange(1, 10 + 3)),
 		Definition.def(7, Cost.costInfinityRange(1, 18 + 1)),
 		Definition.def(10, Cost.costInfinityRange(1, 35 + 1))
-	),
+	)
+	{
+		@Override
+		public boolean conflictsWith(EnchantType other)
+		{
+			return other == MENDING;
+		}
+		
+		@Override
+		public boolean canEnchantItem(ItemStack itemStack)
+		{
+			return Tag.ITEMS_SWORDS.isTagged(itemStack.getType())
+					|| Tag.ITEMS_AXES.isTagged(itemStack.getType())
+					|| Tag.ITEMS_PICKAXES.isTagged(itemStack.getType())
+					|| Tag.ITEMS_SHOVELS.isTagged(itemStack.getType())
+					|| Tag.ITEMS_HOES.isTagged(itemStack.getType())
+					|| itemStack.getType() == Material.BOW
+					|| itemStack.getType() == Material.MACE
+					|| itemStack.getType() == Material.TRIDENT
+					|| itemStack.getType() == Material.CROSSBOW
+					;
+		}
+	},
 	;
 	
 	private final NamespacedKey key;
@@ -355,6 +383,26 @@ public enum EnchantType
 		this.commonDefinition = commonDefinition;
 		this.rareDefinition = rareDefinition;
 		this.legendaryDefinition = legendaryDefinition;
+	}
+	
+	public static EnchantType asMirror(EnchantmentInstance enchantmentInstance)
+	{
+		return asMirror(enchantmentInstance.enchantment);
+	}
+	
+	public static EnchantType asMirror(Holder<net.minecraft.world.item.enchantment.Enchantment> holder)
+	{
+		return EnchantType.valueOf(holder.getRegisteredName().replaceAll(".*:", "").toUpperCase());
+	}
+	
+	public boolean conflictsWith(EnchantType other)
+	{
+		return enchantment.conflictsWith(other.enchantment);
+	}
+	
+	public boolean canEnchantItem(ItemStack itemStack)
+	{
+		return enchantment.canEnchantItem(itemStack);
 	}
 	
 	public int getMaxLevel(Rarity rarity)

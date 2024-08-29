@@ -5,6 +5,7 @@ import com.eul4.common.i18n.Messageable;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +13,16 @@ import org.jetbrains.annotations.NotNull;
 public class MessageableService
 {
 	private final Common plugin;
+	
+	public @NotNull Messageable getMessageable(Entity entity)
+	{
+		if(entity instanceof Player player)
+		{
+			return plugin.getPlayerManager().get(player);
+		}
+		
+		return plugin.getDeafenMessageable();
+	}
 	
 	public @NotNull Messageable getMessageable(CommandSender commandSender)
 	{

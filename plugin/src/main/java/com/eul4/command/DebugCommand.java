@@ -11,10 +11,7 @@ import com.google.common.collect.Multimap;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
 import org.apache.commons.lang.ObjectUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -73,6 +70,11 @@ public class DebugCommand implements TabExecutor
 		}
 		
 		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		
+		if(args.length == 0)
+		{
+			player.sendMessage(Tag.ITEMS_BREAKS_DECORATED_POTS.getValues().toString());
+		}
 		
 		if(args.length == 1 && args[0].equalsIgnoreCase("toggle-combat-map"))
 		{

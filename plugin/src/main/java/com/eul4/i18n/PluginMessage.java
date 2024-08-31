@@ -98,6 +98,9 @@ public enum PluginMessage implements Message
 		translateTranslatableComponent(args[0], bundle.getLocale())
 	}),
 	
+	FIREWORK_INCOMPATIBLE_RARITY("firework-incompatible-rarity", empty().color(RED)),
+	ARROW_RARITY_HIGHER_THAN_BOW("arrow-rarity-higher-than-bow", empty().color(RED)),
+	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
 	STRUCTURE_CANNON_NAME("structure.cannon.name"),

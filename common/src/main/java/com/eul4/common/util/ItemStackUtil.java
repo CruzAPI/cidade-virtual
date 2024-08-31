@@ -9,9 +9,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 @UtilityClass
 public class ItemStackUtil
 {
-	public static boolean isTool(ItemStack itemStack)
+	public static boolean isTool(ItemStack item)
 	{
-		return Tag.ITEMS_BREAKS_DECORATED_POTS.isTagged(itemStack.getType());
+		return item != null && Tag.ITEMS_BREAKS_DECORATED_POTS.isTagged(item.getType());
 	}
 	
 	public static boolean hasAttackSpeed(ItemStack itemStack)

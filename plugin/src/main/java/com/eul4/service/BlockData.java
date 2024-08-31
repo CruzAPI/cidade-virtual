@@ -4,6 +4,7 @@ import com.eul4.common.util.ItemStackUtil;
 import com.eul4.enums.Rarity;
 import com.eul4.util.RarityUtil;
 import com.eul4.wrapper.StackedEnchantment;
+import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -109,14 +110,14 @@ public class BlockData
 		return enchantments;
 	}
 	
-	public void damageExplosion(float damage, @NotNull Block block)
+	public float damageExplosion(float damage, @NotNull Block block)
 	{
 		final boolean willDrop = block.isPreferredTool(ItemStack.empty());
 		damage = block.getType().getBlastResistance() == 0.0F ? Float.MAX_VALUE : damage;
-		damage(damage, willDrop, null);
+		return damage(damage, willDrop, null);
 	}
 	
-	public void damage(@NotNull ItemStack tool, @NotNull Block block)
+	public float damage(@NotNull ItemStack tool, @NotNull Block block)
 	{
 		final Rarity toolRarity = RarityUtil.getRarity(tool);
 		final float damage;
@@ -137,15 +138,21 @@ public class BlockData
 				.map(ItemMeta::getEnchants)
 				.orElse(Collections.emptyMap());
 		
-		damage(damage, validTool, enchantments);
+		return damage(damage, validTool, enchantments);
 	}
 	
-	private void damage(float damage, boolean willDrop, @Nullable Map<Enchantment, Integer> enchantments)
+	private float damage(float damage, boolean willDrop, @Nullable Map<Enchantment, Integer> enchantments)
 	{
-		health = Math.max(0.0F, health - damage);
+		Preconditions.checkArgument(damage >= 0.0F, "Damage must not be negative");
+		
+		float health = this.health;
+		
+		this.health = Math.max(0.0F, this.health - damage);
 		
 		updateWillDrop(willDrop);
 		updateStackedEnchantments(enchantments);
+		
+		return Math.min(health, damage);
 	}
 	
 	private void updateWillDrop(boolean willDrop)
@@ -280,5 +287,10 @@ public class BlockData
 		}
 		
 		return stackedEnchantments;
+	}
+	
+	public boolean isDead()
+	{
+		return health <= 0.0F;
 	}
 }

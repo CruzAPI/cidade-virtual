@@ -23,6 +23,8 @@ import org.bukkit.inventory.*;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.eul4.util.RarityUtil.getMinRarity;
+
 @RequiredArgsConstructor
 public class CraftRarityListener implements Listener
 {
@@ -96,25 +98,5 @@ public class CraftRarityListener implements Listener
 		ItemStack result = craftingInventory.getResult();
 		RarityUtil.setRarity(result, minRarity);
 		craftingInventory.setResult(result);
-	}
-	
-	private Rarity getMinRarity(Rarity minRarity, ItemStack[] itemStacks)
-	{
-		for(ItemStack itemStack : itemStacks)
-		{
-			if(itemStack == null)
-			{
-				continue;
-			}
-			
-			Rarity rarity = RarityUtil.getRarity(itemStack);
-			
-			if(rarity.compareTo(minRarity) < 0)
-			{
-				minRarity = rarity;
-			}
-		}
-		
-		return minRarity;
 	}
 }

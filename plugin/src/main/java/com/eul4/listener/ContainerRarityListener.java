@@ -8,6 +8,7 @@ import com.eul4.util.RarityUtil;
 import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.block.Block;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -17,6 +18,7 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -109,6 +111,18 @@ public class ContainerRarityListener implements Listener
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onInventoryMoveItem(InventoryMoveItemEvent event)
+	{
+		cancelIfNeededAndSendMessage(null, event.getItem(), event.getDestination(), event);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onInventoryPickupItem(InventoryPickupItemEvent event)
+	{
+		cancelIfNeededAndSendMessage(null, event.getItem().getItemStack(), event.getInventory(), event);
+	}
+	
 	private boolean isClickingInUpperContainerSlots(InventoryClickEvent event)
 	{
 		final Inventory clickedInventory = event.getClickedInventory();
@@ -117,14 +131,28 @@ public class ContainerRarityListener implements Listener
 		return clickedInventory == topInventory;
 	}
 	
-	private <E extends InventoryInteractEvent & Cancellable> boolean cancelIfNeededAndSendMessage(ItemStack itemStack, E event)
+	private <E extends InventoryInteractEvent & Cancellable> boolean cancelIfNeededAndSendMessage
+	(
+		ItemStack itemStack,
+		E event
+	)
+	{
+		return cancelIfNeededAndSendMessage(event.getWhoClicked(), itemStack, event.getInventory(), event);
+	}
+	
+	private boolean cancelIfNeededAndSendMessage
+	(
+		@Nullable HumanEntity humanEntity,
+		ItemStack itemStack,
+		Inventory inventory,
+		Cancellable cancellable
+	)
 	{
 		if(itemStack == null || itemStack.isEmpty())
 		{
 			return false;
 		}
 		
-		Inventory inventory = event.getInventory();
 		InventoryType inventoryType = inventory.getType();
 		
 		Rarity inventoryRarity;
@@ -143,7 +171,7 @@ public class ContainerRarityListener implements Listener
 			return false;
 		}
 		
-		Messageable messageable = plugin.getMessageableService().getMessageable(event.getWhoClicked());
+		Messageable messageable = plugin.getMessageableService().getMessageable(humanEntity);
 		
 		Rarity itemRarity = RarityUtil.getRarity(itemStack);
 		
@@ -154,13 +182,15 @@ public class ContainerRarityListener implements Listener
 			if(itemRarity != inventoryRarity)
 			{
 				messageable.sendMessage(PluginMessage.INCOMPATIBLE_RARITY);
-				SoundUtil.playPlongIfPlayer(event.getWhoClicked());
-				event.setCancelled(true);
+				SoundUtil.playPlongIfPlayer(humanEntity);
+				cancellable.setCancelled(true);
 				return true;
 			}
 		case CHEST:
 		case FURNACE:
 		case WORKBENCH:
+		case HOPPER:
+		case SMITHING:
 			if(itemRarity.compareTo(inventoryRarity) > 0)
 			{
 				messageable.sendMessage
@@ -170,8 +200,8 @@ public class ContainerRarityListener implements Listener
 							.withArgs(inventoryType.defaultTitle())
 				);
 				
-				SoundUtil.playPlongIfPlayer(event.getWhoClicked());
-				event.setCancelled(true);
+				SoundUtil.playPlongIfPlayer(humanEntity);
+				cancellable.setCancelled(true);
 				return true;
 			}
 		}

@@ -42,6 +42,12 @@ public class RarityBossBarTask extends BukkitRunnable
 			
 			if(entity != null)
 			{
+				if(entity instanceof Player)
+				{
+					removeBossBar(player);
+					return;
+				}
+				
 				setAbstractBossBar(player, new EntityBossBarValue(entity));
 			}
 			else

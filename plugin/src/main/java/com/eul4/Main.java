@@ -12,6 +12,7 @@ import com.eul4.externalizer.filer.BlockDataFiler;
 import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.externalizer.filer.TownsFiler;
 import com.eul4.i18n.PluginBundleBaseName;
+import com.eul4.interceptor.HeartParticleInterceptor;
 import com.eul4.interceptor.HideEnchantInterceptor;
 import com.eul4.listener.*;
 import com.eul4.listener.container.entity.CancelDropOnDeathListener;
@@ -202,6 +203,7 @@ public class Main extends Common
 	private void registerPacketInterceptors()
 	{
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+		protocolManager.addPacketListener(new HeartParticleInterceptor(this));
 		protocolManager.addPacketListener(new HideEnchantInterceptor(this));
 	}
 	
@@ -248,12 +250,14 @@ public class Main extends Common
 		pluginManager.registerEvents(new AssistantTargetTaskListener(this), this);
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(new BlockRarityListener(this), this);
+		pluginManager.registerEvents(new BowRarityListener(this), this);
 		pluginManager.registerEvents(new ChannelingTaskListener(this), this);
 		pluginManager.registerEvents(new ChatListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new ContainerRarityListener(this), this);
 		pluginManager.registerEvents(new CraftRarityListener(this), this);
 		pluginManager.registerEvents(new DebugListener(this), this);
+		pluginManager.registerEvents(new ElytraRarityListener(this), this);
 		pluginManager.registerEvents(new EnchantmentListener(this), this);
 		pluginManager.registerEvents(new EntityItemMoveListener(this), this);
 		pluginManager.registerEvents(new EntityRarityListener(this), this);
@@ -274,6 +278,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new PlayerAttackSpeedListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
+		pluginManager.registerEvents(new SmithingRarityListener(this), this);
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);

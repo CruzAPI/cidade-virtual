@@ -2,12 +2,20 @@ package com.eul4.util;
 
 import com.eul4.Main;
 import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.util.ItemStackUtil;
 import com.eul4.enums.Rarity;
 import com.eul4.service.BlockData;
 import lombok.experimental.UtilityClass;
+import net.minecraft.util.Mth;
+import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 
@@ -31,6 +39,24 @@ public class RarityUtil
 		if(meta == null)
 		{
 			return item;
+		}
+		
+		int maxDurability = item.getType().getMaxDurability();
+		
+		if(meta instanceof Damageable damageable && maxDurability > 0)
+		{
+			Rarity currentRarity = getRarity(item);
+			double multiplier = rarity.getDurabilityMultiplier(item.getType());
+			double relativeMultiplier = rarity.getRelativeDurabilityMultiplier(item.getType(), currentRarity);
+			
+			int damage = damageable.hasDamage() ? damageable.getDamage() : 0;
+			
+			damageable.setMaxDamage((int) (item.getType().getMaxDurability() * multiplier));
+			
+			if(damageable.hasDamage())
+			{
+				damageable.setDamage(Mth.clamp((int) Math.ceil(damage * relativeMultiplier), 0, damageable.getMaxDamage()));
+			}
 		}
 		
 		var container = meta.getPersistentDataContainer();
@@ -75,11 +101,30 @@ public class RarityUtil
 	
 	public static Rarity getRarity(Entity entity)
 	{
-		return getRarity(entity.getPersistentDataContainer());
+		return getRarityOrIfPlayer(entity, Rarity.DEFAULT_RARITY);
+	}
+	
+	public static Rarity getRarityOrIfPlayer(Entity entity, Rarity rarityIfPlayer)
+	{
+		return entity instanceof Player ? rarityIfPlayer : getRarity(entity.getPersistentDataContainer());
 	}
 	
 	public static void setRarity(Entity entity, Rarity rarity)
 	{
+		if(entity instanceof LivingEntity livingEntity)
+		{
+			Optional.ofNullable(livingEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH))
+					.ifPresent(attributeInstance ->
+					{
+						attributeInstance.setBaseValue
+						(
+							attributeInstance.getBaseValue() * rarity.getMobMaxHealthMultiplier()
+						);
+						
+						livingEntity.setHealth(attributeInstance.getValue());
+					});
+		}
+		
 		entity.getPersistentDataContainer().set(RARITY, BYTE, rarity.getId());
 	}
 	
@@ -91,5 +136,58 @@ public class RarityUtil
 	private static byte getRarityId(PersistentDataContainer container)
 	{
 		return container.getOrDefault(RARITY, BYTE, (byte) 0);
+	}
+	
+	public static Rarity getMinRarity(Rarity minRarity, ItemStack[] itemStacks)
+	{
+		for(ItemStack itemStack : itemStacks)
+		{
+			if(itemStack == null)
+			{
+				continue;
+			}
+			
+			Rarity rarity = RarityUtil.getRarity(itemStack);
+			
+			if(rarity.compareTo(minRarity) < 0)
+			{
+				minRarity = rarity;
+			}
+		}
+		
+		return minRarity;
+	}
+	
+	public static Rarity getRarity(Main plugin, DamageSource damageSource)
+	{
+		ItemStack weaponItem = damageSource.getWeaponItem();
+		
+		if(ItemStackUtil.isTool(weaponItem))
+		{
+			return getRarity(weaponItem);
+		}
+		
+		Entity directEntity = damageSource.getDirectEntity();
+		
+		if(directEntity != null)
+		{
+			return getRarity(directEntity);
+		}
+		
+		Block directBlock = damageSource.getDirectBlock();
+		
+		if(directBlock != null)
+		{
+			return getRarity(plugin, directBlock);
+		}
+		
+		Location location = damageSource.getDamageLocation();
+		
+		if(location != null)
+		{
+			return getRarity(plugin, location.getBlock());
+		}
+		
+		return Rarity.DEFAULT_RARITY;
 	}
 }

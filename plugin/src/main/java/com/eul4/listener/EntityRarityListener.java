@@ -4,13 +4,18 @@ import com.destroystokyo.paper.event.entity.ThrownEggHatchEvent;
 import com.eul4.Main;
 import com.eul4.common.util.EntityUtil;
 import com.eul4.enums.Rarity;
+import com.eul4.event.entity.EntityDamageItemOnHitEvent;
+import com.eul4.event.entity.EquipmentHurtEvent;
 import com.eul4.util.RarityUtil;
 import lombok.RequiredArgsConstructor;
+import net.minecraft.util.Mth;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,8 +25,10 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 @RequiredArgsConstructor
@@ -44,6 +51,102 @@ public class EntityRarityListener implements Listener
 		
 		Rarity blockRarity = RarityUtil.getRarity(plugin, block);
 		RarityUtil.setRarity(entity, blockRarity);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onEquipmentHurtEvent(EquipmentHurtEvent event)
+	{
+		DamageSource damageSource = event.getDamageSource();
+		Rarity damageRarity = RarityUtil.getRarity(plugin, damageSource);
+		event.setAmount(event.getAmount() * damageRarity.getArmorDamageMultiplier());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void setTridentRarityOnSpawn(EntitySpawnEvent event)
+	{
+		if(event.getEntity() instanceof Trident trident)
+		{
+			ItemStack item = trident.getItemStack();
+			Rarity rarity = RarityUtil.getRarity(item);
+			RarityUtil.setRarity(trident, rarity);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onTridentHit(EntityDamageByEntityEvent event)
+	{
+		if(!(event.getDamager() instanceof Trident trident) || !(event.getEntity() instanceof LivingEntity entity))
+		{
+			return;
+		}
+		
+		Rarity tridentRarity = RarityUtil.getRarity(trident);
+		Rarity entityRarity = RarityUtil.getRarity(entity);
+		Rarity damageRarity = Rarity.getMinRarity(tridentRarity, entityRarity);
+		
+		int damage = damageRarity.getItemDamageMultiplier() - 1;
+		
+		if(damage > 0)
+		{
+			ItemStack itemStack = trident.getItemStack();
+			ItemMeta meta = itemStack.getItemMeta();
+			
+			if(meta instanceof Damageable damageable && damageable.hasMaxDamage())
+			{
+				int currentDamage = damageable.hasDamage() ? damageable.getDamage() : 0;
+				damageable.setDamage(Mth.clamp(currentDamage + damage, 0, damageable.getMaxDamage()));
+			}
+			
+			itemStack.setItemMeta(meta);
+			trident.setItemStack(itemStack);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onEntityDamageItemOnHit(EntityDamageItemOnHitEvent event)
+	{
+		Entity target = event.getTarget();
+		ItemStack item = event.getItem();
+		
+		Rarity itemRarity = RarityUtil.getRarity(item);
+		Rarity targetRarity = RarityUtil.getRarityOrIfPlayer(target, Rarity.MAX_RARITY);
+		
+		Rarity minRarity = Rarity.getMinRarity(itemRarity, targetRarity);
+		event.setAmount(event.getAmount() * minRarity.getItemDamageMultiplier());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void setMobProjectileRarity(ProjectileLaunchEvent event)
+	{
+		Projectile projectile = event.getEntity();
+		ProjectileSource shooter = projectile.getShooter();
+		
+		if(projectile.getShooter() instanceof Player || !(shooter instanceof Entity entity))
+		{
+			return;
+		}
+		
+		Rarity shooterRarity = RarityUtil.getRarity(entity);
+		RarityUtil.setRarity(projectile, shooterRarity);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void damageToMob(EntityDamageEvent event)
+	{
+		Entity entity = event.getEntity();
+		DamageSource damageSource = event.getDamageSource();
+		
+		if(!(entity instanceof LivingEntity) || entity instanceof Player)
+		{
+			return;
+		}
+		
+		Rarity entityRarity = RarityUtil.getRarity(entity);
+		Rarity damageRarity = RarityUtil.getRarity(plugin, damageSource);
+		
+		damageRarity = Rarity.getMinRarity(entityRarity, damageRarity);
+		
+		event.setDamage(event.getDamage() * damageRarity.getDamageMultiplier());
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -81,13 +184,16 @@ public class EntityRarityListener implements Listener
 		Block spawnBlock = relative.isEmpty() ? relative : relative.getRelative(BlockFace.UP);
 		Location spawnLocation = spawnBlock.getLocation().toCenterLocation();
 		
-		if(event.getHand() == EquipmentSlot.HAND)
+		if(player.getGameMode() != GameMode.CREATIVE)
 		{
-			player.getInventory().setItemInMainHand(item.subtract());
-		}
-		else
-		{
-			player.getInventory().setItemInOffHand(item.subtract());
+			if(event.getHand() == EquipmentSlot.HAND)
+			{
+				player.getInventory().setItemInMainHand(item.subtract());
+			}
+			else
+			{
+				player.getInventory().setItemInOffHand(item.subtract());
+			}
 		}
 		
 		Entity entity = spawnLocation.getWorld().spawnEntity(spawnLocation, entityType, true);

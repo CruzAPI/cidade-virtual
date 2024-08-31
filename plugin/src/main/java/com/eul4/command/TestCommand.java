@@ -21,6 +21,7 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.Damageable;
@@ -79,19 +80,11 @@ public class TestCommand implements TabExecutor
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
 		}
-		else if((args.length == 1) && args[0].equals("pref"))
+		else if((args.length == 2) && args[0].equals("test"))
 		{
-			ItemStack tool = player.getInventory().getItemInMainHand();
-			Block block = player.getTargetBlockExact(5);
-			
-			if(block == null)
-			{
-				player.sendMessage("null");
-				return false;
-			}
-			
-			boolean isPref = block.getBlockData().isPreferredTool(tool);
-			player.sendMessage("target: " + block.getType() +  " isPref: " + isPref);
+			int amount = Integer.parseInt(args[1]);
+			Bukkit.broadcastMessage("amount: " + amount);
+			player.damageItemStack(EquipmentSlot.HAND, amount);
 		}
 		else if((args.length == 1) && args[0].equals("1"))
 		{

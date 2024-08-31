@@ -11,7 +11,6 @@ import com.eul4.util.RarityUtil;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import io.papermc.paper.event.player.PlayerFlowerPotManipulateEvent;
 import lombok.RequiredArgsConstructor;
-import net.minecraft.world.level.Explosion;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -49,8 +48,6 @@ public class BlockRarityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		Player player;
-		Explosion explosion;
 		Rarity rarity = RarityUtil.getRarity(event.getItemInHand());
 		plugin.getBlockDataFiler().setBlockData(event.getBlock(), new BlockData(rarity));
 	}
@@ -72,24 +69,24 @@ public class BlockRarityListener implements Listener
 	{
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
-		BlockData blockData = plugin.getBlockDataFiler().loadBlockData(block);
 		
-		if(blockData == null || player.getGameMode() != GameMode.SURVIVAL)
+		if(player.getGameMode() != GameMode.SURVIVAL)
 		{
+			plugin.getBlockDataFiler().removeBlockData(block);
 			return;
 		}
 		
+		BlockData blockData = plugin.getBlockDataFiler().loadBlockDataOrDefault(block);
+		
 		ItemStack tool = player.getInventory().getItemInMainHand();
-		blockData.damage(tool, block);
+		int damage = (int) Math.ceil(blockData.damage(tool, block));
 		
 		event.setCancelled(true);
 		
-		if(blockData.getHealth() > 0.0F)
-		{
-			int damage = Tag.ITEMS_SWORDS.isTagged(tool.getType()) ? 2 : 1;
-			player.damageItemStack(EquipmentSlot.HAND, damage);
-		}
-		else
+		damage *= Tag.ITEMS_SWORDS.isTagged(tool.getType()) ? 2 : 1;
+		player.damageItemStack(EquipmentSlot.HAND, damage);
+		
+		if(blockData.isDead())
 		{
 			block.breakNaturally(blockData.getFakeTool(tool));
 		}

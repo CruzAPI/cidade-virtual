@@ -138,6 +138,11 @@ public class RarityUtil
 		return container.getOrDefault(RARITY, BYTE, (byte) 0);
 	}
 	
+	public static Rarity getMinRarity(ItemStack[] itemStacks)
+	{
+		return getMinRarity(Rarity.MAX_RARITY, itemStacks);
+	}
+	
 	public static Rarity getMinRarity(Rarity minRarity, ItemStack[] itemStacks)
 	{
 		for(ItemStack itemStack : itemStacks)

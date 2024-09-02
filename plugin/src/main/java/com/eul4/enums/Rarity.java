@@ -22,7 +22,7 @@ public enum Rarity
 		(byte) 0, 1.0F, 1.0F, 1, 50, 0.2D,
 		PluginMessage.COMMON,
 		PluginMessage.RARITY_COMMON,
-		PluginMessage.COMMON_INCOMPATIBILITY_$CONTAINER_TITLE,
+		PluginMessage.COMMON_INCOMPATIBILITY_$TRANSLATABLE,
 		style(GREEN, BOLD),
 		BossBar.Color.GREEN
 	),
@@ -32,7 +32,7 @@ public enum Rarity
 		(byte) 1, 10.0F, 10.0F, 3, 100, 0.1D,
 		PluginMessage.RARE,
 		PluginMessage.RARITY_RARE,
-		PluginMessage.RARE_INCOMPATIBILITY_$CONTAINER_TITLE,
+		PluginMessage.RARE_INCOMPATIBILITY_$TRANSLATABLE,
 		style(DARK_PURPLE, BOLD),
 		BossBar.Color.PURPLE
 	),
@@ -42,7 +42,7 @@ public enum Rarity
 		(byte) 2, 100.0F, 100.0F, 9, 300, 0.0D,
 		PluginMessage.LEGENDARY,
 		PluginMessage.RARITY_LEGENDARY,
-		PluginMessage.LEGENDARY_INCOMPATIBILITY_$CONTAINER_TITLE,
+		PluginMessage.LEGENDARY_INCOMPATIBILITY_$TRANSLATABLE,
 		style(GOLD, BOLD),
 		BossBar.Color.RED
 	),
@@ -63,6 +63,7 @@ public enum Rarity
 	private static final double ARMOR_DURABILITY_EXPONENTIATION_BASE = 5.0D;
 	private static final double SHIELD_DURABILITY_EXPONENTIATION_BASE = 5.0D;
 	private static final double TOOLS_DURABILITY_EXPONENTIATION_BASE = 10.0D;
+	private static final double ANVIL_DURABILITY_RANDOM_BOUND_EXPONENTIATION_BASE = 3.0D;
 	
 	private final byte id;
 	private final float maxHealth;
@@ -153,6 +154,16 @@ public enum Rarity
 	public double getRelativeDurabilityMultiplier(Material material, Rarity relative)
 	{
 		return Math.pow(getDurabilityBaseExponentiationBase(material), this.subtract(relative));
+	}
+	
+	public int getAnvilDurabilityRandomBound()
+	{
+		return Math.max(1, (int) Math.pow(ANVIL_DURABILITY_RANDOM_BOUND_EXPONENTIATION_BASE, ordinal()));
+	}
+	
+	public int getAnvilMaxRepairCost()
+	{
+		return (int) (40.0 * Math.pow(4.0D, ordinal()));
 	}
 	
 	private double getRelativeDurabilityMultiplier(Material material, double exponent)

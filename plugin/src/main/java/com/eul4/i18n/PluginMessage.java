@@ -21,6 +21,7 @@ import com.eul4.world.OverWorld;
 import com.eul4.wrapper.Tag;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
@@ -82,20 +83,20 @@ public enum PluginMessage implements Message
 	)),
 	
 	INCOMPATIBLE_RARITY("incompatible-rarity", empty().color(RED)),
-	COMMON_INCOMPATIBILITY_$CONTAINER_TITLE("common.container-incompatibility", (bundle, args) -> new Component[]
+	COMMON_INCOMPATIBILITY_$TRANSLATABLE("common.container-incompatibility", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		translateTranslatableComponent(args[0], bundle.getLocale())
+		((TranslatableComponent) args[0])
 	}),
-	RARE_INCOMPATIBILITY_$CONTAINER_TITLE("rare.container-incompatibility", (bundle, args) -> new Component[]
+	RARE_INCOMPATIBILITY_$TRANSLATABLE("rare.container-incompatibility", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		translateTranslatableComponent(args[0], bundle.getLocale())
+		((TranslatableComponent) args[0])
 	}),
-	LEGENDARY_INCOMPATIBILITY_$CONTAINER_TITLE("legendary.container-incompatibility", (bundle, args) -> new Component[]
+	LEGENDARY_INCOMPATIBILITY_$TRANSLATABLE("legendary.container-incompatibility", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		translateTranslatableComponent(args[0], bundle.getLocale())
+		((TranslatableComponent) args[0])
 	}),
 	
 	FIREWORK_INCOMPATIBLE_RARITY("firework-incompatible-rarity", empty().color(RED)),

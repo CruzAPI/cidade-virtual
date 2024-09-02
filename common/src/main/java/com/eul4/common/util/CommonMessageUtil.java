@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.StyleBuilderApplicable;
 import net.kyori.adventure.translation.GlobalTranslator;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Locale;
@@ -76,11 +77,14 @@ public class CommonMessageUtil
 		return arg instanceof Component component ? component : text(arg.toString());
 	}
 	
+	@Deprecated(forRemoval = true)
 	public static Component translateTranslatableComponent(Object arg, Locale locale)
 	{
-		return arg instanceof TranslatableComponent translatableComponent
+		Component component = arg instanceof TranslatableComponent translatableComponent
 				? GlobalTranslator.translator().translate(translatableComponent, locale)
 				: argToComponent(arg);
+		
+		return component;
 	}
 	
 	public static Component getOfflinePlayerDisplayName(OfflinePlayer offlinePlayer)

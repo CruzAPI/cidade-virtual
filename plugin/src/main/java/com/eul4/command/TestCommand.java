@@ -8,12 +8,13 @@ import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.type.PluginWorldType;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.translation.GlobalTranslator;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -30,8 +31,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
@@ -79,6 +82,16 @@ public class TestCommand implements TabExecutor
 		if(args.length == 0)
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
+		}
+		else if((args.length == 1) && args[0].equals("test"))
+		{
+			String key = Material.ENCHANTING_TABLE.translationKey();
+			
+			Component a = GlobalTranslator.translator().translate(Component.translatable(key), Locale.US);
+			MessageFormat b = GlobalTranslator.translator().translate(key, Locale.US);
+			
+			Bukkit.broadcastMessage("a: " + a); //returns null
+			Bukkit.broadcastMessage("b: " + b); //returns null
 		}
 		else if((args.length == 2) && args[0].equals("test"))
 		{

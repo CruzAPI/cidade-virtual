@@ -6,7 +6,6 @@ import com.eul4.enums.Rarity;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
-import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import lombok.Getter;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
@@ -383,6 +382,11 @@ public enum EnchantType
 		this.commonDefinition = commonDefinition;
 		this.rareDefinition = rareDefinition;
 		this.legendaryDefinition = legendaryDefinition;
+	}
+	
+	public static EnchantType fromBukkit(Enchantment enchantment)
+	{
+		return EnchantType.valueOf(enchantment.getKey().value().toUpperCase());
 	}
 	
 	public static EnchantType asMirror(EnchantmentInstance enchantmentInstance)

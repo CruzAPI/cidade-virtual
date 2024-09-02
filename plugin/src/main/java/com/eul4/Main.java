@@ -36,8 +36,13 @@ import com.eul4.service.*;
 import com.eul4.task.RarityBossBarTask;
 import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
+import com.mojang.brigadier.Command;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -217,11 +222,21 @@ public class Main extends Common
 	
 	private void registerCommands()
 	{
+		LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
+		manager.registerEventHandler(LifecycleEvents.COMMANDS, event ->
+		{
+			final Commands commands = event.registrar();
+			commands.register("brig", new BrigCommand());
+		});
+		
+		registerCommand(new AdminCommand(this), AdminCommand.NAME_AND_ALIASES);
+		
 		registerCommand(new AdminCommand(this), AdminCommand.NAME_AND_ALIASES);
 		registerCommand(new BalanceCommand(this), BalanceCommand.NAME_AND_ALIASES);
 		registerCommand(new DebugCommand(this), DebugCommand.NAME_AND_ALIASES);
 		registerCommand(buyStructureCommand = new BuyStructureCommand(this), BuyStructureCommand.NAME_AND_ALIASES);
 		registerCommand(new DelHomeCommand(this), DelHomeCommand.NAME_AND_ALIASES);
+		registerCommand(new EnchantCommand(this), EnchantCommand.NAME_AND_ALIASES);
 		registerCommand(new HomeCommand(this), HomeCommand.NAME_AND_ALIASES);
 		registerCommand(new MacroidCommand(this), MacroidCommand.NAME_AND_ALIASES);
 		registerCommand(raidCommand = new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
@@ -245,6 +260,7 @@ public class Main extends Common
 		registerScoreboardListeners();
 		registerStructureListeners();
 		
+		pluginManager.registerEvents(new AnvilRarityListener(this), this);
 		pluginManager.registerEvents(new AssistantHideListener(this), this);
 		pluginManager.registerEvents(new AssistantInteractListener(this), this);
 		pluginManager.registerEvents(new AssistantTargetTaskListener(this), this);

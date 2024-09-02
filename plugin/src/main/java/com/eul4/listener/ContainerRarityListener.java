@@ -7,6 +7,7 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.util.RarityUtil;
 import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -156,15 +157,18 @@ public class ContainerRarityListener implements Listener
 		InventoryType inventoryType = inventory.getType();
 		
 		Rarity inventoryRarity;
+		String translationKey;
 		
 		if(inventory.getHolder() instanceof BlockInventoryHolder blockInventoryHolder)
 		{
 			inventoryRarity = RarityUtil.getRarity(plugin, blockInventoryHolder.getBlock());
+			translationKey = blockInventoryHolder.getBlock().getType().translationKey();
 		}
 		else if(inventory.getType() == InventoryType.WORKBENCH)
 		{
 			Block block = inventory.getLocation().getBlock();
 			inventoryRarity = RarityUtil.getRarity(plugin, block);
+			translationKey = block.getType().translationKey();
 		}
 		else
 		{
@@ -186,6 +190,7 @@ public class ContainerRarityListener implements Listener
 				cancellable.setCancelled(true);
 				return true;
 			}
+		case ANVIL:
 		case CHEST:
 		case FURNACE:
 		case WORKBENCH:
@@ -197,7 +202,7 @@ public class ContainerRarityListener implements Listener
 				(
 					itemRarity
 							.getContainerIncompatibilityMessage()
-							.withArgs(inventoryType.defaultTitle())
+							.withArgs(Component.translatable(translationKey))
 				);
 				
 				SoundUtil.playPlongIfPlayer(humanEntity);

@@ -172,7 +172,7 @@ public class BlockRarityListener implements Listener
 		Entity entity = event.getEntity();
 		Rarity rarity = RarityUtil.getRarity(entity);
 		event.blockList().clear();
-		createFakeExplosion(rarity, entity.getLocation(), event.getRadius(), event.getRadius());
+		createFakeExplosion(rarity, entity.getLocation(), event.getRadius(), event.getRadius() * 2.0F);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -246,8 +246,9 @@ public class BlockRarityListener implements Listener
 		Bukkit.broadcastMessage("rarity: " + rarity);
 		Bukkit.broadcastMessage("radius: " + radius);
 		Bukkit.broadcastMessage("power: " + power);
+		
 		final int r = (int) radius;
-		final int rays = 100;
+		final int rays = 200;
 		
 		final Map<Block, Float> damagedBlocks = new HashMap<>();
 		
@@ -255,7 +256,7 @@ public class BlockRarityListener implements Listener
 		{
 			final Vector direction = getRandomDirection();
 			
-			for(int j = 0; j < r; j++)
+			for(int j = 0; j <= r; j++)
 			{
 				final Location rayLocation = location.clone().add(direction.clone().multiply(j));
 				final Block block = rayLocation.getBlock();

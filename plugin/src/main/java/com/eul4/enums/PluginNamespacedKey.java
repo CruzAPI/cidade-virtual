@@ -21,5 +21,7 @@ public class PluginNamespacedKey
 	ENTITY_MOVE_ITEM_TYPE_ORDINAL = new NamespacedKey(NAMESPACE, "entity_move_item_type_ordinal"),
 	CANCEL_STRUCTURE_INTERACTION = new NamespacedKey(NAMESPACE, "cancel_structure_interaction"),
 	RARITY = new NamespacedKey(NAMESPACE, "rarity"),
+	MYSTHIC = new NamespacedKey(NAMESPACE, "mysthic"),
+	CONTAINTMENT_CHANCE = new NamespacedKey(NAMESPACE, "containtment_chance"),
 	ENCHANTMENT_STABILITY = new NamespacedKey(NAMESPACE, "stability");
 }

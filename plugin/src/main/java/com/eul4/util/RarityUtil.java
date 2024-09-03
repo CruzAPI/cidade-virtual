@@ -29,6 +29,11 @@ public class RarityUtil
 {
 	public static ItemStack setRarity(ItemStack item, Rarity rarity)
 	{
+		return setRarity(item, rarity, true);
+	}
+	
+	public static ItemStack setRarity(ItemStack item, Rarity rarity, boolean lore)
+	{
 		if(item == null)
 		{
 			return null;
@@ -61,7 +66,12 @@ public class RarityUtil
 		
 		var container = meta.getPersistentDataContainer();
 		container.set(RARITY, BYTE, rarity.getId());
-		meta.lore(rarity.getStylizedMessage().translateLines(ResourceBundleHandler.DEFAULT_LOCALE));
+		
+		if(lore)
+		{
+			meta.lore(rarity.getStylizedMessage().translateLines(ResourceBundleHandler.DEFAULT_LOCALE));
+		}
+		
 		item.setItemMeta(meta);
 		
 		return item;

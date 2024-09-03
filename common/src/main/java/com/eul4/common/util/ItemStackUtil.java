@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.Repairable;
 
 import java.util.Collections;
 import java.util.Map;
@@ -119,5 +120,12 @@ public class ItemStackUtil
 		
 		item.setItemMeta(meta);
 		return changed;
+	}
+	
+	public static int getRepairCost(ItemStack item)
+	{
+		return item != null && item.getItemMeta() instanceof Repairable secondRepairable
+				? secondRepairable.getRepairCost()
+				: 0;
 	}
 }

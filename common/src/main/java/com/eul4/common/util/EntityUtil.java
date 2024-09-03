@@ -15,7 +15,8 @@ import java.util.Map;
 
 public class EntityUtil
 {
-	public static Map<Material, EntityType> ENTITY_TYPE_NAME = new HashMap<>();
+	public static Map<Material, EntityType> ENTITY_TYPE_MAPPED_BY_MATERIAL = new HashMap<>();
+	public static Map<EntityType, Material> MATERIAL_MAPPED_BY_ENTITY_TYPE = new HashMap<>();
 	
 	static
 	{
@@ -25,14 +26,20 @@ public class EntityUtil
 			
 			if(material != null)
 			{
-				ENTITY_TYPE_NAME.put(material, entityType);
+				ENTITY_TYPE_MAPPED_BY_MATERIAL.put(material, entityType);
+				MATERIAL_MAPPED_BY_ENTITY_TYPE.put(entityType, material);
 			}
 		}
 	}
 	
+	public static Material getSpawnerEggByEntityType(EntityType entityType)
+	{
+		return MATERIAL_MAPPED_BY_ENTITY_TYPE.get(entityType);
+	}
+	
 	public static EntityType getEntityTypeBySpawnerEgg(Material material)
 	{
-		return ENTITY_TYPE_NAME.get(material);
+		return ENTITY_TYPE_MAPPED_BY_MATERIAL.get(material);
 	}
 	
 	public static void hideNullable(Plugin plugin, Entity entity)

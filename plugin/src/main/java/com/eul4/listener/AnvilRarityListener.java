@@ -38,8 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static com.eul4.common.util.ItemStackUtil.addEnchant;
-import static com.eul4.common.util.ItemStackUtil.getEnchantments;
+import static com.eul4.common.util.ItemStackUtil.*;
 
 @RequiredArgsConstructor
 public class AnvilRarityListener implements Listener
@@ -299,8 +298,8 @@ public class AnvilRarityListener implements Listener
 		anvilView.setRepairCost(anvilView.getRepairCost() + 1);
 	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onFinish(PrepareAnvilEvent event)
+	@EventHandler(priority = EventPriority.VERY_HIGH)
+	public void validadeRarityAndIncrementResultRepairCost(PrepareAnvilEvent event)
 	{
 		AnvilView anvilView = event.getView();
 		AnvilInventory anvilInventory = event.getInventory();
@@ -322,19 +321,6 @@ public class AnvilRarityListener implements Listener
 			return;
 		}
 		
-		if(result.getItemMeta() instanceof Repairable resultRepairable && !wasJustRenamed(event))
-		{
-			int secondRepairCost = second != null && second.getItemMeta() instanceof Repairable secondRepairable
-					? secondRepairable.getRepairCost()
-					: 0;
-			
-			int repairCost = Math.max(resultRepairable.getRepairCost(), secondRepairCost);
-			repairCost = repairCost * 2 + 1;
-			
-			resultRepairable.setRepairCost(repairCost);
-			result.setItemMeta(resultRepairable);
-		}
-		
 		if(!isUnitRepairing(first, second))
 		{
 			if(second != null)
@@ -352,10 +338,17 @@ public class AnvilRarityListener implements Listener
 			}
 		}
 		
-		event.getViewers().forEach(human ->
+		if(result.getItemMeta() instanceof Repairable resultRepairable && !wasJustRenamed(event))
 		{
-			setInstantBuild((Player) human, anvilView.getRepairCost() <= anvilView.getMaximumRepairCost());
-		});
+			int firstRepairCost = getRepairCost(first);
+			int secondRepairCost = getRepairCost(second);
+			
+			int repairCost = Math.max(firstRepairCost, secondRepairCost);
+			repairCost = repairCost * 2 + 1;
+			
+			resultRepairable.setRepairCost(repairCost);
+			result.setItemMeta(resultRepairable);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -418,6 +411,13 @@ public class AnvilRarityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void updateInventory(PrepareAnvilEvent event)
 	{
+		AnvilView anvilView = event.getView();
+		
+		event.getViewers().forEach(human ->
+		{
+			setInstantBuild((Player) human, anvilView.getRepairCost() <= anvilView.getMaximumRepairCost());
+		});
+		
 		plugin.getServer().getScheduler().getMainThreadExecutor(plugin).execute
 		(
 			() -> event.getViewers().forEach(human -> ((Player) human).updateInventory())

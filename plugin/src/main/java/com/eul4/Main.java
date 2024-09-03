@@ -271,6 +271,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new ChatListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
 		pluginManager.registerEvents(new ContainerRarityListener(this), this);
+		pluginManager.registerEvents(new ContaintmentPickaxeListener(this), this);
 		pluginManager.registerEvents(new CraftRarityListener(this), this);
 		pluginManager.registerEvents(new DebugListener(this), this);
 		pluginManager.registerEvents(new ElytraRarityListener(this), this);

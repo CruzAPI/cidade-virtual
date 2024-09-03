@@ -82,6 +82,7 @@ public enum PluginMessage implements Message
 		LEGENDARY.translate(locale, String::toUpperCase).style(Rarity.LEGENDARY.getStyle())
 	)),
 	
+	CONTAINTMENT_PICKAXE_CAN_BREAK_ONLY_SPAWNERS("containtment-pickaxe.can-break-only-spawners", empty().color(RED)),
 	INCOMPATIBLE_RARITY("incompatible-rarity", empty().color(RED)),
 	COMMON_INCOMPATIBILITY_$TRANSLATABLE("common.container-incompatibility", (bundle, args) -> new Component[]
 	{
@@ -101,6 +102,7 @@ public enum PluginMessage implements Message
 	
 	FIREWORK_INCOMPATIBLE_RARITY("firework-incompatible-rarity", empty().color(RED)),
 	ARROW_RARITY_HIGHER_THAN_BOW("arrow-rarity-higher-than-bow", empty().color(RED)),
+	CONTAINTMENT_PICKAXE_DISPLAY_NAME("containtment-pickaxe.display-name", empty().color(YELLOW).decorate(BOLD)),
 	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),

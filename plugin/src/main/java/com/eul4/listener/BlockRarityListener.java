@@ -88,7 +88,7 @@ public class BlockRarityListener implements Listener
 		
 		if(blockData.isDead())
 		{
-			block.breakNaturally(blockData.getFakeTool(tool));
+			block.breakNaturally(blockData.getFakeTool(tool), false, true);
 		}
 	}
 	
@@ -123,9 +123,9 @@ public class BlockRarityListener implements Listener
 		Rarity rarity = RarityUtil.getRarity(plugin, block);
 		plugin.getBlockDataFiler().removeBlockData(block);
 		
-		for(Item drop : event.getItems())
+		for(ItemStack drop : event.getItems())
 		{
-			drop.setItemStack(RarityUtil.setRarity(drop.getItemStack(), rarity));
+			RarityUtil.setRarity(drop, rarity);
 		}
 	}
 	

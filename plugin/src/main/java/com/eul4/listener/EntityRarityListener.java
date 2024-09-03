@@ -6,6 +6,8 @@ import com.eul4.common.util.EntityUtil;
 import com.eul4.enums.Rarity;
 import com.eul4.event.entity.EntityDamageItemOnHitEvent;
 import com.eul4.event.entity.EquipmentHurtEvent;
+import com.eul4.i18n.PluginMessage;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.util.RarityUtil;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.util.Mth;
@@ -147,6 +149,56 @@ public class EntityRarityListener implements Listener
 		damageRarity = Rarity.getMinRarity(entityRarity, damageRarity);
 		
 		event.setDamage(event.getDamage() * damageRarity.getDamageMultiplier());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onChangeSpawnerType(PlayerInteractEvent event)
+	{
+		Block clickedBlock = event.getClickedBlock();
+		Player player = event.getPlayer();
+		EquipmentSlot handType = event.getHand();
+		
+		if(event.getAction() != Action.RIGHT_CLICK_BLOCK
+				|| clickedBlock == null
+				|| handType == null
+				|| player.isSneaking()
+				|| !(clickedBlock.getState() instanceof CreatureSpawner creatureSpawner))
+		{
+			return;
+		}
+		
+		ItemStack item = player.getEquipment().getItem(handType);
+		EntityType entityType = EntityUtil.getEntityTypeBySpawnerEgg(item.getType());
+		
+		if(entityType == null)
+		{
+			return;
+		}
+		
+		Rarity eggRarity = RarityUtil.getRarity(item);
+		Rarity spawnerRarity = RarityUtil.getRarity(plugin, clickedBlock);
+		
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		
+		if(eggRarity != spawnerRarity)
+		{
+			pluginPlayer.sendMessage(PluginMessage.INCOMPATIBLE_RARITY);
+			event.setCancelled(true);
+			return;
+		}
+		
+		creatureSpawner.setSpawnedType(entityType);
+		
+		if(!creatureSpawner.update())
+		{
+			event.setCancelled(true);
+			return;
+		}
+		
+		if(player.getGameMode() != GameMode.CREATIVE)
+		{
+			item.subtract(1);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

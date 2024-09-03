@@ -2,6 +2,7 @@ package com.eul4.i18n;
 
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.RichMessage;
+import com.eul4.common.util.CommonMessageUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -9,12 +10,21 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import java.util.Locale;
 import java.util.function.BiFunction;
 
+import static com.eul4.common.i18n.CommonMessage.COMMAND_REPLY_USAGE_$ALIASES;
+import static com.eul4.common.util.CommonMessageUtil.displayName;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
+
 @RequiredArgsConstructor
 @Getter
 public enum PluginRichMessage implements RichMessage
 {
 	COMMAND_TOGGLE_COMBAT_NEW("command.toggle-combat.new"),
 	COMMAND_TOGGLE_COMBAT_OLD("command.toggle-combat.old"),
+	CONTAINTMENT_PICKAXE_LORE("containtment-pickaxe.lore", (locale, args) -> new TagResolver[]
+	{
+		component("chance", CommonMessageUtil.toPercentage(args[0], "0.#", locale)),
+	}),
+	MYSTHIC_LABEL("mysthic.label"),
 	;
 	
 	private final String key;

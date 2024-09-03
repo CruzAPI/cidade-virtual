@@ -3,6 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.i18n.Messageable;
+import com.eul4.item.ContaintmentPickaxe;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
@@ -82,6 +83,12 @@ public class TestCommand implements TabExecutor
 		if(args.length == 0)
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
+		}
+		else if((args.length == 2) && args[0].equals("containtment"))
+		{
+			float chance = Float.parseFloat(args[1]);
+			ContaintmentPickaxe containtmentPickaxe = new ContaintmentPickaxe(chance);
+			player.getInventory().addItem(containtmentPickaxe.getItemStack());
 		}
 		else if((args.length == 1) && args[0].equals("test"))
 		{

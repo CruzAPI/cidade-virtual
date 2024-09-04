@@ -24,6 +24,7 @@ plugins/
 paper.jar
 
 # Outros
+debug/
 .console_history
 crash-reports/
 banned-ips.json

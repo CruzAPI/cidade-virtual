@@ -55,6 +55,33 @@ public class ItemStackUtil
 		item.setItemMeta(damageable);
 	}
 	
+	public static void clearEnchantments(ItemStack item)
+	{
+		if(item == null)
+		{
+			return;
+		}
+		
+		ItemMeta meta = item.getItemMeta();
+		
+		if(meta == null)
+		{
+			return;
+		}
+		
+		meta.removeEnchantments();
+		
+		if(meta instanceof EnchantmentStorageMeta storageMeta)
+		{
+			for(Enchantment enchantment : storageMeta.getStoredEnchants().keySet())
+			{
+				storageMeta.removeStoredEnchant(enchantment);
+			}
+		}
+		
+		item.setItemMeta(meta);
+	}
+	
 	public static int getMaxDamage(ItemStack item)
 	{
 		if(item == null)
@@ -68,6 +95,11 @@ public class ItemStackUtil
 		}
 		
 		return damageable.hasMaxDamage() ? damageable.getMaxDamage() : item.getType().getMaxDurability();
+	}
+	
+	public static boolean hasEnchantments(ItemStack item)
+	{
+		return !getEnchantments(item).isEmpty();
 	}
 	
 	public static Map<Enchantment, Integer> getEnchantments(ItemStack item)

@@ -166,6 +166,11 @@ public enum Rarity
 		return (int) (40.0 * Math.pow(4.0D, ordinal()));
 	}
 	
+	public int getEnchantmentMaxLevel()
+	{
+		return 30 * (int) Math.pow(3, ordinal());
+	}
+	
 	private double getRelativeDurabilityMultiplier(Material material, double exponent)
 	{
 		return Math.pow(getDurabilityBaseExponentiationBase(material),

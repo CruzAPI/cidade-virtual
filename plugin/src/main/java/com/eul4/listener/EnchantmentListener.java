@@ -48,7 +48,7 @@ public class EnchantmentListener implements Listener
 	private final Random random = new Random();
 	private static final Map<UUID, MaterialEnchantmentOffer> MATERIAL_ENCHANTMENT_OFFER_MAP = new HashMap<>();
 	
-	private boolean isInEnchantingTableIncludingCustomEnchants(Holder<net.minecraft.world.item.enchantment.Enchantment> holder)
+	private static boolean isInEnchantingTableIncludingCustomEnchants(Holder<net.minecraft.world.item.enchantment.Enchantment> holder)
 	{
 		return holder.is(EnchantmentTags.IN_ENCHANTING_TABLE)
 				|| holder.getRegisteredName().equals(PluginNamespacedKey.ENCHANTMENT_STABILITY.toString());
@@ -63,7 +63,7 @@ public class EnchantmentListener implements Listener
 		
 		int playerLevel = player.getLevel();
 		
-		ItemStack enchantedItem = enchantItem(event.getItem().clone(), event.getExpLevelCost());
+		ItemStack enchantedItem = enchantItem(event.getItem().clone(), random, event.getExpLevelCost());
 		ItemMeta meta = enchantedItem.getItemMeta();
 		
 		if
@@ -187,7 +187,14 @@ public class EnchantmentListener implements Listener
 		private final EnchantmentOffer[] offers;
 	}
 	
-	private ItemStack enchantItem(ItemStack itemStack, int level)
+	public static ItemStack enchantItemRandomLevel(ItemStack itemStack, Random random)
+	{
+		final Rarity rarity = RarityUtil.getRarity(itemStack);
+		final int randomLevel = random.nextInt(rarity.getEnchantmentMaxLevel()) + 1;
+		return enchantItem(itemStack, random, randomLevel);
+	}
+	
+	public static ItemStack enchantItem(ItemStack itemStack, Random random, int level)
 	{
 		final Rarity rarity = RarityUtil.getRarity(itemStack);
 		
@@ -203,7 +210,7 @@ public class EnchantmentListener implements Listener
 			nmsStack,
 			level,
 			enchantments.holders()
-					.filter(this::isInEnchantingTableIncludingCustomEnchants)
+					.filter(EnchantmentListener::isInEnchantingTableIncludingCustomEnchants)
 					.collect(Collectors.toList())
 		);
 		

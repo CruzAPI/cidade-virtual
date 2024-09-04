@@ -53,11 +53,6 @@ public class DebugCommand implements TabExecutor
 	{
 		Messageable messageable = plugin.getMessageableService().getMessageable(commandSender);
 		
-		if(messageable == null)
-		{
-			return false;
-		}
-		
 		if(!plugin.getPermissionService().hasPermission(commandSender, "command.debug"))
 		{
 			messageable.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
@@ -73,25 +68,32 @@ public class DebugCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			player.sendMessage(Tag.ITEMS_BREAKS_DECORATED_POTS.getValues().toString());
+			Bukkit.getLogger().severe(plugin.getServer().getStructureManager().getStructures().toString());
+			player.sendMessage(plugin.getServer().getStructureManager().getStructures().toString());
 		}
-		
-		if(args.length == 1 && args[0].equalsIgnoreCase("toggle-combat-map"))
+		else if(args.length == 1)
 		{
-			player.sendMessage(plugin.getToggleCombatCommand().getCooldownMap().toString());
-			return true;
-		}
-		else if(args.length == 1 && args[0].equalsIgnoreCase("item-attributes"))
-		{
-			player.sendMessage
-			(
-				Optional
-				.of(player.getInventory().getItemInMainHand())
-				.map(ItemStack::getItemMeta)
-				.map(ItemMeta::getAttributeModifiers)
-				.map(Multimap::toString)
-				.orElse("null")
-			);
+			if(args.length == 1 && args[0].equalsIgnoreCase("toggle-combat-map"))
+			{
+				player.sendMessage(plugin.getToggleCombatCommand().getCooldownMap().toString());
+				return true;
+			}
+			else if(args.length == 1 && args[0].equalsIgnoreCase("item-attributes"))
+			{
+				player.sendMessage
+				(
+					Optional
+							.of(player.getInventory().getItemInMainHand())
+							.map(ItemStack::getItemMeta)
+							.map(ItemMeta::getAttributeModifiers)
+							.map(Multimap::toString)
+							.orElse("null")
+				);
+			}
+			else
+			{
+			
+			}
 		}
 		return false;
 	}

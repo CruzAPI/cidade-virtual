@@ -15,7 +15,7 @@
 _version: 31
 anticheat:
   anti-xray:
-    enabled: false
+    enabled: true
     engine-mode: 1
     hidden-blocks:
     - copper_ore
@@ -254,7 +254,7 @@ environment:
       villager-trade: false
   water-over-lava-flow-speed: 5
 feature-seeds:
-  generate-random-seeds-for-all: false
+  generate-random-seeds-for-all: true
 fishing-time-range:
   maximum: 600
   minimum: 100

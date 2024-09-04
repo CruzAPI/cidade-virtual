@@ -285,7 +285,9 @@ public class Main extends Common
 		pluginManager.registerEvents(new StructureShopGuiListener(this), this);
 		pluginManager.registerEvents(new TestListener(this), this);
 		pluginManager.registerEvents(new GeneratorGuiListener(this), this);
+		pluginManager.registerEvents(new HangRarityListener(this), this);
 		pluginManager.registerEvents(new StructureMoveListener(this), this);
+		pluginManager.registerEvents(new StructureRarityListener(this), this);
 		pluginManager.registerEvents(new TownAttackListener(this), this);
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);

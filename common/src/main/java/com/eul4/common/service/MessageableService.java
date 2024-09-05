@@ -8,13 +8,14 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @RequiredArgsConstructor
 public class MessageableService
 {
 	private final Common plugin;
 	
-	public @NotNull Messageable getMessageable(Entity entity)
+	public @NotNull Messageable getMessageable(@Nullable Entity entity)
 	{
 		if(entity instanceof Player player)
 		{

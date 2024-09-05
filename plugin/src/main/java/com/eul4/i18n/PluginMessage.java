@@ -104,6 +104,8 @@ public enum PluginMessage implements Message
 	ARROW_RARITY_HIGHER_THAN_BOW("arrow-rarity-higher-than-bow", empty().color(RED)),
 	CONTAINTMENT_PICKAXE_DISPLAY_NAME("containtment-pickaxe.display-name", empty().color(YELLOW).decorate(BOLD)),
 	
+	WORLD_BLOCK_RARITY_RESTRICTION("world-block-rarity-restriction", empty().color(RED)),
+	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
 	STRUCTURE_CANNON_NAME("structure.cannon.name"),

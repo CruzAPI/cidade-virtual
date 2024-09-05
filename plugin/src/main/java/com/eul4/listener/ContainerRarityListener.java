@@ -9,6 +9,7 @@ import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -170,6 +171,11 @@ public class ContainerRarityListener implements Listener
 			inventoryRarity = RarityUtil.getRarity(plugin, block);
 			translationKey = block.getType().translationKey();
 		}
+		else if(inventory.getHolder() instanceof Entity entity && !(entity instanceof Player))
+		{
+			inventoryRarity = RarityUtil.getRarity(entity);
+			translationKey = entity.getType().translationKey();
+		}
 		else
 		{
 			return false;
@@ -196,6 +202,7 @@ public class ContainerRarityListener implements Listener
 		case WORKBENCH:
 		case HOPPER:
 		case SMITHING:
+		default:
 			if(itemRarity.compareTo(inventoryRarity) > 0)
 			{
 				messageable.sendMessage

@@ -13,7 +13,7 @@ public interface SpawnPerformer extends PluginPlayer
 		@Override
 		default void performSpawn()
 		{
-			getPlayer().teleport(PluginWorldType.OVER_WORLD.getInstance().getSpawnLocation());
+			getPlayer().teleport(PluginWorldType.RAID_WORLD.getInstance().getSpawnLocation());
 		}
 	}
 	

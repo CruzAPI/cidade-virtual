@@ -1,5 +1,6 @@
 package com.eul4.common.util;
 
+import com.eul4.common.i18n.TranslatableMessage;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -74,6 +75,16 @@ public class CommonMessageUtil
 		{
 			return Optional.empty();
 		}
+	}
+	
+	public static Component argToComponent(Object arg, Locale locale)
+	{
+		if(arg instanceof TranslatableMessage translatableMessage)
+		{
+			return translatableMessage.translate(locale);
+		}
+		
+		return argToComponent(arg);
 	}
 	
 	public static Component argToComponent(Object arg)

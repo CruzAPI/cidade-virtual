@@ -4,14 +4,13 @@ import com.eul4.Main;
 import com.eul4.common.scoreboard.CommonScoreboard;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.SpawnPerformer;
 import com.eul4.model.player.VanillaPlayer;
 import com.eul4.scoreboard.CraftInitialScoreboard;
 import com.eul4.scoreboard.CraftTownScoreboard;
-import com.eul4.scoreboard.TownScoreboard;
 import com.eul4.type.PluginWorldType;
 import com.eul4.type.player.PhysicalPlayerType;
-import com.eul4.world.VanillaWorld;
+import com.eul4.world.RaidLevel;
+import com.eul4.world.VanillaLevel;
 import com.eul4.wrapper.ChannelingTask;
 import lombok.Getter;
 import org.bukkit.GameMode;
@@ -59,9 +58,9 @@ public class CraftVanillaPlayer extends CraftPhysicalPlayer implements VanillaPl
 		
 		player.setGameMode(GameMode.SURVIVAL);
 		
-		if(!(getCommonWorld() instanceof VanillaWorld))
+		if(!(getCommonWorld() instanceof VanillaLevel))
 		{
-			player.teleport(PluginWorldType.OVER_WORLD.getInstance().getSpawnLocation());
+			player.teleport(PluginWorldType.NEWBIE_WORLD.getInstance().getSpawnLocation());
 		}
 		
 		scoreboard.registerIfNotRegistered();

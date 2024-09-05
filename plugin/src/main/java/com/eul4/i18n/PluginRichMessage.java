@@ -25,6 +25,16 @@ public enum PluginRichMessage implements RichMessage
 		component("chance", CommonMessageUtil.toPercentage(args[0], "0.#", locale)),
 	}),
 	MYSTHIC_LABEL("mysthic.label"),
+	
+	WORLD_RAID_LABEL("world.raid.label"),
+	WORLD_RAID_NETHER_LABEL("world.raid-nether.label"),
+	WORLD_RAID_END_LABEL("world.raid-end.label"),
+	WORLD_NEWBIE_LABEL("world.newbie.label"),
+	WORLD_NEWBIE_NETHER_LABEL("world.newbie-nether.label"),
+	WORLD_NEWBIE_END_LABEL("world.newbie-end.label"),
+	WORLD_TOWN_LABEL("world.town.label"),
+	@Deprecated(forRemoval = true)
+	WORLD_CIDADE_VIRTUAL_LABEL("world.cidade-virtual.label"),
 	;
 	
 	private final String key;

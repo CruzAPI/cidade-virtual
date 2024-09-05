@@ -98,7 +98,7 @@ public class RarityUtil
 	
 	public static boolean hasRarity(PersistentDataHolder persistentDataHolder)
 	{
-		return getRarity(persistentDataHolder) != null;
+		return findRarity(persistentDataHolder).isPresent();
 	}
 	
 	public static boolean hasRarity(ItemStack item)

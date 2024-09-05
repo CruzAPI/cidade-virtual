@@ -27,6 +27,7 @@ import com.eul4.listener.player.tutorial.step.*;
 import com.eul4.listener.scoreboard.AnalyzerScoreboardListener;
 import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
+import com.eul4.listener.world.VanillaLevelListener;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.rule.Rule;
@@ -36,7 +37,6 @@ import com.eul4.service.*;
 import com.eul4.task.RarityBossBarTask;
 import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
-import com.mojang.brigadier.Command;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
@@ -249,6 +249,7 @@ public class Main extends Common
 		registerCommand(toggleCombatCommand = new ToggleCombatCommand(this), ToggleCombatCommand.NAME_AND_ALIASES);
 		registerCommand(new TownCommand(this), TownCommand.NAME_AND_ALIASES);
 		registerCommand(new TutorialCommand(this), TutorialCommand.NAME_AND_ALIASES);
+		registerCommand(new WorldCommand(this), WorldCommand.NAME_AND_ALIASES);
 	}
 	
 	private void registerListeners()
@@ -259,6 +260,7 @@ public class Main extends Common
 		registerPlayerListeners();
 		registerScoreboardListeners();
 		registerStructureListeners();
+		registerWorldListeners();
 		
 		pluginManager.registerEvents(new AnvilRarityListener(this), this);
 		pluginManager.registerEvents(new AssistantHideListener(this), this);
@@ -366,6 +368,11 @@ public class Main extends Common
 		pluginManager.registerEvents(new ArmoryListener(this), this);
 	}
 	
+	private void registerWorldListeners()
+	{
+		pluginManager.registerEvents(new VanillaLevelListener(this), this);
+	}
+	
 	private void deleteWorld(String worldName)
 	{
 		FileUtil.deleteDirectory(new File(worldName));
@@ -423,6 +430,6 @@ public class Main extends Common
 	@Override
 	public CommonWorldType getMainWorldType()
 	{
-		return PluginWorldType.OVER_WORLD;
+		return PluginWorldType.RAID_WORLD;
 	}
 }

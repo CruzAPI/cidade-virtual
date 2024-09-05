@@ -4,7 +4,8 @@ import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import com.eul4.Main;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.world.OverWorld;
+import com.eul4.world.RaidWorld;
+import com.eul4.world.SpawnProtectedLevel;
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
@@ -15,7 +16,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.type.Dispenser;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -228,12 +228,12 @@ public class SpawnProtectionListener implements Listener
 	{
 		World world = event.getEntity().getWorld();
 		
-		if(!(plugin.getWorldManager().get(world) instanceof OverWorld overWorld))
+		if(!(plugin.getWorldManager().get(world) instanceof RaidWorld raidWorld))
 		{
 			return;
 		}
 		
-		event.blockList().removeIf(overWorld::isSpawn);
+		event.blockList().removeIf(raidWorld::isSpawn);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -241,12 +241,12 @@ public class SpawnProtectionListener implements Listener
 	{
 		World world = event.getBlock().getWorld();
 		
-		if(!(plugin.getWorldManager().get(world) instanceof OverWorld overWorld))
+		if(!(plugin.getWorldManager().get(world) instanceof RaidWorld raidWorld))
 		{
 			return;
 		}
 		
-		event.blockList().removeIf(overWorld::isSpawn);
+		event.blockList().removeIf(raidWorld::isSpawn);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -370,12 +370,12 @@ public class SpawnProtectionListener implements Listener
 	
 	private boolean cancelIfInSpawn(Block block, Cancellable event)
 	{
-		if(!(plugin.getWorldManager().get(block.getWorld()) instanceof OverWorld overWorld))
+		if(!(plugin.getWorldManager().get(block.getWorld()) instanceof SpawnProtectedLevel level))
 		{
 			return event.isCancelled();
 		}
 		
-		if(overWorld.isSpawn(block))
+		if(level.isSpawn(block))
 		{
 			event.setCancelled(true);
 		}
@@ -385,14 +385,14 @@ public class SpawnProtectionListener implements Listener
 	
 	private boolean cancelIfInSpawn(World world, List<BlockState> blockStates, Cancellable event)
 	{
-		if(!(plugin.getWorldManager().get(world) instanceof OverWorld overWorld))
+		if(!(plugin.getWorldManager().get(world) instanceof RaidWorld raidWorld))
 		{
 			return event.isCancelled();
 		}
 		
 		for(BlockState blockState : blockStates)
 		{
-			if(overWorld.isSpawn(blockState))
+			if(raidWorld.isSpawn(blockState))
 			{
 				event.setCancelled(true);
 				return event.isCancelled();
@@ -404,14 +404,14 @@ public class SpawnProtectionListener implements Listener
 	
 	private boolean cancelIfInSpawnBlocks(World world, List<Block> blocks, Cancellable event)
 	{
-		if(!(plugin.getWorldManager().get(world) instanceof OverWorld overWorld))
+		if(!(plugin.getWorldManager().get(world) instanceof RaidWorld raidWorld))
 		{
 			return event.isCancelled();
 		}
 		
 		for(Block block : blocks)
 		{
-			if(overWorld.isSpawn(block))
+			if(raidWorld.isSpawn(block))
 			{
 				event.setCancelled(true);
 				return event.isCancelled();

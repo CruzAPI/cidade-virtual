@@ -3,7 +3,7 @@ package com.eul4.task;
 import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.model.player.SpawnPlayer;
-import com.eul4.world.OverWorld;
+import com.eul4.world.RaidWorld;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -22,8 +22,8 @@ public class SpawnProtectionTask extends BukkitRunnable
 				continue;
 			}
 			
-			if(!(spawnPlayer.getCommonWorld() instanceof OverWorld overWorld)
-					|| !overWorld.isSafeZone(spawnPlayer.getPlayer().getLocation()))
+			if(!(spawnPlayer.getCommonWorld() instanceof RaidWorld raidWorld)
+					|| !raidWorld.isSafeZone(spawnPlayer.getPlayer().getLocation()))
 			{
 				spawnPlayer.removeProtection();
 			}

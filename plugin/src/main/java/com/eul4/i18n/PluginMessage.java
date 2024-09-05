@@ -17,7 +17,6 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Generator;
 import com.eul4.rule.attribute.*;
 import com.eul4.util.TickConverter;
-import com.eul4.world.OverWorld;
 import com.eul4.wrapper.Tag;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -38,7 +37,8 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.eul4.common.i18n.CommonMessage.USAGE;
-import static com.eul4.common.util.CommonMessageUtil.*;
+import static com.eul4.common.util.CommonMessageUtil.argToComponent;
+import static com.eul4.common.util.CommonMessageUtil.usageRequiredArg;
 import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -696,6 +696,28 @@ public enum PluginMessage implements Message
 	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR("inventory-armory-my-inventory-menu.selector", Component.empty().color(GOLD)),
 	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR_LORE("inventory-armory-my-inventory-menu.selector.lore", Component.empty().color(GRAY)),
 	
+	COMMAND_WORLD_UNKNOWN_WORLD("command.world.unknown-world", Component.empty().color(RED)),
+	COMMAND_WORLD_$LABEL("command.world.info", (bundle, args) -> new Component[]
+	{
+		empty().color(GRAY),
+		argToComponent(args[0], bundle.getLocale())
+	}),
+	
+	COMMAND_WORLD_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_WORLD_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+			.appendNewline()
+			.append(COMMAND_WORLD_USAGE_$ALIASES.translate(locale, args[0]))
+			.color(RED)
+	)),
+
 	COMMAND_BALANCE_YOUR_RESOURCES("command.balance.your-resources", Component.empty().color(WHITE).decorate(BOLD)),
 	
 	COMMAND_BALANCE_TRY_TOWN_COMMAND("command.balance.try-town-command", (bundle, args) -> new Component[]
@@ -947,10 +969,10 @@ public enum PluginMessage implements Message
 	
 	COMMAND_SETHOME_MAX_HOME_REACHED("command.sethome.max-home-reached", empty().color(RED)),
 	COMMAND_SETHOME_NEED_TO_BE_IN_VANILLA("command.sethome.need-to-be-in-vanilla", empty().color(RED)),
-	COMMAND_SETHOME_NEED_TO_BE_AWAY_BLOCKS_FROM_SPAWN("command.sethome.need-to-be-away-blocks-from-spawn", (bundle, args) -> new Component[]
+	COMMAND_SETHOME_NEED_TO_BE_AWAY_$RADIUS("command.sethome.need-to-be-away-blocks-from-spawn", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		text(OverWorld.NEAR_SPAWN_RADIUS)
+		argToComponent(args[0])
 	}),
 	COMMAND_SETHOME_HOME_NAME_MUST_NOT_BE_BLANK("command.sethome.home-name-must-not-be-blank", empty().color(RED)),
 	COMMAND_SETHOME_HOME_NAME_MAX_LENGTH("command.sethome.home-name-max-length", (bundle, args) -> new Component[]

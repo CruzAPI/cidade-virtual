@@ -7,6 +7,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Optional;
@@ -15,9 +16,19 @@ import java.util.UUID;
 @UtilityClass
 public class ContainerUtil
 {
+	public static UUID getOrGenerateRandomUUID(PersistentDataHolder holder)
+	{
+		return hasUUID(holder) ? getUUID(holder) : setRandomUUID(holder);
+	}
+	
 	public static void setUUID(PersistentDataContainer container, NamespacedKey namespacedKey, UUID uuid)
 	{
 		container.set(namespacedKey, PersistentDataType.LONG_ARRAY, UUIDUtil.uuidToLongArray(uuid));
+	}
+	
+	public static boolean hasUUID(PersistentDataHolder persistentDataHolder)
+	{
+		return hasUUID(persistentDataHolder.getPersistentDataContainer(), CommonNamespacedKey.UUID);
 	}
 	
 	public static boolean hasUUID(PersistentDataContainer container, NamespacedKey namespacedKey)
@@ -38,6 +49,11 @@ public class ContainerUtil
 	public static UUID getUUID(ItemStack item)
 	{
 		return getUUID(item, CommonNamespacedKey.ITEM_UUID);
+	}
+	
+	public static UUID getUUID(PersistentDataHolder persistentDataHolder)
+	{
+		return getUUID(persistentDataHolder.getPersistentDataContainer(), CommonNamespacedKey.UUID);
 	}
 	
 	public static UUID getUUID(ItemStack item, NamespacedKey namespacedKey)
@@ -88,6 +104,11 @@ public class ContainerUtil
 	public static boolean hasFlag(PersistentDataContainer container, NamespacedKey namespacedKey)
 	{
 		return container.getOrDefault(namespacedKey, PersistentDataType.BOOLEAN, false);
+	}
+	
+	public static UUID setRandomUUID(PersistentDataHolder persistentDataHolder)
+	{
+		return setRandomUUID(persistentDataHolder.getPersistentDataContainer(), CommonNamespacedKey.UUID);
 	}
 	
 	public static UUID setRandomUUID(PersistentDataContainer container)

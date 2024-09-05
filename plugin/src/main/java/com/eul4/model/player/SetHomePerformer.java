@@ -6,8 +6,7 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.craft.CraftConfirmationGui;
 import com.eul4.service.PurchaseV2;
 import com.eul4.util.MessageUtil;
-import com.eul4.world.OverWorld;
-import com.eul4.world.VanillaWorld;
+import com.eul4.world.HomeableLevel;
 import com.eul4.wrapper.Cost;
 import com.eul4.wrapper.HomeMap;
 import net.kyori.adventure.text.Component;
@@ -103,15 +102,15 @@ public interface SetHomePerformer extends PluginPlayer
 			return false;
 		}
 		
-		if(!(commonWorld instanceof VanillaWorld))
+		if(!(commonWorld instanceof HomeableLevel homeableLevel))
 		{
 			sendMessage(PluginMessage.COMMAND_SETHOME_NEED_TO_BE_IN_VANILLA);
 			return false;
 		}
 		
-		if(commonWorld instanceof OverWorld overWorld && overWorld.isNearSpawn(location))
+		if(homeableLevel.isNearSpawn(location))
 		{
-			sendMessage(PluginMessage.COMMAND_SETHOME_NEED_TO_BE_AWAY_BLOCKS_FROM_SPAWN);
+			sendMessage(PluginMessage.COMMAND_SETHOME_NEED_TO_BE_AWAY_$RADIUS, homeableLevel.getNearSpawnRadius());
 			return false;
 		}
 		

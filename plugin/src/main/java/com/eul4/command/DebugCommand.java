@@ -3,6 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.i18n.Messageable;
+import com.eul4.common.world.CommonWorld;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
@@ -18,6 +19,9 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.structure.GeneratedStructure;
+import org.bukkit.generator.structure.Structure;
+import org.bukkit.generator.structure.StructurePiece;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -68,8 +72,36 @@ public class DebugCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			Bukkit.getLogger().severe(plugin.getServer().getStructureManager().getStructures().toString());
-			player.sendMessage(plugin.getServer().getStructureManager().getStructures().toString());
+			for(GeneratedStructure generatedStructure : player.getChunk().getStructures(Structure.JUNGLE_PYRAMID))
+			{
+				Bukkit.broadcastMessage("pieces " + generatedStructure.getPieces().size());
+				Bukkit.broadcastMessage(generatedStructure.getPieces().stream().map(StructurePiece::getBoundingBox).toList().toString());
+				Bukkit.broadcastMessage("bb: " + generatedStructure.getBoundingBox());
+			}
+		}
+		else if(args.length == 2 && args[0].equalsIgnoreCase("goto"))
+		{
+			String worldName = args[1];
+			World world = plugin.getServer().getWorld(worldName);
+			
+			if(world == null)
+			{
+				player.sendMessage("world not found");
+				return false;
+			}
+			
+			CommonWorld commonWorld = plugin.getWorldManager().get(world);
+			
+			if(commonWorld == null)
+			{
+				player.sendMessage("common world not found");
+				return false;
+			}
+			
+			Location spawnLocation = Optional.ofNullable(commonWorld.getSpawnLocation())
+					.orElse(new Location(commonWorld.getWorld(), 0.5D, 70.0D, 0.5D, 0.0F, 0.0F));
+			
+			player.teleport(spawnLocation);
 		}
 		else if(args.length == 1)
 		{

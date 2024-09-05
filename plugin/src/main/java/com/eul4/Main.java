@@ -27,6 +27,7 @@ import com.eul4.listener.player.tutorial.step.*;
 import com.eul4.listener.scoreboard.AnalyzerScoreboardListener;
 import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
+import com.eul4.listener.world.CommonLevelListener;
 import com.eul4.listener.world.VanillaLevelListener;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
@@ -370,6 +371,7 @@ public class Main extends Common
 	
 	private void registerWorldListeners()
 	{
+		pluginManager.registerEvents(new CommonLevelListener(this), this);
 		pluginManager.registerEvents(new VanillaLevelListener(this), this);
 	}
 	

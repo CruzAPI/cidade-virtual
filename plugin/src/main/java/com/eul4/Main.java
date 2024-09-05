@@ -270,6 +270,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
 		pluginManager.registerEvents(new BlockRarityListener(this), this);
 		pluginManager.registerEvents(new BowRarityListener(this), this);
+		pluginManager.registerEvents(new BucketRarityListener(this), this);
 		pluginManager.registerEvents(new ChannelingTaskListener(this), this);
 		pluginManager.registerEvents(new ChatListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);

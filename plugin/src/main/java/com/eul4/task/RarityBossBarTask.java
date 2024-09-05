@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -52,7 +54,14 @@ public class RarityBossBarTask extends BukkitRunnable
 			}
 			else
 			{
-				Block block = player.getTargetBlockExact(5);
+				boolean hasBucketInHand = player.getEquipment().getItemInMainHand().getType() == Material.BUCKET
+						|| player.getEquipment().getItemInOffHand().getType() == Material.BUCKET;
+				
+				FluidCollisionMode fluidCollisionMode = hasBucketInHand
+						? FluidCollisionMode.SOURCE_ONLY
+						: FluidCollisionMode.NEVER;
+				
+				Block block = player.getTargetBlockExact(5, fluidCollisionMode);
 				setAbstractBossBar(player, new BlockBossBarValue(block));
 			}
 		}

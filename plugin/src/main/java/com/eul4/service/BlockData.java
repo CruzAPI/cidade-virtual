@@ -80,10 +80,10 @@ public class BlockData
 		Arrays.fill(enchantments, Byte.MAX_VALUE);
 	}
 	
-	public BlockData(boolean hasHardness, Rarity rarity, float health, boolean willDrop, byte[] enchantments)
+	public BlockData(boolean hasHardness, @NotNull Rarity rarity, float health, boolean willDrop, byte[] enchantments)
 	{
 		this.hasHardness = hasHardness;
-		this.rarity = rarity;
+		this.rarity = Objects.requireNonNull(rarity);
 		this.health = health;
 		this.willDrop = willDrop;
 		this.enchantments = enchantments;
@@ -292,5 +292,10 @@ public class BlockData
 	public boolean isDead()
 	{
 		return health <= 0.0F;
+	}
+	
+	public void setRarity(@NotNull Rarity rarity)
+	{
+		this.rarity = Objects.requireNonNull(rarity);
 	}
 }

@@ -22,6 +22,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataHolder;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static com.eul4.enums.PluginNamespacedKey.RARITY;
 import static org.bukkit.persistence.PersistentDataType.BYTE;
@@ -153,6 +154,18 @@ public class RarityUtil
 	public static Rarity getRarity(PersistentDataHolder persistentDataHolder)
 	{
 		return Rarity.getRarityById(getRarityId(persistentDataHolder.getPersistentDataContainer()));
+	}
+	
+	public static Rarity getOrSetRarity(PersistentDataHolder persistentDataHolder, Supplier<Rarity> raritySupplier)
+	{
+		if(hasRarity(persistentDataHolder))
+		{
+			return getRarity(persistentDataHolder);
+		}
+		
+		Rarity rarity = raritySupplier.get();
+		setRarity(persistentDataHolder, rarity);
+		return rarity;
 	}
 	
 	public static Optional<Rarity> findRarity(PersistentDataHolder persistentDataHolder)

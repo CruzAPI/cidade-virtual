@@ -9,8 +9,6 @@ import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.type.PluginWorldType;
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.translation.GlobalTranslator;
 import net.minecraft.server.level.ServerLevel;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,7 +21,6 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.Damageable;
@@ -32,10 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
@@ -92,26 +87,17 @@ public class TestCommand implements TabExecutor
 		}
 		else if((args.length == 1) && args[0].equals("test"))
 		{
-			String key = Material.ENCHANTING_TABLE.translationKey();
-			
-			Component a = GlobalTranslator.translator().translate(Component.translatable(key), Locale.US);
-			MessageFormat b = GlobalTranslator.translator().translate(key, Locale.US);
-			
-			Bukkit.broadcastMessage("a: " + a); //returns null
-			Bukkit.broadcastMessage("b: " + b); //returns null
+		
 		}
 		else if((args.length == 2) && args[0].equals("test"))
 		{
 			int amount = Integer.parseInt(args[1]);
-			Bukkit.broadcastMessage("amount: " + amount);
-			player.damageItemStack(EquipmentSlot.HAND, amount);
 		}
 		else if((args.length == 1) && args[0].equals("1"))
 		{
 			ItemStack item = player.getInventory().getItemInMainHand();
 			net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
 			int enchantibility = nmsStack.getItem().getEnchantmentValue();
-			Bukkit.broadcastMessage("enchantiblity: " + enchantibility);
 		}
 		else if((args.length == 1) && args[0].equals("2"))
 		{
@@ -224,11 +210,6 @@ public class TestCommand implements TabExecutor
 		else if(args.length == 2)
 		{
 			Material type = player.getInventory().getItemInMainHand().getType();
-			
-			Bukkit.broadcastMessage(type + " hardness: " + type.getHardness()
-					+ " br: " + type.getBlastResistance()
-					+ " isBlock: " + type.isBlock()
-					+ " solid: " + type.isSolid());
 		}
 		else if(args.length == 3)
 		{

@@ -1,27 +1,23 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
-import com.eul4.common.i18n.Messageable;
 import com.eul4.enums.Rarity;
-import com.eul4.i18n.PluginMessage;
-import com.eul4.model.player.PluginPlayer;
 import com.eul4.util.RarityUtil;
-import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.CrafterCraftEvent;
-import org.bukkit.event.inventory.*;
-import org.bukkit.inventory.*;
-
-import java.util.Optional;
-import java.util.Set;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.BlockInventoryHolder;
+import org.bukkit.inventory.CrafterInventory;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.ItemStack;
 
 import static com.eul4.util.RarityUtil.getMinRarity;
 
@@ -34,7 +30,6 @@ public class CraftRarityListener implements Listener
 	public void on(CrafterCraftEvent event)
 	{
 		Rarity rarity = RarityUtil.getRarity(plugin, event.getBlock());
-		Bukkit.broadcastMessage("RARIDADE:"+rarity);
 		
 		ItemStack result = event.getResult();
 		RarityUtil.setRarity(result, rarity);

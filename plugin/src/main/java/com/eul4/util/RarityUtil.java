@@ -14,7 +14,6 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.structure.GeneratedStructure;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,6 +29,22 @@ import static org.bukkit.persistence.PersistentDataType.BYTE;
 @UtilityClass
 public class RarityUtil
 {
+	public static ItemStack setRarityIfAbsent(ItemStack item)
+	{
+		return setRarityIfAbsent(item, Rarity.DEFAULT_RARITY);
+	}
+	
+	public static ItemStack setRarityIfAbsent(ItemStack item, Rarity rarity)
+	{
+		if(hasRarity(item))
+		{
+			return item;
+		}
+		
+		setRarity(item, rarity);
+		return item;
+	}
+	
 	public static ItemStack setRarity(ItemStack item, Rarity rarity)
 	{
 		return setRarity(item, rarity, true);
@@ -92,9 +107,13 @@ public class RarityUtil
 	{
 		return Optional.ofNullable(item)
 				.map(ItemStack::getItemMeta)
-				.map(ItemMeta::getPersistentDataContainer)
-				.map(RarityUtil::getRarityId)
+				.flatMap(RarityUtil::findRarityId)
 				.map(Rarity::getRarityById);
+	}
+	
+	public static Optional<Byte> findRarityId(PersistentDataHolder holder)
+	{
+		return Optional.ofNullable(holder.getPersistentDataContainer().get(RARITY, BYTE));
 	}
 	
 	public static boolean hasRarity(PersistentDataHolder persistentDataHolder)

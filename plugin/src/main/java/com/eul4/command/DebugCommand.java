@@ -5,29 +5,19 @@ import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.i18n.Messageable;
 import com.eul4.common.world.CommonWorld;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.TownPlayer;
-import com.eul4.model.town.Town;
-import com.eul4.type.PluginWorldType;
 import com.google.common.collect.Multimap;
 import lombok.RequiredArgsConstructor;
-import net.minecraft.server.level.ServerLevel;
-import org.apache.commons.lang.ObjectUtils;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.structure.GeneratedStructure;
-import org.bukkit.generator.structure.Structure;
-import org.bukkit.generator.structure.StructurePiece;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -72,12 +62,7 @@ public class DebugCommand implements TabExecutor
 		
 		if(args.length == 0)
 		{
-			for(GeneratedStructure generatedStructure : player.getChunk().getStructures(Structure.JUNGLE_PYRAMID))
-			{
-				Bukkit.broadcastMessage("pieces " + generatedStructure.getPieces().size());
-				Bukkit.broadcastMessage(generatedStructure.getPieces().stream().map(StructurePiece::getBoundingBox).toList().toString());
-				Bukkit.broadcastMessage("bb: " + generatedStructure.getBoundingBox());
-			}
+		
 		}
 		else if(args.length == 2 && args[0].equalsIgnoreCase("goto"))
 		{

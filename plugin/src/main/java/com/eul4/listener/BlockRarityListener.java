@@ -11,7 +11,10 @@ import com.eul4.util.RarityUtil;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import io.papermc.paper.event.player.PlayerFlowerPotManipulateEvent;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
@@ -243,10 +246,6 @@ public class BlockRarityListener implements Listener
 	
 	public void createFakeExplosion(final Rarity rarity, final Location location, final float radius, final float power)
 	{
-		Bukkit.broadcastMessage("rarity: " + rarity);
-		Bukkit.broadcastMessage("radius: " + radius);
-		Bukkit.broadcastMessage("power: " + power);
-		
 		final int r = (int) radius;
 		final int rays = 200;
 		

@@ -1,6 +1,7 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.common.util.ItemStackUtil;
 import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.Rarity;
 import com.eul4.util.RarityUtil;
@@ -45,7 +46,7 @@ public class EnchantmentListener implements Listener
 {
 	private final Main plugin;
 	
-	private final Random random = new Random();
+	private static final Random RANDOM = new Random();
 	private static final Map<UUID, MaterialEnchantmentOffer> MATERIAL_ENCHANTMENT_OFFER_MAP = new HashMap<>();
 	
 	private static boolean isInEnchantingTableIncludingCustomEnchants(Holder<net.minecraft.world.item.enchantment.Enchantment> holder)
@@ -63,7 +64,7 @@ public class EnchantmentListener implements Listener
 		
 		int playerLevel = player.getLevel();
 		
-		ItemStack enchantedItem = enchantItem(event.getItem().clone(), random, event.getExpLevelCost());
+		ItemStack enchantedItem = enchantItem(event.getItem().clone(), RANDOM, event.getExpLevelCost());
 		ItemMeta meta = enchantedItem.getItemMeta();
 		
 		if
@@ -88,7 +89,7 @@ public class EnchantmentListener implements Listener
 		
 		enchantingInventory.setItem(enchantedItem);
 		player.setLevel(Math.max(0, playerLevel - event.getExpLevelCost()));
-		player.getWorld().playSound(enchantingTable.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, random.nextFloat() * 0.1F + 0.9F);
+		player.getWorld().playSound(enchantingTable.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0F, RANDOM.nextFloat() * 0.1F + 0.9F);
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -142,7 +143,7 @@ public class EnchantmentListener implements Listener
 		int bookshelfBonus = getBookshelvesBonus(bookshelves);
 		int bonus = Math.min(enchantingTableRarity.getMaxEnchantmentBonus(), bookshelfBonus);
 		
-		double base = random.nextInt(1, 8 + 1) + Math.floor(bonus / 2.0D) + random.nextInt(0, bonus + 1);
+		double base = RANDOM.nextInt(1, 8 + 1) + Math.floor(bonus / 2.0D) + RANDOM.nextInt(0, bonus + 1);
 		
 		int[] costs = new int[]
 		{
@@ -336,5 +337,16 @@ public class EnchantmentListener implements Listener
 	)
 	{
 		possibleEntries.removeIf(wrapper -> wrapper.getEnchantType().conflictsWith(pickedEntry.getEnchantType()));
+	}
+	
+	public static ItemStack reenchant(ItemStack item)
+	{
+		if(!ItemStackUtil.hasEnchantments(item))
+		{
+			return item;
+		}
+		
+		ItemStackUtil.clearEnchantments(item);
+		return enchantItemRandomLevel(item, RANDOM);
 	}
 }

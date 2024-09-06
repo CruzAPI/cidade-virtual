@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,6 +41,7 @@ public class DebugListener implements Listener
 		ItemStack item = event.getItem();
 		
 		if(clickedBlock == null
+				|| !player.isOp()
 				|| event.getHand() != EquipmentSlot.HAND
 				|| item == null
 				|| !event.getAction().isRightClick()
@@ -60,6 +62,11 @@ public class DebugListener implements Listener
 		
 		BlockData blockData = blockDataFiler.loadBlockData(analyzedBlock);
 		player.sendMessage(blockData.toString());
+		
+		if(analyzedBlock.getBlockData() instanceof Levelled levelled)
+		{
+			player.sendMessage("levelled: " + levelled.getLevel() + " min: " + levelled.getMinimumLevel() + " max: " + levelled.getMaximumLevel());
+		}
 	}
 	
 	@EventHandler

@@ -39,7 +39,7 @@ public class FluidRarityListener implements Listener
 			return;
 		}
 		
-		if(newData instanceof Levelled levelled && levelled.getMaximumLevel() == levelled.getMaximumLevel())
+		if(newData instanceof Levelled levelled && levelled.getLevel() == levelled.getMinimumLevel())
 		{
 			com.eul4.service.BlockData blockData = plugin.getBlockDataFiler().loadBlockDataOrDefault(block);
 			blockData.setRarity(Rarity.COMMON);

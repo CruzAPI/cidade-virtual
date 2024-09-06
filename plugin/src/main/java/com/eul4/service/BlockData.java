@@ -297,5 +297,11 @@ public class BlockData
 	public void setRarity(@NotNull Rarity rarity)
 	{
 		this.rarity = Objects.requireNonNull(rarity);
+		resetHealth();
+	}
+	
+	public void resetHealth()
+	{
+		this.health = rarity.getMaxHealth();
 	}
 }

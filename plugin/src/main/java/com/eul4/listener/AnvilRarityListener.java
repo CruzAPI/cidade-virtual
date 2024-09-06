@@ -8,6 +8,7 @@ import com.eul4.Main;
 import com.eul4.common.util.ItemStackUtil;
 import com.eul4.common.wrapper.Pitch;
 import com.eul4.enums.Rarity;
+import com.eul4.i18n.PluginMessage;
 import com.eul4.util.RarityUtil;
 import com.eul4.util.SoundUtil;
 import com.eul4.wrapper.EnchantType;
@@ -19,13 +20,13 @@ import org.bukkit.Sound;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.BlockInventoryHolder;
@@ -34,6 +35,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.inventory.view.AnvilView;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -46,6 +48,8 @@ public class AnvilRarityListener implements Listener
 	private final Main plugin;
 	
 	private final Random random = new Random();
+	
+	private final Map<UUID, Task> tasks = new HashMap<>();
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onAnvilDamaged(AnvilDamagedEvent event)
@@ -351,6 +355,34 @@ public class AnvilRarityListener implements Listener
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onInventoryCloseCancelTask(InventoryCloseEvent event)
+	{
+		cancelTask(event.getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void scheduleTask(PrepareAnvilEvent event)
+	{
+		ItemStack result = event.getResult();
+		Player player = (Player) event.getView().getPlayer();
+		cancelTask(player);
+		
+		if(result == null)
+		{
+			return;
+		}
+		
+		Task task = new Task(event.getView(), result.clone());
+		task.runTaskTimer(plugin, 0L, 1L);
+		tasks.put(player.getUniqueId(), task);
+	}
+	
+	private void cancelTask(HumanEntity player)
+	{
+		Optional.ofNullable(tasks.get(player.getUniqueId())).ifPresent(Task::cancel);
+	}
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onClickAnvilResult(InventoryClickEvent event)
 	{
@@ -371,6 +403,10 @@ public class AnvilRarityListener implements Listener
 		{
 			SoundUtil.playPlong(player);
 			event.setCancelled(true);
+		}
+		else
+		{
+			cancelTask(player);
 		}
 	}
 	
@@ -412,11 +448,6 @@ public class AnvilRarityListener implements Listener
 	public void updateInventory(PrepareAnvilEvent event)
 	{
 		AnvilView anvilView = event.getView();
-		
-		event.getViewers().forEach(human ->
-		{
-			setInstantBuild((Player) human, anvilView.getRepairCost() <= anvilView.getMaximumRepairCost());
-		});
 		
 		plugin.getServer().getScheduler().getMainThreadExecutor(plugin).execute
 		(
@@ -502,28 +533,6 @@ public class AnvilRarityListener implements Listener
 		return item.getType().getMaxDurability() != 0 || item.getType() == Material.ENCHANTED_BOOK;
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR)
-	private void onInventoryOpen(@NotNull InventoryOpenEvent event)
-	{
-		if(event.getView() instanceof AnvilView
-				&& event.getPlayer() instanceof Player player
-				&& player.getGameMode() != GameMode.CREATIVE)
-		{
-			setInstantBuild(player, true);
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	private void onInventoryClose(@NotNull InventoryCloseEvent event)
-	{
-		if(event.getInventory() instanceof AnvilInventory
-				&& event.getPlayer() instanceof Player player
-				&& player.getGameMode() != GameMode.CREATIVE)
-		{
-			setInstantBuild(player, false);
-		}
-	}
-	
 	public void setInstantBuild(@NotNull Player player, boolean instantBuild)
 	{
 		PacketContainer packet = new PacketContainer(PacketType.Play.Server.ABILITIES);
@@ -535,5 +544,73 @@ public class AnvilRarityListener implements Listener
 		packet.getFloat().write(1, player.getWalkSpeed() / 2);
 		
 		ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+	}
+	
+	private class Task extends BukkitRunnable
+	{
+		private final AnvilView anvilView;
+		private final AnvilInventory anvilInventory;
+		
+		private final ItemStack actualResult;
+		private final ItemStack warnResult;
+		private final Player player;
+		
+		private Task(AnvilView anvilView, ItemStack result)
+		{
+			this.anvilView = anvilView;
+			this.player = (Player) anvilView.getPlayer();
+			this.anvilInventory = ((AnvilInventory) anvilView.getTopInventory());
+			this.actualResult = result;
+			
+			this.warnResult = ItemStack.of(Material.RED_STAINED_GLASS_PANE);
+			
+			ItemMeta meta;
+			meta = warnResult.getItemMeta();
+			meta.displayName(PluginMessage.ANVIL_INSUFFICIENT_XP.translate(player));
+			warnResult.setItemMeta(meta);
+		}
+		
+		private int ticks;
+		
+		@Override
+		public void run()
+		{
+			if(player.getOpenInventory() != anvilView)
+			{
+				cancel();
+				return;
+			}
+			
+			if(anvilView.getRepairCost() < 40 || anvilView.getMaximumRepairCost() > anvilView.getRepairCost())
+			{
+				anvilInventory.setResult(actualResult);
+				setInstantBuild(player, false);
+				return;
+			}
+			
+			if(player.getLevel() >= anvilView.getRepairCost() || (ticks / 20) % 2 == 0)
+			{
+				setInstantBuild(player, true);
+				anvilInventory.setResult(actualResult);
+			}
+			else
+			{
+				setInstantBuild(player, false);
+				anvilInventory.setResult(warnResult);
+			}
+			
+			ticks++;
+		}
+		
+		@Override
+		public synchronized void cancel() throws IllegalStateException
+		{
+			super.cancel();
+			
+			if(tasks.remove(anvilView.getPlayer().getUniqueId(), this))
+			{
+				setInstantBuild(player, false);
+			}
+		}
 	}
 }

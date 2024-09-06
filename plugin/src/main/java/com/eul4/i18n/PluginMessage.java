@@ -106,6 +106,8 @@ public enum PluginMessage implements Message
 	
 	WORLD_BLOCK_RARITY_RESTRICTION("world-block-rarity-restriction", empty().color(RED)),
 	
+	ANVIL_INSUFFICIENT_XP("anvil.insufficient-xp", empty().color(RED).decorate(BOLD)),
+	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
 	STRUCTURE_CANNON_NAME("structure.cannon.name"),

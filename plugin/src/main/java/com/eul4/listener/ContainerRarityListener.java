@@ -156,6 +156,15 @@ public class ContainerRarityListener implements Listener
 		}
 		
 		InventoryType inventoryType = inventory.getType();
+		Messageable messageable = plugin.getMessageableService().getMessageable(humanEntity);
+		
+		if(inventoryType == InventoryType.ENDER_CHEST)
+		{
+			messageable.sendMessage(PluginMessage.ENDERCHEST_DISABLED_YOU_CAN_ONLY_PICKUP);
+			SoundUtil.playPlongIfPlayer(humanEntity);
+			cancellable.setCancelled(true);
+			return true;
+		}
 		
 		Rarity inventoryRarity;
 		String translationKey;
@@ -180,8 +189,6 @@ public class ContainerRarityListener implements Listener
 		{
 			return false;
 		}
-		
-		Messageable messageable = plugin.getMessageableService().getMessageable(humanEntity);
 		
 		Rarity itemRarity = RarityUtil.getRarity(itemStack);
 		

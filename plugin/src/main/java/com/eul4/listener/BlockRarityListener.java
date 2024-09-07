@@ -11,12 +11,10 @@ import com.eul4.util.RarityUtil;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import io.papermc.paper.event.player.PlayerFlowerPotManipulateEvent;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.type.Cocoa;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,15 +37,6 @@ public class BlockRarityListener implements Listener
 	
 	private final Random random = new Random();
 	
-//	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-//	public void onBlockBreak(BlockBreakEvent event)
-//	{
-//		changeHardnessToNewState(event, event.getBlock().getState(),
-//				isWaterlogged(event.getBlock()) || event.getBlock().getType() == Material.ICE
-//				? Material.WATER.createBlockData()
-//				: Material.AIR.createBlockData());
-//	}
-//
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{

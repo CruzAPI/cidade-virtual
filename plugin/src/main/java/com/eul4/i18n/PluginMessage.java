@@ -84,6 +84,12 @@ public enum PluginMessage implements Message
 	
 	CONTAINTMENT_PICKAXE_CAN_BREAK_ONLY_SPAWNERS("containtment-pickaxe.can-break-only-spawners", empty().color(RED)),
 	INCOMPATIBLE_RARITY("incompatible-rarity", empty().color(RED)),
+	ENDERCHEST_DISABLED_YOU_CAN_ONLY_PICKUP("enderchest-disabled.you-can-only-pickup", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		Component.translatable(Material.ENDER_CHEST.translationKey())
+	}),
+	
 	COMMON_INCOMPATIBILITY_$TRANSLATABLE("common.container-incompatibility", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),

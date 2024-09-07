@@ -7,8 +7,7 @@ import com.eul4.common.world.CommonWorld;
 import com.eul4.model.player.PluginPlayer;
 import com.google.common.collect.Multimap;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -109,7 +108,7 @@ public class DebugCommand implements TabExecutor
 			}
 			else
 			{
-			
+				player.sendMessage(Bukkit.getTag("blocks", NamespacedKey.minecraft(args[0].toLowerCase()), Material.class).getValues().toString());
 			}
 		}
 		return false;

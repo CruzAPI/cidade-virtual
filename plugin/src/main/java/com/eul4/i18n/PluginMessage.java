@@ -727,6 +727,39 @@ public enum PluginMessage implements Message
 			.append(COMMAND_WORLD_USAGE_$ALIASES.translate(locale, args[0]))
 			.color(RED)
 	)),
+	
+	COMMAND_RAID_ALREADY_IN_WORLD("command.raid.already-in-world", Component.empty().color(RED)),
+	COMMAND_NEWBIE_ALREADY_IN_WORLD("command.newbie.already-in-world", Component.empty().color(RED)),
+	
+	COMMAND_RAID_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_RAID_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+			.appendNewline()
+			.append(COMMAND_RAID_USAGE_$ALIASES.translate(locale, args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_NEWBIE_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_NEWBIE_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+			.appendNewline()
+			.append(COMMAND_NEWBIE_USAGE_$ALIASES.translate(locale, args[0]))
+			.color(RED)
+	)),
 
 	COMMAND_BALANCE_YOUR_RESOURCES("command.balance.your-resources", Component.empty().color(WHITE).decorate(BOLD)),
 	

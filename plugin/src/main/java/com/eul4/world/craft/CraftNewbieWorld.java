@@ -38,15 +38,15 @@ public class CraftNewbieWorld extends CraftNewbieLevel implements NewbieWorld
 	public boolean isSafeZone(Location location)
 	{
 		return location.getWorld() == world
-				&& Math.abs(location.getX()) <= 5.0D
-				&& Math.abs(location.getZ()) <= 5.0D;
+				&& Math.abs(location.getBlockX()) <= 65.0D
+				&& Math.abs(location.getBlockZ()) <= 65.0D;
 	}
 	
 	@Override
 	public boolean isSpawn(Location location)
 	{
 		return location.getWorld() == world
-				&& Math.abs(location.getX()) <= 10.0
-				&& Math.abs(location.getZ()) <= 10.0;
+				&& Math.abs(location.getX()) <= 100.0
+				&& Math.abs(location.getZ()) <= 100.0;
 	}
 }

@@ -8,7 +8,9 @@ public interface SpawnPlayer extends
 		InitialScoreboardPlayer,
 		Protectable,
 		DelHomePerformer,
-		HomePerformer.InstantTeleport
+		HomePerformer.InstantTeleport,
+		NewbiePerformer.Teleport,
+		RaidPerformer.Teleport
 {
 	PluginPlayer removeProtection();
 }

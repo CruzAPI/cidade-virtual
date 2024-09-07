@@ -83,7 +83,7 @@ public class Main extends Common
 	private Rule<TurretAttribute> turretRule;
 	
 	private BuyStructureCommand buyStructureCommand;
-	private RaidCommand	raidCommand;
+	private AttackCommand attackCommand;
 	private ToggleCombatCommand	toggleCombatCommand;
 	
 	private ItemDamageAttributeListener itemDamageAttributeListener;
@@ -240,7 +240,9 @@ public class Main extends Common
 		registerCommand(new EnchantCommand(this), EnchantCommand.NAME_AND_ALIASES);
 		registerCommand(new HomeCommand(this), HomeCommand.NAME_AND_ALIASES);
 		registerCommand(new MacroidCommand(this), MacroidCommand.NAME_AND_ALIASES);
-		registerCommand(raidCommand = new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
+		registerCommand(new NewbieCommand(this), NewbieCommand.NAME_AND_ALIASES);
+		registerCommand(new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
+		registerCommand(attackCommand = new AttackCommand(this), AttackCommand.NAME_AND_ALIASES);
 		registerCommand(new ReloadRuleCommand(this), ReloadRuleCommand.NAME_AND_ALIASES);
 		registerCommand(new SetHomeCommand(this), SetHomeCommand.NAME_AND_ALIASES);
 		registerCommand(new SetRarityCommand(this), SetRarityCommand.NAME_AND_ALIASES);

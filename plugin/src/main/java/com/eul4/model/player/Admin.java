@@ -11,7 +11,9 @@ public interface Admin extends
 		SpawnPerformer.Teleport,
 		SetHomePerformer,
 		DelHomePerformer,
-		HomePerformer.InstantTeleport
+		HomePerformer.InstantTeleport,
+		NewbiePerformer.Teleport,
+		RaidPerformer.Teleport
 {
 
 }

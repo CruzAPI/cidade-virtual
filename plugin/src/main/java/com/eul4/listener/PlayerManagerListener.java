@@ -40,7 +40,7 @@ public class PlayerManagerListener implements Listener
 		
 		pluginPlayer = (PluginPlayer) plugin.getPlayerManager().register(player, plugin, PhysicalPlayerType.SPAWN_PLAYER);
 		pluginPlayer.setTag(pluginPlayer.getBestTag());
-		player.teleport(PluginWorldType.RAID_WORLD.getInstance().getSpawnLocation());
+		player.teleport(PluginWorldType.NEWBIE_WORLD.getInstance().getSpawnLocation());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)

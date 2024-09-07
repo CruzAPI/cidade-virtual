@@ -141,11 +141,6 @@ public enum Rarity
 		return Math.pow(FIREWORK_ELYTRA_DURATION_EXPONENTIATION_BASE, ordinal() - LEGENDARY.ordinal());
 	}
 	
-	public double getElytraDurabilityMultiplier()
-	{
-		return Math.pow(FIREWORK_ELYTRA_DURATION_EXPONENTIATION_BASE, ordinal() - RARE.ordinal());
-	}
-	
 	public double getDurabilityMultiplier(Material material)
 	{
 		return getRelativeDurabilityMultiplier(material, this.ordinal());
@@ -181,7 +176,7 @@ public enum Rarity
 	{
 		if(material == Material.ELYTRA)
 		{
-			return -RARE.ordinal();
+			return -LEGENDARY.ordinal();
 		}
 		
 		return -COMMON.ordinal();

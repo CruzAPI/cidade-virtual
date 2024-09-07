@@ -24,6 +24,7 @@ import java.util.*;
 
 import static com.eul4.common.util.ComponentUtil.CORRECT_SYMBOL;
 import static com.eul4.common.util.ComponentUtil.INCORRECT_SYMBOL;
+import static net.kyori.adventure.bossbar.BossBar.Color.GREEN;
 import static net.kyori.adventure.bossbar.BossBar.Color.WHITE;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
@@ -163,7 +164,7 @@ public class RarityBossBarTask extends BukkitRunnable
 			{
 				bossBar.name(name);
 				bossBar.progress(1.0F);
-				bossBar.color(WHITE);
+				bossBar.color(GREEN);
 			}
 			else
 			{

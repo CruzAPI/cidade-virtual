@@ -17,6 +17,7 @@ import java.util.List;
 public class BuildCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "build";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	public static final String PERMISSION = "command." + COMMAND_NAME;
 	
 	private final Common plugin;

@@ -4,10 +4,8 @@ import com.eul4.common.Common;
 import com.eul4.common.exception.CommonException;
 import com.eul4.common.exception.CommonRuntimeException;
 import com.eul4.common.i18n.CommonMessage;
-import com.eul4.common.i18n.CommonRichMessage;
 import com.eul4.common.i18n.Messageable;
 import com.eul4.common.model.permission.*;
-import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.service.PermissionService;
 import com.eul4.common.util.IntegerUtil;
 import com.eul4.common.util.LongUtil;
@@ -19,7 +17,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -29,6 +26,8 @@ import static com.eul4.common.i18n.CommonRichMessage.*;
 public class PexCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "pex";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
+	public static final String PERMISSION = "command." + COMMAND_NAME;
 	
 	private final Common plugin;
 	
@@ -44,7 +43,7 @@ public class PexCommand implements TabExecutor
 	@Override
 	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args)
 	{
-		if(!(commandSender instanceof Player player) || !player.isOp())
+		if(!permissionService.hasPermission(commandSender, PERMISSION))
 		{
 			return Collections.emptyList();
 		}
@@ -249,16 +248,11 @@ public class PexCommand implements TabExecutor
 	@Override
 	public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args)
 	{
-		if(!(commandSender instanceof Player player))
-		{
-			return false;
-		}
+		Messageable messageable = plugin.getMessageableService().getMessageable(commandSender);
 		
-		final CommonPlayer commonPlayer = plugin.getPlayerManager().get(player);
-		
-		if(!player.isOp())
+		if(!permissionService.hasPermission(commandSender, PERMISSION))
 		{
-			commonPlayer.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
+			messageable.sendMessage(YOU_DO_NOT_HAVE_PERMISSION);
 			return false;
 		}
 		
@@ -266,7 +260,7 @@ public class PexCommand implements TabExecutor
 		{
 			if(args.length == 1 && args[0].equalsIgnoreCase("group"))
 			{
-				listGroups(commonPlayer, permissionService.listGroupsOrIfEmptyThrow());
+				listGroups(messageable, permissionService.listGroupsOrIfEmptyThrow());
 				return true;
 			}
 			else if(args.length == 3
@@ -275,7 +269,7 @@ public class PexCommand implements TabExecutor
 			{
 				String groupName = args[1].toLowerCase();
 				permissionService.createGroup(groupName);
-				commonPlayer.sendMessage(CommonMessage.COMMAND_PEX_GROUP_CREATED, groupName);
+				messageable.sendMessage(COMMAND_PEX_GROUP_CREATED, groupName);
 				return true;
 			}
 			else if(args.length == 3
@@ -284,7 +278,7 @@ public class PexCommand implements TabExecutor
 			{
 				String groupName = args[1].toLowerCase();
 				permissionService.deleteGroup(groupName);
-				commonPlayer.sendMessage(CommonMessage.COMMAND_PEX_GROUP_DELETED, groupName);
+				messageable.sendMessage(COMMAND_PEX_GROUP_DELETED, groupName);
 				return true;
 			}
 			else if((args.length == 4 || args.length == 5)
@@ -298,7 +292,7 @@ public class PexCommand implements TabExecutor
 				Group group = permissionService.getGroupOrElseThrow(groupName);
 				GroupUserPage groupUserPage = permissionService.getGroupUserPage(group, page, 5);
 				
-				commonPlayer.sendMessage(SHOW_PAGE,
+				messageable.sendMessage(SHOW_PAGE,
 						groupUserPage,
 						PAGE_GROUP_USER_TITLE.withArgs(groupUserPage.getFullList().size(), group.getName()),
 						COMMAND_PEX_RUN_COMMAND_GROUP_USER_LIST.withArgs(group.getName()));
@@ -324,7 +318,7 @@ public class PexCommand implements TabExecutor
 						.build();
 				
 				permissionService.addUser(group, groupUser);
-				commonPlayer.sendMessage(COMMAND_PEX_USER_ADDED_TO_GROUP, offlinePlayer.getName(), group.getName());
+				messageable.sendMessage(COMMAND_PEX_USER_ADDED_TO_GROUP, offlinePlayer.getName(), group.getName());
 				return true;
 			}
 			else if((args.length == 5)
@@ -339,7 +333,7 @@ public class PexCommand implements TabExecutor
 				Group group = permissionService.getGroupOrElseThrow(groupName);
 				
 				permissionService.removeUser(group, offlinePlayer);
-				commonPlayer.sendMessage(COMMAND_PEX_USER_REMOVED_FROM_GROUP, offlinePlayer.getName(), group.getName());
+				messageable.sendMessage(COMMAND_PEX_USER_REMOVED_FROM_GROUP, offlinePlayer.getName(), group.getName());
 				return true;
 			}
 			else if((args.length == 4 || args.length == 5)
@@ -353,7 +347,7 @@ public class PexCommand implements TabExecutor
 				Group group = permissionService.getGroupOrElseThrow(groupName);
 				GroupPermPage groupPermPage = permissionService.getGroupPermPage(group, page, 5);
 				
-				commonPlayer.sendMessage(SHOW_PAGE,
+				messageable.sendMessage(SHOW_PAGE,
 						groupPermPage,
 						PAGE_GROUP_PERM_TITLE.withArgs(groupPermPage.getFullList().size(), group.getName()),
 						COMMAND_PEX_RUN_COMMAND_GROUP_PERM_LIST.withArgs(group.getName()));
@@ -378,7 +372,7 @@ public class PexCommand implements TabExecutor
 						.build();
 				
 				permissionService.addPermission(group, permission);
-				commonPlayer.sendMessage(COMMAND_PEX_PERM_ADDED_TO_GROUP, permName, group.getName());
+				messageable.sendMessage(COMMAND_PEX_PERM_ADDED_TO_GROUP, permName, group.getName());
 				return true;
 			}
 			else if((args.length == 5)
@@ -392,7 +386,7 @@ public class PexCommand implements TabExecutor
 				Group group = permissionService.getGroupOrElseThrow(groupName);
 				
 				permissionService.removePermission(group, permName);
-				commonPlayer.sendMessage(COMMAND_PEX_PERM_REMOVED_FROM_GROUP, permName, group.getName());
+				messageable.sendMessage(COMMAND_PEX_PERM_REMOVED_FROM_GROUP, permName, group.getName());
 				return true;
 			}
 			else if((args.length == 4 || args.length == 5)
@@ -406,7 +400,7 @@ public class PexCommand implements TabExecutor
 				Group group = permissionService.getGroupOrElseThrow(groupName);
 				GroupGroupPage groupGroupPage = permissionService.getGroupGroupPage(group, page, 5);
 				
-				commonPlayer.sendMessage(SHOW_PAGE,
+				messageable.sendMessage(SHOW_PAGE,
 						groupGroupPage,
 						PAGE_GROUP_GROUP_TITLE.withArgs(groupGroupPage.getFullList().size(), group.getName()),
 						COMMAND_PEX_RUN_COMMAND_GROUP_GROUP_LIST.withArgs(group.getName()));
@@ -432,7 +426,7 @@ public class PexCommand implements TabExecutor
 						.build();
 				
 				permissionService.addGroupGroup(group, groupGroup);
-				commonPlayer.sendMessage(COMMAND_PEX_GROUP_ADDED_TO_GROUP, subGroup.getName(), group.getName());
+				messageable.sendMessage(COMMAND_PEX_GROUP_ADDED_TO_GROUP, subGroup.getName(), group.getName());
 				return true;
 			}
 			else if((args.length == 5)
@@ -447,7 +441,7 @@ public class PexCommand implements TabExecutor
 				Group subGroup = permissionService.getGroupOrElseThrow(subGroupName);
 				
 				permissionService.removeSubGroup(group, subGroup);
-				commonPlayer.sendMessage(COMMAND_PEX_PERM_REMOVED_FROM_GROUP, subGroup.getName(), group.getName());
+				messageable.sendMessage(COMMAND_PEX_PERM_REMOVED_FROM_GROUP, subGroup.getName(), group.getName());
 				return true;
 			}
 			else if((args.length == 4 || args.length == 5)
@@ -463,7 +457,7 @@ public class PexCommand implements TabExecutor
 				User user = permissionService.getUser(offlinePlayer.getUniqueId());
 				UserPermPage userPermPage = permissionService.getUserPermPage(user, page, 5);
 				
-				commonPlayer.sendMessage(SHOW_PAGE,
+				messageable.sendMessage(SHOW_PAGE,
 						userPermPage,
 						PAGE_USER_PERM_TITLE.withArgs(userPermPage.getFullList().size(), offlinePlayer.getName()),
 						COMMAND_PEX_RUN_COMMAND_USER_PERM_LIST.withArgs(offlinePlayer.getName()));
@@ -489,7 +483,7 @@ public class PexCommand implements TabExecutor
 						.build();
 				
 				permissionService.addPermission(user, permission);
-				commonPlayer.sendMessage(COMMAND_PEX_PERM_ADDED_TO_USER, permName, offlinePlayer.getName());
+				messageable.sendMessage(COMMAND_PEX_PERM_ADDED_TO_USER, permName, offlinePlayer.getName());
 				return true;
 			}
 			else if(args.length == 5
@@ -504,18 +498,18 @@ public class PexCommand implements TabExecutor
 				User user = permissionService.getUser(offlinePlayer.getUniqueId());
 				
 				permissionService.removePermission(user, permName);
-				commonPlayer.sendMessage(COMMAND_PEX_PERM_REMOVED_FROM_USER, permName, offlinePlayer.getName());
+				messageable.sendMessage(COMMAND_PEX_PERM_REMOVED_FROM_USER, permName, offlinePlayer.getName());
 				return true;
 			}
 			else
 			{
-				commonPlayer.sendMessage(COMMAND_PEX_USAGE);
+				messageable.sendMessage(COMMAND_PEX_USAGE);
 				return false;
 			}
 		}
 		catch(CommonRuntimeException | CommonException e)
 		{
-			commonPlayer.sendMessage(e.getMessageArgs());
+			messageable.sendMessage(e.getMessageArgs());
 			return false;
 		}
 	}

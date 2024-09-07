@@ -1,6 +1,5 @@
 plugins {
     id("java")
-    id("io.papermc.paperweight.userdev") version "1.7.1"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -12,10 +11,6 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/")
-}
-
-dependencies {
-    paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
 }
 
 java {

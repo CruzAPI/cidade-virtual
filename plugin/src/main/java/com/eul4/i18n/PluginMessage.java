@@ -11,15 +11,16 @@ import com.eul4.common.util.CommonMessageUtil;
 import com.eul4.common.util.CommonWordUtil;
 import com.eul4.common.wrapper.TimerTranslator;
 import com.eul4.enums.Currency;
+import com.eul4.enums.Rarity;
 import com.eul4.model.player.SetHomePerformer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Generator;
 import com.eul4.rule.attribute.*;
 import com.eul4.util.TickConverter;
-import com.eul4.world.OverWorld;
 import com.eul4.wrapper.Tag;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
@@ -36,7 +37,8 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.eul4.common.i18n.CommonMessage.USAGE;
-import static com.eul4.common.util.CommonMessageUtil.*;
+import static com.eul4.common.util.CommonMessageUtil.argToComponent;
+import static com.eul4.common.util.CommonMessageUtil.usageRequiredArg;
 import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -51,6 +53,10 @@ public enum PluginMessage implements Message
 	DURABILITY("durability"),
 	PRICE("price"),
 	COST("cost"),
+	COMMON("common"),
+	RARE("rare"),
+	LEGENDARY("legendary"),
+	RARITY("rarity"),
 	
 	TAG_OWNER("tag.owner", empty().color(DARK_RED)),
 	TAG_ADMIN("tag.admin", empty().color(RED)),
@@ -60,6 +66,53 @@ public enum PluginMessage implements Message
 	TAG_DEPUTY_MAYOR("tag.deputy-mayor", empty().color(YELLOW)),
 	TAG_TOWNEE("tag.townee", empty().color(GRAY)),
 	TAG_INDIGENT("tag.indigent", empty().color(DARK_GRAY)),
+	
+	RARITY_COMMON((locale, args) -> singletonList
+	(
+		COMMON.translate(locale, String::toUpperCase).style(Rarity.COMMON.getStyle())
+	)),
+	
+	RARITY_RARE((locale, args) -> singletonList
+	(
+		RARE.translate(locale, String::toUpperCase).style(Rarity.RARE.getStyle())
+	)),
+	
+	RARITY_LEGENDARY((locale, args) -> singletonList
+	(
+		LEGENDARY.translate(locale, String::toUpperCase).style(Rarity.LEGENDARY.getStyle())
+	)),
+	
+	CONTAINTMENT_PICKAXE_CAN_BREAK_ONLY_SPAWNERS("containtment-pickaxe.can-break-only-spawners", empty().color(RED)),
+	INCOMPATIBLE_RARITY("incompatible-rarity", empty().color(RED)),
+	ENDERCHEST_DISABLED_YOU_CAN_ONLY_PICKUP("enderchest-disabled.you-can-only-pickup", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		Component.translatable(Material.ENDER_CHEST.translationKey())
+	}),
+	
+	COMMON_INCOMPATIBILITY_$TRANSLATABLE("common.container-incompatibility", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		((TranslatableComponent) args[0])
+	}),
+	RARE_INCOMPATIBILITY_$TRANSLATABLE("rare.container-incompatibility", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		((TranslatableComponent) args[0])
+	}),
+	LEGENDARY_INCOMPATIBILITY_$TRANSLATABLE("legendary.container-incompatibility", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		((TranslatableComponent) args[0])
+	}),
+	
+	FIREWORK_INCOMPATIBLE_RARITY("firework-incompatible-rarity", empty().color(RED)),
+	ARROW_RARITY_HIGHER_THAN_BOW("arrow-rarity-higher-than-bow", empty().color(RED)),
+	CONTAINTMENT_PICKAXE_DISPLAY_NAME("containtment-pickaxe.display-name", empty().color(YELLOW).decorate(BOLD)),
+	
+	WORLD_BLOCK_RARITY_RESTRICTION("world-block-rarity-restriction", empty().color(RED)),
+	
+	ANVIL_INSUFFICIENT_XP("anvil.insufficient-xp", empty().color(RED).decorate(BOLD)),
 	
 	ABBREVIATION_LEVEL("abbreviation.level"),
 	STRUCTURE_ARMORY_NAME("structure.armory.name"),
@@ -653,6 +706,61 @@ public enum PluginMessage implements Message
 	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR("inventory-armory-my-inventory-menu.selector", Component.empty().color(GOLD)),
 	INVENTORY_ARMORY_MY_INVENTORY_MENU_SELECTOR_LORE("inventory-armory-my-inventory-menu.selector.lore", Component.empty().color(GRAY)),
 	
+	COMMAND_WORLD_UNKNOWN_WORLD("command.world.unknown-world", Component.empty().color(RED)),
+	COMMAND_WORLD_$LABEL("command.world.info", (bundle, args) -> new Component[]
+	{
+		empty().color(GRAY),
+		argToComponent(args[0], bundle.getLocale())
+	}),
+	
+	COMMAND_WORLD_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_WORLD_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+			.appendNewline()
+			.append(COMMAND_WORLD_USAGE_$ALIASES.translate(locale, args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_RAID_ALREADY_IN_WORLD("command.raid.already-in-world", Component.empty().color(RED)),
+	COMMAND_NEWBIE_ALREADY_IN_WORLD("command.newbie.already-in-world", Component.empty().color(RED)),
+	
+	COMMAND_RAID_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_RAID_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+			.appendNewline()
+			.append(COMMAND_RAID_USAGE_$ALIASES.translate(locale, args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_NEWBIE_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_NEWBIE_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+			.appendNewline()
+			.append(COMMAND_NEWBIE_USAGE_$ALIASES.translate(locale, args[0]))
+			.color(RED)
+	)),
+
 	COMMAND_BALANCE_YOUR_RESOURCES("command.balance.your-resources", Component.empty().color(WHITE).decorate(BOLD)),
 	
 	COMMAND_BALANCE_TRY_TOWN_COMMAND("command.balance.try-town-command", (bundle, args) -> new Component[]
@@ -904,10 +1012,10 @@ public enum PluginMessage implements Message
 	
 	COMMAND_SETHOME_MAX_HOME_REACHED("command.sethome.max-home-reached", empty().color(RED)),
 	COMMAND_SETHOME_NEED_TO_BE_IN_VANILLA("command.sethome.need-to-be-in-vanilla", empty().color(RED)),
-	COMMAND_SETHOME_NEED_TO_BE_AWAY_BLOCKS_FROM_SPAWN("command.sethome.need-to-be-away-blocks-from-spawn", (bundle, args) -> new Component[]
+	COMMAND_SETHOME_NEED_TO_BE_AWAY_$RADIUS("command.sethome.need-to-be-away-blocks-from-spawn", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		text(OverWorld.NEAR_SPAWN_RADIUS)
+		argToComponent(args[0])
 	}),
 	COMMAND_SETHOME_HOME_NAME_MUST_NOT_BE_BLANK("command.sethome.home-name-must-not-be-blank", empty().color(RED)),
 	COMMAND_SETHOME_HOME_NAME_MAX_LENGTH("command.sethome.home-name-max-length", (bundle, args) -> new Component[]
@@ -1113,6 +1221,26 @@ public enum PluginMessage implements Message
 		.color(RED)
 	)),
 	
+	COMMAND_SET_RARITY_RARITY_SET("command.set-rarity.rarity-set", (bundle, args) -> new Component[]
+	{
+		empty().color(GRAY),
+		((Rarity) args[0]).getStylizedMessage().translate(bundle),
+	}),
+	COMMAND_SET_RARITY_RARITY_NOT_FOUND("command.set-rarity.rarity-not-found", empty().color(RED)),
+	COMMAND_SET_RARITY_USAGE_$ALIASES((locale, args) -> singletonList
+	(
+		text("/")
+		.append(argToComponent(args[0]))
+		.appendSpace()
+		.append(usageRequiredArg(RARITY.translate(locale)))
+	)),
+	
+	COMMAND_SET_RARITY_USE_$ALIASES((locale, args) -> singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+		.appendNewline()
+		.append(COMMAND_SET_RARITY_USAGE_$ALIASES.translate(locale, args[0]))
+	)),
 	;
 	private final String key;
 	private final BundleBaseName bundleBaseName;

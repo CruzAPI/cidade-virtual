@@ -16,19 +16,10 @@ public class BlockDataWriter extends ObjectWriter<BlockData>
 	@Override
 	protected void writeObject(BlockData blockData) throws IOException
 	{
-		final byte[] main = new byte[1];
-		
-		main[0] |= (byte) (blockData.hasHardness() ? 0b10000000 : 0b00000000);
-		
-		out.write(main);
-		
-		if((main[0] & 0b10000000) == 0b10000000)
-		{
-			byte bitMap = 0b00000000;
-			
-			bitMap |= (byte) (blockData.hasHardness() ? 0b10000000 : 0b00000000);
-			
-			out.write(bitMap);
-		}
+		out.writeBoolean(blockData.hasHardness());
+		out.write(blockData.getRarity().getId());
+		out.writeFloat(blockData.getHealth());
+		out.writeBoolean(blockData.willDrop());
+		out.write(blockData.getEnchantments());
 	}
 }

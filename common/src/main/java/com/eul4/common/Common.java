@@ -22,16 +22,24 @@ import com.eul4.common.model.console.Console;
 import com.eul4.common.model.console.CraftConsole;
 import com.eul4.common.service.*;
 import com.eul4.common.type.player.CommonWorldType;
+import com.eul4.common.util.LoggerUtil;
+import com.eul4.common.wrapper.DeafenMessageable;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -59,6 +67,7 @@ public abstract class Common extends JavaPlugin
 	private Set<String> offlineUsernames;
 	
 	private Console console;
+	private DeafenMessageable deafenMessageable;
 	
 	@Override
 	public void onEnable()
@@ -66,6 +75,7 @@ public abstract class Common extends JavaPlugin
 		try
 		{
 			console = new CraftConsole(getServer().getConsoleSender());
+			deafenMessageable = new DeafenMessageable();
 			
 			loadServices();
 			
@@ -109,20 +119,19 @@ public abstract class Common extends JavaPlugin
 	
 	private void registerCommand()
 	{
-		getCommand(BroadcastCommand.COMMAND_NAME).setExecutor(new BroadcastCommand(this));
-		getCommand(BuildCommand.COMMAND_NAME).setExecutor(new BuildCommand(this));
-		getCommand(ChatCommand.COMMAND_NAME).setExecutor(chatCommand = new ChatCommand(this));
-		getCommand(ClearChatCommand.COMMAND_NAME).setExecutor(new ClearChatCommand(this));
-		getCommand(DisableChatCommand.COMMAND_NAME).setExecutor(new DisableChatCommand(this));
-		getCommand(DisableTellCommand.COMMAND_NAME).setExecutor(new DisableTellCommand(this));
-		getCommand(EnableChatCommand.COMMAND_NAME).setExecutor(new EnableChatCommand(this));
-		getCommand(EnableTellCommand.COMMAND_NAME).setExecutor(new EnableTellCommand(this));
-		getCommand(MuteCommand.COMMAND_NAME).setExecutor(new MuteCommand(this));
-		getCommand(PexCommand.COMMAND_NAME).setExecutor(new PexCommand(this));
-		getCommand(ReplyCommand.COMMAND_NAME).setExecutor(new ReplyCommand(this));
-		getCommand("scoreboard").setExecutor(new ScoreboardCommand(this));
-		getCommand(TellCommand.COMMAND_NAME).setExecutor(tellCommand = new TellCommand(this));
-		getCommand(UnmuteCommand.COMMAND_NAME).setExecutor(new UnmuteCommand(this));
+		registerCommand(new BuildCommand(this), BuildCommand.NAME_AND_ALIASES);
+		registerCommand(chatCommand = new ChatCommand(this), ChatCommand.NAME_AND_ALIASES);
+		registerCommand(new ClearChatCommand(this), ClearChatCommand.NAME_AND_ALIASES);
+		registerCommand(new DisableChatCommand(this), DisableChatCommand.NAME_AND_ALIASES);
+		registerCommand(new DisableTellCommand(this), DisableTellCommand.NAME_AND_ALIASES);
+		registerCommand(new EnableChatCommand(this), EnableChatCommand.NAME_AND_ALIASES);
+		registerCommand(new EnableTellCommand(this), EnableTellCommand.NAME_AND_ALIASES);
+		registerCommand(new MuteCommand(this), MuteCommand.NAME_AND_ALIASES);
+		registerCommand(new PexCommand(this), PexCommand.NAME_AND_ALIASES);
+		registerCommand(new ReplyCommand(this), ReplyCommand.NAME_AND_ALIASES);
+		registerCommand(new ScoreboardCommand(this), ScoreboardCommand.NAME_AND_ALIASES);
+		registerCommand(tellCommand = new TellCommand(this), TellCommand.NAME_AND_ALIASES);
+		registerCommand(new UnmuteCommand(this), UnmuteCommand.NAME_AND_ALIASES);
 	}
 	
 	private void registerPacketAdapters()
@@ -166,6 +175,36 @@ public abstract class Common extends JavaPlugin
 		pluginManager.registerEvents(new CancelInteractionItemListener(this), this);
 		pluginManager.registerEvents(new WorldSaveListener(this), this);
 		pluginManager.registerEvents(new WorldSaveRecallListener(this), this);
+	}
+	
+	protected void registerCommand(TabExecutor executor, String... args)
+	{
+		try
+		{
+			final Field bukkitCommandMap = getServer().getClass().getDeclaredField("commandMap");
+			bukkitCommandMap.setAccessible(true);
+			
+			CommandMap commandMap = (CommandMap) bukkitCommandMap.get(getServer());
+			
+			Class<?> clazz = PluginCommand.class;
+			
+			Constructor<?> constructor = clazz.getDeclaredConstructor(String.class, Plugin.class);
+			constructor.setAccessible(true);
+			
+			for(String s : args)
+			{
+				PluginCommand command = (PluginCommand) constructor.newInstance(s, this);
+				
+				command.register(commandMap);
+				command.setExecutor(executor);
+				command.setTabCompleter(executor);
+				commandMap.register(command.getName(), command);
+			}
+		}
+		catch(Exception ex)
+		{
+			LoggerUtil.severe(this, ex, "An error occurred while registering commands: {0}", ex.getMessage());
+		}
 	}
 	
 	@Override

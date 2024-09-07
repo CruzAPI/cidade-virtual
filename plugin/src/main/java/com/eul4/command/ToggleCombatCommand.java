@@ -21,6 +21,7 @@ import static com.eul4.i18n.PluginRichMessage.COMMAND_TOGGLE_COMBAT_OLD;
 public class ToggleCombatCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "toggle-combat";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "alternar-combate" };
 	public static final String BYPASS_PERMISSION = "command." + COMMAND_NAME + ".bypass";
 	
 	private static final long COOLDOWN_TICKS = 60L * 20L;

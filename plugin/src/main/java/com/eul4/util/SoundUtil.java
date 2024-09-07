@@ -2,14 +2,31 @@ package com.eul4.util;
 
 import com.eul4.common.wrapper.Pitch;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class SoundUtil
 {
+	public static void playPlongIfPlayer(Entity entity)
+	{
+		if(entity instanceof Player player)
+		{
+			playPlong(player);
+		}
+	}
+	
 	public static void playPlong(Player player)
 	{
 		player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, Pitch.getPitch(3));
+	}
+	
+	public static void playPlingIfPlayer(Entity entity)
+	{
+		if(entity instanceof Player player)
+		{
+			playPling(player);
+		}
 	}
 	
 	public static void playPling(Player player)

@@ -3,6 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.i18n.Messageable;
+import com.eul4.item.ContaintmentPickaxe;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
@@ -17,6 +18,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,6 +35,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "test";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
+	
 	private final Main plugin;
 	
 	@Override
@@ -74,13 +79,25 @@ public class TestCommand implements TabExecutor
 		{
 			player.teleport(new Location(PluginWorldType.CIDADE_VIRTUAL.getWorld(), 0.0D, 0.0D, 0.0D).toHighestLocation());
 		}
+		else if((args.length == 2) && args[0].equals("containtment"))
+		{
+			float chance = Float.parseFloat(args[1]);
+			ContaintmentPickaxe containtmentPickaxe = new ContaintmentPickaxe(chance);
+			player.getInventory().addItem(containtmentPickaxe.getItemStack());
+		}
+		else if((args.length == 1) && args[0].equals("test"))
+		{
+		
+		}
+		else if((args.length == 2) && args[0].equals("test"))
+		{
+			int amount = Integer.parseInt(args[1]);
+		}
 		else if((args.length == 1) && args[0].equals("1"))
 		{
-			ItemStack item = ItemStack.of(Material.DIAMOND_SWORD);
-			ItemMeta meta = item.getItemMeta();
-			meta.setAttributeModifiers(null);
-			item.setItemMeta(meta);
-			player.getInventory().addItem(item);
+			ItemStack item = player.getInventory().getItemInMainHand();
+			net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+			int enchantibility = nmsStack.getItem().getEnchantmentValue();
 		}
 		else if((args.length == 1) && args[0].equals("2"))
 		{
@@ -193,11 +210,6 @@ public class TestCommand implements TabExecutor
 		else if(args.length == 2)
 		{
 			Material type = player.getInventory().getItemInMainHand().getType();
-			
-			Bukkit.broadcastMessage(type + " hardness: " + type.getHardness()
-					+ " br: " + type.getBlastResistance()
-					+ " isBlock: " + type.isBlock()
-					+ " solid: " + type.isSolid());
 		}
 		else if(args.length == 3)
 		{

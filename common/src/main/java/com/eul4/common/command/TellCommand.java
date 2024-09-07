@@ -26,6 +26,7 @@ import static com.eul4.common.i18n.CommonMessage.*;
 public class TellCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "tell";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "msg", "w" };
 	
 	private final Common plugin;
 	

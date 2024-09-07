@@ -20,6 +20,8 @@ import static com.eul4.common.i18n.CommonMessage.*;
 public class MuteCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "mute";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "mutar", "ignorar", "ignore" };
+	
 	public static final int MUTE_LIMIT = 20;
 	
 	private final Common plugin;

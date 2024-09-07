@@ -7,11 +7,9 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.util.ComponentUtil;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,11 +34,6 @@ public class BroadcastCommand implements TabExecutor
 	public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args)
 	{
 		Messageable messageable = plugin.getMessageableService().getMessageable(commandSender);
-		
-		if(messageable == null)
-		{
-			return false;
-		}
 		
 		if(!plugin.getPermissionService().hasPermission(commandSender, PERMISSION))
 		{

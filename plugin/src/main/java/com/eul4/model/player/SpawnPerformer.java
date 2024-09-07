@@ -3,6 +3,7 @@ package com.eul4.model.player;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.type.PluginWorldType;
 import com.eul4.type.player.PhysicalPlayerType;
+import com.eul4.world.RaidLevel;
 
 public interface SpawnPerformer extends PluginPlayer
 {
@@ -13,7 +14,14 @@ public interface SpawnPerformer extends PluginPlayer
 		@Override
 		default void performSpawn()
 		{
-			getPlayer().teleport(PluginWorldType.OVER_WORLD.getInstance().getSpawnLocation());
+			if(getCommonWorld() instanceof RaidLevel)
+			{
+				getPlayer().teleport(PluginWorldType.RAID_WORLD.getInstance().getSpawnLocation());
+			}
+			else
+			{
+				getPlayer().teleport(PluginWorldType.NEWBIE_WORLD.getInstance().getSpawnLocation());
+			}
 		}
 	}
 	

@@ -31,6 +31,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BuyStructureCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "buystructure";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "loja" };
+	
 	private final Main plugin;
 	
 	@Override

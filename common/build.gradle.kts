@@ -16,7 +16,8 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
+    paperweight.devBundle("com.eul4", "1.21.1-R0.1-SNAPSHOT")
+    compileOnlyApi("io.papermc.paper:paper-bundler:1.21.1-R0.1-SNAPSHOT-mojmap")
     compileOnlyApi("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")

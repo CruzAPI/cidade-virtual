@@ -9,7 +9,8 @@ import com.eul4.scoreboard.CraftInitialScoreboard;
 import com.eul4.scoreboard.CraftTownScoreboard;
 import com.eul4.type.PluginWorldType;
 import com.eul4.type.player.PhysicalPlayerType;
-import com.eul4.world.OverWorld;
+import com.eul4.world.RaidWorld;
+import com.eul4.world.SpawnProtectedLevel;
 import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -52,9 +53,9 @@ public class CraftSpawnPlayer extends CraftPhysicalPlayer implements SpawnPlayer
 		sendMessage(PluginMessage.SPAWN_PROTECTION_ENABLED);
 		sendMessage(PluginMessage.SPAWN_PROTECTION_WARN);
 		
-		if(!(getCommonWorld() instanceof OverWorld))
+		if(!(getCommonWorld() instanceof SpawnProtectedLevel))
 		{
-			player.teleport(PluginWorldType.OVER_WORLD.getInstance().getSpawnLocation());
+			player.teleport(PluginWorldType.NEWBIE_WORLD.getInstance().getSpawnLocation());
 		}
 		
 		scoreboard.registerIfNotRegistered();

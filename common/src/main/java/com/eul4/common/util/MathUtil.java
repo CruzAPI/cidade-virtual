@@ -13,4 +13,16 @@ public class MathUtil
 		
 		return r;
 	}
+	
+	public static int addSaturated(int x, int y)
+	{
+		final int r = x + y;
+		
+		if(((r ^ x) & (r ^ y)) < 0)
+		{
+			return Integer.MIN_VALUE - (r >>> (Integer.SIZE - 1));
+		}
+		
+		return r;
+	}
 }

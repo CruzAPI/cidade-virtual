@@ -9,7 +9,9 @@ public interface VanillaPlayer extends
 		SetHomePerformer,
 		DelHomePerformer,
 		HomePerformer.Channeling,
-		Channeler
+		Channeler,
+		NewbiePerformer.ChannelReincarnation,
+		RaidPerformer.ChannelReincarnation
 {
 
 }

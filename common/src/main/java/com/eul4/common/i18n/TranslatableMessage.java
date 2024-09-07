@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static com.eul4.common.i18n.ResourceBundleHandler.DEFAULT_LOCALE;
+
 public interface TranslatableMessage
 {
 	Component translate(Locale locale, Object... args);
@@ -19,6 +21,11 @@ public interface TranslatableMessage
 	default MessageArgs withArgs(Object... args)
 	{
 		return new MessageArgs(this, args);
+	}
+	
+	default Component translate(Object... args)
+	{
+		return translate(DEFAULT_LOCALE, args);
 	}
 	
 	default Component translate(ResourceBundle bundle, Object... args)
@@ -34,6 +41,11 @@ public interface TranslatableMessage
 	default List<Component> translateLines(ResourceBundle bundle, Object... args)
 	{
 		return translateLines(bundle.getLocale(), args);
+	}
+	
+	default List<Component> translateLines(Object... args)
+	{
+		return translateLines(DEFAULT_LOCALE, args);
 	}
 	
 	default List<Component> translateLines(CommonPlayer commonPlayer, Object... args)

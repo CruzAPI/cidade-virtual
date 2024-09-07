@@ -7,7 +7,7 @@ import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.Admin;
 import com.eul4.type.player.PhysicalPlayerType;
-import com.eul4.world.OverWorld;
+import com.eul4.world.RaidWorld;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,6 +25,7 @@ public class AdminCommand implements TabExecutor
 {
 	private static final String COMMAND_NAME = "admin";
 	private static final String PERMISSION = "command." + COMMAND_NAME;
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	
 	private final Main plugin;
 	
@@ -54,7 +55,7 @@ public class AdminCommand implements TabExecutor
 		
 		if(commonPlayer instanceof Admin admin)
 		{
-			PlayerType playerType = commonPlayer.getCommonWorld() instanceof OverWorld overWorld
+			PlayerType playerType = commonPlayer.getCommonWorld() instanceof RaidWorld overWorld
 					&& overWorld.isSafeZone(player.getLocation())
 					? PhysicalPlayerType.SPAWN_PLAYER
 					: commonPlayer.getCommonWorld().getDefaultPlayerType();

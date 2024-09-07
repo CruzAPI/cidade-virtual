@@ -16,6 +16,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScoreboardCommand implements TabExecutor
 {
+	public static String COMMAND_NAME = "scoreboard";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "score" };
+	
 	private final Common plugin;
 	
 	@Override

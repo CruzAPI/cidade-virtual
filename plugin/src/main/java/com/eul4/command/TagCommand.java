@@ -16,6 +16,7 @@ import java.util.*;
 public class TagCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "tag";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	public static final Set<String> CLEAR_ALIASES = Set.of("clear", "remover");
 	public static final Set<String> HIDE_ALIASES = Set.of("hide", "esconder");
 	public static final Set<String> SHOW_ALIASES = Set.of("show", "mostrar");

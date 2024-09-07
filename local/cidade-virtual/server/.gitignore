@@ -2,6 +2,9 @@
 world/
 world_nether/
 world_the_end/
+newbie_world/
+newbie_world_nether/
+newbie_world_the_end/
 town_world/
 old_cidade_virtual/
 
@@ -24,6 +27,7 @@ plugins/
 paper.jar
 
 # Outros
+debug/
 .console_history
 crash-reports/
 banned-ips.json

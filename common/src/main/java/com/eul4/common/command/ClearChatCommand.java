@@ -1,6 +1,7 @@
 package com.eul4.common.command;
 
 import com.eul4.common.Common;
+import com.eul4.common.i18n.Messageable;
 import com.eul4.common.model.player.CommonPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
@@ -18,6 +19,7 @@ import static com.eul4.common.i18n.CommonMessage.YOU_DO_NOT_HAVE_PERMISSION;
 public class ClearChatCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "clear-chat";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "cc" };
 	public static final String PERMISSION = "command." + COMMAND_NAME;
 	
 	private final Common plugin;
@@ -31,16 +33,11 @@ public class ClearChatCommand implements TabExecutor
 	@Override
 	public boolean onCommand(CommandSender commandSender, Command command, String aliases, String[] args)
 	{
-		if(!(commandSender instanceof Player player))
-		{
-			return false;
-		}
+		Messageable messageable = plugin.getMessageableService().getMessageable(commandSender);
 		
-		final CommonPlayer commonPlayerSender = plugin.getPlayerManager().get(player);
-		
-		if(!commonPlayerSender.hasPermission(PERMISSION))
+		if(!plugin.getPermissionService().hasPermission(commandSender, PERMISSION))
 		{
-			commonPlayerSender.sendMessage(YOU_DO_NOT_HAVE_PERMISSION);
+			messageable.sendMessage(YOU_DO_NOT_HAVE_PERMISSION);
 			return false;
 		}
 		
@@ -55,7 +52,7 @@ public class ClearChatCommand implements TabExecutor
 		}
 		else
 		{
-			commonPlayerSender.sendMessage(COMMAND_CLEAR_CHAT_USAGE, aliases);
+			messageable.sendMessage(COMMAND_CLEAR_CHAT_USAGE, aliases);
 			return false;
 		}
 	}

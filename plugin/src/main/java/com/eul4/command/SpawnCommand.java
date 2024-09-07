@@ -20,6 +20,7 @@ import java.util.List;
 public class SpawnCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "spawn";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "vanilla", "survival" };
 	
 	private final Main plugin;
 	

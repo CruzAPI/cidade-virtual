@@ -21,6 +21,8 @@ import static com.eul4.i18n.PluginMessage.COMMAND_TOWN_USAGE;
 public class TownCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "town";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "cidade", "casa", "cv" };
+	
 	private final Main plugin;
 	
 	@Override

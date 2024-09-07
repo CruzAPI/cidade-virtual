@@ -17,6 +17,7 @@ import java.util.List;
 public class SetHomeCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "sethome";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
 	
 	private final Main plugin;
 	

@@ -3,30 +3,20 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.i18n.Messageable;
+import com.eul4.common.world.CommonWorld;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.TownPlayer;
-import com.eul4.model.town.Town;
-import com.eul4.type.PluginWorldType;
 import com.google.common.collect.Multimap;
 import lombok.RequiredArgsConstructor;
-import net.minecraft.server.level.ServerLevel;
-import org.apache.commons.lang.ObjectUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +24,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DebugCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "debug";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
+	
 	private final Main plugin;
 	
 	@Override
@@ -53,11 +46,6 @@ public class DebugCommand implements TabExecutor
 	{
 		Messageable messageable = plugin.getMessageableService().getMessageable(commandSender);
 		
-		if(messageable == null)
-		{
-			return false;
-		}
-		
 		if(!plugin.getPermissionService().hasPermission(commandSender, "command.debug"))
 		{
 			messageable.sendMessage(CommonMessage.YOU_DO_NOT_HAVE_PERMISSION);
@@ -71,22 +59,57 @@ public class DebugCommand implements TabExecutor
 		
 		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
 		
-		if(args.length == 1 && args[0].equalsIgnoreCase("toggle-combat-map"))
+		if(args.length == 0)
 		{
-			player.sendMessage(plugin.getToggleCombatCommand().getCooldownMap().toString());
-			return true;
+		
 		}
-		else if(args.length == 1 && args[0].equalsIgnoreCase("item-attributes"))
+		else if(args.length == 2 && args[0].equalsIgnoreCase("goto"))
 		{
-			player.sendMessage
-			(
-				Optional
-				.of(player.getInventory().getItemInMainHand())
-				.map(ItemStack::getItemMeta)
-				.map(ItemMeta::getAttributeModifiers)
-				.map(Multimap::toString)
-				.orElse("null")
-			);
+			String worldName = args[1];
+			World world = plugin.getServer().getWorld(worldName);
+			
+			if(world == null)
+			{
+				player.sendMessage("world not found");
+				return false;
+			}
+			
+			CommonWorld commonWorld = plugin.getWorldManager().get(world);
+			
+			if(commonWorld == null)
+			{
+				player.sendMessage("common world not found");
+				return false;
+			}
+			
+			Location spawnLocation = Optional.ofNullable(commonWorld.getSpawnLocation())
+					.orElse(new Location(commonWorld.getWorld(), 0.5D, 70.0D, 0.5D, 0.0F, 0.0F));
+			
+			player.teleport(spawnLocation);
+		}
+		else if(args.length == 1)
+		{
+			if(args.length == 1 && args[0].equalsIgnoreCase("toggle-combat-map"))
+			{
+				player.sendMessage(plugin.getToggleCombatCommand().getCooldownMap().toString());
+				return true;
+			}
+			else if(args.length == 1 && args[0].equalsIgnoreCase("item-attributes"))
+			{
+				player.sendMessage
+				(
+					Optional
+							.of(player.getInventory().getItemInMainHand())
+							.map(ItemStack::getItemMeta)
+							.map(ItemMeta::getAttributeModifiers)
+							.map(Multimap::toString)
+							.orElse("null")
+				);
+			}
+			else
+			{
+				player.sendMessage(Bukkit.getTag("blocks", NamespacedKey.minecraft(args[0].toLowerCase()), Material.class).getValues().toString());
+			}
 		}
 		return false;
 	}

@@ -19,5 +19,6 @@ public class CommonNamespacedKey
 	REMOVE_ITEM_ON_PLAYER_JOIN = new NamespacedKey(NAMESPACE, "remove_item_on_player_join"),
 	REMOVE_ITEM_ON_COMMON_PLAYER_REGISTER = new NamespacedKey(NAMESPACE, "remove_item_on_common_player_register"),
 	FAWE_IGNORE = new NamespacedKey(NAMESPACE, "fawe_ignore"),
-	ITEM_UUID = new NamespacedKey(NAMESPACE, "item_uuid");
+	ITEM_UUID = new NamespacedKey(NAMESPACE, "item_uuid"),
+	UUID = new NamespacedKey(NAMESPACE, "uuid");
 }

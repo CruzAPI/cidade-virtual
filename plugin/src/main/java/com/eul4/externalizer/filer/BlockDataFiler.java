@@ -21,6 +21,7 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 public class BlockDataFiler extends PluginFiler
@@ -67,9 +68,19 @@ public class BlockDataFiler extends PluginFiler
 		return loadChunk(block.getChunk()).get(block);
 	}
 	
+	public void setBlockData(Block block, BlockData blockData)
+	{
+		loadChunk(block).put(block, blockData);
+	}
+	
 	public BlockData loadBlockDataOrDefault(Block block)
 	{
 		return loadChunk(block.getChunk()).computeIfAbsent(block, x -> new BlockData());
+	}
+	
+	public BlockData loadBlockDataOrDefault(Block block, Supplier<BlockData> blockDataSupplier)
+	{
+		return loadChunk(block.getChunk()).computeIfAbsent(block, x -> blockDataSupplier.get());
 	}
 	
 	public void saveBlockData(Block block, BlockData blockData)

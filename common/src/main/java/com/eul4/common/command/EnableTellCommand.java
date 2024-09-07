@@ -17,6 +17,7 @@ import static com.eul4.common.i18n.CommonMessage.*;
 public class EnableTellCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "enable-tell";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "ativar-tell" };
 	
 	private final Common plugin;
 	

@@ -11,7 +11,9 @@ public interface TownPlayer extends
 		BuyStructurePerformer,
 		TownScoreboardPlayer,
 		DelHomePerformer,
-		HomePerformer.InstantTeleport
+		HomePerformer.InstantTeleport,
+		NewbiePerformer.Reincarnate,
+		RaidPerformer.Reincarnate
 {
 	Town getTown();
 	boolean hasTown();

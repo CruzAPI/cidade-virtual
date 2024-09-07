@@ -18,6 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReloadRuleCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "reload-rule";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
+	
 	private final Main plugin;
 	
 	@Override

@@ -51,3 +51,4 @@ commands:
   toggle-combat:
     aliases: [togglecombat, alternar-combate, alternarcombate]
   debug:
+  set-rarity:

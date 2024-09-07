@@ -1,9 +1,6 @@
 package com.eul4.common.i18n;
 
-import com.eul4.common.util.CommonMessageUtil;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import java.util.Locale;
@@ -11,12 +8,7 @@ import java.util.function.BiFunction;
 
 import static com.eul4.common.i18n.CommonMessage.COMMAND_REPLY_USAGE_$ALIASES;
 import static com.eul4.common.util.CommonMessageUtil.*;
-import static net.kyori.adventure.text.Component.empty;
-import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
-import static net.kyori.adventure.text.format.NamedTextColor.DARK_PURPLE;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
-import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.unparsed;
 
 @Getter
 public enum CommonRichMessage implements RichMessage

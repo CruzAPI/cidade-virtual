@@ -1,9 +1,10 @@
 package com.eul4.command;
 
 import com.eul4.Main;
-import com.eul4.model.player.RaidAnalyzer;
-import com.eul4.model.player.TownPlayer;
-import com.eul4.type.player.SpiritualPlayerType;
+import com.eul4.common.i18n.CommonMessage;
+import com.eul4.i18n.PluginMessage;
+import com.eul4.model.player.PluginPlayer;
+import com.eul4.model.player.RaidPerformer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,6 +17,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RaidCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "raid";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
+	
 	private final Main plugin;
 	
 	@Override
@@ -25,24 +29,29 @@ public class RaidCommand implements TabExecutor
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args)
+	public boolean onCommand(CommandSender commandSender, Command command, String aliases, String[] args)
 	{
-		if(!(commandSender instanceof Player player)
-				|| !(plugin.getPlayerManager().get(player) instanceof TownPlayer townPlayer))
+		if(!(commandSender instanceof Player player))
 		{
 			return true;
 		}
 		
-		if(!townPlayer.hasTown())
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		
+		if(args.length == 0)
 		{
-			player.sendMessage("you do not have a town."); //TODO message
-			return true;
+			if(!(pluginPlayer instanceof RaidPerformer raidPerformer))
+			{
+				pluginPlayer.sendMessage(CommonMessage.CAN_NOT_PERFORM);
+				return false;
+			}
+			
+			return raidPerformer.performRaid();
 		}
-		
-		RaidAnalyzer raidAnalyzer = (RaidAnalyzer) plugin.getPlayerManager().register(townPlayer, SpiritualPlayerType.RAID_ANALYZER);
-		
-		raidAnalyzer.reroll();
-		
-		return false;
+		else
+		{
+			pluginPlayer.sendMessage(PluginMessage.COMMAND_RAID_USE_$ALIASES, aliases);
+			return false;
+		}
 	}
 }

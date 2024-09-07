@@ -3,12 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.common.type.player.PlayerType;
 import com.eul4.enums.StructureStatus;
-import com.eul4.i18n.PluginMessage;
-import com.eul4.model.player.Admin;
-import com.eul4.type.player.PhysicalPlayerType;
-import com.eul4.world.VanillaWorld;
 import com.eul4.wrapper.Macroid;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
@@ -21,12 +16,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static net.kyori.adventure.text.format.NamedTextColor.RED;
-import static net.kyori.adventure.text.format.NamedTextColor.YELLOW;
-
 @RequiredArgsConstructor
 public class MacroidCommand implements TabExecutor
 {
+	public static final String COMMAND_NAME = "macroid";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME };
+	
 	private final Main plugin;
 	
 	@Override

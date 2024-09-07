@@ -12,6 +12,8 @@ import com.eul4.externalizer.filer.BlockDataFiler;
 import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.externalizer.filer.TownsFiler;
 import com.eul4.i18n.PluginBundleBaseName;
+import com.eul4.interceptor.HeartParticleInterceptor;
+import com.eul4.interceptor.HideEnchantInterceptor;
 import com.eul4.listener.*;
 import com.eul4.listener.container.entity.CancelDropOnDeathListener;
 import com.eul4.listener.container.entity.FakeShulkerBulletListener;
@@ -25,16 +27,23 @@ import com.eul4.listener.player.tutorial.step.*;
 import com.eul4.listener.scoreboard.AnalyzerScoreboardListener;
 import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
+import com.eul4.listener.world.CommonLevelListener;
+import com.eul4.listener.world.VanillaLevelListener;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
 import com.eul4.service.*;
+import com.eul4.task.RarityBossBarTask;
 import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.codehaus.plexus.util.FileUtils;
 
@@ -74,7 +83,7 @@ public class Main extends Common
 	private Rule<TurretAttribute> turretRule;
 	
 	private BuyStructureCommand buyStructureCommand;
-	private RaidCommand	raidCommand;
+	private AttackCommand attackCommand;
 	private ToggleCombatCommand	toggleCombatCommand;
 	
 	private ItemDamageAttributeListener itemDamageAttributeListener;
@@ -200,6 +209,8 @@ public class Main extends Common
 	private void registerPacketInterceptors()
 	{
 		ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+		protocolManager.addPacketListener(new HeartParticleInterceptor(this));
+		protocolManager.addPacketListener(new HideEnchantInterceptor(this));
 	}
 	
 	private void scheduleTasks()
@@ -207,26 +218,41 @@ public class Main extends Common
 		SpawnProtectionTask spawnProtectionTask = new SpawnProtectionTask(this);
 		
 		spawnProtectionTask.runTaskTimer(this, 20L, 20L);
+		new RarityBossBarTask(this).runTaskTimer(this, 0L, 1L);
 	}
 	
 	private void registerCommands()
 	{
-		getCommand("admin").setExecutor(new AdminCommand(this));
-		getCommand("balance").setExecutor(new BalanceCommand(this));
-		getCommand("debug").setExecutor(new DebugCommand(this));
-		getCommand("buystructure").setExecutor(buyStructureCommand = new BuyStructureCommand(this));
-		getCommand(DelHomeCommand.COMMAND_NAME).setExecutor(new DelHomeCommand(this));
-		getCommand(HomeCommand.COMMAND_NAME).setExecutor(new HomeCommand(this));
-		getCommand("macroid").setExecutor(new MacroidCommand(this));
-		getCommand("raid").setExecutor(raidCommand = new RaidCommand(this));
-		getCommand("rulereload").setExecutor(new ReloadRuleCommand(this));
-		getCommand(SetHomeCommand.COMMAND_NAME).setExecutor(new SetHomeCommand(this));
-		getCommand(SpawnCommand.COMMAND_NAME).setExecutor(new SpawnCommand(this));
-		getCommand(TagCommand.COMMAND_NAME).setExecutor(new TagCommand(this));
-		getCommand("test").setExecutor(new TestCommand(this));
-		getCommand(ToggleCombatCommand.COMMAND_NAME).setExecutor(toggleCombatCommand = new ToggleCombatCommand(this));
-		getCommand(TownCommand.COMMAND_NAME).setExecutor(new TownCommand(this));
-//		getCommand(TutorialCommand.COMMAND_NAME).setExecutor(new TutorialCommand(this));
+		LifecycleEventManager<Plugin> manager = this.getLifecycleManager();
+		manager.registerEventHandler(LifecycleEvents.COMMANDS, event ->
+		{
+			final Commands commands = event.registrar();
+			commands.register("brig", new BrigCommand());
+		});
+		
+		registerCommand(new AdminCommand(this), AdminCommand.NAME_AND_ALIASES);
+		
+		registerCommand(new AdminCommand(this), AdminCommand.NAME_AND_ALIASES);
+		registerCommand(new BalanceCommand(this), BalanceCommand.NAME_AND_ALIASES);
+		registerCommand(new DebugCommand(this), DebugCommand.NAME_AND_ALIASES);
+		registerCommand(buyStructureCommand = new BuyStructureCommand(this), BuyStructureCommand.NAME_AND_ALIASES);
+		registerCommand(new DelHomeCommand(this), DelHomeCommand.NAME_AND_ALIASES);
+		registerCommand(new EnchantCommand(this), EnchantCommand.NAME_AND_ALIASES);
+		registerCommand(new HomeCommand(this), HomeCommand.NAME_AND_ALIASES);
+		registerCommand(new MacroidCommand(this), MacroidCommand.NAME_AND_ALIASES);
+		registerCommand(new NewbieCommand(this), NewbieCommand.NAME_AND_ALIASES);
+		registerCommand(new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
+		registerCommand(attackCommand = new AttackCommand(this), AttackCommand.NAME_AND_ALIASES);
+		registerCommand(new ReloadRuleCommand(this), ReloadRuleCommand.NAME_AND_ALIASES);
+		registerCommand(new SetHomeCommand(this), SetHomeCommand.NAME_AND_ALIASES);
+		registerCommand(new SetRarityCommand(this), SetRarityCommand.NAME_AND_ALIASES);
+		registerCommand(new SpawnCommand(this), SpawnCommand.NAME_AND_ALIASES);
+		registerCommand(new TagCommand(this), TagCommand.NAME_AND_ALIASES);
+		registerCommand(new TestCommand(this), TestCommand.NAME_AND_ALIASES);
+		registerCommand(toggleCombatCommand = new ToggleCombatCommand(this), ToggleCombatCommand.NAME_AND_ALIASES);
+		registerCommand(new TownCommand(this), TownCommand.NAME_AND_ALIASES);
+		registerCommand(new TutorialCommand(this), TutorialCommand.NAME_AND_ALIASES);
+		registerCommand(new WorldCommand(this), WorldCommand.NAME_AND_ALIASES);
 	}
 	
 	private void registerListeners()
@@ -237,23 +263,40 @@ public class Main extends Common
 		registerPlayerListeners();
 		registerScoreboardListeners();
 		registerStructureListeners();
+		registerWorldListeners();
 		
+		pluginManager.registerEvents(new AnvilRarityListener(this), this);
 		pluginManager.registerEvents(new AssistantHideListener(this), this);
 		pluginManager.registerEvents(new AssistantInteractListener(this), this);
 		pluginManager.registerEvents(new AssistantTargetTaskListener(this), this);
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
+		pluginManager.registerEvents(new BlockRarityListener(this), this);
+		pluginManager.registerEvents(new BowRarityListener(this), this);
+		pluginManager.registerEvents(new BucketRarityListener(this), this);
 		pluginManager.registerEvents(new ChannelingTaskListener(this), this);
 		pluginManager.registerEvents(new ChatListener(this), this);
 		pluginManager.registerEvents(new ConfirmationGuiListener(this), this);
+		pluginManager.registerEvents(new ContainerRarityListener(this), this);
+		pluginManager.registerEvents(new ContaintmentPickaxeListener(this), this);
+		pluginManager.registerEvents(new CraftRarityListener(this), this);
 		pluginManager.registerEvents(new DebugListener(this), this);
+		pluginManager.registerEvents(new DefaultItemStackRarityListener(this), this);
+		pluginManager.registerEvents(new ElytraRarityListener(this), this);
+		pluginManager.registerEvents(new EnchantmentListener(this), this);
 		pluginManager.registerEvents(new EntityItemMoveListener(this), this);
+		pluginManager.registerEvents(new EntityRarityListener(this), this);
 		pluginManager.registerEvents(new EntityRecyclerListener(this), this);
+		pluginManager.registerEvents(new FishingRarityListener(this), this);
+		pluginManager.registerEvents(new FluidRarityListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);
 		pluginManager.registerEvents(new StructureShopGuiListener(this), this);
+		pluginManager.registerEvents(new TestListener(this), this);
 		pluginManager.registerEvents(new GeneratorGuiListener(this), this);
+		pluginManager.registerEvents(new HangRarityListener(this), this);
 		pluginManager.registerEvents(new StructureMoveListener(this), this);
+		pluginManager.registerEvents(new StructureRarityListener(this), this);
 		pluginManager.registerEvents(new TownAttackListener(this), this);
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
@@ -263,6 +306,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new PlayerAttackSpeedListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
+		pluginManager.registerEvents(new SmithingRarityListener(this), this);
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);
@@ -331,6 +375,12 @@ public class Main extends Common
 		pluginManager.registerEvents(new ArmoryListener(this), this);
 	}
 	
+	private void registerWorldListeners()
+	{
+		pluginManager.registerEvents(new CommonLevelListener(this), this);
+		pluginManager.registerEvents(new VanillaLevelListener(this), this);
+	}
+	
 	private void deleteWorld(String worldName)
 	{
 		FileUtil.deleteDirectory(new File(worldName));
@@ -388,6 +438,6 @@ public class Main extends Common
 	@Override
 	public CommonWorldType getMainWorldType()
 	{
-		return PluginWorldType.OVER_WORLD;
+		return PluginWorldType.RAID_WORLD;
 	}
 }

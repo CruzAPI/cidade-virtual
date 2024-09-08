@@ -12,6 +12,7 @@ import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Getter
 public class BlockDataReader extends ObjectReader<BlockData>
@@ -67,7 +68,7 @@ public class BlockDataReader extends ObjectReader<BlockData>
 	private BlockData readableVersion1() throws IOException
 	{
 		boolean hasHardness = in.readBoolean();
-		Rarity rarity = Rarity.getRarityById(in.readByte());
+		Rarity rarity = Optional.ofNullable(Rarity.getRarityById(in.readByte())).orElse(Rarity.COMMON);
 		float health = in.readFloat();
 		boolean willDrop = in.readBoolean();
 		
@@ -77,7 +78,7 @@ public class BlockDataReader extends ObjectReader<BlockData>
 	private BlockData readableVersion2() throws IOException
 	{
 		boolean hasHardness = in.readBoolean();
-		Rarity rarity = Rarity.getRarityById(in.readByte());
+		Rarity rarity = Optional.ofNullable(Rarity.getRarityById(in.readByte())).orElse(Rarity.COMMON);
 		float health = in.readFloat();
 		boolean willDrop = in.readBoolean();
 		byte[] enchantmens = new byte[BlockData.Enchant.values().length];

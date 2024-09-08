@@ -29,11 +29,11 @@ public class CraftLikeDepositGui extends CraftStructureGui
 	@Override
 	public Component getUpdatedTitleComponent()
 	{
-		Generator generator = (Generator) structure;
+		LikeDeposit likeDeposit = (LikeDeposit) structure;
 		
 		return PluginMessage.COMPONENT_STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
 				Component.empty().color(GREEN),
 				PluginMessage.STRUCTURE_LIKE_DEPOSIT_NAME,
-				generator.getLevel());
+				likeDeposit.getLevel());
 	}
 }

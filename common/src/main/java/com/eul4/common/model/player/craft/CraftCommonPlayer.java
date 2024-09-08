@@ -153,9 +153,11 @@ public abstract class CraftCommonPlayer implements CommonPlayer
 	@Override
 	public void openGui(Gui gui)
 	{
+		player.closeInventory();
+		
+		this.gui = gui;
 		player.openInventory(gui.getInventory());
 		gui.updateTitle();
-		this.gui = gui;
 		plugin.getServer().getPluginManager().callEvent(new GuiOpenEvent(gui));
 	}
 	

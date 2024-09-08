@@ -23,6 +23,7 @@ public class VanillaLevelListener implements Listener
 		Location to = event.getTo();
 		
 		boolean fromNether = from.getWorld().getEnvironment() == World.Environment.NETHER;
+		boolean toEnd = to.getWorld().getEnvironment() == World.Environment.THE_END;
 		
 		World worldFrom = from.getWorld();
 		
@@ -42,7 +43,15 @@ public class VanillaLevelListener implements Listener
 		
 		to.setWorld(toWorld);
 		
-		if(fromNether)
+		if(toEnd)
+		{
+			to.setX(100.5D);
+			to.setY(50.5D);
+			to.setZ(0.5D);
+			to.setPitch(0.0F);
+			to.setYaw(0.0F);
+		}
+		else if(fromNether)
 		{
 			to.setX(from.getX() * 8.0D);
 			to.setZ(from.getZ() * 8.0D);

@@ -29,11 +29,11 @@ public class CraftDislikeDepositGui extends CraftStructureGui
 	@Override
 	public Component getUpdatedTitleComponent()
 	{
-		Generator generator = (Generator) structure;
+		DislikeDeposit dislikeDeposit = (DislikeDeposit) structure;
 		
 		return PluginMessage.COMPONENT_STRUCTURE_TITLE.translate(commonPlayer.getLocale(),
 				Component.empty().color(RED),
 				PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_NAME,
-				generator.getLevel());
+				dislikeDeposit.getLevel());
 	}
 }

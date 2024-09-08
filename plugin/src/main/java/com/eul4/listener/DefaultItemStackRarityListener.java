@@ -1,8 +1,11 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.common.model.inventory.Gui;
+import com.eul4.model.player.PluginPlayer;
 import com.eul4.util.RarityUtil;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,6 +15,7 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 @RequiredArgsConstructor
 public class DefaultItemStackRarityListener implements Listener
@@ -39,6 +43,15 @@ public class DefaultItemStackRarityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onInventoryOpen(InventoryOpenEvent event)
 	{
+		Player player = (Player) event.getPlayer();
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		Gui gui = pluginPlayer.getGui();
+		
+		if(gui != null)
+		{
+			return;
+		}
+		
 		setDefaultRarityToInventoryContentsIfAbsent(event.getInventory());
 	}
 	

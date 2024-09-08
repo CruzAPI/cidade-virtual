@@ -2,9 +2,14 @@ package com.eul4.task;
 
 import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.common.world.CommonWorld;
 import com.eul4.enums.Rarity;
+import com.eul4.model.player.PluginPlayer;
+import com.eul4.model.town.Town;
+import com.eul4.model.town.TownBlock;
 import com.eul4.service.BlockData;
 import com.eul4.util.RarityUtil;
+import com.eul4.world.SpawnProtectedLevel;
 import com.eul4.wrapper.StackedEnchantment;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,18 +45,13 @@ public class RarityBossBarTask extends BukkitRunnable
 	{
 		for(CommonPlayer commonPlayer : plugin.getPlayerManager().getAll())
 		{
+			PluginPlayer pluginPlayer = (PluginPlayer) commonPlayer;
 			Player player = commonPlayer.getPlayer();
 			Entity entity = player.getTargetEntity(5);
 			
 			if(entity != null)
 			{
-				if(entity instanceof Player)
-				{
-					removeBossBar(player);
-					return;
-				}
-				
-				setAbstractBossBar(player, new EntityBossBarValue(entity));
+				setAbstractBossBar(player, new EntityBossBarValue(pluginPlayer, entity));
 			}
 			else
 			{
@@ -63,7 +63,8 @@ public class RarityBossBarTask extends BukkitRunnable
 						: FluidCollisionMode.NEVER;
 				
 				Block block = player.getTargetBlockExact(5, fluidCollisionMode);
-				setAbstractBossBar(player, new BlockBossBarValue(block));
+				
+				setAbstractBossBar(player, new BlockBossBarValue(pluginPlayer, block));
 			}
 		}
 	}
@@ -243,33 +244,31 @@ public class RarityBossBarTask extends BukkitRunnable
 	@Getter
 	private abstract class AbstractBossBarValue<T>
 	{
-		protected abstract T getValue();
+		protected final PluginPlayer pluginPlayer;
+		protected final T value;
+		
 		protected abstract boolean isValid();
 		protected abstract RarityBossBar<T> newBossBar(Player player);
 		protected abstract Class<T> getType();
 	}
 	
-	@RequiredArgsConstructor
 	@Getter
 	private class EntityBossBarValue extends AbstractBossBarValue<Entity>
 	{
-		private final Entity entity;
-		
-		@Override
-		protected Entity getValue()
+		public EntityBossBarValue(PluginPlayer pluginPlayer, Entity entity)
 		{
-			return entity;
+			super(pluginPlayer, entity);
 		}
 		
 		@Override
 		protected boolean isValid()
 		{
-			return true;
+			return !(value instanceof Player) && !value.isInvulnerable() && !value.isInvisible();
 		}
 		
 		public EntityBossBar newBossBar(Player player)
 		{
-			return new EntityBossBar(player, entity, newEmptyBossBar());
+			return new EntityBossBar(player, value, newEmptyBossBar());
 		}
 		
 		@Override
@@ -279,27 +278,41 @@ public class RarityBossBarTask extends BukkitRunnable
 		}
 	}
 	
-	@RequiredArgsConstructor
 	@Getter
 	private class BlockBossBarValue extends AbstractBossBarValue<Block>
 	{
-		private final Block block;
-		
-		@Override
-		protected Block getValue()
+		public BlockBossBarValue(PluginPlayer pluginPlayer, Block block)
 		{
-			return block;
+			super(pluginPlayer, block);
 		}
 		
 		@Override
 		protected boolean isValid()
 		{
-			return block != null && !block.isEmpty();
+			if(value == null || value.isEmpty())
+			{
+				return false;
+			}
+			
+			TownBlock townBlock = Town.getStaticTownBlock(value);
+			
+			if(townBlock != null)
+			{
+				return townBlock.getTown().getOwnerUUID().equals(pluginPlayer.getUniqueId())
+						&& townBlock.canBuild();
+			}
+			
+			if(plugin.getWorldManager().get(value.getWorld()) instanceof SpawnProtectedLevel spawnProtectedLevel)
+			{
+				return !spawnProtectedLevel.isSpawn(value);
+			}
+			
+			return true;
 		}
 		
 		public BlockBossBar newBossBar(Player player)
 		{
-			return new BlockBossBar(player, block, newEmptyBossBar());
+			return new BlockBossBar(player, value, newEmptyBossBar());
 		}
 		
 		@Override

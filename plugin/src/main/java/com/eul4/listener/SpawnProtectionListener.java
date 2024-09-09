@@ -2,9 +2,9 @@ package com.eul4.listener;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import com.eul4.Main;
+import com.eul4.event.block.BlockBreakNaturallyEvent;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.world.RaidWorld;
 import com.eul4.world.SpawnProtectedLevel;
 import io.papermc.paper.event.player.PlayerItemFrameChangeEvent;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,6 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
@@ -224,29 +223,9 @@ public class SpawnProtectionListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void on(EntityExplodeEvent event)
+	public void on(BlockBreakNaturallyEvent event)
 	{
-		World world = event.getEntity().getWorld();
-		
-		if(!(plugin.getWorldManager().get(world) instanceof RaidWorld raidWorld))
-		{
-			return;
-		}
-		
-		event.blockList().removeIf(raidWorld::isSpawn);
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void on(BlockExplodeEvent event)
-	{
-		World world = event.getBlock().getWorld();
-		
-		if(!(plugin.getWorldManager().get(world) instanceof RaidWorld raidWorld))
-		{
-			return;
-		}
-		
-		event.blockList().removeIf(raidWorld::isSpawn);
+		cancelIfInSpawn(event);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -385,14 +364,14 @@ public class SpawnProtectionListener implements Listener
 	
 	private boolean cancelIfInSpawn(World world, List<BlockState> blockStates, Cancellable event)
 	{
-		if(!(plugin.getWorldManager().get(world) instanceof RaidWorld raidWorld))
+		if(!(plugin.getWorldManager().get(world) instanceof SpawnProtectedLevel spawnProtectedLevel))
 		{
 			return event.isCancelled();
 		}
 		
 		for(BlockState blockState : blockStates)
 		{
-			if(raidWorld.isSpawn(blockState))
+			if(spawnProtectedLevel.isSpawn(blockState))
 			{
 				event.setCancelled(true);
 				return event.isCancelled();
@@ -404,14 +383,14 @@ public class SpawnProtectionListener implements Listener
 	
 	private boolean cancelIfInSpawnBlocks(World world, List<Block> blocks, Cancellable event)
 	{
-		if(!(plugin.getWorldManager().get(world) instanceof RaidWorld raidWorld))
+		if(!(plugin.getWorldManager().get(world) instanceof SpawnProtectedLevel spawnProtectedLevel))
 		{
 			return event.isCancelled();
 		}
 		
 		for(Block block : blocks)
 		{
-			if(raidWorld.isSpawn(block))
+			if(spawnProtectedLevel.isSpawn(block))
 			{
 				event.setCancelled(true);
 				return event.isCancelled();

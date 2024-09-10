@@ -1057,6 +1057,23 @@ public enum PluginMessage implements Message
 				.append(text("(" + current + "/" + max + ")").color(color)));
 	}),
 	
+	COMMAND_PRICE_UNIT_PRICE_$MATERIAL_$PRICE("command.price.unit-price", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		argToComponent(args[0], "*", "*").color(YELLOW),
+		decimalToComponent(args[1], "0.###", bundle.getLocale()).color(YELLOW),
+	}),
+	
+	COMMAND_SELL_NEED_HOLD_ITEM("command.sell.need-hold-item", empty().color(RED)),
+	COMMAND_SELL_ITEM_NOT_FOR_SALE("command.sell.item-not-for-sale", empty().color(RED)),
+	COMMAND_SELL_SOLD_$MATERIAL_$AMOUNT_$VALUE("command.sell.sold", (bundle, args) -> new Component[]
+	{
+		empty().color(GREEN),
+		argToComponent(args[0], "*", "*").color(YELLOW),
+		argToComponent(args[1]).color(YELLOW),
+		decimalToComponent(args[2], "0.###", bundle.getLocale()).color(YELLOW),
+	}),
+	
 	COMMAND_SETHOME_MAX_HOME_REACHED("command.sethome.max-home-reached", empty().color(RED)),
 	COMMAND_SETHOME_NEED_TO_BE_IN_VANILLA("command.sethome.need-to-be-in-vanilla", empty().color(RED)),
 	COMMAND_SETHOME_NEED_TO_BE_AWAY_$RADIUS("command.sethome.need-to-be-away-blocks-from-spawn", (bundle, args) -> new Component[]

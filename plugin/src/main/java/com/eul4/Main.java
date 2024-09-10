@@ -102,6 +102,7 @@ public class Main extends Common
 	private TownsFiler townsFiler;
 	
 	private MacroidService macroidService;
+	private MarketDataManager marketDataManager;
 	
 	private PluginManager pluginManager;
 	
@@ -202,6 +203,7 @@ public class Main extends Common
 		structureDamageCalculator = new StructureDamageCalculator(this);
 		
 		macroidService = new MacroidService(this);
+		marketDataManager = new MarketDataManager(this);
 	}
 	
 	private void registerRuleSerializers()
@@ -253,9 +255,11 @@ public class Main extends Common
 		registerCommand(new MacroidCommand(this), MacroidCommand.NAME_AND_ALIASES);
 		registerCommand(new MuteBroadcastCommand(this), MuteBroadcastCommand.NAME_AND_ALIASES);
 		registerCommand(new NewbieCommand(this), NewbieCommand.NAME_AND_ALIASES);
+		registerCommand(new PriceCommand(this), PriceCommand.NAME_AND_ALIASES);
 		registerCommand(new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
 		registerCommand(attackCommand = new AttackCommand(this), AttackCommand.NAME_AND_ALIASES);
 		registerCommand(new ReloadRuleCommand(this), ReloadRuleCommand.NAME_AND_ALIASES);
+		registerCommand(new SellCommand(this), SellCommand.NAME_AND_ALIASES);
 		registerCommand(new SetHomeCommand(this), SetHomeCommand.NAME_AND_ALIASES);
 		registerCommand(new SetRarityCommand(this), SetRarityCommand.NAME_AND_ALIASES);
 		registerCommand(new SpawnCommand(this), SpawnCommand.NAME_AND_ALIASES);

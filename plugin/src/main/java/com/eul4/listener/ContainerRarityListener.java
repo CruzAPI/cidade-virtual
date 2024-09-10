@@ -8,7 +8,12 @@ import com.eul4.util.RarityUtil;
 import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -19,9 +24,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -166,26 +173,10 @@ public class ContainerRarityListener implements Listener
 			return true;
 		}
 		
-		Rarity inventoryRarity;
-		String translationKey;
+		Rarity inventoryRarity = getRarity(inventory.getHolder());
+		String translationKey = getTranslationKey(inventory.getHolder());
 		
-		if(inventory.getHolder() instanceof BlockInventoryHolder blockInventoryHolder)
-		{
-			inventoryRarity = RarityUtil.getRarity(plugin, blockInventoryHolder.getBlock());
-			translationKey = blockInventoryHolder.getBlock().getType().translationKey();
-		}
-		else if(inventory.getType() == InventoryType.WORKBENCH)
-		{
-			Block block = inventory.getLocation().getBlock();
-			inventoryRarity = RarityUtil.getRarity(plugin, block);
-			translationKey = block.getType().translationKey();
-		}
-		else if(inventory.getHolder() instanceof Entity entity && !(entity instanceof Player))
-		{
-			inventoryRarity = RarityUtil.getRarity(entity);
-			translationKey = entity.getType().translationKey();
-		}
-		else
+		if(inventoryRarity == null || translationKey == null)
 		{
 			return false;
 		}
@@ -226,5 +217,69 @@ public class ContainerRarityListener implements Listener
 		}
 		
 		return false;
+	}
+	
+	private Rarity getDoubleChestRarity(DoubleChest doubleChest)
+	{
+		Rarity leftRarity = getRarity(doubleChest.getLeftSide());
+		Rarity rightRarity = getRarity(doubleChest.getRightSide());
+		
+		return Rarity.getMinRarity(leftRarity, rightRarity);
+	}
+	
+	private Rarity getRarity(InventoryHolder holder)
+	{
+		if(holder instanceof DoubleChest doubleChest)
+		{
+			return getDoubleChestRarity(doubleChest);
+		}
+		
+		if(holder instanceof BlockInventoryHolder blockInventoryHolder)
+		{
+			Block block = blockInventoryHolder.getBlock();
+			return RarityUtil.getRarity(plugin, block);
+		}
+		
+		Inventory inventory = holder.getInventory();
+		
+		if(inventory.getType() == InventoryType.WORKBENCH)
+		{
+			Block block = inventory.getLocation().getBlock();
+			return RarityUtil.getRarity(plugin, block);
+		}
+		
+		if(inventory.getHolder() instanceof Entity entity && !(entity instanceof Player))
+		{
+			return RarityUtil.getRarity(entity);
+		}
+		
+		return null;
+	}
+	
+	private String getTranslationKey(InventoryHolder holder)
+	{
+		if(holder instanceof DoubleChest)
+		{
+			return Material.CHEST.translationKey();
+		}
+		
+		if(holder instanceof BlockInventoryHolder blockInventoryHolder)
+		{
+			return blockInventoryHolder.getBlock().translationKey();
+		}
+		
+		Inventory inventory = holder.getInventory();
+		
+		if(inventory.getType() == InventoryType.WORKBENCH)
+		{
+			return inventory.getLocation().getBlock().translationKey();
+		}
+		
+		if(inventory.getHolder() instanceof Entity entity)
+		{
+			return entity.getType().translationKey();
+		}
+		
+		return null;
 	}
 }

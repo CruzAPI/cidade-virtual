@@ -3,8 +3,15 @@ package com.eul4.common.model.inventory.craft;
 import com.eul4.common.model.inventory.ExtraInventory;
 import com.eul4.common.model.player.CommonPlayer;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Optional;
+import java.util.function.Predicate;
+
+import static java.util.function.Predicate.not;
 
 @Getter
 public class CraftExtraInventory extends CraftGui implements ExtraInventory
@@ -25,11 +32,17 @@ public class CraftExtraInventory extends CraftGui implements ExtraInventory
 	@Override
 	public void updateInventory()
 	{
-		inventory.setItem(0, target.getEquipment().getHelmet());
-		inventory.setItem(1, target.getEquipment().getChestplate());
-		inventory.setItem(2, target.getEquipment().getLeggings());
-		inventory.setItem(3, target.getEquipment().getBoots());
-		inventory.setItem(4, target.getEquipment().getItemInOffHand());
+		final ItemStack helmet = Optional.ofNullable(target.getEquipment().getHelmet()).filter(not(ItemStack::isEmpty)).orElse(null);
+		final ItemStack chestplate = Optional.ofNullable(target.getEquipment().getChestplate()).filter(not(ItemStack::isEmpty)).orElse(null);
+		final ItemStack leggings = Optional.ofNullable(target.getEquipment().getLeggings()).filter(not(ItemStack::isEmpty)).orElse(null);
+		final ItemStack boots = Optional.ofNullable(target.getEquipment().getBoots()).filter(not(ItemStack::isEmpty)).orElse(null);
+		final ItemStack offHand = Optional.of(target.getEquipment().getItemInOffHand()).filter(not(ItemStack::isEmpty)).orElse(null);
+		
+		inventory.setItem(0, helmet);
+		inventory.setItem(1, chestplate);
+		inventory.setItem(2, leggings);
+		inventory.setItem(3, boots);
+		inventory.setItem(4, offHand);
 	}
 	
 	@Override

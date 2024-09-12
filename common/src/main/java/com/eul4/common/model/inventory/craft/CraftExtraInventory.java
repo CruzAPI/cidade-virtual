@@ -27,7 +27,7 @@ public class CraftExtraInventory extends CraftGui implements ExtraInventory
 	{
 		inventory.setItem(0, target.getEquipment().getHelmet());
 		inventory.setItem(1, target.getEquipment().getChestplate());
-		inventory.setItem(2, target.getEquipment().getHelmet());
+		inventory.setItem(2, target.getEquipment().getLeggings());
 		inventory.setItem(3, target.getEquipment().getBoots());
 		inventory.setItem(4, target.getEquipment().getItemInOffHand());
 	}

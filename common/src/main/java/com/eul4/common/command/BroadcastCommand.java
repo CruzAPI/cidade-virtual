@@ -20,6 +20,7 @@ import static com.eul4.common.i18n.CommonMessage.*;
 public class BroadcastCommand implements TabExecutor
 {
 	public static final String COMMAND_NAME = "broadcast";
+	public static final String[] NAME_AND_ALIASES = new String[] { COMMAND_NAME, "bc" };
 	public static final String PERMISSION = "command." + COMMAND_NAME;
 	
 	private final Common plugin;

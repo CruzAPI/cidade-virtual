@@ -47,6 +47,31 @@ public enum CommonMessage implements Message
 		((CommonMessage) args[1]).translate(bundle.getLocale(), String::toUpperCase).color((TextColor) args[0]),
 	}),
 	
+	COMMAND_INVSEE_USAGE_$ALIASES((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(args[0]))
+					.appendSpace()
+					.append(usageRequiredArg(PLAYER.translate(locale)))
+					.color(RED))),
+	COMMAND_INVSEE_USE_$ALIASES((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendNewline()
+					.append(COMMAND_INVSEE_USAGE_$ALIASES.translate(locale, args[0]))
+					.color(RED))),
+	
+	COMMAND_EXTRAINVSEE_USAGE_$ALIASES((locale, args) -> Collections
+			.singletonList(text("/")
+					.append(argToComponent(args[0]))
+					.appendSpace()
+					.append(usageRequiredArg(PLAYER.translate(locale)))
+					.color(RED))),
+	COMMAND_EXTRAINVSEE_USE_$ALIASES((locale, args) -> Collections
+			.singletonList(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+					.appendNewline()
+					.append(COMMAND_EXTRAINVSEE_USAGE_$ALIASES.translate(locale, args[0]))
+					.color(RED))),
+	
+	
 	COMMAND_BUILD_ENABLED("command.build.enabled", empty().color(GREEN)),
 	COMMAND_BUILD_DISABLED("command.build.disabled", empty().color(GREEN)),
 	COMMAND_BUILD_NEED_ADMIN("command.build.need-admin", empty().color(RED)),
@@ -68,6 +93,8 @@ public enum CommonMessage implements Message
 	CAN_NOT_PERFORM("can-not-perform", empty().color(RED)),
 	SCOREBOARD_ENABLED("command.scoreboard.enabled", empty().color(GREEN)),
 	SCOREBOARD_DISABLED("command.scoreboard.disabled", empty().color(GREEN)),
+	
+	COMMAND_INVSEE_YOURSELF("command.invsee.yourself", empty().color(RED)),
 	
 	COMMAND_MUTE_NAME("command.mute.name"),
 	COMMAND_MUTE_YOURSELF("command.mute.yourself", empty().color(RED)),

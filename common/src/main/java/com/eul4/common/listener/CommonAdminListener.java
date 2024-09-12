@@ -128,6 +128,22 @@ public class CommonAdminListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onInteractPlayerOpenPlayerInventory(PlayerInteractEntityEvent event)
+	{
+		Player player = event.getPlayer();
+		
+		if(!(plugin.getPlayerManager().get(player) instanceof CommonAdmin commonAdmin))
+		{
+			return;
+		}
+		
+		if(event.getRightClicked() instanceof Player playerRightClicked)
+		{
+			player.openInventory(playerRightClicked.getInventory());
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onItemFrameChange(PlayerItemFrameChangeEvent event)
 	{
 		if(!(plugin.getPlayerManager().get(event.getPlayer()) instanceof CommonAdmin commonAdmin))

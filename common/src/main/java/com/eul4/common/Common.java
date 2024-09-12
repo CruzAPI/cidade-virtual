@@ -119,6 +119,7 @@ public abstract class Common extends JavaPlugin
 	
 	private void registerCommand()
 	{
+		registerCommand(new BroadcastCommand(this), BroadcastCommand.NAME_AND_ALIASES);
 		registerCommand(new BuildCommand(this), BuildCommand.NAME_AND_ALIASES);
 		registerCommand(chatCommand = new ChatCommand(this), ChatCommand.NAME_AND_ALIASES);
 		registerCommand(new ClearChatCommand(this), ClearChatCommand.NAME_AND_ALIASES);
@@ -126,6 +127,8 @@ public abstract class Common extends JavaPlugin
 		registerCommand(new DisableTellCommand(this), DisableTellCommand.NAME_AND_ALIASES);
 		registerCommand(new EnableChatCommand(this), EnableChatCommand.NAME_AND_ALIASES);
 		registerCommand(new EnableTellCommand(this), EnableTellCommand.NAME_AND_ALIASES);
+		registerCommand(new ExtraInvseeCommand(this), ExtraInvseeCommand.NAME_AND_ALIASES);
+		registerCommand(new InvseeCommand(this), InvseeCommand.NAME_AND_ALIASES);
 		registerCommand(new MuteCommand(this), MuteCommand.NAME_AND_ALIASES);
 		registerCommand(new PexCommand(this), PexCommand.NAME_AND_ALIASES);
 		registerCommand(new ReplyCommand(this), ReplyCommand.NAME_AND_ALIASES);
@@ -163,6 +166,7 @@ public abstract class Common extends JavaPlugin
 		pluginManager.registerEvents(new CommonChatListener(this), this);
 		pluginManager.registerEvents(new CommonListener(this), this);
 		pluginManager.registerEvents(new CommonPlayerListener(this), this);
+		pluginManager.registerEvents(new ExtraInvseeCommandListener(this), this);
 		pluginManager.registerEvents(new GuiListener(this), this);
 		pluginManager.registerEvents(new FixInventoryVisualBugListener(this), this);
 		pluginManager.registerEvents(new GuiClickEventCallListener(this), this);

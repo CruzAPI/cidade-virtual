@@ -9,12 +9,68 @@ import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 
 @RequiredArgsConstructor
 public class VanillaLevelListener implements Listener
 {
 	private final Main plugin;
+	
+	//TODO: Avoid duplicate code creating an interface "PortalEvent" in cruz-fork-api
+	@EventHandler
+	public void on(EntityPortalEvent event)
+	{
+		Location from = event.getFrom();
+		Location to = event.getTo();
+		
+		if(to == null)
+		{
+			return;
+		}
+		
+		boolean fromNether = from.getWorld().getEnvironment() == World.Environment.NETHER;
+		boolean toEnd = to.getWorld().getEnvironment() == World.Environment.THE_END;
+		
+		World worldFrom = from.getWorld();
+		
+		if(!(plugin.getWorldManager().get(worldFrom) instanceof VanillaLevel vanillaLevel))
+		{
+			return;
+		}
+		
+		PluginWorldType related = vanillaLevel.getRelated(to.getWorld().getEnvironment());
+		
+		if(related == null)
+		{
+			return;
+		}
+		
+		World toWorld = related.getWorld();
+		
+		to.setWorld(toWorld);
+		
+		if(toEnd)
+		{
+			to.setX(100.5D);
+			to.setY(50.5D);
+			to.setZ(0.5D);
+			to.setPitch(0.0F);
+			to.setYaw(0.0F);
+		}
+		else if(fromNether)
+		{
+			to.setX(from.getX() * 8.0D);
+			to.setZ(from.getZ() * 8.0D);
+		}
+		else
+		{
+			to.setX(from.getX() / 8.0D);
+			to.setZ(from.getZ() / 8.0D);
+		}
+		
+		event.setTo(truncate(to));
+	}
 	
 	@EventHandler
 	public void on(PlayerPortalEvent event)

@@ -36,6 +36,26 @@ public class DataFileManager
 		return createFileIfNotExists(getTownsFile());
 	}
 	
+	public File getRawMaterialMapFile()
+	{
+		return new File(plugin.getDataFolder(), "raw_material_map.dat");
+	}
+	
+	public File createCrownInfoFileIfNotExists() throws IOException
+	{
+		return createFileIfNotExists(getTownsFile());
+	}
+	
+	public File getCrownInfoFile()
+	{
+		return new File(plugin.getDataFolder(), "crown_info.dat");
+	}
+	
+	public File createRawMaterialMapFileIfNotExists() throws IOException
+	{
+		return createFileIfNotExists(getRawMaterialMapFile());
+	}
+	
 	public File getLikeGeneratorRuleFile()
 	{
 		return new File(plugin.getDataFolder(), "like_generator_rule.yml");

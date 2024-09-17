@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum CommonExternalizerType implements ExternalizerType
 {
+	BIG_DECIMAL(BigDecimalReader::new, BigDecimalReader.class, BigDecimalWriter::new, BigDecimalWriter.class),
 	BLOCK_VECTOR(BlockVectorReader::new, BlockVectorReader.class, BlockVectorWriter::new, BlockVectorWriter.class),
 	BLOCK(BlockReader::new, BlockReader.class, BlockWriter::new, BlockWriter.class),
 	CHUNK(ChunkReader::new, ChunkReader.class, ChunkWriter::new, ChunkWriter.class),

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum CommonObjectType implements ObjectType
 {
+	BIG_DECIMAL((byte) 0, CommonExternalizerType.BIG_DECIMAL),
 	BLOCK((byte) 0, CommonExternalizerType.BLOCK),
 	BLOCK_VECTOR((byte) 0, CommonExternalizerType.BLOCK_VECTOR),
 	CHUNK((byte) 0, CommonExternalizerType.CHUNK),

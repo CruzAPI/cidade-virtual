@@ -8,6 +8,7 @@ import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ public class TownHallRuleSerializer extends GenericRuleSerializer
 		
 		int likeCapacity = section.getInt("like_capacity");
 		int dislikeCapacity = section.getInt("dislike_capacity");
+		BigDecimal crownCapacity = new BigDecimal(section.getString("crown_capacity", "0"));
 		double spawnPositionX = section.getDouble("spawn_position.x");
 		double spawnPositionY = section.getDouble("spawn_position.y");
 		double spawnPositionZ = section.getDouble("spawn_position.z");
@@ -45,6 +47,7 @@ public class TownHallRuleSerializer extends GenericRuleSerializer
 		
 		townHallAttribute.setLikeCapacity(likeCapacity);
 		townHallAttribute.setDislikeCapacity(dislikeCapacity);
+		townHallAttribute.setCrownCapacity(crownCapacity);
 		townHallAttribute.setSpawnPosition(spawnPosition);
 	}
 	

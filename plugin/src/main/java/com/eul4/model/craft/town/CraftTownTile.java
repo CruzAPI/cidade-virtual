@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.eul4.i18n.PluginMessage.BOLD_DECORATED_VALUE_CURRENCY;
+import static com.eul4.i18n.PluginMessage.BOLD_DECORATED_$CURRENCY_$VALUE;
 import static com.eul4.i18n.PluginMessage.CLICK_TO_BUY_THIS_TILE;
 import static org.bukkit.block.BlockFace.*;
 
@@ -191,8 +191,8 @@ public class CraftTownTile implements TownTile
 			
 			hologram.setSize(3);
 			hologram.getLine(2).setMessageAndArgs(CLICK_TO_BUY_THIS_TILE);
-			hologram.getLine(1).setMessageAndArgs(BOLD_DECORATED_VALUE_CURRENCY, Currency.LIKE, price.getLikes());
-			hologram.getLine(0).setMessageAndArgs(BOLD_DECORATED_VALUE_CURRENCY, Currency.DISLIKE, price.getDislikes());
+			hologram.getLine(1).setMessageAndArgs(BOLD_DECORATED_$CURRENCY_$VALUE, Currency.LIKE, price.getLikes());
+			hologram.getLine(0).setMessageAndArgs(BOLD_DECORATED_$CURRENCY_$VALUE, Currency.DISLIKE, price.getDislikes());
 		}
 		else
 		{

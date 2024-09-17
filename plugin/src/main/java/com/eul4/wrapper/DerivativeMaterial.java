@@ -1,6 +1,6 @@
 package com.eul4.wrapper;
 
-import com.eul4.Main;
+import com.eul4.exception.InvalidCryptoInfoException;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -14,21 +14,32 @@ public class DerivativeMaterial extends EconomicMaterial
 {
 	private final List<EconomicMaterialMultiplier> economicMaterialMultipliers;
 	
-	protected DerivativeMaterial(Main plugin, Material material, List<EconomicMaterialMultiplier> economicMaterialMultipliers)
+	public DerivativeMaterial(Material material, List<EconomicMaterialMultiplier> economicMaterialMultipliers)
 	{
-		super(plugin, material);
+		super(material);
 		
 		Preconditions.checkArgument(!economicMaterialMultipliers.isEmpty());
 		
 		this.economicMaterialMultipliers = economicMaterialMultipliers;
 	}
 	
-	private List<Trade> createTrades(BigDecimal multiplier)
+	public List<TradePreview> createTradePreviews(int amount) throws InvalidCryptoInfoException
 	{
-		return createTrades(new ArrayList<>(), multiplier);
+		return createTradePreviews(BigDecimal.valueOf(amount));
 	}
 	
-	private List<Trade> createTrades(List<Trade> trades, BigDecimal baseMultiplier)
+	public List<TradePreview> createTradePreviews(BigDecimal multiplier) throws InvalidCryptoInfoException
+	{
+		return createTradePreviews(new ArrayList<>(), multiplier);
+	}
+	
+	public BigDecimal calculatePrice() throws InvalidCryptoInfoException
+	{
+		return calculatePrice(BigDecimal.ZERO, BigDecimal.ONE);
+	}
+	
+	private BigDecimal calculatePrice(BigDecimal totalPrice, BigDecimal baseMultiplier)
+			throws InvalidCryptoInfoException
 	{
 		for(EconomicMaterialMultiplier economicMaterialMultiplier : economicMaterialMultipliers)
 		{
@@ -37,14 +48,36 @@ public class DerivativeMaterial extends EconomicMaterial
 			
 			if(economicMaterial instanceof DerivativeMaterial derivativeMaterial)
 			{
-				derivativeMaterial.createTrades(trades, multiplier);
+				derivativeMaterial.calculatePrice(totalPrice, multiplier);
 			}
 			else if(economicMaterial instanceof RawMaterial rawMaterial)
 			{
-				trades.add(rawMaterial.createTrade(multiplier));
+				BigDecimal price = rawMaterial.getCryptoInfo().calculatePrice().multiply(multiplier, CryptoInfo.MATH_CONTEXT);
+				totalPrice = totalPrice.add(price);
 			}
 		}
 		
-		return trades;
+		return totalPrice;
+	}
+	
+	private List<TradePreview> createTradePreviews(List<TradePreview> tradePreviews, BigDecimal baseMultiplier)
+			throws InvalidCryptoInfoException
+	{
+		for(EconomicMaterialMultiplier economicMaterialMultiplier : economicMaterialMultipliers)
+		{
+			EconomicMaterial economicMaterial = economicMaterialMultiplier.economicMaterial;
+			BigDecimal multiplier = baseMultiplier.multiply(economicMaterialMultiplier.multiplier, CryptoInfo.MATH_CONTEXT);
+			
+			if(economicMaterial instanceof DerivativeMaterial derivativeMaterial)
+			{
+				derivativeMaterial.createTradePreviews(tradePreviews, multiplier);
+			}
+			else if(economicMaterial instanceof RawMaterial rawMaterial)
+			{
+				tradePreviews.add(rawMaterial.createTradePreview(multiplier));
+			}
+		}
+		
+		return tradePreviews;
 	}
 }

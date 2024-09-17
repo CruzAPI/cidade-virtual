@@ -52,6 +52,8 @@ public enum PluginMessage implements Message
 	DURABILITY("durability"),
 	PRICE("price"),
 	COST("cost"),
+	CROWN("crown"),
+	CROWNS("crowns"),
 	COMMON("common"),
 	RARE("rare"),
 	LEGENDARY("legendary"),
@@ -83,6 +85,10 @@ public enum PluginMessage implements Message
 		LEGENDARY.translate(locale, String::toUpperCase).style(Rarity.LEGENDARY.getStyle())
 	)),
 	
+	CROWN_DEPOSITS_INSUFFICIENT_CAPACITY("crown-deposits-insufficient-capacity", empty().color(RED)),
+	CROWN_DEPOSIT_INSUFFICIENT_CAPACITY("crown-deposit-insufficient-capacity", empty().color(RED)),
+	EXCEPTION_OPERATION("exception.operation", empty().color(RED)),
+	
 	CONTAINTMENT_PICKAXE_CAN_BREAK_ONLY_SPAWNERS("containtment-pickaxe.can-break-only-spawners", empty().color(RED)),
 	INCOMPATIBLE_RARITY("incompatible-rarity", empty().color(RED)),
 	ENDERCHEST_DISABLED_YOU_CAN_ONLY_PICKUP("enderchest-disabled.you-can-only-pickup", (bundle, args) -> new Component[]
@@ -113,17 +119,35 @@ public enum PluginMessage implements Message
 		((TranslatableComponent) args[0]),
 		((TranslatableComponent) args[1])
 	}),
+	
 	RARE_PLACEMENT_INCOMPATIBILITY_$ITEM_$AGAINST("rare.placement-incompatibility", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
 		((TranslatableComponent) args[0]),
 		((TranslatableComponent) args[1])
 	}),
+	
 	LEGENDARY_PLACEMENT_INCOMPATIBILITY_$ITEM_$AGAINST("legendary.placement-incompatibility", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
 		((TranslatableComponent) args[0]),
 		((TranslatableComponent) args[1])
+	}),
+	
+	BOLD_DECORATED_$CURRENCY_$VALUE((locale, args) ->
+	{
+		Currency currency = (Currency) args[0];
+		Number value = (Number) args[1];
+		Message word =  value.doubleValue() == 1.0D ? currency.getSingularWord() : currency.getPluralWord();
+		DecimalFormat decimalFormat = currency.getDecimalFormat(locale);
+		
+		Component component = decimalToComponent(value, decimalFormat)
+				.appendSpace()
+				.append(word.translate(locale, String::toUpperCase))
+				.style(currency.getStyle())
+				.decorate(BOLD);
+		
+		return Collections.singletonList(component);
 	}),
 	
 	FIREWORK_INCOMPATIBLE_RARITY("firework-incompatible-rarity", empty().color(RED)),
@@ -163,9 +187,9 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(WHITE),
-			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translate(bundle.getLocale(), String::toUpperCase))
+			generator.getCurrency().getPluralWord().translate(bundle.getLocale(), String::toUpperCase)
 					.append(text(":"))
+					.style(generator.getCurrency().getStyle())
 					.decorate(BOLD),
 			text(generator.getBalance()),
 			text(generator.getCapacity()),
@@ -179,8 +203,8 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(RED),
-			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
+			generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase)
+					.style(generator.getCurrency().getStyle())
 					.decorate(BOLD),
 		};
 	}),
@@ -192,11 +216,7 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(GRAY),
-			generator.getCurrency().getBaseComponent()
-					.append(text(generator.getPossibleAmountToCollect()))
-					.append(text(" "))
-					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
-					.decorate(BOLD),
+			BOLD_DECORATED_$CURRENCY_$VALUE.translate(bundle, generator.getCurrency(), generator.getPossibleAmountToCollect()),
 		};
 	}),
 	
@@ -208,11 +228,7 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(GRAY),
-			generator.getCurrency().getBaseComponent()
-					.append(text(amountCollected))
-					.append(text(" "))
-					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
-					.decorate(BOLD),
+			BOLD_DECORATED_$CURRENCY_$VALUE.translate(bundle, generator.getCurrency(), amountCollected),
 		};
 	}),
 	
@@ -223,8 +239,8 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(GRAY),
-			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
+			generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase)
+					.style(generator.getCurrency().getStyle())
 					.decorate(BOLD),
 		};
 	}),
@@ -236,8 +252,8 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(GRAY),
-			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
+			generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase)
+					.style(generator.getCurrency().getStyle())
 					.decorate(BOLD),
 		};
 	}),
@@ -249,8 +265,8 @@ public enum PluginMessage implements Message
 		return new Component[]
 		{
 			empty().color(GRAY),
-			generator.getCurrency().getBaseComponent()
-					.append(generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase))
+			generator.getCurrency().getPluralWord().translate(bundle, String::toUpperCase)
+					.style(generator.getCurrency().getStyle())
 					.decorate(BOLD),
 		};
 	}),
@@ -381,19 +397,8 @@ public enum PluginMessage implements Message
 	
 	YOU_CAN_NOT_CONSTRUCT_OUTSIDE_YOUR_TOWN("command.buy-structure.can-not-construct-outside", empty().color(RED)),
 	
-	DECORATED_VALUE_CURRENCY("decorated-value-currency", (bundle, args) -> new Component[]
-	{
-		((Currency) args[0]).getBaseComponent().decorate(BOLD),
-		text((int) args[1]),
-		((Currency) args[0]).getPluralWord().translate(bundle, String::toUpperCase),
-	}),
-	
-	BOLD_DECORATED_VALUE_CURRENCY("bold-decorated-value-currency", (bundle, args) -> new Component[]
-	{
-		((Currency) args[0]).getBaseComponent().decorate(BOLD),
-		text((int) args[1]),
-		((Currency) args[0]).getPluralWord().translate(bundle, String::toUpperCase),
-	}),
+	LIKE("like"),
+	DISLIKE("dislike"),
 	
 	LIKES("likes"),
 	DISLIKES("dislikes"),
@@ -580,13 +585,10 @@ public enum PluginMessage implements Message
 	{
 		Currency currency = ((Currency) args[1]);
 		
-		Component baseComponent = currency.getBaseComponent();
-		
 		return new Component[]
 		{
 			empty().color(WHITE).decorate(BOLD),
-			baseComponent.append(text((int) args[0])),
-			baseComponent.append(currency.getPluralWord().translate(bundle, String::toUpperCase))
+			BOLD_DECORATED_$CURRENCY_$VALUE.translate(bundle, currency, args[0])
 		};
 	}),
 	
@@ -750,6 +752,37 @@ public enum PluginMessage implements Message
 	
 	COMMAND_RAID_ALREADY_IN_WORLD("command.raid.already-in-world", Component.empty().color(RED)),
 	COMMAND_NEWBIE_ALREADY_IN_WORLD("command.newbie.already-in-world", Component.empty().color(RED)),
+	
+	COMMAND_PRICE_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_PRICE_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+			.appendNewline()
+			.append(COMMAND_PRICE_USAGE_$ALIASES.translate(locale, args[0]))
+			.color(RED)
+	)),
+	
+	
+	COMMAND_SELL_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.color(RED)
+	)),
+	
+	COMMAND_SELL_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+			.appendNewline()
+			.append(COMMAND_SELL_USAGE_$ALIASES.translate(locale, args[0]))
+			.color(RED)
+	)),
 	
 	COMMAND_RAID_USAGE_$ALIASES((locale, args) -> Collections.singletonList
 	(

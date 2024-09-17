@@ -5,18 +5,19 @@ import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.RichMessage;
 import com.eul4.common.util.CommonMessageUtil;
 import com.eul4.enums.Rarity;
+import com.eul4.wrapper.CrownInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-import static com.eul4.common.i18n.CommonMessage.COMMAND_REPLY_USAGE_$ALIASES;
 import static com.eul4.common.util.CommonMessageUtil.argToComponent;
-import static com.eul4.common.util.CommonMessageUtil.displayName;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.styling;
 
@@ -67,6 +68,23 @@ public enum PluginRichMessage implements RichMessage
 	WORLD_TOWN_LABEL("world.town.label"),
 	@Deprecated(forRemoval = true)
 	WORLD_CIDADE_VIRTUAL_LABEL("world.cidade-virtual.label"),
+	
+	CROWN_INFO("crown-info", (locale, args) ->
+	{
+		final CrownInfo crownInfo = (CrownInfo) args[0];
+		final DecimalFormat decimalFormat = new DecimalFormat();
+		
+		decimalFormat.setDecimalFormatSymbols(new DecimalFormatSymbols(locale));
+		decimalFormat.applyPattern("0.00");
+		
+		return new TagResolver[]
+		{
+			component("server_treasue", CommonMessageUtil.decimalToComponent(crownInfo.getServerTreasure(), decimalFormat)),
+			component("jackpot", CommonMessageUtil.decimalToComponent(crownInfo.getJackpot(), decimalFormat)),
+			component("town_hall_vault", CommonMessageUtil.decimalToComponent(crownInfo.getTownHallVault(), decimalFormat)),
+			component("eul4_insights", CommonMessageUtil.decimalToComponent(crownInfo.getEul4Insights(), decimalFormat)),
+		};
+	}),
 	;
 	
 	private final String key;

@@ -3,6 +3,7 @@ package com.eul4.model.craft.town.structure;
 import com.eul4.StructureType;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -23,6 +24,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,6 +33,11 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 {
 	private int likeCapacity;
 	private int dislikeCapacity;
+	
+	private transient BigDecimal crownCapacity;
+	
+	private CapacitatedCrownHolder capacitatedCrownHolder;
+	
 	private transient Vector3 relativeSpawnPosition;
 	
 	@Setter(AccessLevel.PRIVATE)
@@ -56,12 +63,14 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	
 	public CraftTownHall(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
 	{
-		super(town, centerTownBlock, false);
+		this(town, centerTownBlock, false);
 	}
 	
 	public CraftTownHall(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
+		capacitatedCrownHolder = new CapacitatedCrownHolder();
+		capacitatedCrownHolder.setCapacity(crownCapacity);
 	}
 	
 	public CraftTownHall(Town town)
@@ -89,6 +98,13 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 		
 		likeCapacity = getRule().getAttribute(getBuiltLevel()).getLikeCapacity();
 		dislikeCapacity = getRule().getAttribute(getBuiltLevel()).getDislikeCapacity();
+		crownCapacity = getRule().getAttribute(getBuiltLevel()).getCrownCapacity();
+		
+		if(capacitatedCrownHolder != null)
+		{
+			capacitatedCrownHolder.setCapacity(crownCapacity);
+		}
+		
 		structureLimitMap = getRule().getAttribute(getBuiltLevel()).getStructureLimit();
 		relativeSpawnPosition = getRule().getAttributeOrDefault(getLevel()).getSpawnPosition();
 	}

@@ -5,13 +5,11 @@ import com.eul4.common.i18n.Message;
 import com.eul4.enums.Currency;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.ResourceBundle;
 import java.util.function.BiFunction;
 
 import static net.kyori.adventure.text.Component.empty;
-import static net.kyori.adventure.text.Component.text;
 
 @Getter
 public enum TutorialTownMessage implements Message
@@ -54,11 +52,7 @@ public enum TutorialTownMessage implements Message
 	STEP_12("step-12", (bundle, args) -> new Component[]
 	{
 		empty(),
-		Currency.LIKE.getBaseComponent()
-				.append(text((int) args[0]))
-				.append(text(" "))
-				.append(Currency.LIKE.getPluralWord().translate(bundle, String::toUpperCase))
-				.decorate(TextDecoration.BOLD),
+		PluginMessage.BOLD_DECORATED_$CURRENCY_$VALUE.translate(bundle, Currency.LIKE, args[0])
 	}),
 	
 	STEP_13("step-13"),

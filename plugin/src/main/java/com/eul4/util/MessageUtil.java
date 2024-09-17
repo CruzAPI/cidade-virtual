@@ -13,14 +13,17 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-import static com.eul4.i18n.PluginMessage.DECORATED_VALUE_CURRENCY;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static com.eul4.i18n.PluginMessage.BOLD_DECORATED_$CURRENCY_$VALUE;
+import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public class MessageUtil
 {
@@ -47,14 +50,14 @@ public class MessageUtil
 		
 		if(price.getLikes() > 0)
 		{
-			components.add(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
+			components.add(BOLD_DECORATED_$CURRENCY_$VALUE.translate(commonPlayer,
 					Currency.LIKE,
 					price.getLikes()));
 		}
 		
 		if(price.getDislikes() > 0)
 		{
-			components.add(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
+			components.add(BOLD_DECORATED_$CURRENCY_$VALUE.translate(commonPlayer,
 					Currency.DISLIKE,
 					price.getDislikes()));
 		}
@@ -71,7 +74,7 @@ public class MessageUtil
 		if(price.getLikes() > 0)
 		{
 			components.add(getPontuatedComponent()
-					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
+					.append(BOLD_DECORATED_$CURRENCY_$VALUE.translate(commonPlayer,
 					Currency.LIKE,
 					price.getLikes())));
 		}
@@ -79,7 +82,7 @@ public class MessageUtil
 		if(price.getDislikes() > 0)
 		{
 			components.add(getPontuatedComponent()
-					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
+					.append(BOLD_DECORATED_$CURRENCY_$VALUE.translate(commonPlayer,
 					Currency.DISLIKE,
 					price.getDislikes())));
 		}
@@ -123,7 +126,7 @@ public class MessageUtil
 		if(price.getLikes() > 0)
 		{
 			components.add(getPontuatedComponent()
-					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
+					.append(BOLD_DECORATED_$CURRENCY_$VALUE.translate(commonPlayer,
 							Currency.LIKE,
 							price.getLikes())));
 		}
@@ -131,7 +134,7 @@ public class MessageUtil
 		if(price.getDislikes() > 0)
 		{
 			components.add(getPontuatedComponent()
-					.append(DECORATED_VALUE_CURRENCY.translate(commonPlayer,
+					.append(BOLD_DECORATED_$CURRENCY_$VALUE.translate(commonPlayer,
 							Currency.DISLIKE,
 							price.getDislikes())));
 		}

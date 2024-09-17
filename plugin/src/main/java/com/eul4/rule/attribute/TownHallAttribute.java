@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Getter
@@ -18,5 +19,6 @@ public class TownHallAttribute extends GenericAttribute
 	private Map<StructureType, Integer> structureLimit;
 	private int likeCapacity;
 	private int dislikeCapacity;
+	private BigDecimal crownCapacity;
 	private Vector3 spawnPosition;
 }

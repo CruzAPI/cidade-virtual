@@ -17,6 +17,7 @@
     CANNON: 1
   like_capacity: 100
   dislike_capacity: 100
+  crown_capacity: '1000'
 
 2:
   price:
@@ -37,6 +38,7 @@
     CANNON: 2
   like_capacity: 200
   dislike_capacity: 200
+  crown_capacity: '2000'
 
 3:
   price:
@@ -57,6 +59,7 @@
     CANNON: 3
   like_capacity: 300
   dislike_capacity: 300
+  crown_capacity: '3000'
 
 4:
   price:
@@ -77,6 +80,7 @@
     CANNON: 4
   like_capacity: 400
   dislike_capacity: 400
+  crown_capacity: '4000'
 
 5:
   price:
@@ -97,6 +101,7 @@
     CANNON: 5
   like_capacity: 500
   dislike_capacity: 500
+  crown_capacity: '5000'
 
 6:
   price:
@@ -117,6 +122,7 @@
     CANNON: 6
   like_capacity: 600
   dislike_capacity: 600
+  crown_capacity: '6000'
 
 7:
   price:
@@ -137,6 +143,7 @@
     CANNON: 7
   like_capacity: 700
   dislike_capacity: 700
+  crown_capacity: '7000'
 
 8:
   price:
@@ -157,6 +164,7 @@
     CANNON: 8
   like_capacity: 800
   dislike_capacity: 800
+  crown_capacity: '8000'
 
 9:
   price:
@@ -177,6 +185,7 @@
     CANNON: 9
   like_capacity: 900
   dislike_capacity: 900
+  crown_capacity: '9000'
 
 10:
   price:
@@ -197,3 +206,4 @@
     CANNON: 10
   like_capacity: 1000
   dislike_capacity: 1000
+  crown_capacity: '10000'

@@ -1,15 +1,15 @@
 package com.eul4.command;
 
 import com.eul4.Main;
-import com.eul4.common.i18n.CommonMessage;
+import com.eul4.economy.Transaction;
+import com.eul4.exception.InvalidCryptoInfoException;
+import com.eul4.exception.MaterialNotForSaleException;
+import com.eul4.exception.OperationException;
+import com.eul4.exception.OverCapacityException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.RaidPerformer;
 import com.eul4.service.MarketDataManager;
-import com.eul4.wrapper.CryptoInfo;
-import com.eul4.wrapper.MaterialMultiplier;
 import com.eul4.wrapper.Trade;
-import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class SellCommand implements TabExecutor
 {
@@ -58,7 +57,6 @@ public class SellCommand implements TabExecutor
 		{
 			ItemStack item = player.getInventory().getItemInMainHand();
 			Material material = item.getType();
-			int amount = item.getAmount();
 			
 			if(material.isEmpty())
 			{
@@ -66,35 +64,42 @@ public class SellCommand implements TabExecutor
 				return false;
 			}
 			
-			Set<Trade> trades = marketDataManager.getTrades(item);
-			
-			if(trades.isEmpty())
+			try
+			{
+				Transaction transaction = marketDataManager.createTransaction(pluginPlayer, item);
+				transaction.execute();
+				BigDecimal total = transaction.getTotal();
+				
+				player.getInventory().setItemInMainHand(null);
+				
+				pluginPlayer.sendMessage
+				(
+					PluginMessage.COMMAND_SELL_SOLD_$MATERIAL_$AMOUNT_$VALUE,
+					Component.translatable(material.translationKey()),
+					item.getAmount(),
+					total
+				);
+				return true;
+			}
+			catch(MaterialNotForSaleException | InvalidCryptoInfoException e)
 			{
 				pluginPlayer.sendMessage(PluginMessage.COMMAND_SELL_ITEM_NOT_FOR_SALE);
 				return false;
 			}
-			
-			BigDecimal tradeResult = BigDecimal.ZERO;
-			
-			for(Trade trade : trades)
+			catch(OverCapacityException e)
 			{
-				tradeResult = tradeResult.add(trade.execute());
+				pluginPlayer.sendMessage(PluginMessage.CROWN_DEPOSITS_INSUFFICIENT_CAPACITY);
+				return false;
 			}
-			
-			player.getInventory().setItemInMainHand(null);
-			
-			pluginPlayer.sendMessage
-			(
-				PluginMessage.COMMAND_SELL_SOLD_$MATERIAL_$AMOUNT_$VALUE,
-				Component.translatable(material.translationKey()),
-				item.getAmount(),
-				tradeResult
-			);
-			return true;
+			catch(OperationException e)
+			{
+				pluginPlayer.sendMessage(PluginMessage.EXCEPTION_OPERATION);
+				return false;
+			}
 		}
 		else
 		{
-//			pluginPlayer.sendMessage(PluginMessage.COMMAND_RAID_USE_$ALIASES, aliases);
+			pluginPlayer.sendMessage(PluginMessage.COMMAND_SELL_USE_$ALIASES, aliases);
 			return false;
 		}
 	}

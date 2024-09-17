@@ -1,6 +1,6 @@
 package com.eul4.wrapper;
 
-import com.eul4.Main;
+import com.eul4.exception.InvalidCryptoInfoException;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import org.bukkit.Material;
@@ -12,14 +12,19 @@ public class RawMaterial extends EconomicMaterial
 {
 	private final CryptoInfo cryptoInfo;
 	
-	public RawMaterial(Main plugin, Material material, CryptoInfo cryptoInfo)
+	public RawMaterial(Material material, CryptoInfo cryptoInfo)
 	{
-		super(plugin, material);
+		super(material);
 		this.cryptoInfo = Preconditions.checkNotNull(cryptoInfo);
 	}
 	
-	public Trade createTrade(BigDecimal multiplier)
+	public TradePreview createTradePreview(int amount) throws InvalidCryptoInfoException
 	{
-		return new Trade(cryptoInfo, multiplier);
+		return createTradePreview(BigDecimal.valueOf(amount));
+	}
+	
+	public TradePreview createTradePreview(BigDecimal multiplier) throws InvalidCryptoInfoException
+	{
+		return cryptoInfo.createTradePreview(multiplier);
 	}
 }

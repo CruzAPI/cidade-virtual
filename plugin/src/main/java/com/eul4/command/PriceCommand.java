@@ -1,6 +1,8 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.exception.InvalidCryptoInfoException;
+import com.eul4.exception.MaterialNotForSaleException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.service.MarketDataManager;
@@ -59,22 +61,23 @@ public class PriceCommand implements TabExecutor
 				return false;
 			}
 			
-			BigDecimal price = marketDataManager.calculatePrice(material);
-			
-			if(price == null)
+			try
+			{
+				BigDecimal price = marketDataManager.calculatePrice(material);
+				pluginPlayer.sendMessage(PluginMessage.COMMAND_PRICE_UNIT_PRICE_$MATERIAL_$PRICE,
+						Component.translatable(material.translationKey()),
+						price);
+				return true;
+			}
+			catch(MaterialNotForSaleException | InvalidCryptoInfoException e)
 			{
 				pluginPlayer.sendMessage(PluginMessage.COMMAND_SELL_ITEM_NOT_FOR_SALE);
 				return false;
 			}
-			
-			pluginPlayer.sendMessage(PluginMessage.COMMAND_PRICE_UNIT_PRICE_$MATERIAL_$PRICE,
-					Component.translatable(material.translationKey()),
-					price);
-			return true;
 		}
 		else
 		{
-//			pluginPlayer.sendMessage(PluginMessage.COMMAND_RAID_USE_$ALIASES, aliases);
+			pluginPlayer.sendMessage(PluginMessage.COMMAND_PRICE_USE_$ALIASES, aliases);
 			return false;
 		}
 	}

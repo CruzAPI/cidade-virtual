@@ -1,19 +1,27 @@
 package com.eul4.wrapper;
 
-import com.eul4.Main;
-import com.eul4.service.MarketDataManager;
+import lombok.Getter;
 import org.bukkit.Material;
+
+import java.math.BigDecimal;
 
 public abstract class EconomicMaterial
 {
-	protected final Main plugin;
-	protected final MarketDataManager marketDataManager;
+	@Getter
 	protected final Material material;
 	
-	protected EconomicMaterial(Main plugin, Material material)
+	protected EconomicMaterial(Material material)
 	{
-		this.plugin = plugin;
-		this.marketDataManager = plugin.getMarketDataManager();
 		this.material = material;
+	}
+	
+	public EconomicMaterialMultiplier withMultiplier(double multiplier)
+	{
+		return withMultiplier(BigDecimal.valueOf(multiplier));
+	}
+	
+	public EconomicMaterialMultiplier withMultiplier(BigDecimal multiplier)
+	{
+		return new EconomicMaterialMultiplier(this, multiplier);
 	}
 }

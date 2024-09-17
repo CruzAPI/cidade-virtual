@@ -9,9 +9,7 @@ import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.type.player.CommonWorldType;
 import com.eul4.common.util.FileUtil;
 import com.eul4.enums.Rarity;
-import com.eul4.externalizer.filer.BlockDataFiler;
-import com.eul4.externalizer.filer.PlayerDataFiler;
-import com.eul4.externalizer.filer.TownsFiler;
+import com.eul4.externalizer.filer.*;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.interceptor.HeartParticleInterceptor;
 import com.eul4.interceptor.HideEnchantInterceptor;
@@ -47,7 +45,6 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.TranslationRegistry;
 import org.bukkit.NamespacedKey;
@@ -98,7 +95,9 @@ public class Main extends Common
 	private OreMinedAlertListener oreMinedAlertListener;
 	
 	private BlockDataFiler blockDataFiler;
+	private CrownInfoFiler crownInfoFiler;
 	private PlayerDataFiler playerDataFiler;
+	private RawMaterialMapFiler rawMaterialMapFiler;
 	private TownsFiler townsFiler;
 	
 	private MacroidService macroidService;
@@ -148,6 +147,9 @@ public class Main extends Common
 		
 		reloadRules();
 		townManager.loadTowns();
+		rawMaterialMapFiler.load();
+		crownInfoFiler.load();
+		marketDataManager.registerDerivatives();
 		
 		pasteCorruptedTowns();
 		
@@ -188,7 +190,9 @@ public class Main extends Common
 	
 	private void registerFilers()
 	{
+		crownInfoFiler = new CrownInfoFiler(this);
 		playerDataFiler = new PlayerDataFiler(this);
+		rawMaterialMapFiler = new RawMaterialMapFiler(this);
 		townsFiler = new TownsFiler(this);
 	}
 	
@@ -257,6 +261,7 @@ public class Main extends Common
 		registerCommand(new NewbieCommand(this), NewbieCommand.NAME_AND_ALIASES);
 		registerCommand(new PriceCommand(this), PriceCommand.NAME_AND_ALIASES);
 		registerCommand(new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
+		registerCommand(new RawMaterialCommand(this), RawMaterialCommand.NAME_AND_ALIASES);
 		registerCommand(attackCommand = new AttackCommand(this), AttackCommand.NAME_AND_ALIASES);
 		registerCommand(new ReloadRuleCommand(this), ReloadRuleCommand.NAME_AND_ALIASES);
 		registerCommand(new SellCommand(this), SellCommand.NAME_AND_ALIASES);
@@ -421,6 +426,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new PlayerConsumeItemRarityListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
+		pluginManager.registerEvents(new PluginFilerListener(this), this);
 		pluginManager.registerEvents(new SmithingRarityListener(this), this);
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
 		pluginManager.registerEvents(new StructureGrowRarityListener(this), this);
@@ -552,6 +558,8 @@ public class Main extends Common
 		
 		townsFiler.saveTowns();
 		playerDataFiler.saveMemoryPlayers();
+		rawMaterialMapFiler.save();
+		crownInfoFiler.save();
 		getServer().getWorlds().forEach(blockDataFiler::saveChunks);
 		
 		getLogger().info("Plugin disabled.");

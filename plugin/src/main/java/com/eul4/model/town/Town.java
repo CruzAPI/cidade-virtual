@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
 import com.eul4.exception.*;
+import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.model.craft.town.CraftTown;
 import com.eul4.model.player.Attacker;
 import com.eul4.model.player.PluginPlayer;
@@ -21,10 +22,9 @@ import org.bukkit.util.BoundingBox;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -234,4 +234,8 @@ public interface Town
 	void setAssistant(Villager villager);
 	
 	boolean hasReachedStructureLimit(StructureType structureType);
+	
+	BigDecimal calculateCrownBalance();
+	BigDecimal calculateCrownCapacity();
+	List<CapacitatedCrownHolder> getCapacitatedCrownHolders();
 }

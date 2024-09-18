@@ -33,7 +33,7 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
-import com.eul4.rule.serializer.*;
+import com.eul4.rule.serializer.rule.*;
 import com.eul4.service.*;
 import com.eul4.task.AutoBroadcastTask;
 import com.eul4.task.RarityBossBarTask;
@@ -73,6 +73,7 @@ public class Main extends Common
 	private DislikeGeneratorRuleSerializer dislikeGeneratorRuleSerializer;
 	private LikeDepositRuleSerializer likeDepositRuleSerializer;
 	private DislikeDepositRuleSerializer dislikeDepositRuleSerializer;
+	private CrownDepositRuleSerializer crownDepositRuleSerializer;
 	private ArmoryRuleSerializer armoryRuleSerializer;
 	private CannonRuleSerializer cannonRuleSerializer;
 	private TurretRuleSerializer turretRuleSerializer;
@@ -82,6 +83,7 @@ public class Main extends Common
 	private Rule<DislikeGeneratorAttribute> dislikeGeneratorRule;
 	private Rule<LikeDepositAttribute> likeDepositRule;
 	private Rule<DislikeDepositAttribute> dislikeDepositRule;
+	private Rule<CrownDepositAttribute> crownDepositRule;
 	private Rule<ArmoryAttribute> armoryRule;
 	private Rule<CannonAttribute> cannonRule;
 	private Rule<TurretAttribute> turretRule;
@@ -172,6 +174,7 @@ public class Main extends Common
 		var dislikeGeneratorRule = dislikeGeneratorRuleSerializer.load();
 		var likeDepositRule = likeDepositRuleSerializer.load();
 		var dislikeDepositRule = dislikeDepositRuleSerializer.load();
+		var crownDepositRule = crownDepositRuleSerializer.load();
 		var armoryRule = armoryRuleSerializer.load();
 		var cannonRule = cannonRuleSerializer.load();
 		var turretRule = turretRuleSerializer.load();
@@ -181,6 +184,7 @@ public class Main extends Common
 		this.dislikeGeneratorRule = dislikeGeneratorRule;
 		this.likeDepositRule = likeDepositRule;
 		this.dislikeDepositRule = dislikeDepositRule;
+		this.crownDepositRule = crownDepositRule;
 		this.armoryRule = armoryRule;
 		this.cannonRule = cannonRule;
 		this.turretRule = turretRule;
@@ -217,6 +221,7 @@ public class Main extends Common
 		dislikeGeneratorRuleSerializer = new DislikeGeneratorRuleSerializer(this);
 		likeDepositRuleSerializer = new LikeDepositRuleSerializer(this);
 		dislikeDepositRuleSerializer = new DislikeDepositRuleSerializer(this);
+		crownDepositRuleSerializer = new CrownDepositRuleSerializer(this);
 		armoryRuleSerializer = new ArmoryRuleSerializer(this);
 		cannonRuleSerializer = new CannonRuleSerializer(this);
 		turretRuleSerializer = new TurretRuleSerializer(this);

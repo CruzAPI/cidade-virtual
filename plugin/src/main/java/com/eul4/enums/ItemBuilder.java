@@ -2,9 +2,10 @@ package com.eul4.enums;
 
 import com.eul4.StructureType;
 import com.eul4.common.constant.CommonNamespacedKey;
-import com.eul4.common.i18n.Message;
+import com.eul4.common.i18n.TranslatableMessage;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.i18n.PluginMessage;
+import com.eul4.i18n.PluginRichMessage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
@@ -58,6 +59,15 @@ public enum ItemBuilder
 			PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_SHOP_PREVIEW_ATTRIBUTES,
 			PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_SHOP_LORE),
 	
+	CROWN_DEPOSIT((itemBuilder, commonPlayer) ->
+	{
+		ItemStack item = ItemStack.of(Material.GOLD_BLOCK);
+		setItemBuilderTag(item, itemBuilder, commonPlayer);
+		return item;
+	}, StructureType.CROWN_DEPOSIT,
+			PluginMessage.STRUCTURE_CROWN_DEPOSIT_SHOP_PREVIEW_ATTRIBUTES,
+			PluginRichMessage.STRUCTURE_CROWN_DEPOSIT_SHOP_LORE),
+	
 	ARMORY((itemBuilder, commonPlayer) ->
 	{
 		ItemStack item = new ItemStack(Material.IRON_BLOCK);
@@ -89,8 +99,8 @@ public enum ItemBuilder
 	
 	private final BiFunction<ItemBuilder, CommonPlayer, ItemStack> itemStackFunction;
 	private final StructureType structureType;
-	private final Message shopPreviewAttributesMessage;
-	private final Message shopLoreMessage;
+	private final TranslatableMessage shopPreviewAttributesMessage;
+	private final TranslatableMessage shopLoreMessage;
 	
 	public ItemStack getItem(CommonPlayer commonPlayer)
 	{

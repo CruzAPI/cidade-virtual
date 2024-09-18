@@ -234,4 +234,10 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	{
 		return new AffineTransform().rotateY(-getRotation()).apply(relativeSpawnPosition);
 	}
+	
+	@Override
+	public CapacitatedCrownHolder getCapacitatedCrownHolder()
+	{
+		return capacitatedCrownHolder;
+	}
 }

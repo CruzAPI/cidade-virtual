@@ -8,8 +8,35 @@ import java.math.BigDecimal;
 
 public class CapacitatedCrownHolder implements CrownHolder
 {
-	private BigDecimal balance = BigDecimal.ZERO;
-	private BigDecimal capacity = BigDecimal.ZERO;
+	private BigDecimal balance;
+	private BigDecimal capacity;
+	
+	public CapacitatedCrownHolder()
+	{
+		this(BigDecimal.ZERO);
+	}
+	
+	public CapacitatedCrownHolder(BigDecimal balance)
+	{
+		this.balance = balance;
+		this.capacity = BigDecimal.ZERO;
+	}
+	
+	public BigDecimal getRemainingCapacity()
+	{
+		return capacity.subtract(balance);
+	}
+	
+	public boolean isFull()
+	{
+		return balance.compareTo(capacity) >= 0;
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		return balance.compareTo(BigDecimal.ZERO) <= 0;
+	}
 	
 	@Override
 	public BigDecimal getBalance()

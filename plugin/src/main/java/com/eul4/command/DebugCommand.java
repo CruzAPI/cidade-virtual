@@ -7,6 +7,7 @@ import com.eul4.common.world.CommonWorld;
 import com.eul4.enums.Rarity;
 import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.model.player.PluginPlayer;
+import com.eul4.model.town.Town;
 import com.eul4.service.BlockData;
 import com.google.common.collect.Multimap;
 import lombok.RequiredArgsConstructor;
@@ -66,8 +67,10 @@ public class DebugCommand implements TabExecutor
 		if(args.length == 0)
 		{
 			CapacitatedCrownHolder capacitatedCrownHolder = pluginPlayer.getTown().getTownHall().getCapacitatedCrownHolder();
+			Town town = pluginPlayer.getTown();
 			
 			player.sendMessage("TownHallCrownHolder: " + capacitatedCrownHolder.getBalance() + "/" + capacitatedCrownHolder.getCapacity());
+			player.sendMessage("Total: " + town.calculateCrownBalance() + "/" + town.calculateCrownCapacity());
 		}
 		else if(args.length == 2 && args[0].equalsIgnoreCase("goto"))
 		{

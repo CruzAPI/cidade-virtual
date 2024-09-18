@@ -18,11 +18,11 @@ import org.bukkit.block.BlockFace;
 import java.io.IOException;
 
 @Getter
-public abstract class CraftDeposit extends CraftResourceStructure implements Deposit
+public abstract class CraftDeposit<N extends Number> extends CraftResourceStructure implements Deposit<N>
 {
-	private transient int capacity;
+	private transient N capacity;
 	@Setter(AccessLevel.PROTECTED)
-	protected transient int remainingCapacity;
+	protected transient N remainingCapacity;
 	
 	public CraftDeposit(Town town)
 	{
@@ -73,7 +73,7 @@ public abstract class CraftDeposit extends CraftResourceStructure implements Dep
 	
 	protected abstract PluginMessage getStructureBalanceMessageUnderAttack();
 	
-	public abstract Rule<? extends DepositAttribute> getRule();
+	public abstract Rule<? extends DepositAttribute<N>> getRule();
 	
 	public abstract Currency getCurrency();
 	
@@ -85,15 +85,13 @@ public abstract class CraftDeposit extends CraftResourceStructure implements Dep
 		capacity = getRule().getAttributeOrDefault(getBuiltLevel()).getCapacity();
 	}
 	
-	@Override
-	public int getVirtualBalance()
-	{
-		return Math.min(remainingCapacity, getTotalTownBalance());
-	}
+//	@Override
+//	public N getVirtualBalance()
+//	{
+//		return Math.min(remainingCapacity, getTotalTownBalance());
+//	}
 	
-	protected abstract int getTotalTownBalance();
-	
-	protected abstract int subtract(int balance);
+	protected abstract N subtract(N balance);
 	
 	@Override
 	public void onStartAttack()
@@ -102,13 +100,8 @@ public abstract class CraftDeposit extends CraftResourceStructure implements Dep
 		remainingCapacity = capacity;
 	}
 	
-	protected int getVirtualCapacity()
-	{
-		return Math.min(getTotalTownBalance(), remainingCapacity);
-	}
-	
-	public boolean isEmpty()
-	{
-		return getVirtualCapacity() == 0;
-	}
+	public abstract boolean isEmpty();
+//	{
+//		return getVirtualCapacity() == 0;
+//	}
 }

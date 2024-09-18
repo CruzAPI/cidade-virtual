@@ -16,7 +16,7 @@ import lombok.Getter;
 import java.io.IOException;
 import java.util.Set;
 
-public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
+public class CraftLikeDeposit extends CraftDeposit<Integer> implements LikeDeposit
 {
 	@Getter
 	private final Set<Resource> resources = Set.of(Resource.builder()
@@ -54,6 +54,18 @@ public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
 	}
 	
 	@Override
+	protected Integer subtract(Integer balance)
+	{
+		return null;
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		return getVirtualBalance() <= 0;
+	}
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public Rule<LikeDepositAttribute> getRule()
 	{
@@ -67,20 +79,26 @@ public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
 	}
 	
 	@Override
-	protected int getTotalTownBalance()
+	public Integer getVirtualBalance()
+	{
+		return null;
+	}
+	
+	@Override
+	public Integer getTotalBalance()
 	{
 		return town.getLikes();
 	}
 	
-	@Override
-	protected int subtract(int balance)
-	{
-		return subtractVirtualBalance(this::setRemainingCapacity,
-				town::subtractLikes,
-				this::getVirtualBalance,
-				this::getRemainingCapacity,
-				balance);
-	}
+	//	@Override
+//	protected int subtract(int balance)
+//	{
+//		return subtractVirtualBalance(this::setRemainingCapacity,
+//				town::subtractLikes,
+//				this::getVirtualBalance,
+//				this::getRemainingCapacity,
+//				balance);
+//	}
 	
 	@Override
 	public void onTownLikeBalanceChange()

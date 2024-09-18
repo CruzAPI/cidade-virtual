@@ -10,4 +10,5 @@ public interface Holder<N extends Number>
 	void setBalance(N balance) throws OperationException;
 	void add(N amount) throws OperationException;
 	void subtract(N amount) throws OperationException;
+	boolean isEmpty();
 }

@@ -9,5 +9,18 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class LikeGeneratorAttribute extends GeneratorAttribute
 {
-	public static final LikeGeneratorAttribute DEFAULT = new LikeGeneratorAttribute();
+	public static final LikeGeneratorAttribute DEFAULT = new LikeGeneratorAttribute
+	(
+		GenericAttribute.Data.DEFAULT,
+		GeneratorAttribute.Data.DEFAULT
+	);
+	
+	public LikeGeneratorAttribute
+	(
+		GenericAttribute.Data geneticAttributeData,
+		GeneratorAttribute.Data generatorAttributeData
+	)
+	{
+		super(geneticAttributeData, generatorAttributeData);
+	}
 }

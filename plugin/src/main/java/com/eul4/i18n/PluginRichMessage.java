@@ -85,6 +85,9 @@ public enum PluginRichMessage implements RichMessage
 			component("eul4_insights", CommonMessageUtil.decimalToComponent(crownInfo.getEul4Insights(), decimalFormat)),
 		};
 	}),
+	
+	STRUCTURE_CROWN_DEPOSIT_SHOP_LORE("structure.crown-deposit.shop-lore"),
+	
 	;
 	
 	private final String key;

@@ -165,6 +165,7 @@ public enum PluginMessage implements Message
 	STRUCTURE_TOWN_HALL_NAME ("structure.town-hall.name"),
 	STRUCTURE_LIKE_GENERATOR_NAME("structure.like-generator.name"),
 	STRUCTURE_DISLIKE_GENERATOR_NAME("structure.dislike-generator.name"),
+	STRUCTURE_CROWN_DEPOSIT_NAME("structure.crown-deposit.name"),
 	STRUCTURE_LIKE_DEPOSIT_NAME("structure.like-deposit.name"),
 	STRUCTURE_DISLIKE_DEPOSIT_NAME("structure.dislike-deposit.name"),
 	COLLECT_LIKES("collect-likes", empty().color(GREEN)),
@@ -559,6 +560,25 @@ public enum PluginMessage implements Message
 		};
 	}),
 	
+	STRUCTURE_CROWN_DEPOSIT_UPGRADE_PREVIEW_LORE("structure.crown-deposit.upgrade-preview-lore", (bundle, args) ->
+	{
+		CrownDepositAttribute currentLevelAttributes = (CrownDepositAttribute) args[0];
+		CrownDepositAttribute nextLevelAttributes = (CrownDepositAttribute) args[1];
+		
+		Currency currency = currentLevelAttributes.getCurrency();
+		DecimalFormat decimalFormat = currency.getDecimalFormat(bundle.getLocale());
+		
+		int buildTicks = nextLevelAttributes.getTotalBuildTicks();
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			text(decimalFormat.format(currentLevelAttributes.getCapacity())),
+			text(decimalFormat.format(nextLevelAttributes.getCapacity())),
+			TimerTranslator.translate(buildTicks, bundle),
+		};
+	}),
+	
 	STRUCTURE_DISLIKE_DEPOSIT_UPGRADE_PREVIEW_LORE("structure.dislike-deposit.upgrade-preview-lore", (bundle, args) ->
 	{
 		DislikeDepositAttribute currentLevelAttributes = (DislikeDepositAttribute) args[0];
@@ -690,6 +710,12 @@ public enum PluginMessage implements Message
 	{
 		empty().color(WHITE).decorate(BOLD),
 		text((int) args[0]),
+	}),
+	
+	STRUCTURE_CROWN_DEPOSIT_BALANCE("structure.dislike-deposit.balance", (bundle, args) -> new Component[]
+	{
+		empty().color(WHITE).decorate(BOLD),
+		decimalToComponent(args[0], Currency.CROWN.getDecimalFormat(bundle.getLocale())),
 	}),
 	
 	STRUCTURE_TOWN_HALL_VIRTUAL_LIKES("structure.town-hall.virtual-likes", (bundle, args) -> new Component[]
@@ -1021,6 +1047,18 @@ public enum PluginMessage implements Message
 		{
 			empty().color(GRAY),
 			text(attribute.getCapacity()),
+			TimerTranslator.translate(attribute.getTotalBuildTicks(), bundle),
+		};
+	}),
+	
+	STRUCTURE_CROWN_DEPOSIT_SHOP_PREVIEW_ATTRIBUTES("structure.crown-deposit.shop-preview-attributes", (bundle, args) ->
+	{
+		CrownDepositAttribute attribute = (CrownDepositAttribute) StructureType.CROWN_DEPOSIT.getRule((Main) args[0]).getAttributeOrDefault(1);
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			decimalToComponent(attribute.getCapacity(), attribute.getCurrency().getDecimalFormat(bundle.getLocale())),
 			TimerTranslator.translate(attribute.getTotalBuildTicks(), bundle),
 		};
 	}),

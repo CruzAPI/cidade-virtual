@@ -13,6 +13,8 @@ import com.eul4.exception.CannotConstructException;
 import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
 import com.eul4.exception.TownHardnessLimitException;
+import com.eul4.holder.CapacitatedCrownHolder;
+import com.eul4.holder.CrownHolder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
@@ -66,6 +68,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.*;
@@ -1382,5 +1385,54 @@ public class CraftTown implements Town
 	public boolean hasReachedStructureLimit(StructureType structureType)
 	{
 		return countStructures(structureType) >= getStructureLimit(structureType);
+	}
+	
+	@Override
+	public BigDecimal calculateCrownBalance()
+	{
+		BigDecimal balance = BigDecimal.ZERO;
+		
+		for(Structure structure : structureMap.values())
+		{
+			if(structure instanceof StructureCrownHoldeable structureCrownHoldeable)
+			{
+				balance = balance.add(structureCrownHoldeable.getCrownHolder().getBalance());
+			}
+		}
+		
+		return balance;
+	}
+	
+	@Override
+	public BigDecimal calculateCrownCapacity()
+	{
+		BigDecimal capacity = BigDecimal.ZERO;
+		
+		for(Structure structure : structureMap.values())
+		{
+			if(structure instanceof StructureCapacitatedCrownHoldeable holdeable)
+			{
+				capacity = capacity.add(holdeable.getCapacitatedCrownHolder().getCapacity());
+			}
+		}
+		
+		return capacity;
+	}
+	
+	@Override
+	public List<CapacitatedCrownHolder> getCapacitatedCrownHolders()
+	{
+		List<CapacitatedCrownHolder> holders = new ArrayList<>();
+		
+		for(Structure structure : structureMap.values())
+		{
+			if(structure instanceof StructureCrownHoldeable structureCrownHoldeable
+					&& structureCrownHoldeable.getCrownHolder() instanceof CapacitatedCrownHolder capacitatedCrownHolder)
+			{
+				holders.add(capacitatedCrownHolder);
+			}
+		}
+		
+		return holders;
 	}
 }

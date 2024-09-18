@@ -151,6 +151,21 @@ public enum StructureType
 		Material.SMOOTH_STONE
 	),
 	
+	CROWN_DEPOSIT
+	(
+		CraftCrownDeposit.class,
+		CraftCrownDeposit::new,
+		CraftCrownDeposit::new,
+		CrownDepositWriter.class,
+		CrownDepositReader.class,
+		CraftCrownDepositGui::new,
+		Main::getCrownDepositRule,
+		NamedTextColor.RED,
+		PluginMessage.STRUCTURE_CROWN_DEPOSIT_NAME,
+		PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_UPGRADE_PREVIEW_LORE,
+		Material.GOLD_BLOCK
+	),
+	
 	;
 	
 	private final Class<? extends Structure> structureClass;

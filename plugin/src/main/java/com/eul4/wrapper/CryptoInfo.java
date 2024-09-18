@@ -115,6 +115,12 @@ public class CryptoInfo implements CrownHolder
 		updateMarketCap(marketCap.subtract(amount));
 	}
 	
+	@Override
+	public boolean isEmpty()
+	{
+		return marketCap.compareTo(BigDecimal.ZERO) <= 0;
+	}
+	
 	private void updateMarketCap(BigDecimal newMarketCap) throws OperationException
 	{
 		if(newMarketCap.compareTo(BigDecimal.ZERO) < 0)

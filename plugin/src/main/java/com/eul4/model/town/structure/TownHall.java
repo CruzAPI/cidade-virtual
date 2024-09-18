@@ -7,7 +7,7 @@ import org.bukkit.Location;
 
 import java.util.Map;
 
-public interface TownHall extends ResourceStructure
+public interface TownHall extends ResourceStructure, StructureCapacitatedCrownHoldeable
 {
 	int getLikeCapacity();
 	int getDislikeCapacity();

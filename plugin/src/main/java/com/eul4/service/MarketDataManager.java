@@ -5,14 +5,20 @@ import com.eul4.economy.Transaction;
 import com.eul4.economy.Transfer;
 import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.MaterialNotForSaleException;
-import com.eul4.holder.Holder;
+import com.eul4.exception.OverCapacityException;
+import com.eul4.holder.CapacitatedCrownHolder;
+import com.eul4.holder.CrownHolder;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.wrapper.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
 import java.util.*;
+
+import static org.bukkit.Material.CHEST;
+import static org.bukkit.Material.OAK_PLANKS;
 
 public class MarketDataManager
 {
@@ -91,8 +97,9 @@ public class MarketDataManager
 		
 		RawMaterial rawOakLog = rawMaterialMap.get(Material.OAK_LOG);
 		
-		DerivativeMaterial derivativeOakPlanks = registerDerivative(Material.OAK_PLANKS, rawOakLog.withMultiplier(1.0D / 4.0D));
-		DerivativeMaterial derivativeChest = registerDerivative(Material.CHEST, derivativeOakPlanks.withMultiplier(8.0D));
+		DerivativeMaterial derivativeOakPlanks = registerDerivative(OAK_PLANKS, rawOakLog.withMultiplier(1.0D / 4.0D));
+		DerivativeMaterial derivativeChest = registerDerivative(CHEST, rawOakLog.withMultiplier(2.0D));
+//		DerivativeMaterial derivativeChest = registerDerivative(CHEST, derivativeOakPlanks.withMultiplier(8.0D));
 		
 		derivativeRegistered = true;
 	}
@@ -110,30 +117,65 @@ public class MarketDataManager
 	
 	public BigDecimal calculatePrice(Material material) throws MaterialNotForSaleException, InvalidCryptoInfoException
 	{
+		Bukkit.getLogger().info("derivates: " + derivates);
+		
 		if(derivates.containsKey(material))
 		{
+			Bukkit.getLogger().info("A");
 			return derivates.get(material).calculatePrice();
 		}
 		
 		if(getRawMaterialMap().containsKey(material))
 		{
+			Bukkit.getLogger().info("B");
 			return getRawMaterialMap().get(material).getCryptoInfo().calculatePrice();
 		}
 		
+		Bukkit.getLogger().info("C");
 		throw new MaterialNotForSaleException();
 	}
 	
 	public Transaction createTransaction(PluginPlayer pluginPlayer, ItemStack itemStack)
-			throws MaterialNotForSaleException, InvalidCryptoInfoException
+			throws MaterialNotForSaleException, InvalidCryptoInfoException, OverCapacityException
 	{
 		List<Transfer<? extends Number>> transferList = new ArrayList<>();
-		
-		Holder<BigDecimal> holderTo =  pluginPlayer.getTown().getTownHall().getCapacitatedCrownHolder();
+		List<CapacitatedCrownHolder> holders = pluginPlayer.getTown().getCapacitatedCrownHolders();
 		List<TradePreview> tradePreviews = createTradePreviews(itemStack);
+		
+		Iterator<CapacitatedCrownHolder> iterator = holders.iterator();
+		
+		if(!iterator.hasNext())
+		{
+			throw new OverCapacityException();
+		}
+		
+		CapacitatedCrownHolder capacitatedCrownHolder = iterator.next();
 		
 		for(TradePreview tradePreview : tradePreviews)
 		{
-			transferList.add(new Transfer<>(tradePreview.getCryptoInfo(), holderTo, tradePreview.getPreview()));
+			BigDecimal preview = tradePreview.getPreview();
+			
+			while(preview.compareTo(BigDecimal.ZERO) > 0)
+			{
+				while(capacitatedCrownHolder.isFull())
+				{
+					if(!iterator.hasNext())
+					{
+						throw new OverCapacityException();
+					}
+					
+					capacitatedCrownHolder = iterator.next();
+				}
+				
+				BigDecimal remainingCapacity = capacitatedCrownHolder.getRemainingCapacity();
+				BigDecimal min = preview.compareTo(remainingCapacity) < 0
+						? preview
+						: remainingCapacity;
+				
+				preview = preview.subtract(min);
+				
+				transferList.add(new Transfer<>(tradePreview.getCryptoInfo(), capacitatedCrownHolder, min));
+			}
 		}
 		
 		return new Transaction(transferList);

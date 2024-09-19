@@ -280,6 +280,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new ContaintmentPickaxeListener(this), this);
 		pluginManager.registerEvents(new CraftRarityListener(this), this);
 		pluginManager.registerEvents(new DebugListener(this), this);
+		pluginManager.registerEvents(new DecoratedPotRarityListener(this), this);
 		pluginManager.registerEvents(new DefaultItemStackRarityListener(this), this);
 		pluginManager.registerEvents(new ElytraRarityListener(this), this);
 		pluginManager.registerEvents(new EnchantmentListener(this), this);

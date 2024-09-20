@@ -41,6 +41,10 @@ public class BlockDataReader extends ObjectReader<BlockData>
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion2;
 			break;
+		case 3:
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion3;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -62,7 +66,9 @@ public class BlockDataReader extends ObjectReader<BlockData>
 	
 	private BlockData readableVersion0()
 	{
-		return new BlockData();
+		return BlockData.builder()
+				.origin(BlockData.Origin.UNKNOWN)
+				.build();
 	}
 	
 	private BlockData readableVersion1() throws IOException
@@ -72,7 +78,13 @@ public class BlockDataReader extends ObjectReader<BlockData>
 		float health = in.readFloat();
 		boolean willDrop = in.readBoolean();
 		
-		return new BlockData(hasHardness, rarity, health, willDrop);
+		return BlockData.builder()
+				.hasHardness(hasHardness)
+				.rarity(rarity)
+				.health(health)
+				.willDrop(willDrop)
+				.origin(BlockData.Origin.UNKNOWN)
+				.build();
 	}
 	
 	private BlockData readableVersion2() throws IOException
@@ -84,7 +96,34 @@ public class BlockDataReader extends ObjectReader<BlockData>
 		byte[] enchantmens = new byte[BlockData.Enchant.values().length];
 		in.read(enchantmens);
 		
-		return new BlockData(hasHardness, rarity, health, willDrop, enchantmens);
+		return BlockData.builder()
+				.hasHardness(hasHardness)
+				.rarity(rarity)
+				.health(health)
+				.willDrop(willDrop)
+				.enchantments(enchantmens)
+				.origin(BlockData.Origin.UNKNOWN)
+				.build();
+	}
+	
+	private BlockData readableVersion3() throws IOException
+	{
+		boolean hasHardness = in.readBoolean();
+		Rarity rarity = Optional.ofNullable(Rarity.getRarityById(in.readByte())).orElse(Rarity.COMMON);
+		float health = in.readFloat();
+		boolean willDrop = in.readBoolean();
+		byte[] enchantmens = new byte[BlockData.Enchant.values().length];
+		in.read(enchantmens);
+		BlockData.Origin origin = BlockData.Origin.getById(in.readByte());
+		
+		return BlockData.builder()
+				.hasHardness(hasHardness)
+				.rarity(rarity)
+				.health(health)
+				.willDrop(willDrop)
+				.enchantments(enchantmens)
+				.origin(origin)
+				.build();
 	}
 	
 	public BlockData readReference() throws IOException, ClassNotFoundException

@@ -21,5 +21,6 @@ public class BlockDataWriter extends ObjectWriter<BlockData>
 		out.writeFloat(blockData.getHealth());
 		out.writeBoolean(blockData.willDrop());
 		out.write(blockData.getEnchantments());
+		out.write(blockData.getOrigin().getId());
 	}
 }

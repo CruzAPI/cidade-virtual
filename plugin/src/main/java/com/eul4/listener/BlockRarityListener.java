@@ -11,10 +11,12 @@ import com.eul4.util.RarityUtil;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import io.papermc.paper.event.player.PlayerFlowerPotManipulateEvent;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.*;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.type.Cocoa;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -41,7 +43,10 @@ public class BlockRarityListener implements Listener
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		Rarity rarity = RarityUtil.getRarity(event.getItemInHand());
-		plugin.getBlockDataFiler().setBlockData(event.getBlock(), new BlockData(rarity));
+		plugin.getBlockDataFiler().setBlockData(event.getBlock(), BlockData.builder()
+				.rarity(rarity)
+				.origin(BlockData.Origin.PLACED)
+				.build());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -52,7 +57,10 @@ public class BlockRarityListener implements Listener
 		for(BlockState blockState : event.getReplacedBlockStates())
 		{
 			Block block = blockState.getBlock();
-			plugin.getBlockDataFiler().setBlockData(block, new BlockData(rarity));
+			plugin.getBlockDataFiler().setBlockData(block, BlockData.builder()
+					.rarity(rarity)
+					.origin(BlockData.Origin.PLACED)
+					.build());
 		}
 	}
 	
@@ -64,7 +72,7 @@ public class BlockRarityListener implements Listener
 		
 		if(player.getGameMode() != GameMode.SURVIVAL)
 		{
-			plugin.getBlockDataFiler().removeBlockData(block);
+			plugin.execute(() -> plugin.getBlockDataFiler().removeBlockData(block));
 			return;
 		}
 		
@@ -87,8 +95,9 @@ public class BlockRarityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBlockDropItem(BlockDropItemEvent event)
 	{
-		Rarity rarity = RarityUtil.getRarity(plugin, event.getBlock());
-		plugin.getBlockDataFiler().removeBlockData(event.getBlock());
+		Block block = event.getBlock();
+		Rarity rarity = RarityUtil.getRarity(plugin, block);
+		plugin.execute(() -> plugin.getBlockDataFiler().removeBlockData(block));
 		
 		for(Item drop : event.getItems())
 		{
@@ -99,8 +108,9 @@ public class BlockRarityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBlockDestroy(BlockDestroyEvent event)
 	{
-		Rarity rarity = RarityUtil.getRarity(plugin, event.getBlock());
-		plugin.getBlockDataFiler().removeBlockData(event.getBlock());
+		Block block = event.getBlock();
+		Rarity rarity = RarityUtil.getRarity(plugin, block);
+		plugin.execute(() -> plugin.getBlockDataFiler().removeBlockData(block));
 		
 		for(Item drop : event.getItems())
 		{
@@ -113,7 +123,7 @@ public class BlockRarityListener implements Listener
 	{
 		Block block = event.getBlock();
 		Rarity rarity = RarityUtil.getRarity(plugin, block);
-		plugin.getBlockDataFiler().removeBlockData(block);
+		plugin.execute(() -> plugin.getBlockDataFiler().removeBlockData(block));
 		
 		for(ItemStack drop : event.getItems())
 		{

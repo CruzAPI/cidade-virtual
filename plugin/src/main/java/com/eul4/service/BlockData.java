@@ -5,10 +5,7 @@ import com.eul4.enums.Rarity;
 import com.eul4.util.RarityUtil;
 import com.eul4.wrapper.StackedEnchantment;
 import com.google.common.base.Preconditions;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -49,6 +46,33 @@ public class BlockData
 		}
 	}
 	
+	@RequiredArgsConstructor
+	@Getter
+	public enum Origin
+	{
+		UNKNOWN((byte) 0),
+		CHUNK_GENERATED((byte) 1),
+		PLACED((byte) 2),
+		;
+		
+		public static final Origin DEFAULT_ORIGIN = CHUNK_GENERATED;
+		
+		private final byte id;
+		
+		public static @Nullable Origin getById(byte id)
+		{
+			for(Origin origin : values())
+			{
+				if(origin.id == id)
+				{
+					return origin;
+				}
+			}
+			
+			return null;
+		}
+	}
+	
 	@Accessors(fluent = true)
 	private boolean hasHardness;
 	
@@ -58,35 +82,30 @@ public class BlockData
 	private boolean willDrop;
 	
 	private byte[] enchantments;
+	private Origin origin;
 	
 	public BlockData()
 	{
-		this(false);
+		this(false, null, null, false, null, null);
 	}
 	
-	public BlockData(boolean hasHardness)
-	{
-		this(hasHardness, Rarity.DEFAULT_RARITY, Rarity.DEFAULT_RARITY.getMaxHealth(), true);
-	}
-	
-	public BlockData(Rarity rarity)
-	{
-		this(true, rarity, rarity.getMaxHealth(), true);
-	}
-	
-	public BlockData(boolean hasHardness, Rarity rarity, float health, boolean willDrop)
-	{
-		this(hasHardness, rarity, health, willDrop, new byte[Enchant.values().length]);
-		Arrays.fill(enchantments, Byte.MAX_VALUE);
-	}
-	
-	public BlockData(boolean hasHardness, @NotNull Rarity rarity, float health, boolean willDrop, byte[] enchantments)
+	@Builder
+	public BlockData
+	(
+		boolean hasHardness,
+		@Nullable Rarity rarity,
+		@Nullable Float health,
+		boolean willDrop,
+		byte @Nullable [] enchantments,
+		@Nullable Origin origin
+	)
 	{
 		this.hasHardness = hasHardness;
-		this.rarity = Objects.requireNonNull(rarity);
-		this.health = health;
+		this.rarity = rarity == null ? Rarity.DEFAULT_RARITY : rarity;
+		this.health = health == null ? this.rarity.getMaxHealth() : health;
 		this.willDrop = willDrop;
-		this.enchantments = enchantments;
+		this.enchantments = enchantments == null ? createDefaultEnchantmentsByteArray() : enchantments;
+		this.origin = origin == null ? Origin.DEFAULT_ORIGIN : origin;
 	}
 	
 	public boolean willDrop(ItemStack tool, Block block)
@@ -303,5 +322,12 @@ public class BlockData
 	public void resetHealth()
 	{
 		this.health = rarity.getMaxHealth();
+	}
+	
+	private static byte[] createDefaultEnchantmentsByteArray()
+	{
+		byte[] enchantments = new byte[Enchant.values().length];
+		Arrays.fill(enchantments, Byte.MAX_VALUE);
+		return enchantments;
 	}
 }

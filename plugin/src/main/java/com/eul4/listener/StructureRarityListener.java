@@ -188,7 +188,9 @@ public class StructureRarityListener implements Listener
 									
 									if(!block.isEmpty())
 									{
-										blockDataFiler.loadBlockDataOrDefault(block, () -> new BlockData(rarity));
+										blockDataFiler.loadBlockDataOrDefault(block, () -> BlockData.builder()
+												.rarity(rarity)
+												.build());
 									}
 								}
 							}

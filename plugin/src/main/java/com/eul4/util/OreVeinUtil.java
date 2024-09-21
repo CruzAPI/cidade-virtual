@@ -198,44 +198,6 @@ public class OreVeinUtil
 				;
 	}
 	
-	private static Tag<Material> getOreTag(Material material)
-	{
-		if(Tag.COAL_ORES.isTagged(material))
-		{
-			return Tag.COAL_ORES;
-		}
-		else if(Tag.COPPER_ORES.isTagged(material))
-		{
-			return Tag.COPPER_ORES;
-		}
-		else if(Tag.IRON_ORES.isTagged(material))
-		{
-			return Tag.IRON_ORES;
-		}
-		else if(Tag.REDSTONE_ORES.isTagged(material))
-		{
-			return Tag.REDSTONE_ORES;
-		}
-		else if(Tag.LAPIS_ORES.isTagged(material))
-		{
-			return Tag.LAPIS_ORES;
-		}
-		else if(Tag.GOLD_ORES.isTagged(material))
-		{
-			return Tag.GOLD_ORES;
-		}
-		else if(Tag.DIAMOND_ORES.isTagged(material))
-		{
-			return Tag.DIAMOND_ORES;
-		}
-		else if(Tag.EMERALD_ORES.isTagged(material))
-		{
-			return Tag.EMERALD_ORES;
-		}
-		
-		return null;
-	}
-	
 	private static boolean isOre(Material material)
 	{
 		return Tag.COAL_ORES.isTagged(material)

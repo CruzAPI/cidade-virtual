@@ -106,12 +106,20 @@ public class BlockDataFiler extends PluginFiler
 	
 	public BlockData loadBlockDataOrDefault(Block block, Supplier<BlockData> blockDataSupplier, BlockDataLoadEvent.Cause cause)
 	{
-		return loadChunk(block.getChunk()).computeIfAbsent(block, x ->
+		Map<Block, BlockData> chunkData = loadChunk(block);
+		
+		BlockData blockData = chunkData.get(block);
+		
+		if(blockData != null)
 		{
-			BlockData blockData = blockDataSupplier.get();
-			new BlockDataLoadEvent(block, blockData, BlockDataLoadEvent.Cause.OTHER).callEvent();
 			return blockData;
-		});
+		}
+		
+		blockData = blockDataSupplier.get();
+		BlockDataLoadEvent event = new BlockDataLoadEvent(block, blockData, cause);
+		event.callEvent();
+		chunkData.put(block, event.getBlockData());
+		return event.getBlockData();
 	}
 	
 	public BlockData removeBlockData(Block block)

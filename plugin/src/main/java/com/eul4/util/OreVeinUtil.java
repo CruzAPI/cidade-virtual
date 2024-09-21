@@ -4,6 +4,7 @@ import com.eul4.Main;
 import com.eul4.enums.Rarity;
 import com.eul4.event.BlockDataLoadEvent;
 import com.eul4.service.BlockData;
+import com.eul4.world.RaidLevel;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -19,6 +20,11 @@ public class OreVeinUtil
 	
 	public static void rarifyVein(Main plugin, Block block)
 	{
+		if(!(plugin.getWorldManager().get(block.getWorld()) instanceof RaidLevel))
+		{
+			return;
+		}
+		
 		final Set<Block> vein;
 		
 		if(plugin.getBlockDataFiler().hasBlockData(block) || (vein = getVein(block)).isEmpty())

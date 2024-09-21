@@ -3,16 +3,20 @@ package com.eul4.i18n;
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.RichMessage;
 import com.eul4.common.util.CommonMessageUtil;
+import com.eul4.enums.Rarity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import static com.eul4.common.i18n.CommonMessage.COMMAND_REPLY_USAGE_$ALIASES;
 import static com.eul4.common.util.CommonMessageUtil.displayName;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.styling;
 
 @RequiredArgsConstructor
 @Getter
@@ -24,6 +28,15 @@ public enum PluginRichMessage implements RichMessage
 	{
 		component("chance", CommonMessageUtil.toPercentage(args[0], "0.#", locale)),
 	}),
+	
+	ORE_FOUND_ALERT("ore-found.alert", (locale, args) -> new TagResolver[]
+	{
+		component("player", CommonMessageUtil.displayName(args[0])),
+		styling("rarity_color", Optional.ofNullable(((Rarity) args[1]).getStyle().color()).orElse(NamedTextColor.WHITE)),
+		component("block", CommonMessageUtil.argToComponent(args[2])),
+		component("amount", CommonMessageUtil.argToComponent(args[3])),
+	}),
+	
 	MYSTHIC_LABEL("mysthic.label"),
 	
 	WORLD_RAID_LABEL("world.raid.label"),

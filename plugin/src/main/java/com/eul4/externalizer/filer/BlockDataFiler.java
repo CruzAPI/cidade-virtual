@@ -6,6 +6,7 @@ import com.eul4.common.type.player.CommonObjectType;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.Writers;
+import com.eul4.event.BlockDataLoadEvent;
 import com.eul4.externalizer.reader.BlockDataMapReader;
 import com.eul4.externalizer.writer.BlockDataMapWriter;
 import com.eul4.service.BlockData;
@@ -26,13 +27,22 @@ import java.util.logging.Level;
 
 public class BlockDataFiler extends PluginFiler
 {
-	private static final byte VERSION = 0;
+	private static final byte VERSION = 1;
 	
 	private static final ObjectType[] OBJECT_TYPES_V0 = new ObjectType[]
 	{
 		CommonObjectType.OBJECT,
 		PluginObjectType.BLOCK_DATA_MAP,
 		PluginObjectType.BLOCK_DATA,
+		PluginObjectType.SHORT_COORDINATE_BLOCK_CHUNK,
+	},
+	
+	OBJECT_TYPES_V1 = new ObjectType[]
+	{
+		CommonObjectType.OBJECT,
+		PluginObjectType.BLOCK_DATA_MAP,
+		PluginObjectType.BLOCK_DATA,
+		PluginObjectType.POINT_4_BIT,
 		PluginObjectType.SHORT_COORDINATE_BLOCK_CHUNK,
 	};
 	
@@ -70,22 +80,38 @@ public class BlockDataFiler extends PluginFiler
 	
 	public void setBlockData(Block block, BlockData blockData)
 	{
-		loadChunk(block).put(block, blockData);
+		setBlockData(block, blockData, BlockDataLoadEvent.Cause.OTHER);
+	}
+	public void setBlockData(Block block, BlockData blockData, BlockDataLoadEvent.Cause cause)
+	{
+		Map<Block, BlockData> chunkData = loadChunk(block);
+		new BlockDataLoadEvent(block, blockData, cause).callEvent();
+		chunkData.put(block, blockData);
 	}
 	
 	public BlockData loadBlockDataOrDefault(Block block)
 	{
-		return loadChunk(block.getChunk()).computeIfAbsent(block, x -> new BlockData());
+		return loadBlockDataOrDefault(block, BlockDataLoadEvent.Cause.OTHER);
+	}
+	
+	public BlockData loadBlockDataOrDefault(Block block, BlockDataLoadEvent.Cause cause)
+	{
+		return loadBlockDataOrDefault(block, BlockData::new, cause);
 	}
 	
 	public BlockData loadBlockDataOrDefault(Block block, Supplier<BlockData> blockDataSupplier)
 	{
-		return loadChunk(block.getChunk()).computeIfAbsent(block, x -> blockDataSupplier.get());
+		return loadBlockDataOrDefault(block, blockDataSupplier, BlockDataLoadEvent.Cause.OTHER);
 	}
 	
-	public void saveBlockData(Block block, BlockData blockData)
+	public BlockData loadBlockDataOrDefault(Block block, Supplier<BlockData> blockDataSupplier, BlockDataLoadEvent.Cause cause)
 	{
-		loadChunk(block).put(block, blockData);
+		return loadChunk(block.getChunk()).computeIfAbsent(block, x ->
+		{
+			BlockData blockData = blockDataSupplier.get();
+			new BlockDataLoadEvent(block, blockData, BlockDataLoadEvent.Cause.OTHER).callEvent();
+			return blockData;
+		});
 	}
 	
 	public BlockData removeBlockData(Block block)
@@ -205,6 +231,7 @@ public class BlockDataFiler extends PluginFiler
 		return switch(version)
 		{
 			case 0 -> OBJECT_TYPES_V0;
+			case 1 -> OBJECT_TYPES_V1;
 			default -> throw new InvalidVersionException(MessageFormat.format(
 					"Invalid {0} version: {1}",
 					getClass().getSimpleName(),

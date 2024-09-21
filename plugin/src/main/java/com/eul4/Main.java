@@ -28,6 +28,7 @@ import com.eul4.listener.scoreboard.AnalyzerScoreboardListener;
 import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
 import com.eul4.listener.world.CommonLevelListener;
+import com.eul4.listener.world.RaidLevelListener;
 import com.eul4.listener.world.VanillaLevelListener;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
@@ -305,6 +306,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
 		pluginManager.registerEvents(itemDamageAttributeListener = new ItemDamageAttributeListener(this), this);
 		pluginManager.registerEvents(new MacroidListener(this), this);
+		pluginManager.registerEvents(new OreMinedAlertListener(this), this);
 		pluginManager.registerEvents(new PlayerAttackSpeedListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
@@ -380,6 +382,7 @@ public class Main extends Common
 	private void registerWorldListeners()
 	{
 		pluginManager.registerEvents(new CommonLevelListener(this), this);
+		pluginManager.registerEvents(new RaidLevelListener(this), this);
 		pluginManager.registerEvents(new VanillaLevelListener(this), this);
 	}
 	

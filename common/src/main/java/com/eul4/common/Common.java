@@ -41,6 +41,7 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -282,4 +283,14 @@ public abstract class Common extends JavaPlugin
 	}
 	
 	public abstract CommonWorldType getMainWorldType();
+	
+	public void execute(Runnable command)
+	{
+		getMainThreadExecutor().execute(command);
+	}
+	
+	public Executor getMainThreadExecutor()
+	{
+		return getServer().getScheduler().getMainThreadExecutor(this);
+	}
 }

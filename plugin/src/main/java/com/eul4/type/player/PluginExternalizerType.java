@@ -32,6 +32,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	LIKE_DEPOSIT(LikeDepositReader::new, LikeDepositReader.class, LikeDepositWriter::new, LikeDepositWriter.class),
 	LIKE_GENERATOR(LikeGeneratorReader::new, LikeGeneratorReader.class, LikeGeneratorWriter::new, LikeGeneratorWriter.class),
 	PLUGIN_PLAYER_DATA(PluginPlayerDataReader::new, PluginPlayerDataReader.class, PluginPlayerDataWriter::new, PluginPlayerDataWriter.class),
+	POINT_4_BIT(Point4BitReader::new, Point4BitReader.class, Point4BitWriter::new, Point4BitWriter.class),
 	RAID_ANALYZER(RaidAnalyzerReader::new, RaidAnalyzerReader.class, RaidAnalyzerWriter::new, RaidAnalyzerWriter.class),
 	RAID_SPECTATOR(RaidSpectatorReader::new, RaidSpectatorReader.class, RaidSpectatorWriter::new, RaidSpectatorWriter.class),
 	SHORT_COORDINATE_BLOCK_CHUNK(ShortCoordinateBlockChunkReader::new, ShortCoordinateBlockChunkReader.class, ShortCoordinateBlockChunkWriter::new, ShortCoordinateBlockChunkWriter.class),

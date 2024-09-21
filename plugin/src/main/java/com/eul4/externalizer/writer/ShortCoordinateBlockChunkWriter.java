@@ -5,6 +5,7 @@ import com.eul4.common.type.player.Writers;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class ShortCoordinateBlockChunkWriter extends ObjectWriter<Block>
@@ -21,8 +22,11 @@ public class ShortCoordinateBlockChunkWriter extends ObjectWriter<Block>
 		
 		final int x = block.getX() - chunk.getX() * 16;
 		final int z = block.getZ() - chunk.getZ() * 16;
+		
+		writers.getWriter(Point4BitWriter.class).writeReference(new Point(x, z));
+		
 		final int y = block.getY();
 		
-		out.writeShort(x << 12 | z << 8 | y);
+		out.writeShort(y);
 	}
 }

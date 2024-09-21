@@ -8,6 +8,7 @@ import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.service.BlockData;
+import com.eul4.util.OreVeinUtil;
 import com.eul4.util.RarityUtil;
 import com.eul4.world.SpawnProtectedLevel;
 import com.eul4.wrapper.StackedEnchantment;
@@ -144,6 +145,7 @@ public class RarityBossBarTask extends BukkitRunnable
 		
 		public void update()
 		{
+			OreVeinUtil.rarifyVein(plugin, block);
 			BlockData blockData = plugin.getBlockDataFiler().loadBlockData(block);
 			ItemStack tool = player.getInventory().getItemInMainHand();
 			

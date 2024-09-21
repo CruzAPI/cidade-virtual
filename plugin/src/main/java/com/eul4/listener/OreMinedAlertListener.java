@@ -45,7 +45,7 @@ public class OreMinedAlertListener implements Listener
 	
 	private final Set<Block> ignoredBlocks = new HashSet<>();
 	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		Player player = event.getPlayer();

@@ -23,7 +23,7 @@ public class ShortCoordinateBlockChunkWriter extends ObjectWriter<Block>
 		final int x = block.getX() - chunk.getX() * 16;
 		final int z = block.getZ() - chunk.getZ() * 16;
 		
-		writers.getWriter(Point4BitWriter.class).writeReference(new Point(x, z));
+		writers.getWriter(Point4BitWriter.class).writeObject(new Point(x, z));
 		
 		final int y = block.getY();
 		

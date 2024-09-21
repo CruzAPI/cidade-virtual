@@ -34,7 +34,7 @@ public enum PluginObjectType implements ObjectType
 	POINT_4_BIT((byte) 0, PluginExternalizerType.POINT_4_BIT),
 	RAID_ANALYZER((byte) 0, PluginExternalizerType.RAID_ANALYZER),
 	RAID_SPECTATOR((byte) 0, PluginExternalizerType.RAID_SPECTATOR),
-	SHORT_COORDINATE_BLOCK_CHUNK((byte) 1, PluginExternalizerType.SHORT_COORDINATE_BLOCK_CHUNK),
+	SHORT_COORDINATE_BLOCK_CHUNK((byte) 2, PluginExternalizerType.SHORT_COORDINATE_BLOCK_CHUNK),
 	SPAWN_PLAYER((byte) 0, PluginExternalizerType.SPAWN_PLAYER),
 	SPIRITUAL_PLAYER((byte) 0, null),
 	STRUCTURE((byte) 1, null),

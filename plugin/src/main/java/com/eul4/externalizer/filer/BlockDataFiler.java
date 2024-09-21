@@ -27,13 +27,22 @@ import java.util.logging.Level;
 
 public class BlockDataFiler extends PluginFiler
 {
-	private static final byte VERSION = 0;
+	private static final byte VERSION = 1;
 	
 	private static final ObjectType[] OBJECT_TYPES_V0 = new ObjectType[]
 	{
 		CommonObjectType.OBJECT,
 		PluginObjectType.BLOCK_DATA_MAP,
 		PluginObjectType.BLOCK_DATA,
+		PluginObjectType.SHORT_COORDINATE_BLOCK_CHUNK,
+	},
+	
+	OBJECT_TYPES_V1 = new ObjectType[]
+	{
+		CommonObjectType.OBJECT,
+		PluginObjectType.BLOCK_DATA_MAP,
+		PluginObjectType.BLOCK_DATA,
+		PluginObjectType.POINT_4_BIT,
 		PluginObjectType.SHORT_COORDINATE_BLOCK_CHUNK,
 	};
 	
@@ -103,11 +112,6 @@ public class BlockDataFiler extends PluginFiler
 			new BlockDataLoadEvent(block, blockData, BlockDataLoadEvent.Cause.OTHER).callEvent();
 			return blockData;
 		});
-	}
-	
-	public void saveBlockData(Block block, BlockData blockData)
-	{
-		loadChunk(block).put(block, blockData);
 	}
 	
 	public BlockData removeBlockData(Block block)
@@ -227,6 +231,7 @@ public class BlockDataFiler extends PluginFiler
 		return switch(version)
 		{
 			case 0 -> OBJECT_TYPES_V0;
+			case 1 -> OBJECT_TYPES_V1;
 			default -> throw new InvalidVersionException(MessageFormat.format(
 					"Invalid {0} version: {1}",
 					getClass().getSimpleName(),

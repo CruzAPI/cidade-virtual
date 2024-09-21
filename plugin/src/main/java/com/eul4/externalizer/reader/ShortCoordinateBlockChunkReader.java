@@ -12,6 +12,7 @@ import lombok.Getter;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 
+import java.awt.*;
 import java.io.IOException;
 
 @Getter
@@ -33,6 +34,10 @@ public class ShortCoordinateBlockChunkReader extends ObjectReader<Block>
 			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
+		case 1:
+			this.reader = Reader.identity();
+			this.parameterizedReadable = this::parameterizedReadableVersion1;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -47,6 +52,20 @@ public class ShortCoordinateBlockChunkReader extends ObjectReader<Block>
 			final int x = (coordinates >> 12) & 0x0F;
 			final int z = (coordinates >> 8) & 0x0F;
 			final int y = (coordinates) & 0xFF;
+			
+			return chunk.getBlock(x, y, z);
+		};
+	}
+	
+	private Readable<Block> parameterizedReadableVersion1(Chunk chunk)
+	{
+		return () ->
+		{
+			Point point = readers.getReader(Point4BitReader.class).readReference();
+			
+			final int x = point.x;
+			final int z = point.y;
+			final int y = in.readShort();
 			
 			return chunk.getBlock(x, y, z);
 		};

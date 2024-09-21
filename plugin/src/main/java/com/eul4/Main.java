@@ -8,6 +8,7 @@ import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.type.player.CommonWorldType;
 import com.eul4.common.util.FileUtil;
+import com.eul4.enums.Rarity;
 import com.eul4.externalizer.filer.BlockDataFiler;
 import com.eul4.externalizer.filer.PlayerDataFiler;
 import com.eul4.externalizer.filer.TownsFiler;
@@ -39,20 +40,25 @@ import com.eul4.service.*;
 import com.eul4.task.RarityBossBarTask;
 import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
+import com.eul4.util.RarityUtil;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 @Getter
@@ -133,6 +139,7 @@ public class Main extends Common
 		registerCommands();
 		registerListeners();
 		registerPacketInterceptors();
+		registerFurnaceRecipes();
 		
 		scheduleTasks();
 		
@@ -256,6 +263,53 @@ public class Main extends Common
 		registerCommand(new WorldCommand(this), WorldCommand.NAME_AND_ALIASES);
 	}
 	
+	private void registerFurnaceRecipes()
+	{
+		Iterator<Recipe> recipeIterator = getServer().recipeIterator();
+		List<Recipe> recipesToAdd = new ArrayList<>();
+		
+		while(recipeIterator.hasNext())
+		{
+			Recipe recipe = recipeIterator.next();
+			
+			if(recipe instanceof FurnaceRecipe furnaceRecipe)
+			{
+				List<ItemStack> choices;
+				
+				if(furnaceRecipe.getInputChoice() instanceof RecipeChoice.MaterialChoice materialChoice)
+				{
+					choices = materialChoice.getChoices().stream().map(ItemStack::of).toList();
+				}
+				else if(furnaceRecipe.getInputChoice() instanceof RecipeChoice.ExactChoice exactChoice)
+				{
+					choices = exactChoice.getChoices();
+				}
+				else
+				{
+					continue;
+				}
+				
+				for(Rarity rarity : Rarity.values())
+				{
+					choices.forEach(item -> RarityUtil.setRarity(item, rarity));
+					RecipeChoice recipeChoice = new RecipeChoice.ExactChoice(choices);
+					ItemStack result = RarityUtil.setRarity(furnaceRecipe.getResult(), rarity);
+					
+					recipesToAdd.add(new FurnaceRecipe
+					(
+						new NamespacedKey(this, rarity.name().toLowerCase(Locale.ROOT) + "_" + furnaceRecipe.key().value()),
+						result,
+						recipeChoice,
+						furnaceRecipe.getExperience() * rarity.getScalarMultiplier(10.0F),
+						furnaceRecipe.getCookingTime() * rarity.getScalarMultiplier(5)
+					));
+				}
+			}
+		}
+		
+		recipesToAdd.forEach(getServer()::addRecipe);
+	}
+	
 	private void registerListeners()
 	{
 		registerContainerListeners();
@@ -290,6 +344,8 @@ public class Main extends Common
 		pluginManager.registerEvents(new EntityRecyclerListener(this), this);
 		pluginManager.registerEvents(new FishingRarityListener(this), this);
 		pluginManager.registerEvents(new FluidRarityListener(this), this);
+		pluginManager.registerEvents(new FrozenTownListener(this), this);
+		pluginManager.registerEvents(new FurnaceRarityListener(this), this);
 		pluginManager.registerEvents(new InventoryUpdateListener(this), this);
 		pluginManager.registerEvents(new StructureListener(this), this);
 		pluginManager.registerEvents(new StructureGuiListener(this), this);
@@ -314,7 +370,6 @@ public class Main extends Common
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);
-		pluginManager.registerEvents(new FrozenTownListener(this), this);
 	}
 	
 	private void registerContainerListeners()

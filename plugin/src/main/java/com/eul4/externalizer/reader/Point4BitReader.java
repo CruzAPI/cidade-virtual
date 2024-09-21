@@ -42,6 +42,13 @@ public class Point4BitReader extends ObjectReader<Point>
 		return new Point((compact & 0xF0) >> 4, (compact & 0x0F));
 	}
 	
+	public Point readObject() throws IOException, ClassNotFoundException
+	{
+		Point point = readable.read();
+		reader.readObject(point);
+		return point;
+	}
+	
 	public Point readReference() throws IOException, ClassNotFoundException
 	{
 		return super.readReference(readable);

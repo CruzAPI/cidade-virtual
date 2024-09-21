@@ -166,6 +166,36 @@ public enum Rarity
 		return 30 * (int) Math.pow(3, ordinal());
 	}
 	
+	public double getScalarMultiplier(double base)
+	{
+		return Math.pow(base, ordinal());
+	}
+	
+	public int getScalarMultiplier(int base)
+	{
+		return (int) Math.pow(base, ordinal());
+	}
+	
+	public float getScalarMultiplier(float base)
+	{
+		return (float) Math.pow(base, ordinal());
+	}
+	
+	public double getIntMultiplier()
+	{
+		return (int) getMultiplier();
+	}
+	
+	public float getFloatMultiplier()
+	{
+		return (float) getMultiplier();
+	}
+	
+	public double getMultiplier()
+	{
+		return Math.pow(10.0D, ordinal());
+	}
+	
 	private double getRelativeDurabilityMultiplier(Material material, double exponent)
 	{
 		return Math.pow(getDurabilityBaseExponentiationBase(material),

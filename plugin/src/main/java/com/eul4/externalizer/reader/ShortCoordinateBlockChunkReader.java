@@ -38,6 +38,10 @@ public class ShortCoordinateBlockChunkReader extends ObjectReader<Block>
 			this.reader = Reader.identity();
 			this.parameterizedReadable = this::parameterizedReadableVersion1;
 			break;
+		case 2:
+			this.reader = Reader.identity();
+			this.parameterizedReadable = this::parameterizedReadableVersion2;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -62,6 +66,20 @@ public class ShortCoordinateBlockChunkReader extends ObjectReader<Block>
 		return () ->
 		{
 			Point point = readers.getReader(Point4BitReader.class).readReference();
+			
+			final int x = point.x;
+			final int z = point.y;
+			final int y = in.readShort();
+			
+			return chunk.getBlock(x, y, z);
+		};
+	}
+	
+	private Readable<Block> parameterizedReadableVersion2(Chunk chunk)
+	{
+		return () ->
+		{
+			Point point = readers.getReader(Point4BitReader.class).readObject();
 			
 			final int x = point.x;
 			final int z = point.y;

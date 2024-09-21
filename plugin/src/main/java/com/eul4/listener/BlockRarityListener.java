@@ -129,6 +129,8 @@ public class BlockRarityListener implements Listener
 		{
 			RarityUtil.setRarity(drop, rarity);
 		}
+		
+		event.setExpToDrop(event.getExpToDrop() * rarity.getScalarMultiplier(10));
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

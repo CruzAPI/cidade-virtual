@@ -22,13 +22,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,6 +95,8 @@ public class TestCommand implements TabExecutor
 		{
 			File blockDataDir = new File(plugin.getDataFolder() + "/block_data");
 			
+			List<ChunkInfo> chunkInfos = new ArrayList<>();
+			
 			for(File worldDir : blockDataDir.listFiles())
 			{
 				String worldName = worldDir.getName();
@@ -109,21 +117,38 @@ public class TestCommand implements TabExecutor
 						int x = Integer.parseInt(matcher.group(1));
 						int z = Integer.parseInt(matcher.group(2));
 						
-						world.getChunkAtAsync(x, z).whenComplete((chunk, throwable) ->
-						{
-							plugin.getBlockDataFiler().loadBlockData(chunk.getBlock(0, 0, 0));
-						});
+						chunkInfos.add(new ChunkInfo(world, x, z));
 					}
 					else
 					{
 						plugin.getLogger().severe("Invalid file name: " + chunkFile.getName());
 					}
 				}
-				
-				plugin.getLogger().info(worldName + " " + files.length + " chunks loaded!");
 			}
 			
-			plugin.getLogger().info("All chunks loaded!");
+			
+			Iterator<ChunkInfo> iterator = chunkInfos.iterator();
+			int size = chunkInfos.size();
+			
+			AtomicInteger count = new AtomicInteger(0);
+			
+			new BukkitRunnable()
+			{
+				@Override
+				public void run()
+				{
+					for(int i = 0; i < 20 && iterator.hasNext(); i++)
+					{
+						iterator.next().getAsync().whenComplete((chunk, cause) ->
+						{
+							plugin.getBlockDataFiler().loadBlockData(chunk.getBlock(0, 0, 0));
+							plugin.getLogger().info("Chunks: " + count.incrementAndGet() + "/" + size);
+						});
+						
+						iterator.remove();
+					}
+				}
+			}.runTaskTimer(plugin, 0L, 20L);
 		}
 		else if((args.length == 2) && args[0].equals("test"))
 		{
@@ -253,5 +278,18 @@ public class TestCommand implements TabExecutor
 		}
 		
 		return false;
+	}
+	
+	@RequiredArgsConstructor
+	private static class ChunkInfo
+	{
+		private final World world;
+		private final int x;
+		private final int z;
+		
+		public CompletableFuture<Chunk> getAsync()
+		{
+			return world.getChunkAtAsync(x, z);
+		}
 	}
 }

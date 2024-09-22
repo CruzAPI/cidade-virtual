@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.CampfireStartEvent;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,5 +31,12 @@ public class FurnaceRarityListener implements Listener
 			furnace.setCookSpeedMultiplier(cookSpeedMultiplier);
 			furnace.update();
 		}
+	}
+	
+	@EventHandler
+	public void on(CampfireStartEvent event)
+	{
+		Rarity campfireRarity = RarityUtil.getRarity(plugin, event.getBlock());
+		event.setTotalCookTime(event.getTotalCookTime() / campfireRarity.getScalarMultiplier(5));
 	}
 }

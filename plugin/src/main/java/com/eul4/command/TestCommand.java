@@ -10,10 +10,7 @@ import com.eul4.model.town.Town;
 import com.eul4.type.PluginWorldType;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.server.level.ServerLevel;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -28,9 +25,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public class TestCommand implements TabExecutor
@@ -85,9 +85,45 @@ public class TestCommand implements TabExecutor
 			ContaintmentPickaxe containtmentPickaxe = new ContaintmentPickaxe(chance);
 			player.getInventory().addItem(containtmentPickaxe.getItemStack());
 		}
-		else if((args.length == 1) && args[0].equals("test"))
+		else if((args.length == 1) && args[0].equals("reloadchunks"))
 		{
-		
+			File blockDataDir = new File(plugin.getDataFolder() + "/block_data");
+			
+			for(File worldDir : blockDataDir.listFiles())
+			{
+				String worldName = worldDir.getName();
+				World world = plugin.getServer().getWorld(worldName);
+				
+				var files = worldDir.listFiles();
+				plugin.getLogger().warning(worldName + " chunks in files: " + files.length);
+				
+				for(File chunkFile : files)
+				{
+					String regex = "c\\.(-?\\d+)\\.(-?\\d+)\\.dat";
+					
+					Pattern pattern = Pattern.compile(regex);
+					Matcher matcher = pattern.matcher(chunkFile.getName());
+					
+					if(matcher.matches())
+					{
+						int x = Integer.parseInt(matcher.group(1));
+						int z = Integer.parseInt(matcher.group(2));
+						
+						world.getChunkAtAsync(x, z).whenComplete((chunk, throwable) ->
+						{
+							plugin.getBlockDataFiler().loadBlockData(chunk.getBlock(0, 0, 0));
+						});
+					}
+					else
+					{
+						plugin.getLogger().severe("Invalid file name: " + chunkFile.getName());
+					}
+				}
+				
+				plugin.getLogger().info(worldName + " " + files.length + " chunks loaded!");
+			}
+			
+			plugin.getLogger().info("All chunks loaded!");
 		}
 		else if((args.length == 2) && args[0].equals("test"))
 		{

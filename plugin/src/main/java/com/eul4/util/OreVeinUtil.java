@@ -164,6 +164,18 @@ public class OreVeinUtil
 		{
 			return 5.0F;
 		}
+		else if(material == Material.ANCIENT_DEBRIS)
+		{
+			return 7.0F;
+		}
+		else if(material == Material.NETHER_QUARTZ_ORE)
+		{
+			return 14.0F;
+		}
+		else if(material == Material.NETHER_GOLD_ORE)
+		{
+			return 12.0F;
+		}
 		else if(material == Material.GRANITE || material == Material.ANDESITE || material == Material.DIORITE)
 		{
 			return 40.0F;
@@ -214,6 +226,9 @@ public class OreVeinUtil
 				|| Tag.GOLD_ORES.isTagged(material)
 				|| Tag.DIAMOND_ORES.isTagged(material)
 				|| Tag.EMERALD_ORES.isTagged(material)
+				|| material == Material.NETHER_QUARTZ_ORE
+				|| material == Material.NETHER_GOLD_ORE
+				|| material == Material.ANCIENT_DEBRIS
 				;
 	}
 }

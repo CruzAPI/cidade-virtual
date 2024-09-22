@@ -448,6 +448,9 @@ public class AnvilRarityListener implements Listener
 	public void updateInventory(PrepareAnvilEvent event)
 	{
 		AnvilView anvilView = event.getView();
+		Player player = (Player) anvilView.getPlayer();
+		boolean instantBuild = anvilView.getRepairCost() < 40 || anvilView.getRepairCost() > anvilView.getMaximumRepairCost();
+		setInstantBuild(player, instantBuild);
 		
 		plugin.getServer().getScheduler().getMainThreadExecutor(plugin).execute
 		(
@@ -581,7 +584,14 @@ public class AnvilRarityListener implements Listener
 				return;
 			}
 			
-			if(anvilView.getRepairCost() < 40 || anvilView.getMaximumRepairCost() > anvilView.getRepairCost())
+			if(player.getGameMode() == GameMode.CREATIVE)
+			{
+				anvilInventory.setResult(actualResult);
+				setInstantBuild(player, true);
+				return;
+			}
+			
+			if(anvilView.getRepairCost() < 40 || anvilView.getRepairCost() > anvilView.getMaximumRepairCost())
 			{
 				anvilInventory.setResult(actualResult);
 				setInstantBuild(player, false);

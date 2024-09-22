@@ -46,12 +46,8 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.FurnaceRecipe;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.RecipeChoice;
+import org.bukkit.inventory.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.codehaus.plexus.util.FileUtils;
@@ -139,7 +135,7 @@ public class Main extends Common
 		registerCommands();
 		registerListeners();
 		registerPacketInterceptors();
-		registerFurnaceRecipes();
+		registerCookingRecipes();
 		
 		scheduleTasks();
 		
@@ -263,24 +259,24 @@ public class Main extends Common
 		registerCommand(new WorldCommand(this), WorldCommand.NAME_AND_ALIASES);
 	}
 	
-	private void registerFurnaceRecipes()
+	private void registerCookingRecipes()
 	{
 		Iterator<Recipe> recipeIterator = getServer().recipeIterator();
-		List<Recipe> recipesToAdd = new ArrayList<>();
+		List<CookingRecipe<?>> recipesToAdd = new ArrayList<>();
 		
 		while(recipeIterator.hasNext())
 		{
 			Recipe recipe = recipeIterator.next();
 			
-			if(recipe instanceof FurnaceRecipe furnaceRecipe)
+			if(recipe instanceof CookingRecipe<?> cookingRecipe)
 			{
 				List<ItemStack> choices;
 				
-				if(furnaceRecipe.getInputChoice() instanceof RecipeChoice.MaterialChoice materialChoice)
+				if(cookingRecipe.getInputChoice() instanceof RecipeChoice.MaterialChoice materialChoice)
 				{
 					choices = materialChoice.getChoices().stream().map(ItemStack::of).toList();
 				}
-				else if(furnaceRecipe.getInputChoice() instanceof RecipeChoice.ExactChoice exactChoice)
+				else if(cookingRecipe.getInputChoice() instanceof RecipeChoice.ExactChoice exactChoice)
 				{
 					choices = exactChoice.getChoices();
 				}
@@ -293,16 +289,60 @@ public class Main extends Common
 				{
 					choices.forEach(item -> RarityUtil.setRarity(item, rarity));
 					RecipeChoice recipeChoice = new RecipeChoice.ExactChoice(choices);
-					ItemStack result = RarityUtil.setRarity(furnaceRecipe.getResult(), rarity);
+					ItemStack result = RarityUtil.setRarity(cookingRecipe.getResult(), rarity);
 					
-					recipesToAdd.add(new FurnaceRecipe
-					(
-						new NamespacedKey(this, rarity.name().toLowerCase(Locale.ROOT) + "_" + furnaceRecipe.key().value()),
-						result,
-						recipeChoice,
-						furnaceRecipe.getExperience() * rarity.getScalarMultiplier(10.0F),
-						furnaceRecipe.getCookingTime() * rarity.getScalarMultiplier(5)
-					));
+					final CookingRecipe<?> newRecipe;
+					
+					if(cookingRecipe instanceof FurnaceRecipe)
+					{
+						newRecipe = new FurnaceRecipe
+						(
+							new NamespacedKey(this, rarity.name().toLowerCase(Locale.ROOT) + "_" + cookingRecipe.key().value()),
+							result,
+							recipeChoice,
+							cookingRecipe.getExperience() * rarity.getScalarMultiplier(10.0F),
+							cookingRecipe.getCookingTime() * rarity.getScalarMultiplier(5)
+						);
+					}
+					else if(cookingRecipe instanceof BlastingRecipe)
+					{
+						newRecipe = new BlastingRecipe
+						(
+							new NamespacedKey(this, rarity.name().toLowerCase(Locale.ROOT) + "_" + cookingRecipe.key().value()),
+							result,
+							recipeChoice,
+							cookingRecipe.getExperience() * rarity.getScalarMultiplier(10.0F),
+							cookingRecipe.getCookingTime() * rarity.getScalarMultiplier(5)
+						);
+					}
+					else if(cookingRecipe instanceof SmokingRecipe)
+					{
+						newRecipe = new SmokingRecipe
+						(
+							new NamespacedKey(this, rarity.name().toLowerCase(Locale.ROOT) + "_" + cookingRecipe.key().value()),
+							result,
+							recipeChoice,
+							cookingRecipe.getExperience() * rarity.getScalarMultiplier(10.0F),
+							cookingRecipe.getCookingTime() * rarity.getScalarMultiplier(5)
+						);
+					}
+					else if(cookingRecipe instanceof CampfireRecipe)
+					{
+						newRecipe = new CampfireRecipe
+						(
+							new NamespacedKey(this, rarity.name().toLowerCase(Locale.ROOT) + "_" + cookingRecipe.key().value()),
+							result,
+							recipeChoice,
+							cookingRecipe.getExperience() * rarity.getScalarMultiplier(10.0F),
+							cookingRecipe.getCookingTime() * rarity.getScalarMultiplier(5)
+						);
+					}
+					else
+					{
+						continue;
+					}
+					
+					recipesToAdd.add(newRecipe);
 				}
 			}
 		}

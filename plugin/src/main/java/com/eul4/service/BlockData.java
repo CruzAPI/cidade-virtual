@@ -3,6 +3,7 @@ package com.eul4.service;
 import com.eul4.common.util.ItemStackUtil;
 import com.eul4.enums.Rarity;
 import com.eul4.util.RarityUtil;
+import com.eul4.wrapper.StabilityFormula;
 import com.eul4.wrapper.StackedEnchantment;
 import com.google.common.base.Preconditions;
 import lombok.Builder;
@@ -85,10 +86,11 @@ public class BlockData
 	
 	public final byte[] enchantments;
 	private final Origin origin;
+	private final StabilityFormula stabilityFormula;
 	
 	public BlockData()
 	{
-		this(false, null, null, false, null, null);
+		this(false, null, null, false, null, null, null);
 	}
 	
 	@Builder
@@ -99,7 +101,8 @@ public class BlockData
 		@Nullable Float health,
 		boolean willDrop,
 		byte @Nullable [] enchantments,
-		@Nullable Origin origin
+		@Nullable Origin origin,
+		@Nullable StabilityFormula stabilityFormula
 	)
 	{
 		this.hasHardness = hasHardness;
@@ -108,6 +111,7 @@ public class BlockData
 		this.willDrop = willDrop;
 		this.enchantments = enchantments == null ? createDefaultEnchantmentsByteArray() : enchantments;
 		this.origin = origin == null ? Origin.DEFAULT_ORIGIN : origin;
+		this.stabilityFormula = stabilityFormula == null ? StabilityFormula.STABLE : stabilityFormula;
 	}
 	
 	public boolean willDrop(ItemStack tool, Block block)
@@ -361,5 +365,10 @@ public class BlockData
 	public Origin getOrigin()
 	{
 		return origin;
+	}
+	
+	public StabilityFormula getStabilityFormula()
+	{
+		return stabilityFormula;
 	}
 }

@@ -37,6 +37,7 @@ public enum PluginObjectType implements ObjectType
 	SHORT_COORDINATE_BLOCK_CHUNK((byte) 2, PluginExternalizerType.SHORT_COORDINATE_BLOCK_CHUNK),
 	SPAWN_PLAYER((byte) 0, PluginExternalizerType.SPAWN_PLAYER),
 	SPIRITUAL_PLAYER((byte) 0, null),
+	STABILITY_FORMULA((byte) 0, PluginExternalizerType.STABILITY_FORMULA),
 	STRUCTURE((byte) 1, null),
 	STRUCTURE_MAP((byte) 0, PluginExternalizerType.STRUCTURE_MAP),
 	TAG((byte) 0, PluginExternalizerType.TAG),

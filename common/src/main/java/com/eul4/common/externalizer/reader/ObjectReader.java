@@ -49,7 +49,7 @@ public abstract class ObjectReader<T>
 		
 		switch(refByte)
 		{
-		case 3:
+		case 1:
 			int id = in.readInt();
 			return references.get(id);
 		case 0:

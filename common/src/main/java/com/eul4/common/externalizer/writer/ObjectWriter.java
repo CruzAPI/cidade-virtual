@@ -43,7 +43,7 @@ public abstract class ObjectWriter<T>
 			return;
 		}
 		
-		out.writeByte(references.containsKey(reference) ? 3 : 0);
+		out.writeByte(references.containsKey(reference) ? 1 : 0);
 		
 		if(references.containsKey(reference))
 		{

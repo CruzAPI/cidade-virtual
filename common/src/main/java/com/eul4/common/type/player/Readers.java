@@ -6,7 +6,7 @@ import com.eul4.common.externalizer.reader.ObjectReader;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
-import java.io.ObjectInput;
+import java.io.DataInput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -15,17 +15,17 @@ public class Readers
 {
 	@Getter
 	private final Common plugin;
-	private final ObjectInput in;
+	private final DataInput in;
 	private final Map<ObjectType, Byte> versions;
 	
 	private final Map<Class<? extends ObjectReader>, ObjectReader> readers = new HashMap<>();
 	
-	public static Readers of(Common plugin, ObjectInput in, Map<ObjectType, Byte> versions) throws InvalidVersionException
+	public static Readers of(Common plugin, DataInput in, Map<ObjectType, Byte> versions) throws InvalidVersionException
 	{
 		return new Readers(plugin, in, versions);
 	}
 	
-	private Readers(Common plugin, ObjectInput in, Map<ObjectType, Byte> versions) throws InvalidVersionException
+	private Readers(Common plugin, DataInput in, Map<ObjectType, Byte> versions) throws InvalidVersionException
 	{
 		this.plugin = plugin;
 		this.in = in;
@@ -37,7 +37,7 @@ public class Readers
 		}
 	}
 	
-	public ObjectInput getObjectInput()
+	public DataInput getDataInput()
 	{
 		return in;
 	}

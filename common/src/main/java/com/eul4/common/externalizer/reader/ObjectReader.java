@@ -7,8 +7,8 @@ import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Readable;
 
+import java.io.DataInput;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +16,7 @@ public abstract class ObjectReader<T>
 {
 	protected final Common plugin;
 	protected final Readers readers;
-	protected final ObjectInput in;
+	protected final DataInput in;
 	private final Reader<T> reader;
 	protected final Class<T> type;
 	
@@ -27,7 +27,7 @@ public abstract class ObjectReader<T>
 	{
 		this.plugin = readers.getPlugin();
 		this.readers = readers;
-		this.in = readers.getObjectInput();
+		this.in = readers.getDataInput();
 		this.type = type;
 		
 		final ObjectType objectType = CommonObjectType.OBJECT;
@@ -49,7 +49,7 @@ public abstract class ObjectReader<T>
 		
 		switch(refByte)
 		{
-		case 1:
+		case 3:
 			int id = in.readInt();
 			return references.get(id);
 		case 0:

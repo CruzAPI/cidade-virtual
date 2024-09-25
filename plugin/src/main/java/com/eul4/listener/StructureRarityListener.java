@@ -2,15 +2,16 @@ package com.eul4.listener;
 
 import com.destroystokyo.paper.loottable.LootableEntityInventory;
 import com.eul4.Main;
+import com.eul4.common.util.BoundingBoxUtil;
 import com.eul4.common.util.ContainerUtil;
 import com.eul4.common.util.ItemStackUtil;
 import com.eul4.common.world.CommonWorld;
 import com.eul4.enums.Rarity;
-import com.eul4.externalizer.filer.BlockDataFiler;
 import com.eul4.service.BlockData;
 import com.eul4.util.RarityUtil;
 import com.eul4.world.RaidLevel;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -125,7 +126,6 @@ public class StructureRarityListener implements Listener
 	public void setStructureRarityOnGenerate(AsyncStructureGenerateEvent event)
 	{
 		World world = event.getWorld();
-		BlockDataFiler blockDataFiler = plugin.getBlockDataFiler();
 		
 		CommonWorld commonWorld = plugin.getWorldManager().get(world);
 		
@@ -147,12 +147,6 @@ public class StructureRarityListener implements Listener
 					return;
 				}
 				
-				BoundingBox chunkBox = BoundingBox.of
-				(
-					chunk.getBlock(0, chunk.getWorld().getMinHeight(), 0),
-					chunk.getBlock(15, chunk.getWorld().getMaxHeight(), 15)
-				);
-				
 				for(GeneratedStructure generatedStructure : chunk.getStructures(event.getStructure()))
 				{
 					if(!structureUniqueId.equals(ContainerUtil.getUUID(generatedStructure)))
@@ -160,44 +154,70 @@ public class StructureRarityListener implements Listener
 						continue;
 					}
 					
-					List<BoundingBox> pieces = getPieces(generatedStructure).stream()
-							.filter(bb -> bb.overlaps(chunkBox))
-							.map(bb -> bb.intersection(chunkBox))
-							.toList();
-					
-					for(Entity entity : chunk.getEntities())
+					rarifyChunkStructure(generatedStructure, chunk, rarity);
+				}
+			}));
+	}
+	
+	public void rarifyStructure(World world, GeneratedStructure generatedStructure)
+	{
+		rarifyStructure(world, generatedStructure, RarityUtil.getRarity(generatedStructure));
+	}
+	
+	public void rarifyStructure(World world, GeneratedStructure generatedStructure, Rarity rarity)
+	{
+		for(Chunk chunk : BoundingBoxUtil.getChunks(generatedStructure, world))
+		{
+			rarifyChunkStructure(generatedStructure, chunk, rarity);
+		}
+	}
+	
+	public void rarifyChunkStructure(GeneratedStructure generatedStructure, Chunk chunk, Rarity rarity)
+	{
+		final World world = chunk.getWorld();
+		
+		BoundingBox chunkBox = BoundingBox.of
+		(
+			chunk.getBlock(0, chunk.getWorld().getMinHeight(), 0),
+			chunk.getBlock(15, chunk.getWorld().getMaxHeight(), 15)
+		);
+		
+		List<BoundingBox> pieces = getPieces(generatedStructure).stream()
+				.filter(bb -> bb.overlaps(chunkBox))
+				.map(bb -> bb.intersection(chunkBox))
+				.toList();
+		
+		for(Entity entity : chunk.getEntities())
+		{
+			for(BoundingBox piece : pieces)
+			{
+				if(piece.contains(entity.getLocation().toVector()))
+				{
+					RarityUtil.setRarity(entity, rarity);
+				}
+			}
+		}
+		
+		for(BoundingBox piece : pieces)
+		{
+			for(int x = piece.getMin().getBlockX(); x <= piece.getMax().getBlockX(); x++)
+			{
+				for(int y = piece.getMin().getBlockY(); y <= piece.getMax().getBlockY(); y++)
+				{
+					for(int z = piece.getMin().getBlockZ(); z <= piece.getMax().getBlockZ(); z++)
 					{
-						for(BoundingBox piece : pieces)
+						final Block block = world.getBlockAt(x, y, z);
+						
+						if(!block.isEmpty())
 						{
-							if(piece.contains(entity.getLocation().toVector()))
-							{
-								RarityUtil.setRarity(entity, rarity);
-							}
-						}
-					}
-					
-					for(BoundingBox piece : pieces)
-					{
-						for(int x = piece.getMin().getBlockX(); x <= piece.getMax().getBlockX(); x++)
-						{
-							for(int y = piece.getMin().getBlockY(); y <= piece.getMax().getBlockY(); y++)
-							{
-								for(int z = piece.getMin().getBlockZ(); z <= piece.getMax().getBlockZ(); z++)
-								{
-									final Block block = world.getBlockAt(x, y, z);
-									
-									if(!block.isEmpty())
-									{
-										blockDataFiler.loadBlockDataOrDefault(block, () -> BlockData.builder()
-												.rarity(rarity)
-												.build());
-									}
-								}
-							}
+							plugin.getBlockDataFiler().loadBlockDataOrDefault(block, () -> BlockData.builder()
+									.rarity(rarity)
+									.build());
 						}
 					}
 				}
-			}));
+			}
+		}
 	}
 	
 	private List<BoundingBox> getPieces(GeneratedStructure generatedStructure)

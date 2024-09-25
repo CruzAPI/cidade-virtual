@@ -27,7 +27,7 @@ public enum CommonObjectType implements ObjectType
 	PERMISSION((byte) 0, CommonExternalizerType.PERMISSION),
 	PERMISSION_MAP((byte) 0, CommonExternalizerType.PERMISSION_MAP),
 	PLAYER_DATA((byte) 0, CommonExternalizerType.PLAYER_DATA),
-	POTION_EFFECT((byte) 0, CommonExternalizerType.POTION_EFFECT),
+	POTION_EFFECT((byte) 1, CommonExternalizerType.POTION_EFFECT),
 	POTION_EFFECT_COLLECTION((byte) 0, CommonExternalizerType.POTION_EFFECT_COLLECTION),
 	TIMED_TICK((byte) 0, CommonExternalizerType.TIMED_TICK),
 	TRANSLATED_HOLOGRAM_LINE((byte) 1, CommonExternalizerType.TRANSLATED_HOLOGRAM_LINE),

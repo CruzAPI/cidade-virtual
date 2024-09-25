@@ -4,8 +4,8 @@ import com.eul4.common.Common;
 import com.eul4.common.type.player.Writers;
 import lombok.RequiredArgsConstructor;
 
+import java.io.DataOutput;
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -15,7 +15,7 @@ public abstract class ObjectWriter<T>
 {
 	protected final Common plugin;
 	protected final Writers writers;
-	protected final ObjectOutput out;
+	protected final DataOutput out;
 	
 	private final Map<T, Integer> references = new HashMap<>();
 	
@@ -26,7 +26,7 @@ public abstract class ObjectWriter<T>
 	{
 		this.plugin = writers.getPlugin();
 		this.writers = writers;
-		this.out = writers.getObjectOutput();
+		this.out = writers.getDataOutput();
 		this.type = type;
 	}
 	
@@ -43,7 +43,7 @@ public abstract class ObjectWriter<T>
 			return;
 		}
 		
-		out.writeByte(references.containsKey(reference) ? 1 : 0);
+		out.writeByte(references.containsKey(reference) ? 3 : 0);
 		
 		if(references.containsKey(reference))
 		{

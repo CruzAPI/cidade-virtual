@@ -2,11 +2,8 @@ package com.eul4.common.externalizer.filer;
 
 import com.eul4.common.Common;
 import com.eul4.common.exception.InvalidVersionException;
-import com.eul4.common.externalizer.reader.GroupMapReader;
 import com.eul4.common.externalizer.reader.UserReader;
-import com.eul4.common.externalizer.writer.GroupMapWriter;
 import com.eul4.common.externalizer.writer.UserWriter;
-import com.eul4.common.model.permission.GroupMap;
 import com.eul4.common.model.permission.User;
 import com.eul4.common.type.player.CommonObjectType;
 import com.eul4.common.type.player.ObjectType;
@@ -14,10 +11,10 @@ import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.Writers;
 import com.eul4.common.util.FileUtil;
 import com.eul4.common.util.LoggerUtil;
-import com.google.common.io.ByteStreams;
 import org.bukkit.entity.Player;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
@@ -97,15 +94,17 @@ public class UserFiler extends Filer
 			File file = plugin.getCommonDataFileManager().createUserFileIfNotExists(user.getUuid());
 			tmp = new File(file.getParent(), "." + file.getName() + ".tmp");
 			
-			try(FileOutputStream fileOutputStream = new FileOutputStream(tmp);
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
+			try
+			(
+				FileOutputStream fileOut = new FileOutputStream(tmp);
+				BufferedOutputStream bufferedOut = new BufferedOutputStream(fileOut);
+				DataOutputStream out = new DataOutputStream(bufferedOut);
+			)
 			{
 				Writers.of(plugin, out, writeVersions(out))
 						.getWriter(UserWriter.class)
 						.writeReference(user);
 				out.flush();
-				fileOutputStream.write(byteArrayOutputStream.toByteArray());
 			}
 			
 			if(!tmp.renameTo(file))
@@ -167,18 +166,48 @@ public class UserFiler extends Filer
 			return Optional.empty();
 		}
 		
-		try(FileInputStream fileInputStream = new FileInputStream(file);
-				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
-				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
+		try
+		(
+			FileInputStream fileIn = new FileInputStream(file);
+			FileChannel fileChannel = fileIn.getChannel()
+		)
 		{
-			User user = Readers.of(plugin, in, readVersions(in))
-					.getReader(UserReader.class)
-					.readReference();
-			LoggerUtil.info(plugin,
-					"User loaded from disk! name={0} uuid={1}",
-					plugin.getServer().getOfflinePlayer(uuid).getName(),
-					uuid);
-			return Optional.of(user);
+			byte[] header = new byte[2];
+			fileIn.read(header);
+			
+			fileChannel.position(0L);
+			
+			try(BufferedInputStream bufferedIn = new BufferedInputStream(fileIn))
+			{
+				if(isObjectStream(header))
+				{
+					try(ObjectInputStream in = new ObjectInputStream(bufferedIn))
+					{
+						User user = Readers.of(plugin, in, readVersions(in))
+								.getReader(UserReader.class)
+								.readReference();
+						LoggerUtil.info(plugin,
+								"(ObjectStream) User loaded from disk! name={0} uuid={1}",
+								plugin.getServer().getOfflinePlayer(uuid).getName(),
+								uuid);
+						return Optional.of(user);
+					}
+				}
+				else
+				{
+					try(DataInputStream in = new DataInputStream(bufferedIn))
+					{
+						User user = Readers.of(plugin, in, readVersions(in))
+								.getReader(UserReader.class)
+								.readReference();
+						LoggerUtil.info(plugin,
+								"(DataStream) User loaded from disk! name={0} uuid={1}",
+								plugin.getServer().getOfflinePlayer(uuid).getName(),
+								uuid);
+						return Optional.of(user);
+					}
+				}
+			}
 		}
 		catch(Exception e)
 		{

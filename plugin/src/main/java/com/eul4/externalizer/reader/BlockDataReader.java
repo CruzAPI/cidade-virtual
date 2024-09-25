@@ -93,8 +93,8 @@ public class BlockDataReader extends ObjectReader<BlockData>
 		Rarity rarity = Optional.ofNullable(Rarity.getRarityById(in.readByte())).orElse(Rarity.COMMON);
 		float health = in.readFloat();
 		boolean willDrop = in.readBoolean();
-		byte[] enchantmens = new byte[BlockData.Enchant.values().length];
-		in.read(enchantmens);
+		byte[] enchantmens = new byte[2];
+		in.readFully(enchantmens);
 		
 		return BlockData.builder()
 				.hasHardness(hasHardness)
@@ -112,8 +112,8 @@ public class BlockDataReader extends ObjectReader<BlockData>
 		Rarity rarity = Optional.ofNullable(Rarity.getRarityById(in.readByte())).orElse(Rarity.COMMON);
 		float health = in.readFloat();
 		boolean willDrop = in.readBoolean();
-		byte[] enchantmens = new byte[BlockData.Enchant.values().length];
-		in.read(enchantmens);
+		byte[] enchantmens = new byte[2];
+		in.readFully(enchantmens);
 		BlockData.Origin origin = BlockData.Origin.getById(in.readByte());
 		
 		return BlockData.builder()

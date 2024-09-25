@@ -1,16 +1,21 @@
 package com.eul4.listener;
 
 import com.eul4.Main;
+import com.eul4.enums.Rarity;
 import com.eul4.externalizer.filer.BlockDataFiler;
 import com.eul4.service.BlockData;
+import com.eul4.util.RarityUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Levelled;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +24,43 @@ import org.bukkit.inventory.ItemStack;
 public class DebugListener implements Listener
 {
 	private final Main plugin;
+	
+	@EventHandler
+	public void debugEntity(PlayerInteractEntityEvent event)
+	{
+		Player player = event.getPlayer();
+		Entity clickedEntity = event.getRightClicked();
+		ItemStack item = player.getInventory().getItemInMainHand();
+		
+		if
+		(
+			!player.isOp()
+			|| event.getHand() != EquipmentSlot.HAND
+			|| item.getType() != Material.NAUTILUS_SHELL
+			&& item.getType() != Material.HEART_OF_THE_SEA
+		)
+		{
+			return;
+		}
+		
+		Rarity itemRarity = RarityUtil.getRarity(item);
+		
+		if(item.getType() == Material.HEART_OF_THE_SEA)
+		{
+			RarityUtil.setRarity(clickedEntity, itemRarity);
+		}
+		
+		Rarity entityRarity = RarityUtil.getRarity(clickedEntity);
+		
+		if(clickedEntity instanceof LivingEntity livingEntity)
+		{
+			player.sendMessage(entityRarity + ":" + clickedEntity.getType() + ":" + livingEntity.getHealth() + "/" + livingEntity.getMaxHealth());
+		}
+		else
+		{
+			player.sendMessage(entityRarity + ":" + clickedEntity.getType());
+		}
+	}
 	
 	@EventHandler
 	public void debugBlockData(PlayerInteractEvent event)

@@ -6,14 +6,14 @@ import com.eul4.common.type.player.CommonObjectType;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.Writers;
+import com.eul4.common.util.FileUtil;
 import com.eul4.externalizer.reader.TownMapReader;
 import com.eul4.externalizer.writer.TownMapWriter;
 import com.eul4.type.player.PluginObjectType;
-import com.eul4.common.util.FileUtil;
 import com.eul4.wrapper.TownMap;
-import com.google.common.io.ByteStreams;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.text.MessageFormat;
 import java.util.logging.Level;
 
@@ -104,15 +104,17 @@ public class TownsFiler extends PluginFiler
 			File file = plugin.getDataFileManager().createTownsFileIfNotExists();
 			tmp = new File(file.getParent(), "." + file.getName() + ".tmp");
 			
-			try(FileOutputStream fileOutputStream = new FileOutputStream(tmp);
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
+			try
+			(
+				FileOutputStream fileOut = new FileOutputStream(tmp);
+				BufferedOutputStream bufferedOut = new BufferedOutputStream(fileOut);
+				DataOutputStream out = new DataOutputStream(bufferedOut);
+			)
 			{
 				Writers.of(plugin, out, writeVersions(out))
 						.getWriter(TownMapWriter.class)
 						.writeReferenceNotNull(plugin.getTownManager().getTowns());
 				out.flush();
-				fileOutputStream.write(byteArrayOutputStream.toByteArray());
 			}
 			
 			if(tmp.renameTo(file))
@@ -155,16 +157,44 @@ public class TownsFiler extends PluginFiler
 		
 		plugin.getLogger().info("towns.dat length: " + file.length());
 		
-		try(FileInputStream fileInputStream = new FileInputStream(file);
-				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
-				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
+		try
+		(
+			FileInputStream fileIn = new FileInputStream(file);
+			FileChannel fileChannel = fileIn.getChannel()
+		)
 		{
-			TownMap towns = Readers.of(plugin, in, readVersions(in))
-					.getReader(TownMapReader.class)
-					.readReference(plugin);
-			plugin.getLogger().info(towns.size() + " towns loaded!");
+			byte[] header = new byte[2];
+			fileIn.read(header);
 			
-			return towns;
+			fileChannel.position(0L);
+			
+			try(BufferedInputStream bufferedIn = new BufferedInputStream(fileIn))
+			{
+				if(isObjectStream(header))
+				{
+					try(ObjectInputStream in = new ObjectInputStream(bufferedIn))
+					{
+						TownMap towns = Readers.of(plugin, in, readVersions(in))
+								.getReader(TownMapReader.class)
+								.readReference(plugin);
+						plugin.getLogger().info("(ObjectStream) " + towns.size() + " towns loaded!");
+						
+						return towns;
+					}
+				}
+				else
+				{
+					try(DataInputStream in = new DataInputStream(bufferedIn))
+					{
+						TownMap towns = Readers.of(plugin, in, readVersions(in))
+								.getReader(TownMapReader.class)
+								.readReference(plugin);
+						plugin.getLogger().info("(DataStream) " + towns.size() + " towns loaded!");
+						
+						return towns;
+					}
+				}
+			}
 		}
 	}
 	

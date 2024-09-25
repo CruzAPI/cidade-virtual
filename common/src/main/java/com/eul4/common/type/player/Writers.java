@@ -2,10 +2,9 @@ package com.eul4.common.type.player;
 
 import com.eul4.common.Common;
 import com.eul4.common.externalizer.writer.ObjectWriter;
-import com.eul4.common.util.LoggerUtil;
 import lombok.Getter;
 
-import java.io.ObjectOutput;
+import java.io.DataOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -15,16 +14,16 @@ public class Writers
 {
 	@Getter
 	private final Common plugin;
-	private final ObjectOutput out;
+	private final DataOutput out;
 	
 	private final Map<Class<? extends ObjectWriter>, ObjectWriter> writers = new HashMap<>();
 	
-	public static Writers of(Common plugin, ObjectOutput out, ObjectType[] objectTypes)
+	public static Writers of(Common plugin, DataOutput out, ObjectType[] objectTypes)
 	{
 		return new Writers(plugin, out, objectTypes);
 	}
 	
-	private Writers(Common plugin, ObjectOutput out, ObjectType[] objectTypes)
+	private Writers(Common plugin, DataOutput out, ObjectType[] objectTypes)
 	{
 		this.plugin = plugin;
 		this.out = out;
@@ -37,7 +36,7 @@ public class Writers
 		}
 	}
 	
-	public ObjectOutput getObjectOutput()
+	public DataOutput getDataOutput()
 	{
 		return out;
 	}

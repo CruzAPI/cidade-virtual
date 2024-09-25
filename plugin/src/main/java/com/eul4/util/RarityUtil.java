@@ -155,7 +155,7 @@ public class RarityUtil
 					{
 						attributeInstance.setBaseValue
 						(
-							attributeInstance.getBaseValue() * rarity.getMobMaxHealthMultiplier()
+							attributeInstance.getDefaultValue() * rarity.getMobMaxHealthMultiplier()
 						);
 						
 						livingEntity.setHealth(attributeInstance.getValue());

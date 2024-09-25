@@ -15,6 +15,12 @@ public class PotionEffectWriter extends ObjectWriter<PotionEffect>
 	@Override
 	protected void writeObject(PotionEffect potionEffect) throws IOException
 	{
-		out.writeObject(potionEffect.serialize());
+		out.writeInt(potionEffect.getType().getId());
+		out.writeInt(potionEffect.getDuration());
+		out.writeInt(potionEffect.getAmplifier());
+		out.writeBoolean(potionEffect.isAmbient());
+		out.writeBoolean(potionEffect.hasParticles());
+		out.writeBoolean(potionEffect.hasIcon());
+		this.writeReference(potionEffect.getHiddenPotionEffect());
 	}
 }

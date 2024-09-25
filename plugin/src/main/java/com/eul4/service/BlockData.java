@@ -5,8 +5,10 @@ import com.eul4.enums.Rarity;
 import com.eul4.util.RarityUtil;
 import com.eul4.wrapper.StackedEnchantment;
 import com.google.common.base.Preconditions;
-import lombok.*;
-import lombok.experimental.Accessors;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -17,12 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-@Getter
-@Setter
 @ToString
 public class BlockData
 {
-	@RequiredArgsConstructor
 	public enum Enchant
 	{
 		FORTUNE(Enchantment.FORTUNE),
@@ -31,6 +30,11 @@ public class BlockData
 		;
 		
 		private final Enchantment enchantment;
+		
+		Enchant(Enchantment enchantment)
+		{
+			this.enchantment = enchantment;
+		}
 		
 		public static Enchant getByBukkitEnchantment(Enchantment enchantment)
 		{
@@ -73,16 +77,14 @@ public class BlockData
 		}
 	}
 	
-	@Accessors(fluent = true)
 	private boolean hasHardness;
 	
 	private Rarity rarity;
 	private float health;
-	@Accessors(fluent = true)
 	private boolean willDrop;
 	
-	private byte[] enchantments;
-	private Origin origin;
+	public final byte[] enchantments;
+	private final Origin origin;
 	
 	public BlockData()
 	{
@@ -329,5 +331,35 @@ public class BlockData
 		byte[] enchantments = new byte[Enchant.values().length];
 		Arrays.fill(enchantments, Byte.MAX_VALUE);
 		return enchantments;
+	}
+	
+	public boolean willDrop()
+	{
+		return willDrop;
+	}
+	
+	public boolean hasHardness()
+	{
+		return hasHardness;
+	}
+	
+	public void hasHardness(boolean hasHardness)
+	{
+		this.hasHardness = hasHardness;
+	}
+	
+	public Rarity getRarity()
+	{
+		return rarity;
+	}
+	
+	public float getHealth()
+	{
+		return health;
+	}
+	
+	public Origin getOrigin()
+	{
+		return origin;
 	}
 }

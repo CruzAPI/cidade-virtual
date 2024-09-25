@@ -10,11 +10,11 @@ import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.type.player.Writers;
 import com.eul4.common.util.FileUtil;
-import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -79,15 +79,17 @@ public class GroupMapFiler extends Filer
 			File file = plugin.getCommonDataFileManager().createGroupsFileIfNotExists();
 			tmp = new File(file.getParent(), "." + file.getName() + ".tmp");
 			
-			try(FileOutputStream fileOutputStream = new FileOutputStream(tmp);
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
+			try
+			(
+				FileOutputStream fileOut = new FileOutputStream(tmp);
+				BufferedOutputStream bufferedOut = new BufferedOutputStream(fileOut);
+				DataOutputStream out = new DataOutputStream(bufferedOut)
+			)
 			{
 				Writers.of(plugin, out, writeVersions(out))
 						.getWriter(GroupMapWriter.class)
 						.writeReferenceNotNull(memoryGroupMap);
 				out.flush();
-				fileOutputStream.write(byteArrayOutputStream.toByteArray());
 			}
 			
 			if(tmp.renameTo(file))
@@ -121,18 +123,48 @@ public class GroupMapFiler extends Filer
 			return Optional.empty();
 		}
 		
-		try(FileInputStream fileInputStream = new FileInputStream(file);
-				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
-				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
+		try
+		(
+			FileInputStream fileIn = new FileInputStream(file);
+			FileChannel fileChannel = fileIn.getChannel()
+		)
 		{
-			GroupMap groupMap = Readers.of(plugin, in, readVersions(in))
-					.getReader(GroupMapReader.class)
-					.readReference();
-			plugin.getLogger().info(MessageFormat.format(
-					"{0} loaded from disk! {1} groups loaded!",
-					file.getName(),
-					groupMap.getGroups().size()));
-			return Optional.of(groupMap);
+			byte[] header = new byte[2];
+			fileIn.read(header);
+			
+			fileChannel.position(0L);
+			
+			try(BufferedInputStream bufferedIn = new BufferedInputStream(fileIn))
+			{
+				if(isObjectStream(header))
+				{
+					try(ObjectInputStream in = new ObjectInputStream(bufferedIn))
+					{
+						GroupMap groupMap = Readers.of(plugin, in, readVersions(in))
+								.getReader(GroupMapReader.class)
+								.readReference();
+						plugin.getLogger().info(MessageFormat.format(
+								"(ObjectStream) {0} loaded from disk! {1} groups loaded!",
+								file.getName(),
+								groupMap.getGroups().size()));
+						return Optional.of(groupMap);
+					}
+				}
+				else
+				{
+					try(DataInputStream in = new DataInputStream(bufferedIn))
+					{
+						GroupMap groupMap = Readers.of(plugin, in, readVersions(in))
+								.getReader(GroupMapReader.class)
+								.readReference();
+						plugin.getLogger().info(MessageFormat.format(
+								"(InputStream) {0} loaded from disk! {1} groups loaded!",
+								file.getName(),
+								groupMap.getGroups().size()));
+						return Optional.of(groupMap);
+					}
+				}
+			}
 		}
 		catch(Exception e)
 		{

@@ -4,7 +4,9 @@ import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.i18n.Messageable;
 import com.eul4.common.world.CommonWorld;
+import com.eul4.enums.Rarity;
 import com.eul4.model.player.PluginPlayer;
+import com.eul4.service.BlockData;
 import com.google.common.collect.Multimap;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.*;
@@ -12,6 +14,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.generator.structure.GeneratedStructure;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -86,6 +89,27 @@ public class DebugCommand implements TabExecutor
 					.orElse(new Location(commonWorld.getWorld(), 0.5D, 70.0D, 0.5D, 0.0F, 0.0F));
 			
 			player.teleport(spawnLocation);
+		}
+		else if(args.length == 1 && args[0].equalsIgnoreCase("reloadstructure"))
+		{
+			for(GeneratedStructure generatedStructure : player.getChunk().getStructures())
+			{
+				plugin.getStructureRarityListener().rarifyStructure(player.getWorld(), generatedStructure);
+			}
+		}
+		else if(args.length == 1 && args[0].equalsIgnoreCase("chunk"))
+		{
+//			for(int y = player.getWorld().getMinHeight(); y < player.getWorld().getMaxHeight(); y++)
+//			{
+//				for(int x = 0; x < 16; x++)
+//				{
+//					for(int z = 0; z < 16; z++)
+//					{
+//						plugin.getBlockDataFiler().loadBlockDataOrDefault(player.getChunk().getBlock(x, y, z),
+//								() -> BlockData.builder().rarity(Rarity.RARE).build());
+//					}
+//				}
+//			}
 		}
 		else if(args.length == 1)
 		{

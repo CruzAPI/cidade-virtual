@@ -12,12 +12,12 @@ import com.eul4.externalizer.writer.BlockDataMapWriter;
 import com.eul4.service.BlockData;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.wrapper.BlockDataMap;
-import com.google.common.io.ByteStreams;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,7 +84,7 @@ public class BlockDataFiler extends PluginFiler
 	}
 	public void setBlockData(Block block, BlockData blockData, BlockDataLoadEvent.Cause cause)
 	{
-		Map<Block, BlockData> chunkData = loadChunk(block);
+		BlockDataMap chunkData = loadChunk(block);
 		new BlockDataLoadEvent(block, blockData, cause).callEvent();
 		chunkData.put(block, blockData);
 	}
@@ -106,7 +106,7 @@ public class BlockDataFiler extends PluginFiler
 	
 	public BlockData loadBlockDataOrDefault(Block block, Supplier<BlockData> blockDataSupplier, BlockDataLoadEvent.Cause cause)
 	{
-		Map<Block, BlockData> chunkData = loadChunk(block);
+		BlockDataMap chunkData = loadChunk(block);
 		
 		BlockData blockData = chunkData.get(block);
 		
@@ -127,7 +127,7 @@ public class BlockDataFiler extends PluginFiler
 		return loadChunk(block).remove(block);
 	}
 	
-	private Map<Block, BlockData> loadChunk(Block block)
+	private BlockDataMap loadChunk(Block block)
 	{
 		return loadChunk(block.getChunk());
 	}
@@ -150,16 +150,18 @@ public class BlockDataFiler extends PluginFiler
 				File file = plugin.getDataFileManager().createBlockDataFileIfNotExists(chunk);
 				File tmp = new File(file.getParent(), "." + file.getName() + ".tmp");
 				
-				try(FileOutputStream fileOutputStream = new FileOutputStream(tmp);
-						ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-						ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
+				try
+				(
+					FileOutputStream fileOut = new FileOutputStream(tmp);
+					BufferedOutputStream bufferedOut = new BufferedOutputStream(fileOut);
+					DataOutputStream out = new DataOutputStream(bufferedOut);
+				)
 				{
 					Writers
 							.of(plugin, out, writeVersions(out))
 							.getWriter(BlockDataMapWriter.class)
 							.writeReference(blockDataMap);
 					out.flush();
-					fileOutputStream.write(byteArrayOutputStream.toByteArray());
 				}
 				
 				if(!tmp.renameTo(file))
@@ -214,14 +216,40 @@ public class BlockDataFiler extends PluginFiler
 			return new BlockDataMap(chunk);
 		}
 		
-		try(FileInputStream fileIn = new FileInputStream(file);
-				ByteArrayInputStream streamIn = new ByteArrayInputStream(ByteStreams.toByteArray(fileIn));
-				ObjectInputStream in = new ObjectInputStream(streamIn))
+		try
+		(
+			FileInputStream fileIn = new FileInputStream(file);
+			FileChannel fileChannel = fileIn.getChannel()
+		)
 		{
-			return Readers
-					.of(plugin, in, readVersions(in))
-					.getReader(BlockDataMapReader.class)
-					.readReference(chunk);
+			byte[] header = new byte[2];
+			fileIn.read(header);
+			
+			fileChannel.position(0L);
+			
+			try(BufferedInputStream bufferedIn = new BufferedInputStream(fileIn))
+			{
+				if(isObjectStream(header))
+				{
+					try(ObjectInputStream in = new ObjectInputStream(bufferedIn))
+					{
+						return Readers
+								.of(plugin, in, readVersions(in))
+								.getReader(BlockDataMapReader.class)
+								.readReference(chunk);
+					}
+				}
+				else
+				{
+					try(DataInputStream in = new DataInputStream(bufferedIn))
+					{
+						return Readers
+								.of(plugin, in, readVersions(in))
+								.getReader(BlockDataMapReader.class)
+								.readReference(chunk);
+					}
+				}
+			}
 		}
 		catch(Exception ex)
 		{

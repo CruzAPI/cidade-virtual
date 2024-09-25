@@ -89,6 +89,7 @@ public class Main extends Common
 	private AttackCommand attackCommand;
 	private ToggleCombatCommand	toggleCombatCommand;
 	
+	private StructureRarityListener structureRarityListener;
 	private ItemDamageAttributeListener itemDamageAttributeListener;
 	
 	private BlockDataFiler blockDataFiler;
@@ -394,7 +395,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new GeneratorGuiListener(this), this);
 		pluginManager.registerEvents(new HangRarityListener(this), this);
 		pluginManager.registerEvents(new StructureMoveListener(this), this);
-		pluginManager.registerEvents(new StructureRarityListener(this), this);
+		pluginManager.registerEvents(structureRarityListener = new StructureRarityListener(this), this);
 		pluginManager.registerEvents(new TownAttackListener(this), this);
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);

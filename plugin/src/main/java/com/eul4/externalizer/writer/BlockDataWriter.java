@@ -17,10 +17,10 @@ public class BlockDataWriter extends ObjectWriter<BlockData>
 	protected void writeObject(BlockData blockData) throws IOException
 	{
 		out.writeBoolean(blockData.hasHardness());
-		out.write(blockData.getRarity().getId());
+		out.writeByte(blockData.getRarity().getId());
 		out.writeFloat(blockData.getHealth());
 		out.writeBoolean(blockData.willDrop());
-		out.write(blockData.getEnchantments());
-		out.write(blockData.getOrigin().getId());
+		out.write(blockData.enchantments);
+		out.writeByte(blockData.getOrigin().getId());
 	}
 }

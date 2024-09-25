@@ -44,9 +44,11 @@ public class BlockDataMapReader extends ObjectReader<BlockDataMap>
 		
 		for(int i = 0; i < size; i++)
 		{
-			blockDataMap.put(
-					readers.getReader(ShortCoordinateBlockChunkReader.class).readObject(blockDataMap.getChunk()),
-					readers.getReader(BlockDataReader.class).readObject());
+			blockDataMap.put
+			(
+				readers.getReader(ShortCoordinateBlockChunkReader.class).readObject(blockDataMap.getChunk()),
+				readers.getReader(BlockDataReader.class).readObject()
+			);
 		}
 	}
 	

@@ -8,8 +8,10 @@ import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import lombok.Getter;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.Map;
 
 public class PotionEffectReader extends ObjectReader<PotionEffect>
@@ -31,6 +33,10 @@ public class PotionEffectReader extends ObjectReader<PotionEffect>
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion0;
 			break;
+		case 1:
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion1;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -39,7 +45,21 @@ public class PotionEffectReader extends ObjectReader<PotionEffect>
 	@SuppressWarnings("unchecked")
 	private PotionEffect readableVersion0() throws IOException, ClassNotFoundException
 	{
-		return new PotionEffect((Map<String, Object>) in.readObject());
+		return new PotionEffect((Map<String, Object>) ((ObjectInput) in).readObject());
+	}
+	
+	private PotionEffect readableVersion1() throws IOException, ClassNotFoundException
+	{
+		return new PotionEffect
+		(
+			PotionEffectType.getById(in.readInt()),
+			in.readInt(),
+			in.readInt(),
+			in.readBoolean(),
+			in.readBoolean(),
+			in.readBoolean(),
+			this.readReference()
+		);
 	}
 	
 	public PotionEffect readReference() throws IOException, ClassNotFoundException

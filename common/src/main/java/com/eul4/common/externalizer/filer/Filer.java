@@ -5,9 +5,7 @@ import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.type.player.ObjectType;
 import lombok.RequiredArgsConstructor;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +15,7 @@ public abstract class Filer
 	protected final Common plugin;
 	private final byte version;
 	
-	protected Map<ObjectType, Byte> readVersions(ObjectInput in) throws IOException, InvalidVersionException
+	protected Map<ObjectType, Byte> readVersions(DataInput in) throws IOException, InvalidVersionException
 	{
 		Map<ObjectType, Byte> versions = new HashMap<>();
 		
@@ -29,7 +27,7 @@ public abstract class Filer
 		return versions;
 	}
 	
-	protected ObjectType[] writeVersions(ObjectOutput out) throws IOException, InvalidVersionException
+	protected ObjectType[] writeVersions(DataOutput out) throws IOException, InvalidVersionException
 	{
 		out.writeByte(version);
 		
@@ -41,6 +39,11 @@ public abstract class Filer
 		}
 		
 		return objectTypes;
+	}
+	
+	protected boolean isObjectStream(byte[] header)
+	{
+		return header.length >= 2 && header[0] == (byte) 0xAC && header[1] == (byte) 0xED;
 	}
 	
 	protected abstract ObjectType[] getObjectTypes(byte version) throws InvalidVersionException;

@@ -3,9 +3,13 @@ package com.eul4.common.util;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.generator.structure.GeneratedStructure;
+import org.bukkit.generator.structure.StructurePiece;
 import org.bukkit.util.BoundingBox;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class BoundingBoxUtil
@@ -22,6 +26,35 @@ public class BoundingBoxUtil
 				}
 			}
 		}
+	}
+	
+	public static List<BoundingBox> getBoundingBoxes(GeneratedStructure generatedStructure)
+	{
+		List<BoundingBox> boundingBoxes = new ArrayList<>();
+		
+		for(StructurePiece piece : generatedStructure.getPieces())
+		{
+			boundingBoxes.add(piece.getBoundingBox());
+		}
+		
+		return boundingBoxes;
+	}
+	
+	public static Set<Chunk> getChunks(GeneratedStructure generatedStructure, World world)
+	{
+		return getChunks(getBoundingBoxes(generatedStructure), world);
+	}
+	
+	public static Set<Chunk> getChunks(List<BoundingBox> boundingBoxes, World world)
+	{
+		Set<Chunk> chunks = new HashSet<>();
+		
+		for(BoundingBox boundingBox : boundingBoxes)
+		{
+			chunks.addAll(getChunks(boundingBox, world));
+		}
+		
+		return chunks;
 	}
 	
 	public static Set<Chunk> getChunks(BoundingBox boundingBox, World world)

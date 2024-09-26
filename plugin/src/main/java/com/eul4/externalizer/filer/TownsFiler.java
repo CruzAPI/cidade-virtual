@@ -97,6 +97,8 @@ public class TownsFiler extends PluginFiler
 	
 	public void saveTowns()
 	{
+		final long startTime = System.currentTimeMillis();
+		
 		File tmp = null;
 		
 		try
@@ -107,7 +109,7 @@ public class TownsFiler extends PluginFiler
 			try
 			(
 				FileOutputStream fileOut = new FileOutputStream(tmp);
-				BufferedOutputStream bufferedOut = new BufferedOutputStream(fileOut);
+				BufferedOutputStream bufferedOut = new BufferedOutputStream(fileOut, BUFFER_SIZE);
 				DataOutputStream out = new DataOutputStream(bufferedOut);
 			)
 			{
@@ -119,8 +121,12 @@ public class TownsFiler extends PluginFiler
 			
 			if(tmp.renameTo(file))
 			{
-				plugin.getLogger().info(MessageFormat.format("{0} towns saved! {1} length: {2}",
+				final long finishTime = System.currentTimeMillis();
+				final long elapsedTime = finishTime - startTime;
+				
+				plugin.getLogger().info(MessageFormat.format("{0} towns saved! ({1}ms) {2} length: {3}",
 						plugin.getTownManager().getTowns().size(),
+						elapsedTime,
 						file.getName(),
 						file.length()));
 			}
@@ -157,6 +163,8 @@ public class TownsFiler extends PluginFiler
 		
 		plugin.getLogger().info("towns.dat length: " + file.length());
 		
+		final long startTime = System.currentTimeMillis();
+		
 		try
 		(
 			FileInputStream fileIn = new FileInputStream(file);
@@ -168,7 +176,7 @@ public class TownsFiler extends PluginFiler
 			
 			fileChannel.position(0L);
 			
-			try(BufferedInputStream bufferedIn = new BufferedInputStream(fileIn))
+			try(BufferedInputStream bufferedIn = new BufferedInputStream(fileIn, BUFFER_SIZE))
 			{
 				if(isObjectStream(header))
 				{
@@ -189,7 +197,10 @@ public class TownsFiler extends PluginFiler
 						TownMap towns = Readers.of(plugin, in, readVersions(in))
 								.getReader(TownMapReader.class)
 								.readReference(plugin);
-						plugin.getLogger().info("(DataStream) " + towns.size() + " towns loaded!");
+						final long finishTime = System.currentTimeMillis();
+						final long elapsedTime = finishTime - startTime;
+						
+						plugin.getLogger().info("(DataStream) " + towns.size() + " towns loaded! (" + elapsedTime + "ms)");
 						
 						return towns;
 					}

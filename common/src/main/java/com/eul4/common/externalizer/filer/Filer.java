@@ -12,6 +12,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public abstract class Filer
 {
+	protected static final int BUFFER_SIZE = 2 << 16;
+	
 	protected final Common plugin;
 	private final byte version;
 	

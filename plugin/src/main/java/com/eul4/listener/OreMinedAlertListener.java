@@ -7,6 +7,7 @@ import com.eul4.i18n.PluginRichMessage;
 import com.eul4.service.BlockData;
 import com.eul4.util.BroadcastUtil;
 import com.eul4.util.OreVeinUtil;
+import com.eul4.util.RarityUtil;
 import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
@@ -14,8 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
@@ -45,8 +44,7 @@ public class OreMinedAlertListener implements Listener
 	
 	private final Set<Block> ignoredBlocks = new HashSet<>();
 	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onBlockBreak(BlockBreakEvent event)
+	public void broadcastAlertIfNeeded(BlockBreakEvent event)
 	{
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
@@ -83,19 +81,17 @@ public class OreMinedAlertListener implements Listener
 	
 	private int countVein(Block block)
 	{
-		int count = 0;
+		Rarity blockRarity = RarityUtil.getRarity(plugin, block);
 		
-		for(Block veinBlock : OreVeinUtil.getVein(block))
+		Set<Block> vein = OreVeinUtil.getVein(block, veinBlock ->
 		{
 			BlockData blockData = plugin.getBlockDataFiler().loadBlockData(veinBlock);
-			
-			if(ignoredBlocks.add(veinBlock)
-				&& (blockData == null || blockData.getOrigin() == BlockData.Origin.CHUNK_GENERATED))
-			{
-				count++;
-			}
-		}
+			return blockData != null
+					&& blockData.getRarity() == blockRarity
+					&& blockData.getOrigin() == BlockData.Origin.CHUNK_GENERATED
+					&& ignoredBlocks.add(veinBlock);
+		});
 		
-		return Math.max(1, count);
+		return Math.max(1, vein.size());
 	}
 }

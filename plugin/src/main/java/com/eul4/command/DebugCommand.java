@@ -99,17 +99,17 @@ public class DebugCommand implements TabExecutor
 		}
 		else if(args.length == 1 && args[0].equalsIgnoreCase("chunk"))
 		{
-//			for(int y = player.getWorld().getMinHeight(); y < player.getWorld().getMaxHeight(); y++)
-//			{
-//				for(int x = 0; x < 16; x++)
-//				{
-//					for(int z = 0; z < 16; z++)
-//					{
-//						plugin.getBlockDataFiler().loadBlockDataOrDefault(player.getChunk().getBlock(x, y, z),
-//								() -> BlockData.builder().rarity(Rarity.RARE).build());
-//					}
-//				}
-//			}
+			for(int y = player.getWorld().getMinHeight(); y < player.getWorld().getMaxHeight(); y++)
+			{
+				for(int x = 0; x < 16; x++)
+				{
+					for(int z = 0; z < 16; z++)
+					{
+						plugin.getBlockDataFiler().loadBlockDataOrDefault(player.getChunk().getBlock(x, y, z),
+								() -> BlockData.builder().rarity(Rarity.RARE).build());
+					}
+				}
+			}
 		}
 		else if(args.length == 1)
 		{

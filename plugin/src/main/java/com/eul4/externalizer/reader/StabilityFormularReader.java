@@ -46,7 +46,7 @@ public class StabilityFormularReader extends ObjectReader<StabilityFormula>
 		}
 		else
 		{
-			return new StabilityFormula(in.readFloat(), in.readFloat());
+			return new StabilityFormula(in.readFloat(), in.readFloat(), in.readFloat(), in.readFloat());
 		}
 	}
 	

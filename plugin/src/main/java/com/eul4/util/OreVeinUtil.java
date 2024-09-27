@@ -5,14 +5,17 @@ import com.eul4.enums.Rarity;
 import com.eul4.event.BlockDataLoadEvent;
 import com.eul4.service.BlockData;
 import com.eul4.world.RaidLevel;
+import com.eul4.wrapper.StabilityFormula;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import sun.misc.Unsafe;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class OreVeinUtil
 {
@@ -27,7 +30,8 @@ public class OreVeinUtil
 		
 		final Set<Block> vein;
 		
-		if(plugin.getBlockDataFiler().hasBlockData(block) || (vein = getVein(block)).isEmpty())
+		if(plugin.getBlockDataFiler().hasBlockData(block)
+				|| (vein = getVein(block, Predicate.not(plugin.getBlockDataFiler()::hasBlockData))).isEmpty())
 		{
 			return;
 		}
@@ -42,6 +46,7 @@ public class OreVeinUtil
 			{
 				blockData = BlockData.builder()
 						.rarity(veinRarity)
+						.stabilityFormula(new StabilityFormula(1.0F, 0.5F, 0.1F, 0.5F))
 						.build();
 				plugin.getBlockDataFiler().setBlockData(blockVein, blockData, BlockDataLoadEvent.Cause.ORE_VEIN);
 			}
@@ -50,6 +55,11 @@ public class OreVeinUtil
 	
 	public static Set<Block> getVein(Block block)
 	{
+		return getVein(block, $ -> true);
+	}
+	
+	public static Set<Block> getVein(Block block, Predicate<Block> predicate)
+	{
 		Set<Material> materials = getMaterials(block.getType());
 		
 		if(materials.isEmpty())
@@ -57,12 +67,15 @@ public class OreVeinUtil
 			return Collections.emptySet();
 		}
 		
-		return getVein(block, materials, new HashSet<>());
+		return getVein(block, materials, new HashSet<>(), predicate);
 	}
 	
-	private static Set<Block> getVein(Block center, Set<Material> materials, Set<Block> blocks)
+	private static Set<Block> getVein(Block center, Set<Material> materials, Set<Block> blocks, Predicate<Block> predicate)
 	{
-		if(!materials.contains(center.getType()) || blocks.contains(center) || blocks.size() > 100)
+		if(!materials.contains(center.getType())
+				|| blocks.contains(center)
+				|| blocks.size() >= 100
+				|| !predicate.test(center))
 		{
 			return blocks;
 		}
@@ -78,7 +91,7 @@ public class OreVeinUtil
 				for(int z = -r; z <= r; z++)
 				{
 					Block relative = center.getRelative(x, y, z);
-					getVein(relative, materials, blocks);
+					getVein(relative, materials, blocks, predicate);
 				}
 			}
 		}

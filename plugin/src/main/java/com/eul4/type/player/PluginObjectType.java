@@ -13,7 +13,7 @@ public enum PluginObjectType implements ObjectType
 	ATTACKER((byte) 0, PluginExternalizerType.ATTACKER),
 	BOUGHT_TILE_MAP_BY_DEPTH((byte) 0, PluginExternalizerType.BOUGHT_TILE_MAP_BY_DEPTH),
 	BLOCK_DATA_MAP((byte) 0, PluginExternalizerType.BLOCK_DATA_MAP),
-	BLOCK_DATA((byte) 3, PluginExternalizerType.BLOCK_DATA),
+	BLOCK_DATA((byte) 4, PluginExternalizerType.BLOCK_DATA),
 	CANNON((byte) 0, PluginExternalizerType.CANNON),
 	CHECKPOINT_STEP_ENUM((byte) 0, PluginExternalizerType.CHECKPOINT_STEP_ENUM),
 	DEFENDER((byte) 0, PluginExternalizerType.DEFENDER),

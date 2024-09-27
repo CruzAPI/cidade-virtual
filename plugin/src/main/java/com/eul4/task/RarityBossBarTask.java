@@ -2,7 +2,6 @@ package com.eul4.task;
 
 import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.common.world.CommonWorld;
 import com.eul4.enums.Rarity;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
@@ -11,6 +10,7 @@ import com.eul4.service.BlockData;
 import com.eul4.util.OreVeinUtil;
 import com.eul4.util.RarityUtil;
 import com.eul4.world.SpawnProtectedLevel;
+import com.eul4.wrapper.EnchantType;
 import com.eul4.wrapper.StackedEnchantment;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 import static com.eul4.common.util.ComponentUtil.CORRECT_SYMBOL;
@@ -40,6 +41,10 @@ public class RarityBossBarTask extends BukkitRunnable
 {
 	private final Main plugin;
 	private final Map<UUID, RarityBossBar<?>> bossBars = new HashMap<>();
+	
+	private static final Set<EnchantType> EXCLUDED_ENCHANT_TYPES = Set.of(EnchantType.STABILITY);
+	private static final StackedEnchantment ZERO_STABILITY_STACKED_ENCHANTMENT = new StackedEnchantment(EnchantType.STABILITY, 0, true);
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.##");
 	
 	@Override
 	public void run()
@@ -148,15 +153,38 @@ public class RarityBossBarTask extends BukkitRunnable
 			OreVeinUtil.rarifyVein(plugin, block);
 			BlockData blockData = plugin.getBlockDataFiler().loadBlockData(block);
 			ItemStack tool = player.getInventory().getItemInMainHand();
+			Rarity rarity = blockData == null ? Rarity.DEFAULT_RARITY : blockData.getRarity();
+			
+			StackedEnchantment stabilityStackedEnchantment = findStackedEnchantment(tool, blockData, EnchantType.STABILITY)
+					.orElse(ZERO_STABILITY_STACKED_ENCHANTMENT);
+			
+			int stabilityLevel = stabilityStackedEnchantment.getLevel();
 			
 			boolean willDrop = blockData == null
 					? block.getBlockData().isPreferredTool(tool)
 					: blockData.willDrop(tool, block);
 			
-			Component enchantments = getEnchantmentsComponent(tool, blockData);
+			float stabilityChange = blockData == null
+					? 1.0F
+					: blockData.getStabilityFormula().calculateChance(stabilityLevel, rarity, Rarity.COMMON);
+			
+			boolean isStableWithoutEnchantments = blockData == null
+					|| blockData.getStabilityFormula().calculateChance(0, rarity, Rarity.COMMON) == 1.0F;
 			
 			Component name = text("Drop: ")
 					.append(willDrop ? CORRECT_SYMBOL : INCORRECT_SYMBOL);
+			
+			if((!isStableWithoutEnchantments || stabilityChange < 1.0F) && willDrop)
+			{
+				float percentage = stabilityChange * 100.0F;
+				
+				name = name.appendSpace()
+						.append(stabilityStackedEnchantment.getComponent())
+						.appendSpace()
+						.append(text("(" + DECIMAL_FORMAT.format(percentage) + "%)"));
+			}
+			
+			Component enchantments = getEnchantmentsComponentButStability(tool, blockData);
 			
 			if(enchantments != empty())
 			{
@@ -171,19 +199,42 @@ public class RarityBossBarTask extends BukkitRunnable
 			}
 			else
 			{
-				Rarity rarity = blockData.getRarity();
-				
 				bossBar.name(name);
 				bossBar.progress(Math.max(0.0F, Math.min(1.0F, blockData.getHealth() / rarity.getMaxHealth())));
 				bossBar.color(rarity.getBossBarColor());
 			}
 		}
 		
+		private Optional<StackedEnchantment> findStackedEnchantment(ItemStack tool, @Nullable BlockData blockData, EnchantType enchantType)
+		{
+			return Optional.ofNullable(getStackedEnchantments(tool, blockData).get(enchantType));
+		}
+		
+		private Map<EnchantType, StackedEnchantment> getStackedEnchantments(ItemStack tool, @Nullable BlockData blockData)
+		{
+			return getStackedEnchantments(tool, blockData, Collections.emptySet());
+		}
+		
+		private Map<EnchantType, StackedEnchantment> getStackedEnchantments(ItemStack tool, @Nullable BlockData blockData, Set<EnchantType> excludedEnchantTypes)
+		{
+			return blockData == null
+					? BlockData.getStaticStackedEnchantments(tool, excludedEnchantTypes)
+					: blockData.getStackedEnchantments(tool, excludedEnchantTypes);
+		}
+		
+		private Component getEnchantmentsComponentButStability(ItemStack tool, @Nullable BlockData blockData)
+		{
+			return getEnchantmentsComponent(tool, blockData, EXCLUDED_ENCHANT_TYPES);
+		}
+		
 		private Component getEnchantmentsComponent(ItemStack tool, @Nullable BlockData blockData)
 		{
-			Set<StackedEnchantment> stackedEnchantments = blockData == null
-					? BlockData.getStaticStackedEnchantments(tool)
-					: blockData.getStackedEnchantments(tool);
+			return getEnchantmentsComponent(tool, blockData, Collections.emptySet());
+		}
+		
+		private Component getEnchantmentsComponent(ItemStack tool, @Nullable BlockData blockData, Set<EnchantType> excludedEnchantTypes)
+		{
+			Collection<StackedEnchantment> stackedEnchantments = getStackedEnchantments(tool, blockData, excludedEnchantTypes).values();
 			
 			if(stackedEnchantments.isEmpty())
 			{

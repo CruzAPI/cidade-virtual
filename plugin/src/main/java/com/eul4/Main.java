@@ -46,6 +46,9 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.translation.TranslationRegistry;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
 import org.bukkit.plugin.Plugin;
@@ -91,6 +94,7 @@ public class Main extends Common
 	
 	private StructureRarityListener structureRarityListener;
 	private ItemDamageAttributeListener itemDamageAttributeListener;
+	private OreMinedAlertListener oreMinedAlertListener;
 	
 	private BlockDataFiler blockDataFiler;
 	private PlayerDataFiler playerDataFiler;
@@ -403,7 +407,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
 		pluginManager.registerEvents(itemDamageAttributeListener = new ItemDamageAttributeListener(this), this);
 		pluginManager.registerEvents(new MacroidListener(this), this);
-		pluginManager.registerEvents(new OreMinedAlertListener(this), this);
+		pluginManager.registerEvents(oreMinedAlertListener = new OreMinedAlertListener(this), this);
 		pluginManager.registerEvents(new PlayerAttackSpeedListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
@@ -489,11 +493,17 @@ public class Main extends Common
 	
 	private void registerResourceBundles()
 	{
+		GlobalTranslator globalTranslator = GlobalTranslator.translator();
+		
 		for(Locale locale : ResourceBundleHandler.SUPPORTED_LOCALES)
 		{
 			for(BundleBaseName bundleBaseName : PluginBundleBaseName.values())
 			{
-				ResourceBundleHandler.registerBundle(ResourceBundle.getBundle(bundleBaseName.getName(), locale));
+				ResourceBundle resourceBundle = ResourceBundle.getBundle(bundleBaseName.getName(), locale);
+				ResourceBundleHandler.registerBundle(resourceBundle);
+				TranslationRegistry translationRegistry = TranslationRegistry.create(new NamespacedKey(this, ResourceBundleHandler.getFileName(resourceBundle)));
+				translationRegistry.registerAll(locale, resourceBundle, true);
+				globalTranslator.addSource(translationRegistry);
 			}
 		}
 	}

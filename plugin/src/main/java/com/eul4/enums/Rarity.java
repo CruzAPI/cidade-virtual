@@ -259,4 +259,9 @@ public enum Rarity
 		
 		return minRarity;
 	}
+	
+	public Rarity lower()
+	{
+		return values()[Math.max(0, ordinal() - 1)];
+	}
 }

@@ -9,6 +9,7 @@ import com.eul4.common.wrapper.Reader;
 import com.eul4.enums.Rarity;
 import com.eul4.service.BlockData;
 import com.eul4.type.player.PluginObjectType;
+import com.eul4.wrapper.StabilityFormula;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -44,6 +45,10 @@ public class BlockDataReader extends ObjectReader<BlockData>
 		case 3:
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion3;
+			break;
+		case 4:
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion4;
 			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
@@ -123,6 +128,28 @@ public class BlockDataReader extends ObjectReader<BlockData>
 				.willDrop(willDrop)
 				.enchantments(enchantmens)
 				.origin(origin)
+				.build();
+	}
+	
+	private BlockData readableVersion4() throws IOException, ClassNotFoundException
+	{
+		boolean hasHardness = in.readBoolean();
+		Rarity rarity = Optional.ofNullable(Rarity.getRarityById(in.readByte())).orElse(Rarity.COMMON);
+		float health = in.readFloat();
+		boolean willDrop = in.readBoolean();
+		byte[] enchantments = new byte[3];
+		in.readFully(enchantments);
+		BlockData.Origin origin = BlockData.Origin.getById(in.readByte());
+		StabilityFormula stabilityFormula = readers.getReader(StabilityFormularReader.class).readReference();
+		
+		return BlockData.builder()
+				.hasHardness(hasHardness)
+				.rarity(rarity)
+				.health(health)
+				.willDrop(willDrop)
+				.enchantments(enchantments)
+				.origin(origin)
+				.stabilityFormula(stabilityFormula)
 				.build();
 	}
 	

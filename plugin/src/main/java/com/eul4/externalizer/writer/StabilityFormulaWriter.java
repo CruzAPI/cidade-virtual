@@ -2,7 +2,6 @@ package com.eul4.externalizer.writer;
 
 import com.eul4.common.externalizer.writer.ObjectWriter;
 import com.eul4.common.type.player.Writers;
-import com.eul4.service.BlockData;
 import com.eul4.wrapper.StabilityFormula;
 
 import java.io.IOException;
@@ -24,7 +23,9 @@ public class StabilityFormulaWriter extends ObjectWriter<StabilityFormula>
 		if(!stable)
 		{
 			out.writeFloat(stabilityFormula.getBase());
+			out.writeFloat(stabilityFormula.getBaseMultiplier());
 			out.writeFloat(stabilityFormula.getEnchantBase());
+			out.writeFloat(stabilityFormula.getEnchantBaseMultiplier());
 		}
 	}
 }

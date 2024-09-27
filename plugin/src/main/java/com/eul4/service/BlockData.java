@@ -3,6 +3,7 @@ package com.eul4.service;
 import com.eul4.common.util.ItemStackUtil;
 import com.eul4.enums.Rarity;
 import com.eul4.util.RarityUtil;
+import com.eul4.wrapper.EnchantType;
 import com.eul4.wrapper.StabilityFormula;
 import com.eul4.wrapper.StackedEnchantment;
 import com.google.common.base.Preconditions;
@@ -25,29 +26,34 @@ public class BlockData
 {
 	public enum Enchant
 	{
-		FORTUNE(Enchantment.FORTUNE),
-		SILK_TOUCH(Enchantment.SILK_TOUCH),
-//		STABILITY(null),
+		FORTUNE(EnchantType.FORTUNE),
+		SILK_TOUCH(EnchantType.SILK_TOUCH),
+		STABILITY(EnchantType.STABILITY),
 		;
 		
-		private final Enchantment enchantment;
+		private final EnchantType enchantType;
 		
-		Enchant(Enchantment enchantment)
+		Enchant(EnchantType enchantType)
 		{
-			this.enchantment = enchantment;
+			this.enchantType = enchantType;
 		}
 		
-		public static Enchant getByBukkitEnchantment(Enchantment enchantment)
+		public static Enchant getByEnchantType(EnchantType enchantType)
 		{
 			for(Enchant enchant : values())
 			{
-				if(enchantment.equals(enchant.enchantment))
+				if(enchant.enchantType == enchantType)
 				{
 					return enchant;
 				}
 			}
 			
 			return null;
+		}
+		
+		public static Enchant getByBukkitEnchantment(Enchantment enchantment)
+		{
+			return getByEnchantType(EnchantType.fromBukkit(enchantment));
 		}
 	}
 	
@@ -90,7 +96,7 @@ public class BlockData
 	
 	public BlockData()
 	{
-		this(false, null, null, false, null, null, null);
+		this(false, null, null, null, null, null, null);
 	}
 	
 	@Builder
@@ -99,7 +105,7 @@ public class BlockData
 		boolean hasHardness,
 		@Nullable Rarity rarity,
 		@Nullable Float health,
-		boolean willDrop,
+		@Nullable Boolean willDrop,
 		byte @Nullable [] enchantments,
 		@Nullable Origin origin,
 		@Nullable StabilityFormula stabilityFormula
@@ -108,8 +114,8 @@ public class BlockData
 		this.hasHardness = hasHardness;
 		this.rarity = rarity == null ? Rarity.DEFAULT_RARITY : rarity;
 		this.health = health == null ? this.rarity.getMaxHealth() : health;
-		this.willDrop = willDrop;
-		this.enchantments = enchantments == null ? createDefaultEnchantmentsByteArray() : enchantments;
+		this.willDrop = willDrop == null || willDrop;
+		this.enchantments = adjustEnchantmentByteArray(enchantments);
 		this.origin = origin == null ? Origin.DEFAULT_ORIGIN : origin;
 		this.stabilityFormula = stabilityFormula == null ? StabilityFormula.STABLE : stabilityFormula;
 	}
@@ -129,7 +135,7 @@ public class BlockData
 		for(int i = 0; i < Enchant.values().length; i++)
 		{
 			Enchant enchant = Enchant.values()[i];
-			enchantments.put(enchant.enchantment, (int) this.enchantments[i]);
+			enchantments.put(enchant.enchantType.getEnchantment(), (int) this.enchantments[i]);
 		}
 		
 		return enchantments;
@@ -195,13 +201,13 @@ public class BlockData
 		
 		for(Enchant enchant : Enchant.values())
 		{
-			updateEnchantment(enchant.enchantment, enchantments.getOrDefault(enchant.enchantment, 0));
+			updateEnchantment(enchant.enchantType, enchantments.getOrDefault(enchant.enchantType.getEnchantment(), 0));
 		}
 	}
 	
-	private void updateEnchantment(Enchantment enchantment, int level)
+	private void updateEnchantment(EnchantType enchantType, int level)
 	{
-		Enchant enchant = Enchant.getByBukkitEnchantment(enchantment);
+		Enchant enchant = Enchant.getByEnchantType(enchantType);
 		
 		if(enchant == null)
 		{
@@ -234,9 +240,9 @@ public class BlockData
 			return fakeTool;
 		}
 		
-		for(Map.Entry<Enchantment, Integer> enchantments : getBlockDataEnchantments().entrySet())
+		for(Map.Entry<Enchantment, Integer> entry : getBlockDataEnchantments().entrySet())
 		{
-			meta.addEnchant(enchantments.getKey(), enchantments.getValue(), true);
+			meta.addEnchant(entry.getKey(), entry.getValue(), true);
 		}
 		
 		fakeTool.setItemMeta(meta);
@@ -244,29 +250,34 @@ public class BlockData
 		return fakeTool;
 	}
 	
-	public Set<StackedEnchantment> getStackedEnchantments(ItemStack tool)
+	public Map<EnchantType, StackedEnchantment> getStackedEnchantments(ItemStack tool)
+	{
+		return getStaticStackedEnchantments(tool, Collections.emptySet());
+	}
+	
+	public Map<EnchantType, StackedEnchantment> getStackedEnchantments(ItemStack tool, Set<EnchantType> excludedEnchantTypes)
 	{
 		Rarity toolRarity = RarityUtil.getRarity(tool);
 		
 		if(toolRarity.compareTo(rarity) >= 0)
 		{
-			return getStaticStackedEnchantments(tool);
+			return getStaticStackedEnchantments(tool, excludedEnchantTypes);
 		}
 		
 		ItemMeta meta = tool.getItemMeta();
 		
 		if(meta == null)
 		{
-			return Collections.emptySet();
+			return Collections.emptyMap();
 		}
 		
-		Set<StackedEnchantment> stackedEnchantments = new LinkedHashSet<>();
+		Map<EnchantType, StackedEnchantment> stackedEnchantments = new LinkedHashMap<>();
 		
 		for(Map.Entry<Enchantment, Integer> enchantments : meta.getEnchants().entrySet())
 		{
 			Enchant enchant = Enchant.getByBukkitEnchantment(enchantments.getKey());
 			
-			if(enchant == null)
+			if(enchant == null || excludedEnchantTypes.contains(enchant.enchantType))
 			{
 				continue;
 			}
@@ -275,7 +286,7 @@ public class BlockData
 			byte level = (byte) Math.min(toolEnchantLevel, this.enchantments[enchant.ordinal()]);
 			boolean downgraded = level < toolEnchantLevel;
 			
-			stackedEnchantments.add(new StackedEnchantment(enchant.enchantment, level, downgraded));
+			stackedEnchantments.put(enchant.enchantType, new StackedEnchantment(enchant.enchantType, level, downgraded));
 		}
 		
 		return stackedEnchantments;
@@ -286,29 +297,34 @@ public class BlockData
 		Arrays.fill(enchantments, (byte) 0);
 	}
 	
-	public static Set<StackedEnchantment> getStaticStackedEnchantments(ItemStack tool)
+	public static Map<EnchantType, StackedEnchantment> getStaticStackedEnchantments(ItemStack tool)
+	{
+		return getStaticStackedEnchantments(tool, Collections.emptySet());
+	}
+	
+	public static Map<EnchantType, StackedEnchantment> getStaticStackedEnchantments(ItemStack tool, Set<EnchantType> excludedEnchantTypes)
 	{
 		ItemMeta meta = tool.getItemMeta();
 		
 		if(meta == null)
 		{
-			return Collections.emptySet();
+			return Collections.emptyMap();
 		}
 		
-		Set<StackedEnchantment> stackedEnchantments = new LinkedHashSet<>();
+		Map<EnchantType, StackedEnchantment> stackedEnchantments = new LinkedHashMap<>();
 		
 		for(Map.Entry<Enchantment, Integer> enchantments : meta.getEnchants().entrySet())
 		{
 			BlockData.Enchant enchant = BlockData.Enchant.getByBukkitEnchantment(enchantments.getKey());
 			
-			if(enchant == null)
+			if(enchant == null || excludedEnchantTypes.contains(enchant.enchantType))
 			{
 				continue;
 			}
 			
 			byte level = enchantments.getValue().byteValue();
 			
-			stackedEnchantments.add(new StackedEnchantment(enchant.enchantment, level, false));
+			stackedEnchantments.put(enchant.enchantType, new StackedEnchantment(enchant.enchantType, level, false));
 		}
 		
 		return stackedEnchantments;
@@ -370,5 +386,28 @@ public class BlockData
 	public StabilityFormula getStabilityFormula()
 	{
 		return stabilityFormula;
+	}
+	
+	private static byte[] adjustEnchantmentByteArray(byte @Nullable [] actual)
+	{
+		if(actual == null)
+		{
+			return createDefaultEnchantmentsByteArray();
+		}
+		
+		if(actual.length == Enchant.values().length)
+		{
+			return actual;
+		}
+		
+		byte[] fixed = new byte[Enchant.values().length];
+		System.arraycopy(actual, 0, fixed, 0, actual.length);
+		
+		for(int i = actual.length; i < fixed.length; i++)
+		{
+			fixed[i] = Byte.MAX_VALUE;
+		}
+		
+		return fixed;
 	}
 }

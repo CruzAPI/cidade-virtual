@@ -110,7 +110,7 @@ public class EnchantCommand implements TabExecutor
 					return false;
 				}
 				
-				if(!enchantType.getEnchantment().canEnchantItem(item) && item.getType() != Material.ENCHANTED_BOOK)
+				if(!enchantType.canEnchantItem(item) && item.getType() != Material.ENCHANTED_BOOK)
 				{
 					player.sendMessage(enchantType.name() + " can't enchant that item.");
 					return false;

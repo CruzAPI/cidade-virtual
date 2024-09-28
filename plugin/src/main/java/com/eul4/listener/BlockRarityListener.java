@@ -8,13 +8,12 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.service.BlockData;
 import com.eul4.util.RarityUtil;
+import com.eul4.wrapper.EnchantType;
+import com.eul4.wrapper.StabilityFormula;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import io.papermc.paper.event.player.PlayerFlowerPotManipulateEvent;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
@@ -30,6 +29,7 @@ import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @RequiredArgsConstructor
@@ -86,6 +86,8 @@ public class BlockRarityListener implements Listener
 		damage *= Tag.ITEMS_SWORDS.isTagged(tool.getType()) ? 2 : 1;
 		player.damageItemStack(EquipmentSlot.HAND, damage);
 		
+		plugin.getOreMinedAlertListener().broadcastAlertIfNeeded(event);
+		
 		if(blockData.isDead())
 		{
 			block.breakNaturally(blockData.getFakeTool(tool), false, true);
@@ -125,9 +127,39 @@ public class BlockRarityListener implements Listener
 		Rarity rarity = RarityUtil.getRarity(plugin, block);
 		plugin.execute(() -> plugin.getBlockDataFiler().removeBlockData(block));
 		
-		for(ItemStack drop : event.getItems())
+		BlockData blockData = plugin.getBlockDataFiler().loadBlockData(block);
+		
+		StabilityFormula stabilityFormula = blockData == null ? StabilityFormula.STABLE : blockData.getStabilityFormula();
+		int stabilityLevel = Optional.ofNullable(event.getTool())
+				.map(ItemStack::getItemMeta)
+				.map(meta -> meta.getEnchantLevel(EnchantType.STABILITY.getEnchantment()))
+				.orElse(0);
+		
+		float stabilityChance = stabilityFormula.calculateChance(stabilityLevel, rarity, Rarity.COMMON);
+		boolean keepRarity = rarity == Rarity.MIN_RARITY || Math.random() < stabilityChance;
+		
+		if(keepRarity)
 		{
-			RarityUtil.setRarity(drop, rarity);
+			for(ItemStack drop : event.getItems())
+			{
+				RarityUtil.setRarity(drop, rarity);
+			}
+		}
+		else
+		{
+			for(ItemStack drop : event.getItems())
+			{
+				drop.setAmount(drop.getAmount() * 10);
+				RarityUtil.setRarity(drop, rarity.lower());
+			}
+			
+			Particle.WHITE_SMOKE.builder()
+					.location(block.getLocation().toCenterLocation())
+					.count(30)
+					.allPlayers()
+					.offset(0.2D, 0.2D, 0.2D)
+					.extra(0.0D)
+					.spawn();
 		}
 		
 		event.setExpToDrop(event.getExpToDrop() * rarity.getScalarMultiplier(10));

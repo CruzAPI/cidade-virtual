@@ -20,7 +20,7 @@ public class ResourceBundleHandler
 						+ ", locale " + locale, "", ""));
 	}
 	
-	private static String getFileName(ResourceBundle bundle)
+	public static String getFileName(ResourceBundle bundle)
 	{
 		return getFileName(bundle.getBaseBundleName(), bundle.getLocale());
 	}

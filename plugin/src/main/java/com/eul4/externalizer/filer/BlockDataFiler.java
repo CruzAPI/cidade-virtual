@@ -27,7 +27,7 @@ import java.util.logging.Level;
 
 public class BlockDataFiler extends PluginFiler
 {
-	private static final byte VERSION = 1;
+	private static final byte VERSION = 2;
 	
 	private static final ObjectType[] OBJECT_TYPES_V0 = new ObjectType[]
 	{
@@ -44,6 +44,16 @@ public class BlockDataFiler extends PluginFiler
 		PluginObjectType.BLOCK_DATA,
 		PluginObjectType.POINT_4_BIT,
 		PluginObjectType.SHORT_COORDINATE_BLOCK_CHUNK,
+	},
+	
+	OBJECT_TYPES_V2 = new ObjectType[]
+	{
+		CommonObjectType.OBJECT,
+		PluginObjectType.BLOCK_DATA_MAP,
+		PluginObjectType.BLOCK_DATA,
+		PluginObjectType.POINT_4_BIT,
+		PluginObjectType.SHORT_COORDINATE_BLOCK_CHUNK,
+		PluginObjectType.STABILITY_FORMULA,
 	};
 	
 	private final Map<World, Map<Chunk, BlockDataMap>> worldChunks = new HashMap<>();
@@ -268,6 +278,7 @@ public class BlockDataFiler extends PluginFiler
 		{
 			case 0 -> OBJECT_TYPES_V0;
 			case 1 -> OBJECT_TYPES_V1;
+			case 2 -> OBJECT_TYPES_V2;
 			default -> throw new InvalidVersionException(MessageFormat.format(
 					"Invalid {0} version: {1}",
 					getClass().getSimpleName(),

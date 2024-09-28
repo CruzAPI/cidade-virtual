@@ -1,6 +1,8 @@
 package com.eul4.enchantment;
 
+import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.enums.PluginNamespacedKey;
+import com.eul4.i18n.PluginMessage;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
@@ -14,6 +16,7 @@ import io.papermc.paper.registry.keys.tags.EnchantmentTagKeys;
 import io.papermc.paper.registry.keys.tags.ItemTypeTagKeys;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +28,7 @@ public class TestBootstrap implements PluginBootstrap
 		context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.freeze().newHandler(event -> event.registry().register
 		(
 			TypedKey.create(RegistryKey.ENCHANTMENT, PluginNamespacedKey.ENCHANTMENT_STABILITY),
-			b -> b.description(Component.text("Stability"))
+			b -> b.description(Component.translatable(PluginMessage.ENCHANTMENT_STABILITY.getKey()).fallback("Estabilidade"))
 					.supportedItems(event.getOrCreateTag(ItemTypeTagKeys.SWORDS))
 					.anvilCost(1)
 					.maxLevel(10)

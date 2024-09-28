@@ -58,6 +58,8 @@ public enum PluginMessage implements Message
 	LEGENDARY("legendary"),
 	RARITY("rarity"),
 	
+	ENCHANTMENT_STABILITY("enchantment.stability"),
+	
 	TAG_OWNER("tag.owner", empty().color(DARK_RED)),
 	TAG_ADMIN("tag.admin", empty().color(RED)),
 	TAG_VIP("tag.vip", empty().color(GREEN)),

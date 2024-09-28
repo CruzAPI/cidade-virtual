@@ -4,7 +4,6 @@ import com.eul4.common.util.CommonMessageUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
-import org.bukkit.enchantments.Enchantment;
 
 import static com.eul4.common.util.ComponentUtil.ALERT_SYMBOL;
 import static com.eul4.common.util.ComponentUtil.INCORRECT_SYMBOL;
@@ -13,7 +12,7 @@ import static com.eul4.common.util.ComponentUtil.INCORRECT_SYMBOL;
 public class StackedEnchantment
 {
 	@Getter
-	private final Enchantment enchantment;
+	private final EnchantType enchantType;
 	@Getter
 	private final int level;
 	private final boolean downgraded;
@@ -41,7 +40,7 @@ public class StackedEnchantment
 			}
 		}
 		
-		return Component.translatable(enchantment.translationKey())
+		return enchantType.getEnchantment().description()
 				.append(Component.text(": "))
 				.append(levelComponent);
 	}

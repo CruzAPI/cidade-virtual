@@ -1,41 +1,33 @@
 package com.eul4.util;
 
-import com.eul4.enums.PluginNamespacedKey;
-import com.eul4.enums.Rarity;
-import com.google.common.base.Preconditions;
+import com.eul4.wrapper.EnchantType;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
-import net.kyori.adventure.key.Key;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 public class EnchantmentUtil
 {
-	public static final Enchantment STABILITY = getCustomEnchantment(PluginNamespacedKey.ENCHANTMENT_STABILITY);
-	
-	public static int getMaxLevel(Enchantment enchantment, Rarity rarity)
+	public static int getEnchantmentLevel(ItemStack item, EnchantType enchantType)
 	{
-		switch(rarity)
+		if(item == null)
 		{
-		case RARE:
-			if
-			(
-				enchantment.equals(Enchantment.PROTECTION)
-				|| enchantment.equals(Enchantment.BLAST_PROTECTION)
-				|| enchantment.equals(Enchantment.FIRE_PROTECTION)
-				|| enchantment.equals(Enchantment.PROJECTILE_PROTECTION)
-				|| enchantment.equals(Enchantment.FEATHER_FALLING)
-			)
-			{
-				return 7;
-			}
-		case LEGENDARY:
+			return 0;
 		}
 		
-		return enchantment.getMaxLevel();
+		ItemMeta meta = item.getItemMeta();
+		
+		if(meta == null)
+		{
+			return 0;
+		}
+		
+		return meta.getEnchantLevel(enchantType.getEnchantment());
 	}
 	
 	@NotNull

@@ -50,6 +50,10 @@ public class BlockDataReader extends ObjectReader<BlockData>
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion4;
 			break;
+		case 5:
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion5;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -150,6 +154,30 @@ public class BlockDataReader extends ObjectReader<BlockData>
 				.enchantments(enchantments)
 				.origin(origin)
 				.stabilityFormula(stabilityFormula)
+				.build();
+	}
+	
+	private BlockData readableVersion5() throws IOException, ClassNotFoundException
+	{
+		boolean hasHardness = in.readBoolean();
+		Rarity rarity = Optional.ofNullable(Rarity.getRarityById(in.readByte())).orElse(Rarity.COMMON);
+		float health = in.readFloat();
+		boolean willDrop = in.readBoolean();
+		byte[] enchantments = new byte[3];
+		in.readFully(enchantments);
+		BlockData.Origin origin = BlockData.Origin.getById(in.readByte());
+		StabilityFormula stabilityFormula = readers.getReader(StabilityFormularReader.class).readReference();
+		byte scrapeHealth = in.readByte();
+		
+		return BlockData.builder()
+				.hasHardness(hasHardness)
+				.rarity(rarity)
+				.health(health)
+				.willDrop(willDrop)
+				.enchantments(enchantments)
+				.origin(origin)
+				.stabilityFormula(stabilityFormula)
+				.scrapeHealth(scrapeHealth)
 				.build();
 	}
 	

@@ -9,6 +9,8 @@ import lombok.Getter;
 public class StabilityFormula
 {
 	public static final StabilityFormula STABLE = new StabilityFormula();
+	public static final StabilityFormula PLACED = new StabilityFormula(1.0F, 0.5F, 0.1F, 0.5F);
+	public static final StabilityFormula ORE_VEIN = PLACED;
 	
 	private final boolean stable;
 	private final float base;

@@ -2,19 +2,24 @@ package com.eul4.listener;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import com.eul4.Main;
+import com.eul4.common.util.ItemStackUtil;
+import com.eul4.common.util.MathUtil;
 import com.eul4.enums.Rarity;
 import com.eul4.event.block.BlockBreakNaturallyEvent;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.service.BlockData;
 import com.eul4.util.RarityUtil;
+import com.eul4.util.SoundUtil;
 import com.eul4.wrapper.EnchantType;
 import com.eul4.wrapper.StabilityFormula;
 import io.papermc.paper.event.block.BlockBreakBlockEvent;
 import io.papermc.paper.event.player.PlayerFlowerPotManipulateEvent;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -25,12 +30,10 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class BlockRarityListener implements Listener
@@ -39,13 +42,119 @@ public class BlockRarityListener implements Listener
 	
 	private final Random random = new Random();
 	
+	private static final Set<Material> CHECK_DOWNSIDE;
+	
+	static
+	{
+		Set<Material> checkDownside = new HashSet<>();
+		
+		checkDownside.addAll(Tag.SAPLINGS.getValues());
+		checkDownside.addAll(Tag.FLOWERS.getValues());
+		checkDownside.addAll(Tag.FLOWERS.getValues());
+		checkDownside.add(Material.SUGAR_CANE);
+		checkDownside.add(Material.CACTUS);
+		checkDownside.add(Material.NETHER_WART);
+		checkDownside.add(Material.SWEET_BERRIES);
+		checkDownside.add(Material.BAMBOO);
+		
+		checkDownside.add(Material.MELON_SEEDS);
+		checkDownside.add(Material.PUMPKIN_SEEDS);
+		checkDownside.add(Material.WHEAT_SEEDS);
+		checkDownside.add(Material.BEETROOT_SEEDS);
+		checkDownside.add(Material.POTATO);
+		checkDownside.add(Material.CARROT);
+		
+		CHECK_DOWNSIDE = Collections.unmodifiableSet(checkDownside);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void checkDownsideRarity(BlockPlaceEvent event)
+	{
+		ItemStack item = event.getItemInHand();
+		
+		if(!CHECK_DOWNSIDE.contains(item.getType()))
+		{
+			return;
+		}
+		
+		Block block = event.getBlock();
+		Block downsideBlock = block.getRelative(BlockFace.DOWN);
+		
+		Rarity itemRarity = RarityUtil.getRarity(item);
+		Rarity downsideBlockRarity = RarityUtil.getRarity(plugin, downsideBlock);
+		
+		Player player = event.getPlayer();
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		
+		if(itemRarity.compareTo(downsideBlockRarity) > 0)
+		{
+			pluginPlayer.sendMessage
+			(
+				itemRarity.getPlacementIncompatibilityMessage(),
+				Component.translatable(item.getType().translationKey()),
+				Component.translatable(downsideBlock.getType().translationKey())
+			);
+			SoundUtil.playPlong(player);
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerScrape(BlockPlaceEvent event)
+	{
+		Player player = event.getPlayer();
+		ItemStack tool = player.getEquipment().getItem(event.getHand());
+		
+		if(!ItemStackUtil.isTool(tool)
+				|| !(tool.getItemMeta() instanceof Damageable damageable))
+		{
+			return;
+		}
+		
+		Block block = event.getBlock();
+		BlockData blockData = plugin.getBlockDataFiler().loadBlockDataOrDefault(block);
+		int toolRemainingDurability = ItemStackUtil.getRemainingDurability(tool);
+		
+		if(blockData.isScraped())
+		{
+			blockData.resetScrapeHealth();
+		}
+		
+		while(!blockData.isScraped() && !tool.isEmpty())
+		{
+			byte damage = MathUtil.clampToByte(Math.max(0, Math.min(toolRemainingDurability, blockData.getScrapeHealth())));
+			
+			if(damage == 0)
+			{
+				break;
+			}
+			
+			player.damageItemStack(event.getHand(), damage);
+			blockData.scrape(damage);
+		}
+		
+		if(!blockData.isScraped())
+		{
+			event.setCancelled(true);
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
+		Player player = event.getPlayer();
+		ItemStack item = player.getEquipment().getItem(event.getHand());
+		
+		if(ItemStackUtil.isTool(item) && item.getItemMeta() instanceof Damageable)
+		{
+			return;
+		}
+		
 		Rarity rarity = RarityUtil.getRarity(event.getItemInHand());
 		plugin.getBlockDataFiler().setBlockData(event.getBlock(), BlockData.builder()
 				.rarity(rarity)
 				.origin(BlockData.Origin.PLACED)
+				.stabilityFormula(StabilityFormula.PLACED)
 				.build());
 	}
 	

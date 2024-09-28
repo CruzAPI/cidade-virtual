@@ -14,6 +14,20 @@ public class MathUtil
 		return r;
 	}
 	
+	public static byte clampToByte(int x)
+	{
+		if(x > Byte.MAX_VALUE)
+		{
+			return Byte.MAX_VALUE;
+		}
+		else if(x < Byte.MIN_VALUE)
+		{
+			return Byte.MIN_VALUE;
+		}
+		
+		return (byte) x;
+	}
+	
 	public static int addSaturated(int x, int y)
 	{
 		final int r = x + y;
@@ -24,5 +38,21 @@ public class MathUtil
 		}
 		
 		return r;
+	}
+	
+	public static byte addSaturated(byte x, byte y)
+	{
+		final int r = x + y;
+		
+		if(r > Byte.MAX_VALUE)
+		{
+			return Byte.MAX_VALUE;
+		}
+		else if(r < Byte.MIN_VALUE)
+		{
+			return Byte.MIN_VALUE;
+		}
+		
+		return (byte) r;
 	}
 }

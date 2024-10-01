@@ -86,8 +86,8 @@ public class StructureGrowRarityListener implements Listener
 		float base = blockCount == 0 ? 1.0F : 1.5F / blockCount;
 		float enchantBase = blockCount == 0
 				? 1.0F
-				: 4.2F / blockCount;
-		StabilityFormula stabilityFormula = new StabilityFormula(base, 0.5F, enchantBase, 1.0F / 4.0F);
+				: 1.05F / blockCount;
+		StabilityFormula stabilityFormula = new StabilityFormula(base, 0.5F, enchantBase, 0.5F);
 		
 		for(BlockState blockState : event.getBlocks())
 		{
@@ -95,7 +95,6 @@ public class StructureGrowRarityListener implements Listener
 					.rarity(structureRarity)
 					.origin(BlockData.Origin.POST_GENERATED)
 					.stabilityFormula(stabilityFormula)
-					
 					.build());
 		}
 	}
@@ -131,7 +130,7 @@ public class StructureGrowRarityListener implements Listener
 		float base = leaveCount == 0 ? 1.0F : (jungleTree ? 10.0F : 5.0F) / leaveCount;
 		float enchantBase = leaveCount == 0
 				? 1.0F
-				: (jungleTree ? 9.0F / 4.0F : 9.0F / 2.0F) / leaveCount;
+				: (jungleTree ? 7.0F : 3.5F) / leaveCount;
 		StabilityFormula leaveStabilityFormula = new StabilityFormula(base, 0.5F, enchantBase, 0.5F);
 		
 		for(BlockState blockState : event.getBlocks())

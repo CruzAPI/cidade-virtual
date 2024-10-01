@@ -413,6 +413,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new SmithingRarityListener(this), this);
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
+		pluginManager.registerEvents(new StructureGrowRarityListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);
 	}

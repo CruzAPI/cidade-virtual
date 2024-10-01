@@ -65,6 +65,7 @@ public class BlockData
 		UNKNOWN((byte) 0),
 		CHUNK_GENERATED((byte) 1),
 		PLACED((byte) 2),
+		POST_GENERATED((byte) 3),
 		;
 		
 		public static final Origin DEFAULT_ORIGIN = CHUNK_GENERATED;

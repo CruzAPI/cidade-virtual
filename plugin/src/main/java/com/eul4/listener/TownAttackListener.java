@@ -49,7 +49,7 @@ public class TownAttackListener implements Listener
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void on(BlockDestroyEvent event)
+	public void on(BlockDestroyEvent event) //TODO probably have bug in this event, change it to BlockBreakNaturallyEvent
 	{
 		if(!event.willDrop())
 		{

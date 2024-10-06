@@ -164,19 +164,19 @@ public class RarityBossBarTask extends BukkitRunnable
 					? block.getBlockData().isPreferredTool(tool)
 					: blockData.willDrop(tool, block);
 			
-			float stabilityChange = blockData == null
+			float stabilityChance = blockData == null
 					? 1.0F
 					: blockData.getStabilityFormula().calculateChance(stabilityLevel, rarity, Rarity.COMMON);
 			
 			boolean isStableWithoutEnchantments = blockData == null
 					|| blockData.getStabilityFormula().calculateChance(0, rarity, Rarity.COMMON) == 1.0F;
 			
-			Component name = text("Drop: ")
+			Component name = text(rarity + " Drop: ") //TODO remove rarity
 					.append(willDrop ? CORRECT_SYMBOL : INCORRECT_SYMBOL);
 			
-			if((!isStableWithoutEnchantments || stabilityChange < 1.0F) && willDrop)
+			if((!isStableWithoutEnchantments || stabilityChance < 1.0F) && willDrop)
 			{
-				float percentage = stabilityChange * 100.0F;
+				float percentage = stabilityChance * 100.0F;
 				
 				name = name.appendSpace()
 						.append(stabilityStackedEnchantment.getComponent())

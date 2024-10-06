@@ -2,7 +2,7 @@ package com.eul4.listener;
 
 import com.eul4.Main;
 import com.eul4.enums.Rarity;
-import com.eul4.event.block.StructureFertilizeEvent;
+import com.eul4.event.block.BoneMealChanceEvent;
 import com.eul4.service.BlockData;
 import com.eul4.util.RarityUtil;
 import com.eul4.wrapper.StabilityFormula;
@@ -28,7 +28,7 @@ public class StructureGrowRarityListener implements Listener
 	private final Random random = new Random();
 	
 	@EventHandler
-	public void onStructureFertilize(StructureFertilizeEvent event)
+	public void onStructureFertilize(BoneMealChanceEvent event)
 	{
 		Block block = event.getBlock();
 		ItemStack boneMeal = event.getBoneMeal();

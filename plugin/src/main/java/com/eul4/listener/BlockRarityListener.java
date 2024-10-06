@@ -21,6 +21,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.type.Cocoa;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,6 +36,8 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
+import static org.bukkit.block.BlockFace.*;
+
 @RequiredArgsConstructor
 public class BlockRarityListener implements Listener
 {
@@ -43,13 +46,14 @@ public class BlockRarityListener implements Listener
 	private final Random random = new Random();
 	
 	private static final Set<Material> CHECK_DOWNSIDE;
+	private static final Set<Material> CHECK_UPSIDE;
 	
 	static
 	{
 		Set<Material> checkDownside = new HashSet<>();
+		Set<Material> checkUpside = new HashSet<>();
 		
 		checkDownside.addAll(Tag.SAPLINGS.getValues());
-		checkDownside.addAll(Tag.FLOWERS.getValues());
 		checkDownside.addAll(Tag.FLOWERS.getValues());
 		checkDownside.add(Material.SUGAR_CANE);
 		checkDownside.add(Material.CACTUS);
@@ -63,8 +67,206 @@ public class BlockRarityListener implements Listener
 		checkDownside.add(Material.BEETROOT_SEEDS);
 		checkDownside.add(Material.POTATO);
 		checkDownside.add(Material.CARROT);
+		checkDownside.remove(Material.CHORUS_FLOWER);
+		
+		checkUpside.add(Material.GLOW_BERRIES);
+		checkUpside.add(Material.CAVE_VINES);
+		checkUpside.add(Material.CAVE_VINES_PLANT);
 		
 		CHECK_DOWNSIDE = Collections.unmodifiableSet(checkDownside);
+		CHECK_UPSIDE = Collections.unmodifiableSet(checkUpside);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void cocoaPlacement(BlockPlaceEvent event)
+	{
+		Block block = event.getBlock();
+		ItemStack item = event.getItemInHand();
+		
+		if(!(block.getBlockData() instanceof Cocoa cocoa))
+		{
+			return;
+		}
+		
+		Block relative = block.getRelative(cocoa.getFacing());
+		
+		Rarity itemRarity = RarityUtil.getRarity(item);
+		Rarity relativeRarity = RarityUtil.getRarity(plugin, relative);
+		
+		Player player = event.getPlayer();
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		
+		if(relativeRarity.compareTo(itemRarity) < 0)
+		{
+			event.setCancelled(true);
+			pluginPlayer.sendMessage
+			(
+				itemRarity.getPlacementIncompatibilityMessage(),
+				Component.translatable(item.getType().translationKey()),
+				Component.translatable(relative.getType().translationKey())
+			);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void chorusFlowerPlacement(BlockPlaceEvent event)
+	{
+		Block block = event.getBlock();
+		ItemStack item = event.getItemInHand();
+		
+		if(block.getType() != Material.CHORUS_FLOWER)
+		{
+			return;
+		}
+		
+		boolean hasAdjacentChorusPlant = false;
+		Rarity adjacentChorusPlantMaxRarity = Rarity.MIN_RARITY;
+		
+		for(BlockFace face : new BlockFace[] { UP, EAST, WEST, NORTH, SOUTH, DOWN })
+		{
+			Block relative = block.getRelative(face);
+			
+			if(relative.getType() == Material.CHORUS_PLANT)
+			{
+				hasAdjacentChorusPlant = true;
+				Rarity adjacentChorusPlantRarity = RarityUtil.getRarity(plugin, relative);
+				
+				if(adjacentChorusPlantRarity.compareTo(adjacentChorusPlantMaxRarity) > 0)
+				{
+					adjacentChorusPlantMaxRarity = adjacentChorusPlantRarity;
+				}
+			}
+		}
+		
+		Block relativeDown = block.getRelative(DOWN);
+		Rarity relativeDownRarity = RarityUtil.getRarity(plugin, relativeDown);
+		Rarity itemRarity = RarityUtil.getRarity(item);
+		
+		Player player = event.getPlayer();
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		
+		if((!hasAdjacentChorusPlant || hasAdjacentChorusPlant && adjacentChorusPlantMaxRarity.compareTo(itemRarity) < 0)
+				&& (relativeDown.getType() != Material.END_STONE || relativeDown.getType() == Material.END_STONE && relativeDownRarity.compareTo(itemRarity) < 0))
+		{
+			event.setCancelled(true);
+			pluginPlayer.sendMessage
+			(
+				itemRarity.getPlacementIncompatibilityMessage(),
+				Component.translatable(item.getType().translationKey()),
+				Component.translatable(hasAdjacentChorusPlant ? Material.CHORUS_PLANT.translationKey() : relativeDown.getType().translationKey())
+			);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void downsidePhysics(BlockPhysicsEvent event)
+	{
+		Block block = event.getBlock();
+		
+		if(!CHECK_DOWNSIDE.contains(block.getType()))
+		{
+			return;
+		}
+		
+		plugin.execute(() ->
+		{
+			Block relativeDown = block.getRelative(DOWN);
+			
+			Rarity blockRarity = RarityUtil.getRarity(plugin, block);
+			Rarity relativeDownRarity = RarityUtil.getRarity(plugin, relativeDown);
+			
+			if(relativeDownRarity.compareTo(blockRarity) < 0)
+			{
+				block.breakNaturally();
+			}
+		});
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void upsidePhysics(BlockPhysicsEvent event)
+	{
+		Block block = event.getBlock();
+		
+		if(!CHECK_UPSIDE.contains(block.getType()))
+		{
+			return;
+		}
+		
+		plugin.execute(() ->
+		{
+			Block relativeUp = block.getRelative(UP);
+			
+			Rarity blockRarity = RarityUtil.getRarity(plugin, block);
+			Rarity relativeUpRarity = RarityUtil.getRarity(plugin, relativeUp);
+			
+			if(relativeUpRarity.compareTo(blockRarity) < 0)
+			{
+				block.breakNaturally();
+			}
+		});
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void cocoaPhysics(BlockPhysicsEvent event)
+	{
+		Block block = event.getBlock();
+		
+		if(!(block.getBlockData() instanceof Cocoa cocoa))
+		{
+			return;
+		}
+		
+		plugin.execute(() ->
+		{
+			Block adjacentJungleLog = block.getRelative(cocoa.getFacing());
+			
+			Rarity blockRarity = RarityUtil.getRarity(plugin, block);
+			Rarity adjacentRarity = RarityUtil.getRarity(plugin, adjacentJungleLog);
+			
+			if(adjacentRarity.compareTo(blockRarity) < 0)
+			{
+				block.breakNaturally();
+			}
+		});
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void chorusFlowerPhysics(BlockPhysicsEvent event)
+	{
+		Block block = event.getBlock();
+		
+		if(block.getType() != Material.CHORUS_FLOWER)
+		{
+			return;
+		}
+		
+		plugin.execute(() ->
+		{
+			Rarity blockRarity = RarityUtil.getRarity(plugin, block);
+			
+			for(BlockFace face : new BlockFace[] { UP, EAST, WEST, NORTH, SOUTH, DOWN })
+			{
+				Block relative = block.getRelative(face);
+				
+				if(relative.getType() == Material.CHORUS_PLANT)
+				{
+					Rarity adjacentChorusPlantRarity = RarityUtil.getRarity(plugin, relative);
+					
+					if(adjacentChorusPlantRarity.compareTo(blockRarity) >= 0)
+					{
+						return;
+					}
+				}
+			}
+			
+			Block relativeDown = block.getRelative(DOWN);
+			Rarity relativeDownRarity = RarityUtil.getRarity(plugin, relativeDown);
+			
+			if(relativeDown.getType() != Material.END_STONE || relativeDownRarity.compareTo(blockRarity) < 0)
+			{
+				block.breakNaturally();
+			}
+		});
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -93,6 +295,38 @@ public class BlockRarityListener implements Listener
 				itemRarity.getPlacementIncompatibilityMessage(),
 				Component.translatable(item.getType().translationKey()),
 				Component.translatable(downsideBlock.getType().translationKey())
+			);
+			SoundUtil.playPlong(player);
+			event.setCancelled(true);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void checkUpsideRarity(BlockPlaceEvent event)
+	{
+		ItemStack item = event.getItemInHand();
+		
+		if(!CHECK_UPSIDE.contains(item.getType()))
+		{
+			return;
+		}
+		
+		Block block = event.getBlock();
+		Block upsideBlock = block.getRelative(BlockFace.UP);
+		
+		Rarity itemRarity = RarityUtil.getRarity(item);
+		Rarity upsideBlockRarity = RarityUtil.getRarity(plugin, upsideBlock);
+		
+		Player player = event.getPlayer();
+		PluginPlayer pluginPlayer = (PluginPlayer) plugin.getPlayerManager().get(player);
+		
+		if(itemRarity.compareTo(upsideBlockRarity) > 0)
+		{
+			pluginPlayer.sendMessage
+			(
+				itemRarity.getPlacementIncompatibilityMessage(),
+				Component.translatable(item.getType().translationKey()),
+				Component.translatable(upsideBlock.getType().translationKey())
 			);
 			SoundUtil.playPlong(player);
 			event.setCancelled(true);
@@ -150,11 +384,14 @@ public class BlockRarityListener implements Listener
 			return;
 		}
 		
+		Block block = event.getBlock();
 		Rarity rarity = RarityUtil.getRarity(event.getItemInHand());
-		plugin.getBlockDataFiler().setBlockData(event.getBlock(), BlockData.builder()
+		StabilityFormula stabilityFormula = StabilityFormula.PLACEMENT_STABILITY_FORMULA_BY_MATERIAL.getOrDefault(block.getType(), StabilityFormula.PLACED);
+		
+		plugin.getBlockDataFiler().setBlockData(block, BlockData.builder()
 				.rarity(rarity)
 				.origin(BlockData.Origin.PLACED)
-				.stabilityFormula(StabilityFormula.PLACED)
+				.stabilityFormula(stabilityFormula)
 				.build());
 	}
 	
@@ -199,7 +436,7 @@ public class BlockRarityListener implements Listener
 		
 		if(blockData.isDead())
 		{
-			block.breakNaturally(blockData.getFakeTool(tool), false, true);
+			block.breakNaturally(blockData.getFakeTool(tool), player, false, true);
 		}
 	}
 	
@@ -216,17 +453,11 @@ public class BlockRarityListener implements Listener
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockDestroy(BlockDestroyEvent event)
 	{
-		Block block = event.getBlock();
-		Rarity rarity = RarityUtil.getRarity(plugin, block);
-		plugin.execute(() -> plugin.getBlockDataFiler().removeBlockData(block));
-		
-		for(Item drop : event.getItems())
-		{
-			drop.setItemStack(RarityUtil.setRarity(drop.getItemStack(), rarity));
-		}
+		event.setCancelled(true);
+		event.getBlock().breakNaturally();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

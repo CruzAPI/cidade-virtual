@@ -93,8 +93,8 @@ public class BlockData
 	private boolean willDrop;
 	
 	public final byte[] enchantments;
-	private final Origin origin;
-	private final StabilityFormula stabilityFormula;
+	private Origin origin;
+	private StabilityFormula stabilityFormula;
 	
 	private byte scrapeHealth;
 	
@@ -346,6 +346,11 @@ public class BlockData
 	public void setRarity(@NotNull Rarity rarity)
 	{
 		this.rarity = Objects.requireNonNull(rarity);
+	}
+	
+	public void setRarityAndResetHealth(@NotNull Rarity rarity)
+	{
+		setRarity(rarity);
 		resetHealth();
 	}
 	
@@ -437,5 +442,15 @@ public class BlockData
 	public void resetScrapeHealth()
 	{
 		this.scrapeHealth = MathUtil.clampToByte(this.rarity.getScalarMultiplier(10));
+	}
+	
+	public void setOrigin(Origin origin)
+	{
+		this.origin = origin;
+	}
+	
+	public void setStabilityFormula(StabilityFormula stabilityFormula)
+	{
+		this.stabilityFormula = stabilityFormula;
 	}
 }

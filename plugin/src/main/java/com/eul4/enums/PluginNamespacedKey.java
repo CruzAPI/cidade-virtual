@@ -23,5 +23,6 @@ public class PluginNamespacedKey
 	RARITY = new NamespacedKey(NAMESPACE, "rarity"),
 	MYSTHIC = new NamespacedKey(NAMESPACE, "mysthic"),
 	CONTAINTMENT_CHANCE = new NamespacedKey(NAMESPACE, "containtment_chance"),
+	ENTITY_SHEAR_HEALTH = new NamespacedKey(NAMESPACE, "entity_shear_health"),
 	ENCHANTMENT_STABILITY = new NamespacedKey(NAMESPACE, "stability");
 }

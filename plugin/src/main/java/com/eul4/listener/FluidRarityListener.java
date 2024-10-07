@@ -42,7 +42,7 @@ public class FluidRarityListener implements Listener
 		if(newData instanceof Levelled levelled && levelled.getLevel() == levelled.getMinimumLevel())
 		{
 			com.eul4.service.BlockData blockData = plugin.getBlockDataFiler().loadBlockDataOrDefault(block);
-			blockData.setRarity(Rarity.COMMON);
+			blockData.setRarityAndResetHealth(Rarity.COMMON);
 		}
 	}
 	
@@ -60,6 +60,6 @@ public class FluidRarityListener implements Listener
 		}
 		
 		com.eul4.service.BlockData blockData = blockDataFiler.loadBlockDataOrDefault(toBlock);
-		blockData.setRarity(blockRarity);
+		blockData.setRarityAndResetHealth(blockRarity);
 	}
 }

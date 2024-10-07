@@ -82,6 +82,49 @@ public class ItemStackUtil
 		item.setItemMeta(meta);
 	}
 	
+	public static int getRemainingDurability(ItemStack item)
+	{
+		return getMaxDamage(item) - getDamage(item);
+	}
+	
+	public static ItemStack damage(ItemStack item, int damage)
+	{
+		if(item == null)
+		{
+			return null;
+		}
+		
+		if(!(item.getItemMeta() instanceof Damageable damageable))
+		{
+			return item;
+		}
+		
+		setDamage(item, getDamage(item) + damage);
+		
+		if(getDamage(item) >= getMaxDamage(item))
+		{
+			item.setAmount(0);
+			return ItemStack.empty();
+		}
+		
+		return item;
+	}
+	
+	public static int getDamage(ItemStack item)
+	{
+		if(item == null)
+		{
+			return 0;
+		}
+		
+		if(!(item.getItemMeta() instanceof Damageable damageable))
+		{
+			return 0;
+		}
+		
+		return damageable.getDamage();
+	}
+	
 	public static int getMaxDamage(ItemStack item)
 	{
 		if(item == null)

@@ -1,6 +1,7 @@
 package com.eul4.service;
 
 import com.eul4.common.util.ItemStackUtil;
+import com.eul4.common.util.MathUtil;
 import com.eul4.enums.Rarity;
 import com.eul4.util.RarityUtil;
 import com.eul4.wrapper.EnchantType;
@@ -64,6 +65,7 @@ public class BlockData
 		UNKNOWN((byte) 0),
 		CHUNK_GENERATED((byte) 1),
 		PLACED((byte) 2),
+		POST_GENERATED((byte) 3),
 		;
 		
 		public static final Origin DEFAULT_ORIGIN = CHUNK_GENERATED;
@@ -91,12 +93,14 @@ public class BlockData
 	private boolean willDrop;
 	
 	public final byte[] enchantments;
-	private final Origin origin;
-	private final StabilityFormula stabilityFormula;
+	private Origin origin;
+	private StabilityFormula stabilityFormula;
+	
+	private byte scrapeHealth;
 	
 	public BlockData()
 	{
-		this(false, null, null, null, null, null, null);
+		this(false, null, null, null, null, null, null, null);
 	}
 	
 	@Builder
@@ -108,7 +112,8 @@ public class BlockData
 		@Nullable Boolean willDrop,
 		byte @Nullable [] enchantments,
 		@Nullable Origin origin,
-		@Nullable StabilityFormula stabilityFormula
+		@Nullable StabilityFormula stabilityFormula,
+		@Nullable Byte scrapeHealth
 	)
 	{
 		this.hasHardness = hasHardness;
@@ -118,6 +123,9 @@ public class BlockData
 		this.enchantments = adjustEnchantmentByteArray(enchantments);
 		this.origin = origin == null ? Origin.DEFAULT_ORIGIN : origin;
 		this.stabilityFormula = stabilityFormula == null ? StabilityFormula.STABLE : stabilityFormula;
+		this.scrapeHealth = scrapeHealth == null
+				? MathUtil.clampToByte(this.rarity.getScalarMultiplier(10))
+				: scrapeHealth;
 	}
 	
 	public boolean willDrop(ItemStack tool, Block block)
@@ -338,6 +346,11 @@ public class BlockData
 	public void setRarity(@NotNull Rarity rarity)
 	{
 		this.rarity = Objects.requireNonNull(rarity);
+	}
+	
+	public void setRarityAndResetHealth(@NotNull Rarity rarity)
+	{
+		setRarity(rarity);
 		resetHealth();
 	}
 	
@@ -409,5 +422,35 @@ public class BlockData
 		}
 		
 		return fixed;
+	}
+	
+	public byte getScrapeHealth()
+	{
+		return scrapeHealth;
+	}
+	
+	public void scrape(byte points)
+	{
+		this.scrapeHealth = MathUtil.addSaturated(this.scrapeHealth, (byte) -points);
+	}
+	
+	public boolean isScraped()
+	{
+		return scrapeHealth <= 0;
+	}
+	
+	public void resetScrapeHealth()
+	{
+		this.scrapeHealth = MathUtil.clampToByte(this.rarity.getScalarMultiplier(10));
+	}
+	
+	public void setOrigin(Origin origin)
+	{
+		this.origin = origin;
+	}
+	
+	public void setStabilityFormula(StabilityFormula stabilityFormula)
+	{
+		this.stabilityFormula = stabilityFormula;
 	}
 }

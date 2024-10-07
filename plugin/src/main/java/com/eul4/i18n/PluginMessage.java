@@ -108,6 +108,25 @@ public enum PluginMessage implements Message
 		((TranslatableComponent) args[0])
 	}),
 	
+	COMMON_PLACEMENT_INCOMPATIBILITY_$ITEM_$AGAINST("common.placement-incompatibility", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		((TranslatableComponent) args[0]),
+		((TranslatableComponent) args[1])
+	}),
+	RARE_PLACEMENT_INCOMPATIBILITY_$ITEM_$AGAINST("rare.placement-incompatibility", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		((TranslatableComponent) args[0]),
+		((TranslatableComponent) args[1])
+	}),
+	LEGENDARY_PLACEMENT_INCOMPATIBILITY_$ITEM_$AGAINST("legendary.placement-incompatibility", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		((TranslatableComponent) args[0]),
+		((TranslatableComponent) args[1])
+	}),
+	
 	FIREWORK_INCOMPATIBLE_RARITY("firework-incompatible-rarity", empty().color(RED)),
 	ARROW_RARITY_HIGHER_THAN_BOW("arrow-rarity-higher-than-bow", empty().color(RED)),
 	CONTAINTMENT_PICKAXE_DISPLAY_NAME("containtment-pickaxe.display-name", empty().color(YELLOW).decorate(BOLD)),

@@ -23,5 +23,6 @@ public class BlockDataWriter extends ObjectWriter<BlockData>
 		out.write(blockData.enchantments);
 		out.writeByte(blockData.getOrigin().getId());
 		writers.getWriter(StabilityFormulaWriter.class).writeReferenceNotNull(blockData.getStabilityFormula());
+		out.writeByte(blockData.getScrapeHealth());
 	}
 }

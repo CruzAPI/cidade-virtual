@@ -23,6 +23,7 @@ public enum Rarity
 		PluginMessage.COMMON,
 		PluginMessage.RARITY_COMMON,
 		PluginMessage.COMMON_INCOMPATIBILITY_$TRANSLATABLE,
+		PluginMessage.COMMON_PLACEMENT_INCOMPATIBILITY_$ITEM_$AGAINST,
 		style(GREEN, BOLD),
 		BossBar.Color.GREEN
 	),
@@ -33,6 +34,7 @@ public enum Rarity
 		PluginMessage.RARE,
 		PluginMessage.RARITY_RARE,
 		PluginMessage.RARE_INCOMPATIBILITY_$TRANSLATABLE,
+		PluginMessage.RARE_PLACEMENT_INCOMPATIBILITY_$ITEM_$AGAINST,
 		style(DARK_PURPLE, BOLD),
 		BossBar.Color.PURPLE
 	),
@@ -43,6 +45,7 @@ public enum Rarity
 		PluginMessage.LEGENDARY,
 		PluginMessage.RARITY_LEGENDARY,
 		PluginMessage.LEGENDARY_INCOMPATIBILITY_$TRANSLATABLE,
+		PluginMessage.LEGENDARY_PLACEMENT_INCOMPATIBILITY_$ITEM_$AGAINST,
 		style(GOLD, BOLD),
 		BossBar.Color.RED
 	),
@@ -75,6 +78,7 @@ public enum Rarity
 	private final Message rawMessage;
 	private final Message stylizedMessage;
 	private final Message containerIncompatibilityMessage;
+	private final Message placementIncompatibilityMessage;
 	private final Style style;
 	private final BossBar.Color bossBarColor;
 	

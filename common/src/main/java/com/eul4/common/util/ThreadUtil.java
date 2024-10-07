@@ -1,12 +1,21 @@
 package com.eul4.common.util;
 
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.util.concurrent.Callable;
 
 public class ThreadUtil
 {
+	public static void logStackTrace(Plugin plugin)
+	{
+		for(StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace())
+		{
+			plugin.getLogger().info(stackTraceElement.toString());
+		}
+	}
+	
 	private static Callable<Void> callable(Runnable runnable)
 	{
 		return () ->

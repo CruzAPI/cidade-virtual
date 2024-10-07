@@ -370,6 +370,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new AssistantInteractListener(this), this);
 		pluginManager.registerEvents(new AssistantTargetTaskListener(this), this);
 		pluginManager.registerEvents(new BlockDataSaveListener(this), this);
+		pluginManager.registerEvents(new BlockGrowRarityListener(this), this);
 		pluginManager.registerEvents(new BlockRarityListener(this), this);
 		pluginManager.registerEvents(new BowRarityListener(this), this);
 		pluginManager.registerEvents(new BucketRarityListener(this), this);
@@ -409,10 +410,12 @@ public class Main extends Common
 		pluginManager.registerEvents(new MacroidListener(this), this);
 		pluginManager.registerEvents(oreMinedAlertListener = new OreMinedAlertListener(this), this);
 		pluginManager.registerEvents(new PlayerAttackSpeedListener(this), this);
+		pluginManager.registerEvents(new PlayerConsumeItemRarityListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new SmithingRarityListener(this), this);
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
+		pluginManager.registerEvents(new StructureGrowRarityListener(this), this);
 		pluginManager.registerEvents(new TownHardnessListener(this), this);
 		pluginManager.registerEvents(new TownAntiGrieffingListener(this), this);
 	}

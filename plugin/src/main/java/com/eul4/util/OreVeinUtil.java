@@ -46,7 +46,7 @@ public class OreVeinUtil
 			{
 				blockData = BlockData.builder()
 						.rarity(veinRarity)
-						.stabilityFormula(new StabilityFormula(1.0F, 0.5F, 0.1F, 0.5F))
+						.stabilityFormula(StabilityFormula.ORE_VEIN)
 						.build();
 				plugin.getBlockDataFiler().setBlockData(blockVein, blockData, BlockDataLoadEvent.Cause.ORE_VEIN);
 			}

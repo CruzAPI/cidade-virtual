@@ -42,7 +42,7 @@ public class BucketRarityListener implements Listener
 		RarityUtil.setRarity(resultItem, rarity);
 		
 		BlockData blockData = blockDataFiler.loadBlockDataOrDefault(block);
-		blockData.setRarity(rarity);
+		blockData.setRarityAndResetHealth(rarity);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

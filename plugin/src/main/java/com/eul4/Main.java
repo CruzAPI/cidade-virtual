@@ -410,6 +410,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new MacroidListener(this), this);
 		pluginManager.registerEvents(oreMinedAlertListener = new OreMinedAlertListener(this), this);
 		pluginManager.registerEvents(new PlayerAttackSpeedListener(this), this);
+		pluginManager.registerEvents(new PlayerConsumeItemRarityListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
 		pluginManager.registerEvents(new SmithingRarityListener(this), this);

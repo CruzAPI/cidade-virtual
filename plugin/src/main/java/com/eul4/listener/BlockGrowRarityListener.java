@@ -138,7 +138,16 @@ public class BlockGrowRarityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void delegateBlockSpreadEvent(BlockSpreadEvent event)
 	{
-		onBlockGrow(event);
+		Material type = event.getNewState().getType();
+		
+		if(type == Material.GRASS_BLOCK || type == Material.MYCELIUM)
+		{
+			onBlockForm(event);
+		}
+		else
+		{
+			onBlockGrow(event);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

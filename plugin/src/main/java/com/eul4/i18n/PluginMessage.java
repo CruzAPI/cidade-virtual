@@ -36,9 +36,9 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static com.eul4.common.i18n.CommonMessage.PLAYER;
 import static com.eul4.common.i18n.CommonMessage.USAGE;
-import static com.eul4.common.util.CommonMessageUtil.argToComponent;
-import static com.eul4.common.util.CommonMessageUtil.usageRequiredArg;
+import static com.eul4.common.util.CommonMessageUtil.*;
 import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -1262,7 +1262,35 @@ public enum PluginMessage implements Message
 		.appendNewline()
 		.append(COMMAND_SET_RARITY_USAGE_$ALIASES.translate(locale, args[0]))
 	)),
+	
+	COMMAND_TRACK_USAGE_$ALIASES((locale, args) -> singletonList
+	(
+		text("/")
+		.append(argToComponent(args[0]))
+		.appendSpace()
+		.append(usageOptionalArg(PLAYER.translate(locale)))
+	)),
+	
+	COMMAND_TRACK_USE_$ALIASES((locale, args) -> singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+		.appendNewline()
+		.append(COMMAND_TRACK_USAGE_$ALIASES.translate(locale, args[0]))
+	)),
+	
+	COMMAND_TRACK_YOURSELF("command.track.yourself", empty().color(RED)),
+	
+	COMMAND_TRACK_TARGET_NOT_IN_RAID("command.track.target-not-in-raid", empty().color(RED)),
+	
+	COMMAND_AVAILABLE_ONLY_IN_RAID("command-available-only-in-raid", empty().color(RED)),
+	
+	COMMAND_TRACK_INVALID("command.track.invalid", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		text("https://www.mcbrawl.com/wiki/tracking-raid/").color(GRAY)
+	}),
 	;
+	
 	private final String key;
 	private final BundleBaseName bundleBaseName;
 	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;

@@ -260,6 +260,7 @@ public class Main extends Common
 		registerCommand(new TestCommand(this), TestCommand.NAME_AND_ALIASES);
 		registerCommand(toggleCombatCommand = new ToggleCombatCommand(this), ToggleCombatCommand.NAME_AND_ALIASES);
 		registerCommand(new TownCommand(this), TownCommand.NAME_AND_ALIASES);
+		registerCommand(new TrackCommand(this), TrackCommand.NAME_AND_ALIASES);
 		registerCommand(new TutorialCommand(this), TutorialCommand.NAME_AND_ALIASES);
 		registerCommand(new WorldCommand(this), WorldCommand.NAME_AND_ALIASES);
 	}

@@ -10,6 +10,7 @@ public enum PluginBundleBaseName implements BundleBaseName
 	TOWN_SCOREBOARD("town_scoreboard"),
 	TOWN_TUTORIAL("town_tutorial"),
 	PLUGIN_RICH_MESSAGE("plugin_rich_message"),
+	BROADCAST_RICH_MESSAGE("broadcast_rich_message"),
 	;
 	
 	private final String bundleBaseName;

@@ -19,6 +19,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	BOUGHT_TILE_MAP_BY_DEPTH(BoughtTileMapByDepthReader::new, BoughtTileMapByDepthReader.class, BoughtTileMapByDepthWriter::new, BoughtTileMapByDepthWriter.class),
 	BLOCK_DATA_MAP(BlockDataMapReader::new, BlockDataMapReader.class, BlockDataMapWriter::new, BlockDataMapWriter.class),
 	BLOCK_DATA(BlockDataReader::new, BlockDataReader.class, BlockDataWriter::new, BlockDataWriter.class),
+	BROADCAST_HASH_SET(BroadcastHashSetReader::new, BroadcastHashSetReader.class, BroadcastHashSetWriter::new, BroadcastHashSetWriter.class),
 	CANNON(CannonReader::new, CannonReader.class, CannonWriter::new, CannonWriter.class),
 	CHECKPOINT_STEP_ENUM(CheckpointStepEnumReader::new, CheckpointStepEnumReader.class, CheckpointStepEnumWriter::new, CheckpointStepEnumWriter.class),
 	DEFENDER(DefenderReader::new, DefenderReader.class, DefenderWriter::new, DefenderWriter.class),

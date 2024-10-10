@@ -37,6 +37,7 @@ import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
 import com.eul4.rule.serializer.*;
 import com.eul4.service.*;
+import com.eul4.task.AutoBroadcastTask;
 import com.eul4.task.RarityBossBarTask;
 import com.eul4.task.SpawnProtectionTask;
 import com.eul4.type.PluginWorldType;
@@ -228,6 +229,7 @@ public class Main extends Common
 		
 		spawnProtectionTask.runTaskTimer(this, 20L, 20L);
 		new RarityBossBarTask(this).runTaskTimer(this, 0L, 1L);
+		new AutoBroadcastTask(this).runTaskTimer(this, 10L * 20L, 10L * 20L);
 	}
 	
 	private void registerCommands()
@@ -249,6 +251,7 @@ public class Main extends Common
 		registerCommand(new EnchantCommand(this), EnchantCommand.NAME_AND_ALIASES);
 		registerCommand(new HomeCommand(this), HomeCommand.NAME_AND_ALIASES);
 		registerCommand(new MacroidCommand(this), MacroidCommand.NAME_AND_ALIASES);
+		registerCommand(new MuteBroadcastCommand(this), MuteBroadcastCommand.NAME_AND_ALIASES);
 		registerCommand(new NewbieCommand(this), NewbieCommand.NAME_AND_ALIASES);
 		registerCommand(new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
 		registerCommand(attackCommand = new AttackCommand(this), AttackCommand.NAME_AND_ALIASES);

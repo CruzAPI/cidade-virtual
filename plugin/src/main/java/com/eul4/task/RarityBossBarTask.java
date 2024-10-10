@@ -171,7 +171,7 @@ public class RarityBossBarTask extends BukkitRunnable
 			boolean isStableWithoutEnchantments = blockData == null
 					|| blockData.getStabilityFormula().calculateChance(0, rarity, Rarity.COMMON) == 1.0F;
 			
-			Component name = text(rarity + " Drop: ") //TODO remove rarity
+			Component name = text("Drop: ")
 					.append(willDrop ? CORRECT_SYMBOL : INCORRECT_SYMBOL);
 			
 			if((!isStableWithoutEnchantments || stabilityChance < 1.0F) && willDrop)

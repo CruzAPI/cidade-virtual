@@ -8,6 +8,7 @@ import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.playerdata.PluginPlayerData;
 import com.eul4.type.player.PluginObjectType;
+import com.eul4.wrapper.BroadcastHashSet;
 import com.eul4.wrapper.Tag;
 import lombok.Getter;
 
@@ -39,6 +40,10 @@ public class PluginPlayerDataReader extends ObjectReader<PluginPlayerData>
 		case 2:
 			this.reader = Reader.identity();
 			this.readable = this::readableVersion2;
+			break;
+		case 3:
+			this.reader = Reader.identity();
+			this.readable = this::readableVersion3;
 			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
@@ -75,6 +80,21 @@ public class PluginPlayerDataReader extends ObjectReader<PluginPlayerData>
 				.tag(tag)
 				.tagHidden(tagHidden)
 				.newCombat(newCombat)
+				.build();
+	}
+	
+	private PluginPlayerData readableVersion3() throws IOException, ClassNotFoundException
+	{
+		final Tag tag = readers.getReader(TagReader.class).readReference();
+		final boolean tagHidden = in.readBoolean();
+		final boolean newCombat = in.readBoolean();
+		final BroadcastHashSet mutedBroadcasts = readers.getReader(BroadcastHashSetReader.class).readReference();
+		
+		return PluginPlayerData.builder()
+				.tag(tag)
+				.tagHidden(tagHidden)
+				.newCombat(newCombat)
+				.mutedBroadcasts(mutedBroadcasts)
 				.build();
 	}
 	

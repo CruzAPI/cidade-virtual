@@ -36,8 +36,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
-import static com.eul4.common.i18n.CommonMessage.PLAYER;
-import static com.eul4.common.i18n.CommonMessage.USAGE;
+import static com.eul4.common.i18n.CommonMessage.*;
 import static com.eul4.common.util.CommonMessageUtil.*;
 import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
@@ -767,6 +766,23 @@ public enum PluginMessage implements Message
 			.color(RED)
 	)),
 	
+	COMMAND_MUTEBROADCAST_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.appendSpace()
+			.append(usageRequiredArg(BROADCAST.translate(locale)))
+			.color(RED)
+	)),
+	
+	COMMAND_MUTEBROADCAST_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+			.appendNewline()
+			.append(COMMAND_MUTEBROADCAST_USAGE_$ALIASES.translate(locale, args[0]))
+			.color(RED)
+	)),
+	
 	COMMAND_NEWBIE_USAGE_$ALIASES((locale, args) -> Collections.singletonList
 	(
 		text("/")
@@ -791,6 +807,16 @@ public enum PluginMessage implements Message
 	}),
 	
 	COMMAND_BALANCE_FOOTER("command.balance.footer", Component.empty().color(GRAY).decorate(STRIKETHROUGH)),
+	
+	COMMAND_MUTEBROADCAST_BROADCAST_MUTED("command.mutebroadcast.broadcast-muted", empty().color(GREEN)),
+	
+	COMMAND_MUTEBROADCAST_BROADCAST_ALREADY_MUTED("command.mutebroadcast.broadcast-already-muted", empty().color(RED)),
+	
+	COMMAND_MUTEBROADCAST_BROADCAST_NOT_FOUND("command.mutebroadcast.broadcast-not-found", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		argToComponent(args[0]),
+	}),
 	
 	COMMAND_BALANCE("command.balance", (bundle, args) ->
 	{
@@ -1288,6 +1314,29 @@ public enum PluginMessage implements Message
 	{
 		empty().color(RED),
 		text("https://www.mcbrawl.com/wiki/tracking-raid/").color(GRAY)
+	}),
+	
+	COMMAND_MUTEBROADCAST_CLICK_TO_MUTE("command.mutebroadcast.click-to-mute", empty().color(RED)),
+	
+	AUTO_$BROADCAST((locale, args) ->
+	{
+		BroadcastRichMessage broadcast = (BroadcastRichMessage) args[0];
+		
+		HoverEvent<Component> muteBroadcastHover = COMMAND_MUTEBROADCAST_CLICK_TO_MUTE.translate(locale).asHoverEvent();
+		ClickEvent muteBroadcastClick = ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/mutebroadcast " + broadcast.name());
+		
+		Component muteBroadcast = Component.text("✕")
+				.color(RED)
+				.hoverEvent(muteBroadcastHover)
+				.clickEvent(muteBroadcastClick);
+		
+		return singletonList
+		(
+				text("➟ ").color(GRAY)
+						.append(usageOptionalArg(muteBroadcast).color(DARK_GRAY))
+						.appendSpace()
+						.append(broadcast.translate(locale))
+		);
 	}),
 	;
 	

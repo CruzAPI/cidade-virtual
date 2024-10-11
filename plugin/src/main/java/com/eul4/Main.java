@@ -229,7 +229,7 @@ public class Main extends Common
 		
 		spawnProtectionTask.runTaskTimer(this, 20L, 20L);
 		new RarityBossBarTask(this).runTaskTimer(this, 0L, 1L);
-		new AutoBroadcastTask(this).runTaskTimer(this, 10L * 20L, 10L * 20L);
+		new AutoBroadcastTask(this).runTaskTimer(this, 10L * 60L * 20L, 10L * 60L * 20L);
 	}
 	
 	private void registerCommands()

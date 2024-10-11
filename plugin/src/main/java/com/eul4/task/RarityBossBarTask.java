@@ -174,7 +174,9 @@ public class RarityBossBarTask extends BukkitRunnable
 			Component name = text("Drop: ")
 					.append(willDrop ? CORRECT_SYMBOL : INCORRECT_SYMBOL);
 			
-			if((!isStableWithoutEnchantments || stabilityChance < 1.0F) && willDrop)
+			if(rarity != Rarity.MIN_RARITY
+					&& (!isStableWithoutEnchantments || stabilityChance < 1.0F)
+					&& willDrop)
 			{
 				float percentage = stabilityChance * 100.0F;
 				

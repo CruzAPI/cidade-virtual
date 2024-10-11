@@ -1313,7 +1313,9 @@ public enum PluginMessage implements Message
 	COMMAND_TRACK_INVALID("command.track.invalid", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
-		text("https://www.mcbrawl.com/wiki/tracking-raid/").color(GRAY)
+		text("https://www.mcbrawl.com/wiki/tracking-raid/")
+				.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, "https://www.mcbrawl.com/wiki/tracking-raid/"))
+				.color(GRAY)
 	}),
 	
 	COMMAND_MUTEBROADCAST_CLICK_TO_MUTE("command.mutebroadcast.click-to-mute", empty().color(RED)),

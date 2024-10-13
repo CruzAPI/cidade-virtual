@@ -9,7 +9,6 @@ import com.eul4.exception.OverCapacityException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.service.MarketDataManager;
-import com.eul4.wrapper.Trade;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;

@@ -38,9 +38,9 @@ public class CryptoInfo implements CrownHolder
 		return marketCap.divide(circulatingSupply, MATH_CONTEXT);
 	}
 	
-	public TradePreview createTradePreview(BigDecimal amount) throws InvalidCryptoInfoException
+	public CryptoInfoTradePreview createTradePreview(BigDecimal amount) throws InvalidCryptoInfoException
 	{
-		return new TradePreview(this, previewTrade(amount));
+		return new CryptoInfoTradePreview(this, previewTrade(amount));
 	}
 	
 	public BigDecimal previewTrade(BigDecimal amount) throws InvalidCryptoInfoException

@@ -6,8 +6,10 @@ import com.eul4.economy.Transfer;
 import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.MaterialNotForSaleException;
 import com.eul4.exception.OverCapacityException;
+import com.eul4.holder.BigDecimalHolder;
 import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.holder.CrownHolder;
+import com.eul4.holder.Holder;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.wrapper.*;
 import org.bukkit.Bukkit;
@@ -117,75 +119,29 @@ public class MarketDataManager
 	
 	public BigDecimal calculatePrice(Material material) throws MaterialNotForSaleException, InvalidCryptoInfoException
 	{
-		Bukkit.getLogger().info("derivates: " + derivates);
-		
 		if(derivates.containsKey(material))
 		{
-			Bukkit.getLogger().info("A");
 			return derivates.get(material).calculatePrice();
 		}
 		
 		if(getRawMaterialMap().containsKey(material))
 		{
-			Bukkit.getLogger().info("B");
 			return getRawMaterialMap().get(material).getCryptoInfo().calculatePrice();
 		}
 		
-		Bukkit.getLogger().info("C");
 		throw new MaterialNotForSaleException();
 	}
 	
 	public Transaction createTransaction(PluginPlayer pluginPlayer, ItemStack itemStack)
 			throws MaterialNotForSaleException, InvalidCryptoInfoException, OverCapacityException
 	{
-		List<Transfer<? extends Number>> transferList = new ArrayList<>();
+		List<CryptoInfoTradePreview> cryptoInfoTradePreviews = createTradePreviews(itemStack);
 		List<CapacitatedCrownHolder> holders = pluginPlayer.getTown().getCapacitatedCrownHolders();
-		List<TradePreview> tradePreviews = createTradePreviews(itemStack);
 		
-		Iterator<CapacitatedCrownHolder> iterator = holders.iterator();
-		
-		if(!iterator.hasNext())
-		{
-			throw new OverCapacityException();
-		}
-		
-		CapacitatedCrownHolder capacitatedCrownHolder = iterator.next();
-		BigDecimal simulatedRemainingCapacity = capacitatedCrownHolder.getRemainingCapacity();
-		
-		for(TradePreview tradePreview : tradePreviews)
-		{
-			Bukkit.broadcastMessage("tradePReview: " + tradePreview + " " + tradePreview.getPreview());
-			BigDecimal preview = tradePreview.getPreview();
-			
-			while(preview.compareTo(BigDecimal.ZERO) > 0)
-			{
-				while(simulatedRemainingCapacity.compareTo(BigDecimal.ZERO) <= 0)
-				{
-					if(!iterator.hasNext())
-					{
-						throw new OverCapacityException();
-					}
-					
-					capacitatedCrownHolder = iterator.next();
-					simulatedRemainingCapacity = capacitatedCrownHolder.getRemainingCapacity();
-				}
-				
-				BigDecimal min = preview.compareTo(simulatedRemainingCapacity) < 0
-						? preview
-						: simulatedRemainingCapacity;
-				
-				preview = preview.subtract(min);
-				simulatedRemainingCapacity = simulatedRemainingCapacity.subtract(min);
-				
-				Bukkit.broadcastMessage(" tranfer: " + min + " to: " + capacitatedCrownHolder);
-				transferList.add(new Transfer<>(tradePreview.getCryptoInfo(), capacitatedCrownHolder, min));
-			}
-		}
-		
-		return new Transaction(transferList);
+		return plugin.getTransactionManager().createTransaction(cryptoInfoTradePreviews, holders);
 	}
 	
-	private List<TradePreview> createTradePreviews(ItemStack itemStack)
+	private List<CryptoInfoTradePreview> createTradePreviews(ItemStack itemStack)
 			throws InvalidCryptoInfoException, MaterialNotForSaleException
 	{
 		Material material = itemStack.getType();

@@ -2,6 +2,7 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
 import com.eul4.enums.Currency;
+import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.i18n.PluginMessage;
@@ -10,9 +11,13 @@ import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.CrownDeposit;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.CrownDepositAttribute;
+import com.eul4.util.MessageUtil;
+import org.bukkit.block.BlockFace;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+
+import static com.eul4.util.MessageUtil.getPercentageProgressBar;
 
 public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implements CrownDeposit
 {

@@ -17,8 +17,10 @@ import org.bukkit.block.BlockFace;
 
 import java.io.IOException;
 
+import static com.eul4.i18n.PluginMessage.STRUCTURE_PHYSICAL_DEPOSIT_BALANCE_HOLOGRAM;
+
 @Getter
-public abstract class CraftPhysicalDeposit<N extends Number> extends CraftStructure implements PhysicalDeposit<N>
+public abstract class CraftPhysicalDeposit<N extends Number & Comparable<N>> extends CraftStructure implements PhysicalDeposit<N>
 {
 	private transient N capacity;
 	@Setter(AccessLevel.PROTECTED)
@@ -47,10 +49,18 @@ public abstract class CraftPhysicalDeposit<N extends Number> extends CraftStruct
 		{
 			if(isDestroyed())
 			{
-				teleportHologram(getLocation().toHighestLocation().getBlock().getRelative(BlockFace.UP).getLocation().toCenterLocation());
+				teleportHologram(getLocation()
+						.toHighestLocation()
+						.getBlock()
+						.getRelative(BlockFace.UP)
+						.getLocation()
+						.toCenterLocation());
 				hologram.setSize(2);
-				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
-				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(), getHolder().getBalance());
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
+						getStructureType(),
+						level);
+				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(),
+						getHolder().getBalance());
 			}
 			else
 			{
@@ -66,8 +76,10 @@ public abstract class CraftPhysicalDeposit<N extends Number> extends CraftStruct
 		{
 			teleportHologramToDefaultLocation();
 			hologram.setSize(2);
-			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
-			hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_DEPOSIT_CAPACITY_HOLOGRAM, getCapacity(), getCurrency());
+			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
+					getStructureType(),
+					level);
+			hologram.getLine(1).setMessageAndArgs(STRUCTURE_PHYSICAL_DEPOSIT_BALANCE_HOLOGRAM, this);
 		}
 	}
 	

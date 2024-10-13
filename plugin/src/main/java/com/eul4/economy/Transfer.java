@@ -4,7 +4,7 @@ import com.eul4.exception.OperationException;
 import com.eul4.holder.Holder;
 import lombok.Getter;
 
-public class Transfer<N extends Number>
+public class Transfer<N extends Number & Comparable<N>>
 {
 	private final Holder<N> holderFrom;
 	private final Holder<N> holderTo;

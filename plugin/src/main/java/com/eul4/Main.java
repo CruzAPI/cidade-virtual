@@ -104,6 +104,7 @@ public class Main extends Common
 	
 	private MacroidService macroidService;
 	private MarketDataManager marketDataManager;
+	private TransactionManager transactionManager;
 	
 	private PluginManager pluginManager;
 	
@@ -212,6 +213,7 @@ public class Main extends Common
 		
 		macroidService = new MacroidService(this);
 		marketDataManager = new MarketDataManager(this);
+		transactionManager = new TransactionManager(this);
 	}
 	
 	private void registerRuleSerializers()

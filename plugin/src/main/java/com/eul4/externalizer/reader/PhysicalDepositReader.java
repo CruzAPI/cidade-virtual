@@ -4,7 +4,6 @@ import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Reader;
-import com.eul4.model.town.structure.Deposit;
 import com.eul4.model.town.structure.PhysicalDeposit;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import lombok.Getter;
 import java.io.IOException;
 
 @Getter
-public abstract class PhysicalDepositReader<N extends Number, D extends PhysicalDeposit<N>> extends StructureReader<D>
+public abstract class PhysicalDepositReader<N extends Number & Comparable<N>, D extends PhysicalDeposit<N>> extends StructureReader<D>
 {
 	private final Reader<D> reader;
 	

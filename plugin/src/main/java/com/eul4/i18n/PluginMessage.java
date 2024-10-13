@@ -15,6 +15,7 @@ import com.eul4.enums.Rarity;
 import com.eul4.model.player.SetHomePerformer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Generator;
+import com.eul4.model.town.structure.PhysicalDeposit;
 import com.eul4.rule.attribute.*;
 import com.eul4.util.TickConverter;
 import com.eul4.wrapper.Tag;
@@ -26,6 +27,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -43,6 +45,7 @@ import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.STRIKETHROUGH;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 
 @Getter
 public enum PluginMessage implements Message
@@ -612,6 +615,31 @@ public enum PluginMessage implements Message
 		};
 	}),
 	
+	STRUCTURE_PHYSICAL_DEPOSIT_BALANCE_HOLOGRAM((locale, args) ->
+	{
+		PhysicalDeposit<?> physicalDeposit = (PhysicalDeposit<?>) args[0];
+		
+		Number balance = physicalDeposit.getHolder().getBalance();
+		Number capacity = physicalDeposit.getHolder().getCapacity();
+		
+		Currency currency = physicalDeposit.getCurrency();
+		DecimalFormat decimalFormat = currency.getDecimalFormat(locale);
+		
+		Component balanceSlashCapacityComponent = decimalToComponent(balance, decimalFormat)
+				.append(text("/"))
+				.append(decimalToComponent(capacity, decimalFormat))
+				.color(WHITE);
+		
+		Component component = currency.getPluralWord()
+				.translate(locale, CommonWordUtil::toUpperCaseAndConcatColon)
+				.style(currency.getStyle())
+				.decorate(BOLD)
+				.appendSpace()
+				.append(balanceSlashCapacityComponent);
+		
+		return Collections.singletonList(component);
+	}),
+	
 	THIS_BLOCK_WILL_EXCEED_HARDNESS_LIMIT("this-block-will-exceed-hardness-limit", empty().color(RED)),
 	
 	TITLE_SEARCHING("title.searching", empty().color(GRAY)),
@@ -712,7 +740,7 @@ public enum PluginMessage implements Message
 		text((int) args[0]),
 	}),
 	
-	STRUCTURE_CROWN_DEPOSIT_BALANCE("structure.dislike-deposit.balance", (bundle, args) -> new Component[]
+	STRUCTURE_CROWN_DEPOSIT_BALANCE("structure.crown-deposit.balance", (bundle, args) -> new Component[]
 	{
 		empty().color(WHITE).decorate(BOLD),
 		decimalToComponent(args[0], Currency.CROWN.getDecimalFormat(bundle.getLocale())),

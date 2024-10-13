@@ -18,12 +18,12 @@ public class RawMaterial extends EconomicMaterial
 		this.cryptoInfo = Preconditions.checkNotNull(cryptoInfo);
 	}
 	
-	public TradePreview createTradePreview(int amount) throws InvalidCryptoInfoException
+	public CryptoInfoTradePreview createTradePreview(int amount) throws InvalidCryptoInfoException
 	{
 		return createTradePreview(BigDecimal.valueOf(amount));
 	}
 	
-	public TradePreview createTradePreview(BigDecimal multiplier) throws InvalidCryptoInfoException
+	public CryptoInfoTradePreview createTradePreview(BigDecimal multiplier) throws InvalidCryptoInfoException
 	{
 		return cryptoInfo.createTradePreview(multiplier);
 	}

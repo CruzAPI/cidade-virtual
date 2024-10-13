@@ -5,14 +5,14 @@ import com.eul4.exception.OperationException;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Transaction
+public class Transaction<N extends Number & Comparable<N>>
 {
-	private final List<Transfer<? extends Number>> transferList;
+	private final List<Transfer<N>> transferList;
 	
 	private boolean executed;
 	private boolean rollbacked;
 	
-	public Transaction(List<Transfer<? extends Number>> transferList)
+	public Transaction(List<Transfer<N>> transferList)
 	{
 		this.transferList = transferList;
 	}
@@ -60,7 +60,7 @@ public class Transaction
 		
 		rollbacked = true;
 		
-		for(Transfer<?> transfer : transferList)
+		for(Transfer<N> transfer : transferList)
 		{
 			transfer.rollback();
 		}

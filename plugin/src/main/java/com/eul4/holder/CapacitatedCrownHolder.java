@@ -6,7 +6,7 @@ import com.eul4.exception.OverCapacityException;
 
 import java.math.BigDecimal;
 
-public class CapacitatedCrownHolder implements CrownHolder
+public class CapacitatedCrownHolder implements CrownHolder, CapacitatedHolder<BigDecimal>
 {
 	private BigDecimal balance;
 	private BigDecimal capacity;

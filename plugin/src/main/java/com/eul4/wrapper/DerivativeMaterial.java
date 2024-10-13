@@ -23,12 +23,12 @@ public class DerivativeMaterial extends EconomicMaterial
 		this.economicMaterialMultipliers = economicMaterialMultipliers;
 	}
 	
-	public List<TradePreview> createTradePreviews(int amount) throws InvalidCryptoInfoException
+	public List<CryptoInfoTradePreview> createTradePreviews(int amount) throws InvalidCryptoInfoException
 	{
 		return createTradePreviews(BigDecimal.valueOf(amount));
 	}
 	
-	public List<TradePreview> createTradePreviews(BigDecimal multiplier) throws InvalidCryptoInfoException
+	public List<CryptoInfoTradePreview> createTradePreviews(BigDecimal multiplier) throws InvalidCryptoInfoException
 	{
 		return createTradePreviews(new ArrayList<>(), multiplier);
 	}
@@ -60,7 +60,7 @@ public class DerivativeMaterial extends EconomicMaterial
 		return totalPrice;
 	}
 	
-	private List<TradePreview> createTradePreviews(List<TradePreview> tradePreviews, BigDecimal baseMultiplier)
+	private List<CryptoInfoTradePreview> createTradePreviews(List<CryptoInfoTradePreview> cryptoInfoTradePreviews, BigDecimal baseMultiplier)
 			throws InvalidCryptoInfoException
 	{
 		for(EconomicMaterialMultiplier economicMaterialMultiplier : economicMaterialMultipliers)
@@ -70,14 +70,14 @@ public class DerivativeMaterial extends EconomicMaterial
 			
 			if(economicMaterial instanceof DerivativeMaterial derivativeMaterial)
 			{
-				derivativeMaterial.createTradePreviews(tradePreviews, multiplier);
+				derivativeMaterial.createTradePreviews(cryptoInfoTradePreviews, multiplier);
 			}
 			else if(economicMaterial instanceof RawMaterial rawMaterial)
 			{
-				tradePreviews.add(rawMaterial.createTradePreview(multiplier));
+				cryptoInfoTradePreviews.add(rawMaterial.createTradePreview(multiplier));
 			}
 		}
 		
-		return tradePreviews;
+		return cryptoInfoTradePreviews;
 	}
 }

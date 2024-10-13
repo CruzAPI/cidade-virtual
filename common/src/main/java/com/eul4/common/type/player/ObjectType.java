@@ -4,4 +4,5 @@ public interface ObjectType
 {
 	ExternalizerType getExternalizerType();
 	byte getVersion();
+	String name();
 }

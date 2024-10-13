@@ -162,7 +162,7 @@ public enum StructureType
 		Main::getCrownDepositRule,
 		NamedTextColor.RED,
 		PluginMessage.STRUCTURE_CROWN_DEPOSIT_NAME,
-		PluginMessage.STRUCTURE_DISLIKE_DEPOSIT_UPGRADE_PREVIEW_LORE,
+		PluginMessage.STRUCTURE_CROWN_DEPOSIT_UPGRADE_PREVIEW_LORE,
 		Material.GOLD_BLOCK
 	),
 	

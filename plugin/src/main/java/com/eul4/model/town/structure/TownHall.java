@@ -13,6 +13,8 @@ public interface TownHall extends ResourceStructure, StructureCapacitatedCrownHo
 	int getDislikeCapacity();
 	
 	CapacitatedCrownHolder getCapacitatedCrownHolder();
+	void setCapacitatedCrownHolder(CapacitatedCrownHolder capacitatedCrownHolder);
+	void setDefaultCapacitatedCrownHolder();
 	
 	Map<StructureType, Integer> getStructureLimitMap();
 	

@@ -19,6 +19,6 @@ public class BigDecimalWriter extends ObjectWriter<BigDecimal>
 		
 		out.writeInt(unscaledValueBytes.length);
 		out.write(unscaledValueBytes);
-		out.write(bigDecimal.scale());
+		out.writeInt(bigDecimal.scale());
 	}
 }

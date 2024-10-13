@@ -240,4 +240,17 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	{
 		return capacitatedCrownHolder;
 	}
+	
+	@Override
+	public void setCapacitatedCrownHolder(CapacitatedCrownHolder capacitatedCrownHolder)
+	{
+		this.capacitatedCrownHolder = capacitatedCrownHolder;
+	}
+	
+	@Override
+	public void setDefaultCapacitatedCrownHolder()
+	{
+		capacitatedCrownHolder = new CapacitatedCrownHolder();
+		capacitatedCrownHolder.setCapacity(crownCapacity);
+	}
 }

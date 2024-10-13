@@ -3,8 +3,10 @@ package com.eul4.type.player;
 import com.eul4.common.type.player.ObjectType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @RequiredArgsConstructor
+@ToString
 @Getter
 public enum PluginObjectType implements ObjectType
 {
@@ -52,7 +54,7 @@ public enum PluginObjectType implements ObjectType
 	TOWN_BLOCK_MAP((byte) 0, PluginExternalizerType.TOWN_BLOCK_MAP),
 	TOWN_BLOCK((byte) 0, PluginExternalizerType.TOWN_BLOCK),
 	TOWN_BLOCK_SET((byte) 0, PluginExternalizerType.TOWN_BLOCK_SET),
-	TOWN_HALL((byte) 0, PluginExternalizerType.TOWN_HALL),
+	TOWN_HALL((byte) 1, PluginExternalizerType.TOWN_HALL),
 	TOWN_MAP((byte) 0, PluginExternalizerType.TOWN_MAP),
 	TOWN_PLAYER_DATA((byte) 1, PluginExternalizerType.TOWN_PLAYER_DATA),
 	TOWN_PLAYER((byte) 0, PluginExternalizerType.TOWN_PLAYER),

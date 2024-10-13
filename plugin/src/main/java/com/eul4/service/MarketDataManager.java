@@ -150,14 +150,16 @@ public class MarketDataManager
 		}
 		
 		CapacitatedCrownHolder capacitatedCrownHolder = iterator.next();
+		BigDecimal simulatedRemainingCapacity = capacitatedCrownHolder.getRemainingCapacity();
 		
 		for(TradePreview tradePreview : tradePreviews)
 		{
+			Bukkit.broadcastMessage("tradePReview: " + tradePreview + " " + tradePreview.getPreview());
 			BigDecimal preview = tradePreview.getPreview();
 			
 			while(preview.compareTo(BigDecimal.ZERO) > 0)
 			{
-				while(capacitatedCrownHolder.isFull())
+				while(simulatedRemainingCapacity.compareTo(BigDecimal.ZERO) <= 0)
 				{
 					if(!iterator.hasNext())
 					{
@@ -165,15 +167,17 @@ public class MarketDataManager
 					}
 					
 					capacitatedCrownHolder = iterator.next();
+					simulatedRemainingCapacity = capacitatedCrownHolder.getRemainingCapacity();
 				}
 				
-				BigDecimal remainingCapacity = capacitatedCrownHolder.getRemainingCapacity();
-				BigDecimal min = preview.compareTo(remainingCapacity) < 0
+				BigDecimal min = preview.compareTo(simulatedRemainingCapacity) < 0
 						? preview
-						: remainingCapacity;
+						: simulatedRemainingCapacity;
 				
 				preview = preview.subtract(min);
+				simulatedRemainingCapacity = simulatedRemainingCapacity.subtract(min);
 				
+				Bukkit.broadcastMessage(" tranfer: " + min + " to: " + capacitatedCrownHolder);
 				transferList.add(new Transfer<>(tradePreview.getCryptoInfo(), capacitatedCrownHolder, min));
 			}
 		}

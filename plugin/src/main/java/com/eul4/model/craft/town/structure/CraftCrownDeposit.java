@@ -25,7 +25,7 @@ public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implemen
 //			.build());
 //
 	private CapacitatedCrownHolder capacitatedCrownHolder;
-	private BigDecimal capacity;
+	private transient BigDecimal capacity;
 	
 	public CraftCrownDeposit(Town town)
 	{
@@ -50,6 +50,11 @@ public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implemen
 		super.reloadAttributes();
 		
 		capacity = getRule().getAttributeOrDefault(getBuiltLevel()).getCapacity();
+		
+		if(capacitatedCrownHolder != null)
+		{
+			capacitatedCrownHolder.setCapacity(capacity);
+		}
 	}
 	
 	@Override

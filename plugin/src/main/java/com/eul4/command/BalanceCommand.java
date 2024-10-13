@@ -1,6 +1,7 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.i18n.PluginRichMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class BalanceCommand implements TabExecutor
 			return false;
 		}
 		
-		pluginPlayer.sendMessage(COMMAND_BALANCE, town);
+		pluginPlayer.sendMessage(PluginRichMessage.COMMAND_BALANCE_$TOWN, town);
 		return true;
 	}
 }

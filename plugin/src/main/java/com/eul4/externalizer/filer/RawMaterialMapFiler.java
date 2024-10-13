@@ -50,15 +50,17 @@ public class RawMaterialMapFiler extends PluginFiler
 			File file = plugin.getDataFileManager().createRawMaterialMapFileIfNotExists();
 			tmp = new File(file.getParent(), "." + file.getName() + ".tmp");
 			
-			try(FileOutputStream fileOutputStream = new FileOutputStream(tmp);
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
+			try
+			(
+				FileOutputStream fileOut = new FileOutputStream(tmp);
+				BufferedOutputStream bufferedOut = new BufferedOutputStream(fileOut, BUFFER_SIZE);
+				DataOutputStream out = new DataOutputStream(bufferedOut);
+			)
 			{
 				Writers.of(plugin, out, writeVersions(out))
 						.getWriter(RawMaterialMapWriter.class)
 						.writeReferenceNotNull(rawMaterialMap);
 				out.flush();
-				fileOutputStream.write(byteArrayOutputStream.toByteArray());
 			}
 			
 			if(tmp.renameTo(file))
@@ -98,9 +100,12 @@ public class RawMaterialMapFiler extends PluginFiler
 			return;
 		}
 		
-		try(FileInputStream fileInputStream = new FileInputStream(file);
-				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
-				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
+		try
+		(
+			FileInputStream fileInputStream = new FileInputStream(file);
+			BufferedInputStream bufferedIn = new BufferedInputStream(fileInputStream);
+			DataInputStream in = new DataInputStream(bufferedIn);
+		)
 		{
 			this.rawMaterialMap = Readers.of(plugin, in, readVersions(in))
 					.getReader(RawMaterialMapReader.class)

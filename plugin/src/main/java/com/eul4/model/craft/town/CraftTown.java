@@ -47,10 +47,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
@@ -1413,6 +1410,11 @@ public class CraftTown implements Town
 			if(structure instanceof StructureCapacitatedCrownHoldeable holdeable)
 			{
 				capacity = capacity.add(holdeable.getCapacitatedCrownHolder().getCapacity());
+				Bukkit.getLogger().info("BB " + structure.getStructureType() + " " + capacity);
+			}
+			else
+			{
+				Bukkit.getLogger().info("AA " + structure.getStructureType());
 			}
 		}
 		

@@ -5,9 +5,11 @@ import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.RichMessage;
 import com.eul4.common.util.CommonMessageUtil;
 import com.eul4.enums.Rarity;
+import com.eul4.model.town.Town;
 import com.eul4.wrapper.CrownInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
@@ -18,6 +20,13 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import static com.eul4.common.util.CommonMessageUtil.argToComponent;
+import static com.eul4.common.util.CommonMessageUtil.decimalToComponent;
+import static net.kyori.adventure.text.Component.empty;
+import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+import static net.kyori.adventure.text.format.TextDecoration.STRIKETHROUGH;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.styling;
 
@@ -87,6 +96,31 @@ public enum PluginRichMessage implements RichMessage
 	}),
 	
 	STRUCTURE_CROWN_DEPOSIT_SHOP_LORE("structure.crown-deposit.shop-lore"),
+	
+	COMMAND_BALANCE_$TOWN("command.balance", (bundle, args) ->
+	{
+		Town town = (Town) args[0];
+		
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(bundle);
+		
+		DecimalFormat intDecimalFormat = new DecimalFormat("0", symbols);
+		DecimalFormat crownDecimalFormat = new DecimalFormat("0.00", symbols);
+		
+		intDecimalFormat.setGroupingUsed(true);
+		crownDecimalFormat.setGroupingUsed(true);
+		intDecimalFormat.setGroupingSize(3);
+		crownDecimalFormat.setGroupingSize(3);
+		
+		return new TagResolver[]
+		{
+			component("like_balance", decimalToComponent(town.getLikes(), intDecimalFormat)),
+			component("like_capacity", decimalToComponent(town.getLikeCapacity(), intDecimalFormat)),
+			component("dislike_balance", decimalToComponent(town.getDislikeCapacity(), intDecimalFormat)),
+			component("dislike_capacity", decimalToComponent(town.getDislikeCapacity(), intDecimalFormat)),
+			component("crown_balance", decimalToComponent(town.calculateCrownBalance(), crownDecimalFormat)),
+			component("crown_capacity", decimalToComponent(town.calculateCrownCapacity(), crownDecimalFormat)),
+		};
+	}),
 	
 	;
 	

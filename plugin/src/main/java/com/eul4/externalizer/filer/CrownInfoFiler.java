@@ -46,15 +46,16 @@ public class CrownInfoFiler extends PluginFiler
 			File file = plugin.getDataFileManager().createCrownInfoFileIfNotExists();
 			tmp = new File(file.getParent(), "." + file.getName() + ".tmp");
 			
-			try(FileOutputStream fileOutputStream = new FileOutputStream(tmp);
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					ObjectOutputStream out = new ObjectOutputStream(byteArrayOutputStream))
+			try
+			(
+				FileOutputStream fileOut = new FileOutputStream(tmp);
+				DataOutputStream out = new DataOutputStream(fileOut)
+			)
 			{
 				Writers.of(plugin, out, writeVersions(out))
 						.getWriter(CrownInfoWriter.class)
 						.writeReferenceNotNull(crownInfo);
 				out.flush();
-				fileOutputStream.write(byteArrayOutputStream.toByteArray());
 			}
 			
 			if(tmp.renameTo(file))
@@ -94,9 +95,11 @@ public class CrownInfoFiler extends PluginFiler
 			return;
 		}
 		
-		try(FileInputStream fileInputStream = new FileInputStream(file);
-				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ByteStreams.toByteArray(fileInputStream));
-				ObjectInputStream in = new ObjectInputStream(byteArrayInputStream))
+		try
+		(
+			FileInputStream fileIn = new FileInputStream(file);
+			DataInputStream in = new DataInputStream(fileIn)
+		)
 		{
 			this.crownInfo = Readers.of(plugin, in, readVersions(in))
 					.getReader(CrownInfoReader.class)

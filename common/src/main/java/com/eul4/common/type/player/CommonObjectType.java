@@ -2,8 +2,10 @@ package com.eul4.common.type.player;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @RequiredArgsConstructor
+@ToString
 @Getter
 public enum CommonObjectType implements ObjectType
 {

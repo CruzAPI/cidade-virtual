@@ -43,7 +43,7 @@ public class DataFileManager
 	
 	public File createCrownInfoFileIfNotExists() throws IOException
 	{
-		return createFileIfNotExists(getTownsFile());
+		return createFileIfNotExists(getCrownInfoFile());
 	}
 	
 	public File getCrownInfoFile()

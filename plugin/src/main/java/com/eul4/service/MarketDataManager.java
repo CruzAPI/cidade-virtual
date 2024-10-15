@@ -1,26 +1,26 @@
 package com.eul4.service;
 
 import com.eul4.Main;
+import com.eul4.economy.ItemStackTransaction;
 import com.eul4.economy.Transaction;
-import com.eul4.economy.Transfer;
 import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.MaterialNotForSaleException;
 import com.eul4.exception.OverCapacityException;
-import com.eul4.holder.BigDecimalHolder;
 import com.eul4.holder.CapacitatedCrownHolder;
-import com.eul4.holder.CrownHolder;
-import com.eul4.holder.Holder;
 import com.eul4.model.player.PluginPlayer;
+import com.eul4.model.town.Town;
 import com.eul4.wrapper.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.bukkit.Material.CHEST;
-import static org.bukkit.Material.OAK_PLANKS;
+import static org.bukkit.Material.*;
 
 public class MarketDataManager
 {
@@ -98,10 +98,23 @@ public class MarketDataManager
 		RawMaterialMap rawMaterialMap = plugin.getRawMaterialMapFiler().getRawMaterialMap();
 		
 		RawMaterial rawOakLog = rawMaterialMap.get(Material.OAK_LOG);
+		RawMaterial rawEnderPearl = rawMaterialMap.get(Material.ENDER_PEARL);
+		RawMaterial rawBlazePowder = rawMaterialMap.get(Material.BLAZE_POWDER);
 		
-		DerivativeMaterial derivativeOakPlanks = registerDerivative(OAK_PLANKS, rawOakLog.withMultiplier(1.0D / 4.0D));
-		DerivativeMaterial derivativeChest = registerDerivative(CHEST, rawOakLog.withMultiplier(2.0D));
-//		DerivativeMaterial derivativeChest = registerDerivative(CHEST, derivativeOakPlanks.withMultiplier(8.0D));
+		rawEnderPearl.getCryptoInfo().setMarketCap(new BigDecimal("1000000"));
+		rawEnderPearl.getCryptoInfo().setCirculatingSupply(new BigDecimal("10000"));
+		
+		rawBlazePowder.getCryptoInfo().setMarketCap(new BigDecimal("5000"));
+		rawBlazePowder.getCryptoInfo().setCirculatingSupply(new BigDecimal("5000"));
+		
+		DerivativeMaterial derivativeOakPlanks = registerDerivative(OAK_PLANKS,
+				rawOakLog.withMultiplier(1.0D / 4.0D));
+		DerivativeMaterial derivativeChest = registerDerivative(CHEST,
+				derivativeOakPlanks.withMultiplier(8.0D));
+		
+		DerivativeMaterial derivativeEnderEye = registerDerivative(ENDER_EYE,
+				rawEnderPearl.withMultiplier(1.0D),
+				rawBlazePowder.withMultiplier(1.0D));
 		
 		derivativeRegistered = true;
 	}
@@ -132,27 +145,46 @@ public class MarketDataManager
 		throw new MaterialNotForSaleException();
 	}
 	
-	public Transaction createTransaction(PluginPlayer pluginPlayer, ItemStack itemStack)
-			throws MaterialNotForSaleException, InvalidCryptoInfoException, OverCapacityException
+	public ItemStackTransaction createItemStackTransaction(PluginPlayer pluginPlayer, int slot)
+			throws OverCapacityException, InvalidCryptoInfoException, MaterialNotForSaleException
 	{
-		List<CryptoInfoTradePreview> cryptoInfoTradePreviews = createTradePreviews(itemStack);
+		Town town = pluginPlayer.getTown();
+		
+		final Inventory inventory = pluginPlayer.getPlayer().getInventory();
+		final ItemStack itemStack = Optional.ofNullable(inventory.getItem(slot)).orElse(ItemStack.empty());
+		
+		ItemStackTradePreview itemStackTradePreview = createTradePreviews(
+				town.calculateRemainingCrownCapacity(),
+				itemStack);
 		List<CapacitatedCrownHolder> holders = pluginPlayer.getTown().getCapacitatedCrownHolders();
 		
-		return plugin.getTransactionManager().createTransaction(cryptoInfoTradePreviews, holders);
+		int amountToConsume = itemStackTradePreview.getAmountToConsume();
+		
+		Transaction<?> transaction = plugin.getTransactionManager()
+				.createTransaction(itemStackTradePreview.getPreviews(), holders);
+		
+		return new ItemStackTransaction(transaction, inventory, slot, amountToConsume);
 	}
 	
-	private List<CryptoInfoTradePreview> createTradePreviews(ItemStack itemStack)
-			throws InvalidCryptoInfoException, MaterialNotForSaleException
+	private ItemStackTradePreview createTradePreviews
+	(
+		BigDecimal holderRemainingCapacity,
+		ItemStack itemStack
+	)
+	throws InvalidCryptoInfoException, MaterialNotForSaleException
 	{
 		Material material = itemStack.getType();
 		
 		if(derivates.containsKey(material))
 		{
-			return derivates.get(material).createTradePreviews(itemStack.getAmount());
+			return derivates.get(material)
+					.createTradePreviews(holderRemainingCapacity, itemStack.getAmount());
 		}
 		else if(getRawMaterialMap().containsKey(material))
 		{
-			return Collections.singletonList(getRawMaterialMap().get(material).createTradePreview(itemStack.getAmount()));
+			return getRawMaterialMap()
+					.get(material)
+					.createTradePreview(holderRemainingCapacity, itemStack.getAmount());
 		}
 		else
 		{

@@ -1422,6 +1422,12 @@ public class CraftTown implements Town
 	}
 	
 	@Override
+	public BigDecimal calculateRemainingCrownCapacity()
+	{
+		return calculateCrownCapacity().subtract(calculateCrownBalance());
+	}
+	
+	@Override
 	public List<CapacitatedCrownHolder> getCapacitatedCrownHolders()
 	{
 		List<CapacitatedCrownHolder> holders = new ArrayList<>();

@@ -1,12 +1,13 @@
 package com.eul4.wrapper;
 
 import com.eul4.exception.InvalidCryptoInfoException;
+import com.eul4.exception.NegativeBalanceException;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import org.bukkit.Material;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Getter
@@ -23,14 +24,79 @@ public class DerivativeMaterial extends EconomicMaterial
 		this.economicMaterialMultipliers = economicMaterialMultipliers;
 	}
 	
-	public List<CryptoInfoTradePreview> createTradePreviews(int amount) throws InvalidCryptoInfoException
+	public ItemStackTradePreview createTradePreviews(BigDecimal holderRemainingCapacity, int amount) throws InvalidCryptoInfoException
+	{
+		BigDecimal actualAmount = BigDecimal.valueOf(amount);
+		BigDecimal minAmount;
+		
+		try
+		{
+			BigDecimal maxAmount = previewCirculatingSupplyDifferenceByMarketCap(holderRemainingCapacity.negate());
+			
+			maxAmount = maxAmount.setScale(0, RoundingMode.DOWN);
+			minAmount = maxAmount.compareTo(actualAmount) < 0 ? maxAmount : actualAmount;
+		}
+		catch(NegativeBalanceException e)
+		{
+			minAmount = actualAmount;
+		}
+		
+		minAmount = minAmount.compareTo(BigDecimal.ONE) < 0
+				? BigDecimal.ONE
+				: minAmount;
+		
+		return createTradePreviews(minAmount);
+	}
+	
+	public ItemStackTradePreview createTradePreviews(int amount) throws InvalidCryptoInfoException
 	{
 		return createTradePreviews(BigDecimal.valueOf(amount));
 	}
 	
-	public List<CryptoInfoTradePreview> createTradePreviews(BigDecimal multiplier) throws InvalidCryptoInfoException
+	public ItemStackTradePreview createTradePreviews(BigDecimal multiplier) throws InvalidCryptoInfoException
 	{
-		return createTradePreviews(new ArrayList<>(), multiplier);
+		return createTradePreviews(new ItemStackTradePreview(multiplier), multiplier);
+	}
+	
+	
+	
+	public BigDecimal previewCirculatingSupplyDifferenceByMarketCap(BigDecimal marketCapAugend)
+			throws InvalidCryptoInfoException, NegativeBalanceException
+	{
+		BigDecimal price = calculatePrice();
+		BigDecimal marketCap = calculateMarketCap();
+		BigDecimal circulatingSupply = marketCap.divide(price, CryptoInfo.MATH_CONTEXT);
+		
+		CryptoInfo fakeCrypto = new CryptoInfo(marketCap, circulatingSupply);
+		
+		fakeCrypto.add(marketCapAugend);
+		
+		return fakeCrypto.getCirculatingSupply().subtract(circulatingSupply);
+	}
+	
+	private BigDecimal calculateMarketCap() throws InvalidCryptoInfoException
+	{
+		return calculateMarketCap(BigDecimal.ZERO);
+	}
+	
+	private BigDecimal calculateMarketCap(BigDecimal totalMarketCap) throws InvalidCryptoInfoException
+	{
+		for(EconomicMaterialMultiplier economicMaterialMultiplier : economicMaterialMultipliers)
+		{
+			EconomicMaterial economicMaterial = economicMaterialMultiplier.economicMaterial;
+			
+			if(economicMaterial instanceof DerivativeMaterial derivativeMaterial)
+			{
+				derivativeMaterial.calculateMarketCap(totalMarketCap);
+			}
+			else if(economicMaterial instanceof RawMaterial rawMaterial)
+			{
+				BigDecimal marketCap = rawMaterial.getCryptoInfo().getMarketCap();
+				totalMarketCap = totalMarketCap.add(marketCap);
+			}
+		}
+		
+		return totalMarketCap;
 	}
 	
 	public BigDecimal calculatePrice() throws InvalidCryptoInfoException
@@ -60,8 +126,12 @@ public class DerivativeMaterial extends EconomicMaterial
 		return totalPrice;
 	}
 	
-	private List<CryptoInfoTradePreview> createTradePreviews(List<CryptoInfoTradePreview> cryptoInfoTradePreviews, BigDecimal baseMultiplier)
-			throws InvalidCryptoInfoException
+	private ItemStackTradePreview createTradePreviews
+	(
+		ItemStackTradePreview itemStackTradePreview,
+		BigDecimal baseMultiplier
+	)
+	throws InvalidCryptoInfoException
 	{
 		for(EconomicMaterialMultiplier economicMaterialMultiplier : economicMaterialMultipliers)
 		{
@@ -70,14 +140,14 @@ public class DerivativeMaterial extends EconomicMaterial
 			
 			if(economicMaterial instanceof DerivativeMaterial derivativeMaterial)
 			{
-				derivativeMaterial.createTradePreviews(cryptoInfoTradePreviews, multiplier);
+				derivativeMaterial.createTradePreviews(itemStackTradePreview, multiplier);
 			}
 			else if(economicMaterial instanceof RawMaterial rawMaterial)
 			{
-				cryptoInfoTradePreviews.add(rawMaterial.createTradePreview(multiplier));
+				itemStackTradePreview.getPreviews().add(rawMaterial.createTradePreview(multiplier));
 			}
 		}
 		
-		return cryptoInfoTradePreviews;
+		return itemStackTradePreview;
 	}
 }

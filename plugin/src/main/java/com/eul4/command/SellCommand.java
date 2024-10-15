@@ -1,6 +1,7 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.economy.ItemStackTransaction;
 import com.eul4.economy.Transaction;
 import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.MaterialNotForSaleException;
@@ -56,6 +57,7 @@ public class SellCommand implements TabExecutor
 		{
 			ItemStack item = player.getInventory().getItemInMainHand();
 			Material material = item.getType();
+			int slot = player.getInventory().getHeldItemSlot();
 			
 			if(material.isEmpty())
 			{
@@ -65,17 +67,16 @@ public class SellCommand implements TabExecutor
 			
 			try
 			{
-				Transaction transaction = marketDataManager.createTransaction(pluginPlayer, item);
-				transaction.execute();
-				BigDecimal total = transaction.getTotal();
-				
-				player.getInventory().setItemInMainHand(null);
+				ItemStackTransaction itemStackTransaction = marketDataManager
+						.createItemStackTransaction(pluginPlayer, slot);
+				itemStackTransaction.execute();
+				BigDecimal total = itemStackTransaction.getTransaction().getTotal();
 				
 				pluginPlayer.sendMessage
 				(
 					PluginMessage.COMMAND_SELL_SOLD_$MATERIAL_$AMOUNT_$VALUE,
 					Component.translatable(material.translationKey()),
-					item.getAmount(),
+					itemStackTransaction.getAmountToConsume(),
 					total
 				);
 				return true;

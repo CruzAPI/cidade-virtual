@@ -4,10 +4,7 @@ import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.NegativeBalanceException;
 import com.eul4.exception.OperationException;
 import com.eul4.holder.CrownHolder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -16,6 +13,7 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@ToString
 public class CryptoInfo implements CrownHolder
 {
 	public static final MathContext MATH_CONTEXT = new MathContext(8, RoundingMode.HALF_EVEN);
@@ -40,14 +38,36 @@ public class CryptoInfo implements CrownHolder
 	
 	public CryptoInfoTradePreview createTradePreview(BigDecimal amount) throws InvalidCryptoInfoException
 	{
-		return new CryptoInfoTradePreview(this, previewTrade(amount));
+		return new CryptoInfoTradePreview(this, previewMarketCap(amount), amount);
 	}
 	
-	public BigDecimal previewTrade(BigDecimal amount) throws InvalidCryptoInfoException
+	public BigDecimal previewCirculatingSupplyDiff(BigDecimal marketCapAugend)
+			throws NegativeBalanceException, InvalidCryptoInfoException
+	{
+		return previewCirculatingSupply(marketCapAugend).subtract(circulatingSupply);
+	}
+	
+	public BigDecimal previewCirculatingSupply(BigDecimal marketCapAugend)
+			throws InvalidCryptoInfoException, NegativeBalanceException
+	{
+		validate();
+
+		BigDecimal marketCap = this.marketCap.add(marketCapAugend);
+
+		if(marketCap.compareTo(BigDecimal.ZERO) < 0)
+		{
+			throw new NegativeBalanceException();
+		}
+
+		BigDecimal ratio = marketCap.divide(this.marketCap, MATH_CONTEXT);
+		return circulatingSupply.divide(ratio, MATH_CONTEXT);
+	}
+	
+	public BigDecimal previewMarketCap(BigDecimal circulatingSupplyAugend) throws InvalidCryptoInfoException
 	{
 		validate();
 		
-		BigDecimal circulatingSupply = this.circulatingSupply.add(amount);
+		BigDecimal circulatingSupply = this.circulatingSupply.add(circulatingSupplyAugend);
 		
 		if(circulatingSupply.compareTo(BigDecimal.ZERO) <= 0)
 		{
@@ -104,7 +124,7 @@ public class CryptoInfo implements CrownHolder
 	}
 	
 	@Override
-	public void add(BigDecimal amount) throws OperationException
+	public void add(BigDecimal amount) throws NegativeBalanceException
 	{
 		updateMarketCap(marketCap.add(amount));
 	}
@@ -121,7 +141,7 @@ public class CryptoInfo implements CrownHolder
 		return marketCap.compareTo(BigDecimal.ZERO) <= 0;
 	}
 	
-	private void updateMarketCap(BigDecimal newMarketCap) throws OperationException
+	private void updateMarketCap(BigDecimal newMarketCap) throws NegativeBalanceException
 	{
 		if(newMarketCap.compareTo(BigDecimal.ZERO) < 0)
 		{

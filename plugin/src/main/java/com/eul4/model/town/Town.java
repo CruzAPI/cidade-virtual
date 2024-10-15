@@ -237,5 +237,6 @@ public interface Town
 	
 	BigDecimal calculateCrownBalance();
 	BigDecimal calculateCrownCapacity();
+	BigDecimal calculateRemainingCrownCapacity();
 	List<CapacitatedCrownHolder> getCapacitatedCrownHolders();
 }

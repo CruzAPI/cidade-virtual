@@ -17,7 +17,19 @@ public class Transaction<N extends Number & Comparable<N>>
 		this.transferList = transferList;
 	}
 	
-	public void execute() throws OperationException
+	public void tryExecute() throws OperationException
+	{
+		try
+		{
+			execute();
+		}
+		catch(Exception e)
+		{
+			tryRollback();
+		}
+	}
+	
+	void execute() throws OperationException
 	{
 		if(executed)
 		{
@@ -26,16 +38,9 @@ public class Transaction<N extends Number & Comparable<N>>
 		
 		executed = true;
 		
-		try
+		for(Transfer<?> transfer : transferList)
 		{
-			for(Transfer<?> transfer : transferList)
-			{
-				transfer.execute();
-			}
-		}
-		catch(Exception e)
-		{
-			tryRollback();
+			transfer.execute();
 		}
 	}
 	
@@ -51,7 +56,7 @@ public class Transaction<N extends Number & Comparable<N>>
 		}
 	}
 	
-	private void rollback() throws OperationException
+	void rollback() throws OperationException
 	{
 		if(!executed || rollbacked)
 		{

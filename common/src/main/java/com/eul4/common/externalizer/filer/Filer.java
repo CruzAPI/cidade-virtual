@@ -4,9 +4,10 @@ import com.eul4.common.Common;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.type.player.ObjectType;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,14 +34,12 @@ public abstract class Filer
 	protected ObjectType[] writeVersions(DataOutput out) throws IOException, InvalidVersionException
 	{
 		out.writeByte(version);
-		Bukkit.getLogger().info("[FilerWriter] version: " + version);
 		
 		ObjectType[] objectTypes = getObjectTypes(version);
 		
 		for(ObjectType objectType : objectTypes)
 		{
 			out.writeByte(objectType.getVersion());
-			Bukkit.getLogger().info("[FilerWriter] objectType: " + objectType);
 		}
 		
 		return objectTypes;

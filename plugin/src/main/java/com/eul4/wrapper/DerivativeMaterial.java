@@ -1,5 +1,6 @@
 package com.eul4.wrapper;
 
+import com.eul4.enums.Rarity;
 import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.NegativeBalanceException;
 import com.google.common.base.Preconditions;
@@ -9,6 +10,8 @@ import org.bukkit.Material;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+
+import static com.eul4.wrapper.CryptoInfo.MATH_CONTEXT;
 
 @Getter
 public class DerivativeMaterial extends EconomicMaterial
@@ -24,16 +27,22 @@ public class DerivativeMaterial extends EconomicMaterial
 		this.economicMaterialMultipliers = economicMaterialMultipliers;
 	}
 	
-	public ItemStackTradePreview createTradePreviews(BigDecimal holderRemainingCapacity, int amount) throws InvalidCryptoInfoException
+	public ItemStackTradePreview createTradePreviews
+	(
+		BigDecimal holderRemainingCapacity,
+		int amount,
+		BigDecimal rarityMultiplier
+	)
+	throws InvalidCryptoInfoException
 	{
 		BigDecimal actualAmount = BigDecimal.valueOf(amount);
 		BigDecimal minAmount;
 		
 		try
 		{
-			BigDecimal maxAmount = previewCirculatingSupplyDifferenceByMarketCap(holderRemainingCapacity.negate());
+			BigDecimal maxAmount = previewCirculatingSupplyDiff(holderRemainingCapacity.negate());
 			
-			maxAmount = maxAmount.setScale(0, RoundingMode.DOWN);
+			maxAmount = maxAmount.divideToIntegralValue(rarityMultiplier, MATH_CONTEXT);
 			minAmount = maxAmount.compareTo(actualAmount) < 0 ? maxAmount : actualAmount;
 		}
 		catch(NegativeBalanceException e)
@@ -45,27 +54,31 @@ public class DerivativeMaterial extends EconomicMaterial
 				? BigDecimal.ONE
 				: minAmount;
 		
-		return createTradePreviews(minAmount);
+		return createTradePreviews(minAmount, rarityMultiplier);
 	}
+//
+//	public ItemStackTradePreview createTradePreviews(int amount) throws InvalidCryptoInfoException
+//	{
+//		return createTradePreviews(BigDecimal.valueOf(amount));
+//	}
 	
-	public ItemStackTradePreview createTradePreviews(int amount) throws InvalidCryptoInfoException
+	public ItemStackTradePreview createTradePreviews
+	(
+		BigDecimal baseMultiplier,
+		BigDecimal rarityMultiplier
+	)
+	throws InvalidCryptoInfoException
 	{
-		return createTradePreviews(BigDecimal.valueOf(amount));
+		final BigDecimal multiplier = baseMultiplier.multiply(rarityMultiplier, MATH_CONTEXT);
+		return createTradePreviews(new ItemStackTradePreview(baseMultiplier), multiplier);
 	}
 	
-	public ItemStackTradePreview createTradePreviews(BigDecimal multiplier) throws InvalidCryptoInfoException
-	{
-		return createTradePreviews(new ItemStackTradePreview(multiplier), multiplier);
-	}
-	
-	
-	
-	public BigDecimal previewCirculatingSupplyDifferenceByMarketCap(BigDecimal marketCapAugend)
+	public BigDecimal previewCirculatingSupplyDiff(BigDecimal marketCapAugend)
 			throws InvalidCryptoInfoException, NegativeBalanceException
 	{
 		BigDecimal price = calculatePrice();
 		BigDecimal marketCap = calculateMarketCap();
-		BigDecimal circulatingSupply = marketCap.divide(price, CryptoInfo.MATH_CONTEXT);
+		BigDecimal circulatingSupply = marketCap.divide(price, MATH_CONTEXT);
 		
 		CryptoInfo fakeCrypto = new CryptoInfo(marketCap, circulatingSupply);
 		
@@ -110,7 +123,7 @@ public class DerivativeMaterial extends EconomicMaterial
 		for(EconomicMaterialMultiplier economicMaterialMultiplier : economicMaterialMultipliers)
 		{
 			EconomicMaterial economicMaterial = economicMaterialMultiplier.economicMaterial;
-			BigDecimal multiplier = baseMultiplier.multiply(economicMaterialMultiplier.multiplier, CryptoInfo.MATH_CONTEXT);
+			BigDecimal multiplier = baseMultiplier.multiply(economicMaterialMultiplier.multiplier, MATH_CONTEXT);
 			
 			if(economicMaterial instanceof DerivativeMaterial derivativeMaterial)
 			{
@@ -118,7 +131,7 @@ public class DerivativeMaterial extends EconomicMaterial
 			}
 			else if(economicMaterial instanceof RawMaterial rawMaterial)
 			{
-				BigDecimal price = rawMaterial.getCryptoInfo().calculatePrice().multiply(multiplier, CryptoInfo.MATH_CONTEXT);
+				BigDecimal price = rawMaterial.getCryptoInfo().calculatePrice().multiply(multiplier, MATH_CONTEXT);
 				totalPrice = totalPrice.add(price);
 			}
 		}
@@ -136,7 +149,8 @@ public class DerivativeMaterial extends EconomicMaterial
 		for(EconomicMaterialMultiplier economicMaterialMultiplier : economicMaterialMultipliers)
 		{
 			EconomicMaterial economicMaterial = economicMaterialMultiplier.economicMaterial;
-			BigDecimal multiplier = baseMultiplier.multiply(economicMaterialMultiplier.multiplier, CryptoInfo.MATH_CONTEXT);
+			BigDecimal multiplier = baseMultiplier
+					.multiply(economicMaterialMultiplier.multiplier, MATH_CONTEXT);
 			
 			if(economicMaterial instanceof DerivativeMaterial derivativeMaterial)
 			{

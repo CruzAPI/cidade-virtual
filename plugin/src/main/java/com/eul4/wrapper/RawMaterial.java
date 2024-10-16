@@ -8,6 +8,8 @@ import org.bukkit.Material;
 
 import java.math.BigDecimal;
 
+import static com.eul4.wrapper.CryptoInfo.MATH_CONTEXT;
+
 @Getter
 public class RawMaterial extends EconomicMaterial
 {
@@ -33,32 +35,58 @@ public class RawMaterial extends EconomicMaterial
 	public ItemStackTradePreview createTradePreview
 	(
 		BigDecimal holderRemainingCapacity,
-		int circulatingSupplyAugend
+		int circulatingSupplyAugend,
+		BigDecimal rarityMultiplier
 	)
 	throws InvalidCryptoInfoException
 	{
-		return createTradePreview(holderRemainingCapacity, BigDecimal.valueOf(circulatingSupplyAugend));
+		return createTradePreview
+		(
+			holderRemainingCapacity,
+			BigDecimal.valueOf(circulatingSupplyAugend),
+			rarityMultiplier
+		);
 	}
 	
 	public ItemStackTradePreview createTradePreview
 	(
 		BigDecimal holderRemainingCapacity,
-		BigDecimal circulatingSupplyAugend
+		BigDecimal actualAmount,
+		BigDecimal rarityMultiplier
+	)
+	throws InvalidCryptoInfoException
+	{
+		BigDecimal minAmount = getMinAmount(holderRemainingCapacity, actualAmount, rarityMultiplier);
+		BigDecimal multiplier = minAmount.multiply(rarityMultiplier, MATH_CONTEXT);
+		
+		return new ItemStackTradePreview
+		(
+			createTradePreview(multiplier),
+			minAmount
+		);
+	}
+	
+	private BigDecimal getMinAmount
+	(
+		BigDecimal holderRemainingCapacity,
+		BigDecimal actualAmount,
+		BigDecimal rarityMultiplier
 	)
 	throws InvalidCryptoInfoException
 	{
 		try
 		{
-			BigDecimal maxCirculatingSupplyAugend = cryptoInfo.previewCirculatingSupplyDiff(holderRemainingCapacity);
-			circulatingSupplyAugend = maxCirculatingSupplyAugend.compareTo(circulatingSupplyAugend) < 0
-					? maxCirculatingSupplyAugend
-					: circulatingSupplyAugend;
+			final BigDecimal maxAmount = cryptoInfo
+					.previewCirculatingSupplyDiff(holderRemainingCapacity)
+					.divideToIntegralValue(rarityMultiplier, MATH_CONTEXT);
+			
+			return maxAmount.compareTo(actualAmount) < 0
+					? maxAmount
+					: actualAmount;
 		}
-		catch(NegativeBalanceException ignored)
+		catch(NegativeBalanceException e)
 		{
-		
+			return actualAmount;
 		}
-		
-		return new ItemStackTradePreview(createTradePreview(circulatingSupplyAugend), circulatingSupplyAugend);
 	}
 }

@@ -3,12 +3,14 @@ package com.eul4.service;
 import com.eul4.Main;
 import com.eul4.economy.ItemStackTransaction;
 import com.eul4.economy.Transaction;
+import com.eul4.enums.Rarity;
 import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.MaterialNotForSaleException;
 import com.eul4.exception.OverCapacityException;
 import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
+import com.eul4.util.RarityUtil;
 import com.eul4.wrapper.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -174,17 +176,29 @@ public class MarketDataManager
 	throws InvalidCryptoInfoException, MaterialNotForSaleException
 	{
 		Material material = itemStack.getType();
+		Rarity rarity = RarityUtil.getRarity(itemStack);
+		BigDecimal rarityMultiplier = BigDecimal.valueOf(rarity.getScalarMultiplier(10));
 		
 		if(derivates.containsKey(material))
 		{
 			return derivates.get(material)
-					.createTradePreviews(holderRemainingCapacity, itemStack.getAmount());
+					.createTradePreviews
+					(
+						holderRemainingCapacity,
+						itemStack.getAmount(),
+						rarityMultiplier
+					);
 		}
 		else if(getRawMaterialMap().containsKey(material))
 		{
 			return getRawMaterialMap()
 					.get(material)
-					.createTradePreview(holderRemainingCapacity, itemStack.getAmount());
+					.createTradePreview
+					(
+						holderRemainingCapacity,
+						itemStack.getAmount(),
+						rarityMultiplier
+					);
 		}
 		else
 		{

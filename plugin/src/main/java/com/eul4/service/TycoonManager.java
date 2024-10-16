@@ -25,7 +25,7 @@ public class TycoonManager
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, this::updateTycoon);
 	}
 	
-	private synchronized void updateTycoon()
+	public synchronized void updateTycoon()
 	{
 		Town tycoonTown = null;
 		BigDecimal highestBalance = BigDecimal.ZERO;

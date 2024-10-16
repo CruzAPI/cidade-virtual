@@ -155,6 +155,8 @@ public class Main extends Common
 		crownInfoFiler.load();
 		marketDataManager.registerDerivatives();
 		
+		tycoonManager.updateTycoon();
+		
 		pasteCorruptedTowns();
 		
 		getLogger().info("Plugin enabled.");

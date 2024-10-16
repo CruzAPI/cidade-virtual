@@ -2,7 +2,12 @@ package com.eul4.listener;
 
 import com.eul4.Main;
 import com.eul4.common.hologram.Hologram;
+import com.eul4.economy.Transaction;
+import com.eul4.economy.Transfer;
 import com.eul4.event.TileInteractEvent;
+import com.eul4.event.TransactionExecuteEvent;
+import com.eul4.holder.Holder;
+import com.eul4.holder.TownOwner;
 import com.eul4.model.inventory.craft.CraftConfirmationGui;
 import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
@@ -28,6 +33,9 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.CUSTOM;
 
@@ -218,5 +226,25 @@ public class TownListener implements Listener
 		}
 		
 		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void updateCrownBalance(TransactionExecuteEvent event)
+	{
+		Transaction<?> transaction = event.getTransaction();
+		Set<Town> updatedTowns = new HashSet<>();
+		
+		for(Holder<?> involvedHolder : transaction.getInvolvedHolders())
+		{
+			if(involvedHolder instanceof TownOwner townOwner)
+			{
+				Town town = plugin.getTownManager().getTownByTownUniqueId(townOwner.getTownUniqueId());
+				
+				if(updatedTowns.add(town))
+				{
+					town.updateCrownBalance();
+				}
+			}
+		}
 	}
 }

@@ -5,6 +5,7 @@ import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.BlockReader;
 import com.eul4.common.externalizer.reader.EntityReader;
 import com.eul4.common.externalizer.reader.ObjectReader;
+import com.eul4.common.externalizer.reader.UUIDReader;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
@@ -50,6 +51,10 @@ public class TownReader extends ObjectReader<Town>
 			this.reader = this::readerVersion3;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
+		case 4:
+			this.reader = this::readerVersion3;
+			this.parameterizedReadable = this::parameterizedReadableVersion1;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -58,6 +63,16 @@ public class TownReader extends ObjectReader<Town>
 	private Readable<Town> parameterizedReadableVersion0(Main plugin)
 	{
 		return () -> new CraftTown(new UUID(in.readLong(), in.readLong()),
+				readers.getReader(BlockReader.class).readReference(plugin),
+				plugin);
+	}
+	
+	private Readable<Town> parameterizedReadableVersion1(Main plugin)
+	{
+		UUIDReader uuidReader = readers.getReader(UUIDReader.class);
+		
+		return () -> new CraftTown(uuidReader.readReference(),
+				uuidReader.readReference(),
 				readers.getReader(BlockReader.class).readReference(plugin),
 				plugin);
 	}

@@ -50,7 +50,7 @@ public class TownMapReader extends ObjectReader<TownMap>
 			for(int i = 0; i < size; i++)
 			{
 				Town town = readers.getReader(TownReader.class).readReference(plugin);
-				towns.put(town.getOwnerUUID(), town);
+				towns.put(town.getOwnerUniqueId(), town);
 			}
 			
 			return towns;

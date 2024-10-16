@@ -1,12 +1,18 @@
 package com.eul4.economy;
 
+import com.eul4.event.TransactionExecuteEvent;
 import com.eul4.exception.OperationException;
+import com.eul4.holder.Holder;
+import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Transaction<N extends Number & Comparable<N>>
 {
+	@Getter
 	private final List<Transfer<N>> transferList;
 	
 	private boolean executed;
@@ -42,6 +48,8 @@ public class Transaction<N extends Number & Comparable<N>>
 		{
 			transfer.execute();
 		}
+	
+		new TransactionExecuteEvent(this).callEvent();
 	}
 	
 	private void tryRollback()
@@ -69,6 +77,19 @@ public class Transaction<N extends Number & Comparable<N>>
 		{
 			transfer.rollback();
 		}
+	}
+	
+	public Set<Holder<N>> getInvolvedHolders()
+	{
+		Set<Holder<N>> involvedHolders = new HashSet<>();
+		
+		for(Transfer<N> transfer : transferList)
+		{
+			involvedHolders.add(transfer.getHolderFrom());
+			involvedHolders.add(transfer.getHolderTo());
+		}
+		
+		return involvedHolders;
 	}
 	
 	//TODO melhorar esse codigo (gambiarra temporraria pra debug)

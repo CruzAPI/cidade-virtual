@@ -117,11 +117,16 @@ public enum PluginRichMessage implements RichMessage
 		{
 			component("like_balance", decimalToComponent(town.getLikes(), intDecimalFormat)),
 			component("like_capacity", decimalToComponent(town.getLikeCapacity(), intDecimalFormat)),
-			component("dislike_balance", decimalToComponent(town.getDislikeCapacity(), intDecimalFormat)),
+			component("dislike_balance", decimalToComponent(town.getDislikes(), intDecimalFormat)),
 			component("dislike_capacity", decimalToComponent(town.getDislikeCapacity(), intDecimalFormat)),
-			component("crown_balance", decimalToComponent(town.calculateCrownBalance(), crownDecimalFormat)),
+			component("crown_balance", decimalToComponent(town.getCalculatedCrownBalance(), crownDecimalFormat)),
 			component("crown_capacity", decimalToComponent(town.calculateCrownCapacity(), crownDecimalFormat)),
 		};
+	}),
+	
+	BROADCAST_NEW_TYCOON_$PLAYER("broadcast.new-tycoon", (locale, args) -> new TagResolver[]
+	{
+		component("player", CommonMessageUtil.displayName(args[0])),
 	}),
 	
 	;

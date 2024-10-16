@@ -93,7 +93,7 @@ public class DataFileManager
 	
 	public File getTownSchematicFile(Town town)
 	{
-		return getTownSchematicFile(town.getOwnerUUID());
+		return getTownSchematicFile(town.getOwnerUniqueId());
 	}
 	
 	public File getTownSchematicFile(UUID uuid)
@@ -103,7 +103,7 @@ public class DataFileManager
 	
 	public File createTownSchematicFile(Town town) throws IOException
 	{
-		return createTownSchematicFile(town.getOwnerUUID());
+		return createTownSchematicFile(town.getOwnerUniqueId());
 	}
 	
 	public File createTownSchematicFile(UUID uuid) throws IOException

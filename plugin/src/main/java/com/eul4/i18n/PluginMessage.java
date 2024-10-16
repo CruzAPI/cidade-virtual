@@ -2,6 +2,7 @@ package com.eul4.i18n;
 
 import com.eul4.Main;
 import com.eul4.StructureType;
+import com.eul4.command.BaltopCommand;
 import com.eul4.command.HomeCommand;
 import com.eul4.command.SetHomeCommand;
 import com.eul4.command.TagCommand;
@@ -27,7 +28,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -45,7 +45,6 @@ import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.STRIKETHROUGH;
-import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 
 @Getter
 public enum PluginMessage implements Message
@@ -69,6 +68,7 @@ public enum PluginMessage implements Message
 	TAG_VIP("tag.vip", empty().color(GREEN)),
 	TAG_MAYOR("tag.mayor", empty().color(YELLOW)),
 	TAG_ALPHA("tag.alpha", empty().color(DARK_PURPLE)),
+	TAG_TYCOON("tag.tycoon", empty().color(GOLD)),
 	TAG_DEPUTY_MAYOR("tag.deputy-mayor", empty().color(YELLOW)),
 	TAG_TOWNEE("tag.townee", empty().color(GRAY)),
 	TAG_INDIGENT("tag.indigent", empty().color(DARK_GRAY)),
@@ -870,6 +870,23 @@ public enum PluginMessage implements Message
 			.color(RED)
 	)),
 	
+	GENERIC_COMMAND_NOARGS_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+			.append(argToComponent(args[0]))
+			.appendSpace()
+			.append(usageRequiredArg(BROADCAST.translate(locale)))
+			.color(RED)
+	)),
+	
+	GENERIC_COMMAND_NOARGS_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+				.appendNewline()
+				.append(GENERIC_COMMAND_NOARGS_USAGE_$ALIASES.translate(locale, args[0]))
+				.color(RED)
+	)),
+	
 	COMMAND_NEWBIE_USAGE_$ALIASES((locale, args) -> Collections.singletonList
 	(
 		text("/")
@@ -903,6 +920,55 @@ public enum PluginMessage implements Message
 	{
 		empty().color(RED),
 		argToComponent(args[0]),
+	}),
+	
+	COMMAND_BALTOP_WAIT_COMPUTATION("command.baltop.wait-computation", empty().color(GRAY)),
+	
+	COMMAND_BALTOP_$LIST((locale, args) ->
+	{
+		List<BaltopCommand.PlayerBalance> playerBalances = (List<BaltopCommand.PlayerBalance>) args[0];
+		DecimalFormat decimalFormat = Currency.CROWN.getDecimalFormat(locale);
+		
+		Component headerTracesComponent = text("============").color(DARK_GRAY);
+		
+		Component headerComponent = headerTracesComponent
+				.append(text(" BALTOP ").color(DARK_GREEN).decorate(BOLD))
+				.append(headerTracesComponent);
+		Component footerComponent = text("=================================").color(DARK_GRAY);
+		
+		List<Component> components = new ArrayList<>();
+		
+		components.add(headerComponent);
+		
+		for(int i = 0; i < 8 && i < playerBalances.size(); i++)
+		{
+			final BaltopCommand.PlayerBalance playerBalance = playerBalances.get(i);
+			final int pos = i + 1;
+			
+			Component crownWordComponent = Currency.CROWN.getWordFor(playerBalance.getBalance())
+					.translate(locale);
+			Component placementComponent = text(pos + "º").color(WHITE).decorate(BOLD);
+			Component playerNameComponent = displayName(playerBalance.getOfflinePlayer());
+			Component playerBalanceComponent = text(decimalFormat.format(playerBalance.getBalance()))
+					.appendSpace()
+					.append(crownWordComponent)
+					.style(Currency.CROWN.getStyle());
+			
+			Component component = empty()
+					.append(placementComponent)
+					.appendSpace()
+					.append(playerNameComponent)
+					.appendSpace()
+					.append(text("-").color(GRAY).decorate(BOLD))
+					.appendSpace()
+					.append(playerBalanceComponent);
+			
+			components.add(component);
+		}
+		
+		components.add(footerComponent);
+		
+		return components;
 	}),
 	
 	COMMAND_BALANCE("command.balance", (bundle, args) ->

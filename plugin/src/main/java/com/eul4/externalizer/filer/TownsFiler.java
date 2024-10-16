@@ -19,7 +19,7 @@ import java.util.logging.Level;
 
 public class TownsFiler extends PluginFiler
 {
-	private static final byte VERSION = 2;
+	private static final byte VERSION = 3;
 	
 	private static final ObjectType[] OBJECT_TYPES_V0 = new ObjectType[]
 	{
@@ -102,6 +102,46 @@ public class TownsFiler extends PluginFiler
 		CommonObjectType.LOCATION,
 		CommonObjectType.OBJECT,
 		CommonObjectType.TRANSLATED_HOLOGRAM_LINE,
+		PluginObjectType.ARMORY,
+		PluginObjectType.BOUGHT_TILE_MAP_BY_DEPTH,
+		PluginObjectType.CANNON,
+		PluginObjectType.CAPACITATED_CROWN_HOLDER,
+		PluginObjectType.CROWN_DEPOSIT,
+		PluginObjectType.DEPOSIT,
+		PluginObjectType.DISLIKE_DEPOSIT,
+		PluginObjectType.DISLIKE_GENERATOR,
+		PluginObjectType.GENERATOR,
+		PluginObjectType.GENERIC_STRUCTURE,
+		PluginObjectType.LIKE_DEPOSIT,
+		PluginObjectType.LIKE_GENERATOR,
+		PluginObjectType.PHYSICAL_DEPOSIT,
+		PluginObjectType.STRUCTURE,
+		PluginObjectType.STRUCTURE_MAP,
+		PluginObjectType.TOWN_BLOCK_MAP,
+		PluginObjectType.TOWN_BLOCK,
+		PluginObjectType.TOWN_BLOCK_SET,
+		PluginObjectType.TOWN_HALL,
+		PluginObjectType.TOWN_MAP,
+		PluginObjectType.TOWN,
+		PluginObjectType.TOWN_TILE_MAP,
+		PluginObjectType.TOWN_TILE,
+		PluginObjectType.TURRET,
+		PluginObjectType.VECTOR_3,
+	},
+	
+	OBJECT_TYPES_V3 = new ObjectType[]
+	{
+		CommonObjectType.BLOCK,
+		CommonObjectType.BIG_DECIMAL,
+		CommonObjectType.CHUNK,
+		CommonObjectType.ENTITY,
+		CommonObjectType.HOLOGRAM,
+		CommonObjectType.INVENTORY,
+		CommonObjectType.ITEM_STACK,
+		CommonObjectType.LOCATION,
+		CommonObjectType.OBJECT,
+		CommonObjectType.TRANSLATED_HOLOGRAM_LINE,
+		CommonObjectType.UUID,
 		PluginObjectType.ARMORY,
 		PluginObjectType.BOUGHT_TILE_MAP_BY_DEPTH,
 		PluginObjectType.CANNON,
@@ -256,6 +296,7 @@ public class TownsFiler extends PluginFiler
 			case 0 -> OBJECT_TYPES_V0;
 			case 1 -> OBJECT_TYPES_V1;
 			case 2 -> OBJECT_TYPES_V2;
+			case 3 -> OBJECT_TYPES_V3;
 			default -> throw new InvalidVersionException(MessageFormat.format(
 					"Invalid {0} version: {1}",
 					getClass().getSimpleName(),

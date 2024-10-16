@@ -205,7 +205,7 @@ public abstract class CraftStructure implements Structure
 					+ "owner={3}",
 					uuid,
 					town.getUUID(),
-					town.getOwnerUUID(),
+					town.getOwnerUniqueId(),
 					town.getOwner().getName());
 			
 			town.getPlugin().getLogger().log(Level.WARNING, msg, e);
@@ -972,7 +972,7 @@ public abstract class CraftStructure implements Structure
 			String msg = MessageFormat.format(pattern,
 					uuid,
 					town.getUUID(),
-					town.getOwnerUUID(),
+					town.getOwnerUniqueId(),
 					town.getOwner().getName(),
 					getStructureType());
 			
@@ -989,7 +989,7 @@ public abstract class CraftStructure implements Structure
 			String msg = MessageFormat.format(pattern,
 					uuid,
 					town.getUUID(),
-					town.getOwnerUUID(),
+					town.getOwnerUniqueId(),
 					town.getOwner().getName(),
 					getStructureType());
 			

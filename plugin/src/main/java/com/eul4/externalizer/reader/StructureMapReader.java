@@ -43,7 +43,7 @@ public class StructureMapReader extends ObjectReader<StructureMap>
 	{
 		return () ->
 		{
-			StructureMap structureMap = new StructureMap(town.getOwnerUUID());
+			StructureMap structureMap = new StructureMap(town.getOwnerUniqueId());
 			
 			int size = in.readInt();
 			

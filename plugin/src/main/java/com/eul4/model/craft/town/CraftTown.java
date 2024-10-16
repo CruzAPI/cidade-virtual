@@ -14,7 +14,6 @@ import com.eul4.exception.InsufficientBalanceException;
 import com.eul4.exception.StructureLimitException;
 import com.eul4.exception.TownHardnessLimitException;
 import com.eul4.holder.CapacitatedCrownHolder;
-import com.eul4.holder.CrownHolder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
@@ -29,6 +28,7 @@ import com.eul4.model.town.TownTile;
 import com.eul4.model.town.structure.*;
 import com.eul4.wrapper.*;
 import com.fastasyncworldedit.core.FaweAPI;
+import com.google.common.base.Preconditions;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.entity.BaseEntity;
@@ -59,6 +59,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.enginehub.linbus.tree.LinByteTag;
 import org.enginehub.linbus.tree.LinTagType;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
@@ -86,7 +87,8 @@ public class CraftTown implements Town
 {
 	public static final Map<Block, TownBlock> TOWN_BLOCKS = new HashMap<>();
 	
-	private final UUID ownerUUID;
+	private final UUID townUniqueId;
+	private final UUID ownerUniqueId;
 	private final Block block;
 	
 	private final Main plugin;
@@ -138,22 +140,36 @@ public class CraftTown implements Town
 	private transient EntityItemMoveMap entityItemMoveMap = new EntityItemMoveMap();
 	private transient AssistantTargetTask assistantTargetTask;
 	
-	public CraftTown(UUID ownerUUID, Block block, Main plugin)
+	private transient BigDecimal calculatedCrownBalance;
+	
+	public CraftTown(UUID ownerUniqueId, Block block, Main plugin)
 	{
-		this.ownerUUID = ownerUUID;
-		this.block = block;
-		this.plugin = plugin;
+		this(UUID.randomUUID(), ownerUniqueId, block, plugin);
+	}
+	
+	public CraftTown
+	(
+		@NotNull UUID townUniqueId,
+		@NotNull UUID ownerUniqueId,
+		@NotNull Block block,
+		@NotNull Main plugin
+	)
+	{
+		this.townUniqueId = Preconditions.checkNotNull(townUniqueId);
+		this.ownerUniqueId = Preconditions.checkNotNull(ownerUniqueId);
+		this.block = Preconditions.checkNotNull(block);
+		this.plugin = Preconditions.checkNotNull(plugin);
 	}
 	
 	public CraftTown(OfflinePlayer owner, Block block, Main plugin) throws CannotConstructException, IOException
 	{
 		this(owner.getUniqueId(), block, plugin);
 		
-		this.boughtTileMapByDepth = new BoughtTileMapByDepth(ownerUUID);
+		this.boughtTileMapByDepth = new BoughtTileMapByDepth(ownerUniqueId);
 		
 		this.townBlockMap = getInitialTownBlocks();
 		this.townTileMap = getInitialTownTiles();
-		this.structureMap = new StructureMap(ownerUUID);
+		this.structureMap = new StructureMap(ownerUniqueId);
 		
 		createInitialStructures();
 		
@@ -283,7 +299,7 @@ public class CraftTown implements Town
 	@Override
 	public OfflinePlayer getOwner()
 	{
-		return plugin.getServer().getOfflinePlayer(ownerUUID);
+		return plugin.getServer().getOfflinePlayer(ownerUniqueId);
 	}
 	
 	@Override
@@ -480,6 +496,7 @@ public class CraftTown implements Town
 		likeGeneratorsCapacity = calculateLikeGeneratorsCapacity();
 		dislikeGeneratorsCapacity = calculateDislikeGeneratorsCapacity();
 		resetHardnessLimit();
+		updateCrownBalance();
 		
 		new TownCapacityChangeEvent(this).callEvent();
 		new GeneratorsCapacityChangeEvent(this).callEvent();
@@ -665,7 +682,7 @@ public class CraftTown implements Town
 	@Override
 	public boolean isOwner(Player player)
 	{
-		return player.getUniqueId().equals(ownerUUID);
+		return player.getUniqueId().equals(ownerUniqueId);
 	}
 	
 	@Override
@@ -845,8 +862,7 @@ public class CraftTown implements Town
 		catch(Exception e)
 		{
 			plugin.getLogger().log(Level.SEVERE, MessageFormat.format(
-					"Failed to paste town schematic! uuid={0}",
-					ownerUUID), e);
+					"Failed to paste town schematic! uuid={0}", ownerUniqueId), e);
 			throw e;
 		}
 		finally
@@ -919,7 +935,7 @@ public class CraftTown implements Town
 					ClipboardWriter writer = BuiltInClipboardFormat.FAST.getWriter(fileOutputStream))
 			{
 				writer.write(clipboard2);
-				plugin.getLogger().info("Town schematic saved! uuid=" + ownerUUID);
+				plugin.getLogger().info("Town schematic saved! uuid=" + ownerUniqueId);
 			}
 			
 			//TODO: concurrent bug if save occurs here
@@ -946,8 +962,7 @@ public class CraftTown implements Town
 		catch(Exception e)
 		{
 			plugin.getLogger().log(Level.SEVERE, MessageFormat.format(
-					"Failed to save town schematic! uuid={0}",
-					ownerUUID), e);
+					"Failed to save town schematic! uuid={0}", ownerUniqueId), e);
 			throw e;
 		}
 		finally
@@ -1199,13 +1214,13 @@ public class CraftTown implements Town
 		}));
 		
 		plugin.getLogger().warning("subtractedMap: " + subtractedMap);
-		boughtTileMapByDepth = new BoughtTileMapByDepth(ownerUUID, subtractedMap);
+		boughtTileMapByDepth = new BoughtTileMapByDepth(ownerUniqueId, subtractedMap);
 	}
 	
 	@Override
 	public UUID getUUID()
 	{
-		return getOwnerUUID();
+		return getOwnerUniqueId();
 	}
 	
 	@Override
@@ -1384,8 +1399,7 @@ public class CraftTown implements Town
 		return countStructures(structureType) >= getStructureLimit(structureType);
 	}
 	
-	@Override
-	public BigDecimal calculateCrownBalance()
+	private BigDecimal calculateCrownBalance()
 	{
 		BigDecimal balance = BigDecimal.ZERO;
 		
@@ -1397,7 +1411,7 @@ public class CraftTown implements Town
 			}
 		}
 		
-		return balance;
+		return calculatedCrownBalance = balance;
 	}
 	
 	@Override
@@ -1425,6 +1439,20 @@ public class CraftTown implements Town
 	public BigDecimal calculateRemainingCrownCapacity()
 	{
 		return calculateCrownCapacity().subtract(calculateCrownBalance());
+	}
+	
+	@Override
+	public void updateCrownBalance()
+	{
+		calculatedCrownBalance = calculateCrownBalance();
+	}
+	
+	@Override
+	public BigDecimal getCalculatedCrownBalance()
+	{
+		return calculatedCrownBalance == null
+				? calculatedCrownBalance = calculateCrownBalance()
+				: calculatedCrownBalance;
 	}
 	
 	@Override

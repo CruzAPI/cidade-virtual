@@ -3,6 +3,7 @@ package com.eul4.externalizer.reader;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.BigDecimalReader;
 import com.eul4.common.externalizer.reader.ObjectReader;
+import com.eul4.common.externalizer.reader.UUIDReader;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Readable;
@@ -12,6 +13,8 @@ import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.UUID;
 
 public class CapacitatedCrownHolderReader extends ObjectReader<CapacitatedCrownHolder>
 {
@@ -39,7 +42,10 @@ public class CapacitatedCrownHolderReader extends ObjectReader<CapacitatedCrownH
 	
 	private CapacitatedCrownHolder readableVersion0() throws IOException, ClassNotFoundException
 	{
-		return new CapacitatedCrownHolder(readers.getReader(BigDecimalReader.class).readReference());
+		UUID townUniqueId = readers.getReader(UUIDReader.class).readReference();
+		BigDecimal balance = readers.getReader(BigDecimalReader.class).readReference();
+		
+		return new CapacitatedCrownHolder(townUniqueId, balance);
 	}
 	
 	public CapacitatedCrownHolder readReference() throws IOException, ClassNotFoundException

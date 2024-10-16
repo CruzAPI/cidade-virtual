@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.format.Style;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -48,6 +49,11 @@ public enum Currency
 	private final Message singularWord;
 	private final Message pluralWord;
 	private final Style style;
+	
+	public Message getWordFor(BigDecimal value)
+	{
+		return value.compareTo(BigDecimal.ONE) == 0 ? singularWord : pluralWord;
+	}
 	
 	public abstract DecimalFormat getDecimalFormat(Locale locale);
 }

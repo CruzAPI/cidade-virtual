@@ -70,7 +70,7 @@ public class DebugCommand implements TabExecutor
 			Town town = pluginPlayer.getTown();
 			
 			player.sendMessage("TownHallCrownHolder: " + capacitatedCrownHolder.getBalance() + "/" + capacitatedCrownHolder.getCapacity());
-			player.sendMessage("Total: " + town.calculateCrownBalance() + "/" + town.calculateCrownCapacity());
+			player.sendMessage("Total: " + town.getCalculatedCrownBalance() + "/" + town.calculateCrownCapacity());
 		}
 		else if(args.length == 2 && args[0].equalsIgnoreCase("goto"))
 		{

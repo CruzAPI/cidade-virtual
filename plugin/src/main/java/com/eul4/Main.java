@@ -105,6 +105,7 @@ public class Main extends Common
 	private MacroidService macroidService;
 	private MarketDataManager marketDataManager;
 	private TransactionManager transactionManager;
+	private TycoonManager tycoonManager;
 	
 	private PluginManager pluginManager;
 	
@@ -214,6 +215,7 @@ public class Main extends Common
 		macroidService = new MacroidService(this);
 		marketDataManager = new MarketDataManager(this);
 		transactionManager = new TransactionManager(this);
+		tycoonManager = new TycoonManager(this);
 	}
 	
 	private void registerRuleSerializers()
@@ -258,6 +260,7 @@ public class Main extends Common
 		
 		registerCommand(new AdminCommand(this), AdminCommand.NAME_AND_ALIASES);
 		registerCommand(new BalanceCommand(this), BalanceCommand.NAME_AND_ALIASES);
+		registerCommand(new BaltopCommand(this), BaltopCommand.NAME_AND_ALIASES);
 		registerCommand(new DebugCommand(this), DebugCommand.NAME_AND_ALIASES);
 		registerCommand(buyStructureCommand = new BuyStructureCommand(this), BuyStructureCommand.NAME_AND_ALIASES);
 		registerCommand(new DelHomeCommand(this), DelHomeCommand.NAME_AND_ALIASES);
@@ -424,6 +427,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownAttackListener(this), this);
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
+		pluginManager.registerEvents(new TycoonListener(this), this);
 		pluginManager.registerEvents(new VillagerRarityListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
 		pluginManager.registerEvents(itemDamageAttributeListener = new ItemDamageAttributeListener(this), this);

@@ -233,4 +233,10 @@ public abstract sealed class CraftPluginPlayer extends CraftCommonPlayer impleme
 	{
 		pluginPlayerData.setNewCombat(attackSpeed);
 	}
+	
+	@Override
+	public boolean isTycoon()
+	{
+		return getTown() == plugin.getTycoonManager().getTycoonTown();
+	}
 }

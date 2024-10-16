@@ -6,7 +6,9 @@ import lombok.Getter;
 
 public class Transfer<N extends Number & Comparable<N>>
 {
+	@Getter
 	private final Holder<N> holderFrom;
+	@Getter
 	private final Holder<N> holderTo;
 	@Getter
 	private final N amount;

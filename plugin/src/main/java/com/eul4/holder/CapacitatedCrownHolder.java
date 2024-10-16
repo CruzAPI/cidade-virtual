@@ -3,21 +3,36 @@ package com.eul4.holder;
 import com.eul4.exception.NegativeBalanceException;
 import com.eul4.exception.OperationException;
 import com.eul4.exception.OverCapacityException;
+import com.eul4.model.town.Town;
+import com.google.common.base.Preconditions;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
-public class CapacitatedCrownHolder implements CrownHolder, CapacitatedHolder<BigDecimal>
+public class CapacitatedCrownHolder implements CrownHolder, CapacitatedHolder<BigDecimal>, TownOwner
 {
 	private BigDecimal balance;
 	private BigDecimal capacity;
 	
-	public CapacitatedCrownHolder()
+	@Getter
+	private final UUID townUniqueId;
+	
+	public CapacitatedCrownHolder(Town town)
 	{
-		this(BigDecimal.ZERO);
+		this(town.getTownUniqueId());
 	}
 	
-	public CapacitatedCrownHolder(BigDecimal balance)
+	public CapacitatedCrownHolder(UUID townUniqueId)
 	{
+		this(townUniqueId, BigDecimal.ZERO);
+	}
+	
+	public CapacitatedCrownHolder(@NotNull UUID townUniqueId, BigDecimal balance)
+	{
+		this.townUniqueId = Preconditions.checkNotNull(townUniqueId);
+		
 		this.balance = balance;
 		this.capacity = BigDecimal.ZERO;
 	}

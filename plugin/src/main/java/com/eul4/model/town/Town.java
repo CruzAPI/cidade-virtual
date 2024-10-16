@@ -52,6 +52,8 @@ public interface Town
 		return Optional.ofNullable(getStaticTownBlock(block));
 	}
 	
+	UUID getTownUniqueId();
+	
 	TownBlock getTownBlock(Block block);
 	Optional<TownBlock> findTownBlock(Block block);
 	Location getLocation();
@@ -117,7 +119,7 @@ public interface Town
 	
 	boolean canBeAnalyzed();
 	
-	UUID getOwnerUUID();
+	UUID getOwnerUniqueId();
 	
 	TownTileMap getTownTileMap();
 	TownBlockMap getTownBlockMap();
@@ -235,8 +237,11 @@ public interface Town
 	
 	boolean hasReachedStructureLimit(StructureType structureType);
 	
-	BigDecimal calculateCrownBalance();
 	BigDecimal calculateCrownCapacity();
 	BigDecimal calculateRemainingCrownCapacity();
+	
+	BigDecimal getCalculatedCrownBalance();
+	void updateCrownBalance();
+	
 	List<CapacitatedCrownHolder> getCapacitatedCrownHolders();
 }

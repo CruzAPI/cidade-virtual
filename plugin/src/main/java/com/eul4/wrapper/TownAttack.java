@@ -236,7 +236,7 @@ public class TownAttack
 
 			attackerBossBar.progress((float) ticks / maxTicks);
 			bossBar.progress((float) ticks / maxTicks);
-			CommonPlayer commonPlayer = town.getPlugin().getPlayerManager().get(town.getOwnerUUID());
+			CommonPlayer commonPlayer = town.getPlugin().getPlayerManager().get(town.getOwnerUniqueId());
 
 			if(commonPlayer instanceof Defender
 					|| commonPlayer instanceof DefenderSpectator

@@ -4,19 +4,21 @@ import com.eul4.model.town.Town;
 import lombok.Getter;
 import org.bukkit.event.HandlerList;
 
+import java.math.BigDecimal;
+
 @Getter
-public class LikeChangeEvent extends TownEvent
+public class CrownChangeEvent extends TownEvent
 {
 	private static final HandlerList HANDLER = new HandlerList();
 	
-	private final int oldLikes;
-	private final int newLikes;
+	private final BigDecimal oldCrowns;
+	private final BigDecimal newCrowns;
 	
-	public LikeChangeEvent(Town town, int oldLikes, int newLikes)
+	public CrownChangeEvent(Town town, BigDecimal oldCrowns, BigDecimal newCrowns)
 	{
 		super(town);
-		this.oldLikes = oldLikes;
-		this.newLikes = newLikes;
+		this.oldCrowns = oldCrowns;
+		this.newCrowns = newCrowns;
 	}
 	
 	public static HandlerList getHandlerList()

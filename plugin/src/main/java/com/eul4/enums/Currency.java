@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.format.Style;
 
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -23,7 +22,12 @@ public enum Currency
 		@Override
 		public DecimalFormat getDecimalFormat(Locale locale)
 		{
-			return new DecimalFormat("0", new DecimalFormatSymbols(locale));
+			DecimalFormat decimalFormat = new DecimalFormat("0", new DecimalFormatSymbols(locale));
+			
+			decimalFormat.setGroupingSize(3);
+			decimalFormat.setGroupingUsed(true);
+			
+			return decimalFormat;
 		}
 	},
 	
@@ -32,7 +36,12 @@ public enum Currency
 		@Override
 		public DecimalFormat getDecimalFormat(Locale locale)
 		{
-			return new DecimalFormat("0", new DecimalFormatSymbols(locale));
+			DecimalFormat decimalFormat = new DecimalFormat("0", new DecimalFormatSymbols(locale));
+			
+			decimalFormat.setGroupingSize(3);
+			decimalFormat.setGroupingUsed(true);
+			
+			return decimalFormat;
 		}
 	},
 	
@@ -41,7 +50,13 @@ public enum Currency
 		@Override
 		public DecimalFormat getDecimalFormat(Locale locale)
 		{
-			return new DecimalFormat("0.00", new DecimalFormatSymbols(locale));
+			DecimalFormat decimalFormat = new DecimalFormat("0.00");
+			
+			decimalFormat.setDecimalFormatSymbols(new DecimalFormatSymbols(locale));
+			decimalFormat.setGroupingSize(3);
+			decimalFormat.setGroupingUsed(true);
+			
+			return decimalFormat;
 		}
 	},
 	;
@@ -50,9 +65,9 @@ public enum Currency
 	private final Message pluralWord;
 	private final Style style;
 	
-	public Message getWordFor(BigDecimal value)
+	public Message getWordFor(Number number)
 	{
-		return value.compareTo(BigDecimal.ONE) == 0 ? singularWord : pluralWord;
+		return number.doubleValue() == 1.0D ? singularWord : pluralWord;
 	}
 	
 	public abstract DecimalFormat getDecimalFormat(Locale locale);

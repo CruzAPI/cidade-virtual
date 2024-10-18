@@ -18,6 +18,7 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Generator;
 import com.eul4.model.town.structure.PhysicalDeposit;
 import com.eul4.rule.attribute.*;
+import com.eul4.util.MaterialUtil;
 import com.eul4.util.TickConverter;
 import com.eul4.wrapper.Tag;
 import lombok.Getter;
@@ -27,6 +28,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
@@ -1231,12 +1233,39 @@ public enum PluginMessage implements Message
 	
 	COMMAND_SELL_NEED_HOLD_ITEM("command.sell.need-hold-item", empty().color(RED)),
 	COMMAND_SELL_ITEM_NOT_FOR_SALE("command.sell.item-not-for-sale", empty().color(RED)),
-	COMMAND_SELL_SOLD_$MATERIAL_$AMOUNT_$VALUE("command.sell.sold", (bundle, args) -> new Component[]
+	COMMAND_SELL_SOLD_$MATERIAL_$AMOUNT_$VALUE_$RARITY("command.sell.sold", (bundle, args) ->
 	{
-		empty().color(GREEN),
-		argToComponent(args[0], "*", "*").color(YELLOW),
-		argToComponent(args[1]).color(YELLOW),
-		decimalToComponent(args[2], "0.###", bundle.getLocale()).color(YELLOW),
+		Material material = (Material) args[0];
+		Rarity rarity = (Rarity) args[3];
+		
+		Style materialStyle = MaterialUtil.getStyle(material);
+		Component materialComponent = Component
+				.translatable(material.translationKey())
+				.style(materialStyle);
+		
+		Currency currency = Currency.CROWN;
+		String valueFormatted = currency.getDecimalFormat(bundle.getLocale()).format(args[2]);
+		
+		Component currencyWord = currency
+				.getWordFor((Number) args[2])
+				.translate(bundle, String::toLowerCase);
+		
+		Component valueAndCurrencyComponent = empty()
+				.append(text(valueFormatted).style(currency.getStyle()))
+				.appendSpace()
+				.append(currencyWord);
+		
+		Component rarityComponent = rarity.getStylizedMessage().translate(bundle);
+		Component rarityTagComponent = argToComponent(rarityComponent, "[", "]").color(GRAY);
+		
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			empty().append(materialComponent).appendSpace().append(rarityTagComponent),
+			argToComponent(args[1]).style(materialStyle),
+			valueAndCurrencyComponent
+		};
 	}),
 	
 	COMMAND_SETHOME_MAX_HOME_REACHED("command.sethome.max-home-reached", empty().color(RED)),

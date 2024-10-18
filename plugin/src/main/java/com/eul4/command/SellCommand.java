@@ -10,6 +10,7 @@ import com.eul4.exception.OverCapacityException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.service.MarketDataManager;
+import com.eul4.util.RarityUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -74,10 +75,11 @@ public class SellCommand implements TabExecutor
 				
 				pluginPlayer.sendMessage
 				(
-					PluginMessage.COMMAND_SELL_SOLD_$MATERIAL_$AMOUNT_$VALUE,
-					Component.translatable(material.translationKey()),
+					PluginMessage.COMMAND_SELL_SOLD_$MATERIAL_$AMOUNT_$VALUE_$RARITY,
+					material,
 					itemStackTransaction.getAmountToConsume(),
-					total
+					total,
+					RarityUtil.getRarity(item)
 				);
 				return true;
 			}

@@ -1,101 +1,94 @@
 package com.eul4.i18n;
 
 import com.eul4.common.i18n.BundleBaseName;
-import com.eul4.common.i18n.Message;
+import com.eul4.common.i18n.RichMessage;
+import com.eul4.enums.Currency;
 import com.eul4.model.town.Town;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
+import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.ResourceBundle;
+import java.util.Locale;
 import java.util.function.BiFunction;
 
-import static net.kyori.adventure.text.Component.empty;
-import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.unparsed;
 
 @Getter
-public enum TownScoreboardMessage implements Message
+@RequiredArgsConstructor
+public enum TownScoreboardMessage implements RichMessage
 {
 	TITLE("title"),
 	
 	LIKES_PREFIX("likes.prefix"),
-	LIKES_ENTRY("likes.entry"),
-	LIKES_SUFFIX("likes.suffix", (bundle, args) ->
+	LIKES_SUFFIX("likes.suffix", (locale, args) ->
 	{
-		NumberFormat numberFormat = NumberFormat.getInstance(bundle.getLocale());
+		DecimalFormat decimalFormat = Currency.LIKE.getDecimalFormat(locale);
 		Town town = (Town) args[0];
 		
-		return new Component[]
+		return new TagResolver[]
 		{
-			empty(),
-			text(numberFormat.format(town.getLikes())),
-			text(numberFormat.format(town.getLikeCapacity())),
+			unparsed("like_balance", decimalFormat.format(town.getLikes())),
+			unparsed("like_capacity", decimalFormat.format(town.getLikeCapacity()))
 		};
 	}),
 	
 	DISLIKES_PREFIX("dislikes.prefix"),
-	DISLIKES_ENTRY("dislikes.entry"),
-	DISLIKES_SUFFIX("dislikes.suffix", (bundle, args) ->
+	DISLIKES_SUFFIX("dislikes.suffix", (locale, args) ->
 	{
-		NumberFormat numberFormat = NumberFormat.getInstance(bundle.getLocale());
+		DecimalFormat decimalFormat = Currency.DISLIKE.getDecimalFormat(locale);
 		Town town = (Town) args[0];
 		
-		return new Component[]
+		return new TagResolver[]
 		{
-			empty(),
-			text(numberFormat.format(town.getDislikes())),
-			text(numberFormat.format(town.getDislikeCapacity())),
+			unparsed("dislike_balance", decimalFormat.format(town.getDislikes())),
+			unparsed("dislike_capacity", decimalFormat.format(town.getDislikeCapacity()))
+		};
+	}),
+	
+	CROWNS_PREFIX("crowns.prefix"),
+	CROWNS_SUFFIX("crowns.suffix", (locale, args) ->
+	{
+		DecimalFormat decimalFormat = Currency.CROWN.getDecimalFormat(locale);
+		Town town = (Town) args[0];
+		
+		return new TagResolver[]
+		{
+			unparsed("crown_balance", decimalFormat.format(town.getCalculatedCrownBalance())),
+			unparsed("crown_capacity", decimalFormat.format(town.calculateCrownCapacity()))
 		};
 	}),
 	
 	HARDNESS_PREFIX("hardness.prefix"),
-	HARDNESS_ENTRY("hardness.entry"),
-	HARDNESS_SUFFIX("hardness.suffix", (bundle, args) ->
+	HARDNESS_SUFFIX("hardness.suffix", (locale, args) ->
 	{
-		DecimalFormat decimalFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(bundle.getLocale()));
+		DecimalFormat decimalFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(locale));
 		Town town = (Town) args[0];
 		
-		return new Component[]
+		return new TagResolver[]
 		{
-			empty(),
-			text(decimalFormat.format(town.getHardness())),
-			text(decimalFormat.format(town.getHardnessLimit())),
+			unparsed("hardness", decimalFormat.format(town.getHardness())),
+			unparsed("hardness_limit", decimalFormat.format(town.getHardnessLimit()))
 		};
 	}),
 	
 	FOOTER_PREFIX("footer.prefix"),
-	FOOTER_ENTRY("footer.entry"),
 	FOOTER_SUFFIX("footer.suffix"),
 	
 	;
 	
 	private final String key;
-	private final BundleBaseName bundleBaseName;
-	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;
+	private final BiFunction<Locale, Object[], TagResolver[]> tagResolversFunction;
 	
 	TownScoreboardMessage(String key)
 	{
-		this(key, empty());
+		this(key, (locale, args) -> new TagResolver[0]);
 	}
 	
-	TownScoreboardMessage(String key, Component baseComponent)
+	@Override
+	public BundleBaseName getBundleBaseName()
 	{
-		this(key, (bundle, args) -> new Component[] { baseComponent });
-	}
-	
-	TownScoreboardMessage(String key, BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
-	{
-		this(PluginBundleBaseName.TOWN_SCOREBOARD, key, componentBiFunction);
-	}
-	
-	TownScoreboardMessage(BundleBaseName bundleBaseName,
-			String key,
-			BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
-	{
-		this.bundleBaseName = bundleBaseName;
-		this.key = key;
-		this.componentBiFunction = componentBiFunction;
+		return PluginBundleBaseName.TOWN_SCOREBOARD;
 	}
 }

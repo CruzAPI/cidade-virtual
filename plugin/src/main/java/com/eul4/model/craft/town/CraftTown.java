@@ -1442,7 +1442,11 @@ public class CraftTown implements Town
 	@Override
 	public void updateCrownBalance()
 	{
+		BigDecimal oldCrowns = calculatedCrownBalance;
 		calculatedCrownBalance = calculateCrownBalance();
+		oldCrowns = oldCrowns == null ? calculatedCrownBalance : oldCrowns;
+		
+		new CrownChangeEvent(this, oldCrowns, calculatedCrownBalance).callEvent();
 	}
 	
 	@Override

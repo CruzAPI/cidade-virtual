@@ -3,7 +3,7 @@ package com.eul4.listener;
 import com.eul4.Main;
 import com.eul4.event.AssistantInteractEvent;
 import com.eul4.model.inventory.craft.CraftAssistantGui;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.model.town.Town;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;

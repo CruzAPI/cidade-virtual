@@ -1,8 +1,8 @@
 package com.eul4.command;
 
 import com.eul4.Main;
-import com.eul4.model.player.RaidAnalyzer;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.spiritual.RaidAnalyzer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.type.player.SpiritualPlayerType;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;

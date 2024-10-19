@@ -1,7 +1,7 @@
 package com.eul4.externalizer.writer;
 
 import com.eul4.common.type.player.Writers;
-import com.eul4.model.player.VanillaPlayer;
+import com.eul4.model.player.physical.VanillaPlayer;
 
 import java.io.IOException;
 

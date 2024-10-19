@@ -1,6 +1,9 @@
-package com.eul4.model.player;
+package com.eul4.model.player.performer;
 
 import com.eul4.common.model.player.CommonPlayer;
+import com.eul4.model.player.Channeler;
+import com.eul4.model.player.PluginPlayer;
+import com.eul4.model.player.physical.SpawnPlayer;
 import com.eul4.type.PluginWorldType;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.world.RaidLevel;

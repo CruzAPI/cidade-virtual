@@ -6,9 +6,9 @@ import com.eul4.StructureType;
 import com.eul4.exception.*;
 import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.model.craft.town.CraftTown;
-import com.eul4.model.player.Attacker;
+import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.RaidAnalyzer;
+import com.eul4.model.player.spiritual.RaidAnalyzer;
 import com.eul4.model.town.structure.*;
 import com.eul4.wrapper.*;
 import net.kyori.adventure.text.Component;
@@ -244,4 +244,7 @@ public interface Town
 	void updateCrownBalance();
 	
 	List<CapacitatedCrownHolder> getCapacitatedCrownHolders();
+	
+	List<TradePreview<BigDecimal, CapacitatedCrownHolder>> createTradePreviewSubtract(BigDecimal subtrahend)
+			throws OverCapacityException;
 }

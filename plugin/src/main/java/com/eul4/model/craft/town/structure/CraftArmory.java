@@ -5,7 +5,7 @@ import com.eul4.common.util.EntityUtil;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Armory;

@@ -9,7 +9,7 @@ import com.eul4.common.wrapper.BiParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.craft.player.CraftAdmin;
-import com.eul4.model.player.Admin;
+import com.eul4.model.player.physical.Admin;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
 import org.bukkit.entity.Player;

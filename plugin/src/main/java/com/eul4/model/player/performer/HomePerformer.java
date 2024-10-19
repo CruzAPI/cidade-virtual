@@ -1,7 +1,8 @@
-package com.eul4.model.player;
+package com.eul4.model.player.performer;
 
 import com.eul4.common.wrapper.Pitch;
 import com.eul4.i18n.PluginMessage;
+import com.eul4.model.player.Channeler;
 import com.eul4.wrapper.HomeMap;
 import org.bukkit.Location;
 import org.bukkit.Sound;

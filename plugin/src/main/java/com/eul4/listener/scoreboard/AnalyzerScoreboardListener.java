@@ -5,7 +5,7 @@ import com.eul4.common.event.CommonPlayerRegisterEvent;
 import com.eul4.common.event.CommonPlayerUnregisterEvent;
 import com.eul4.event.*;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.RaidAnalyzer;
+import com.eul4.model.player.spiritual.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.TownHall;
 import com.eul4.scoreboard.AnalyzerScoreboard;

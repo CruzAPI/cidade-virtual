@@ -5,6 +5,7 @@ import com.eul4.externalizer.reader.*;
 import com.eul4.externalizer.writer.*;
 import com.eul4.model.craft.player.*;
 import com.eul4.model.player.*;
+import com.eul4.model.player.physical.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;

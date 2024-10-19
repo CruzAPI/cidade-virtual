@@ -1,6 +1,5 @@
 package com.eul4.wrapper;
 
-import com.eul4.enums.Rarity;
 import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.NegativeBalanceException;
 import com.google.common.base.Preconditions;
@@ -8,7 +7,6 @@ import lombok.Getter;
 import org.bukkit.Material;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 import static com.eul4.wrapper.CryptoInfo.MATH_CONTEXT;
@@ -56,11 +54,6 @@ public class DerivativeMaterial extends EconomicMaterial
 		
 		return createTradePreviews(minAmount, rarityMultiplier);
 	}
-//
-//	public ItemStackTradePreview createTradePreviews(int amount) throws InvalidCryptoInfoException
-//	{
-//		return createTradePreviews(BigDecimal.valueOf(amount));
-//	}
 	
 	public ItemStackTradePreview createTradePreviews
 	(

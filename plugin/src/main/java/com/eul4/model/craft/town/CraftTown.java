@@ -9,19 +9,16 @@ import com.eul4.common.util.EntityUtil;
 import com.eul4.common.util.ThreadUtil;
 import com.eul4.common.wrapper.Pitch;
 import com.eul4.event.*;
-import com.eul4.exception.CannotConstructException;
-import com.eul4.exception.InsufficientBalanceException;
-import com.eul4.exception.StructureLimitException;
-import com.eul4.exception.TownHardnessLimitException;
+import com.eul4.exception.*;
 import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.craft.town.structure.CraftDislikeGenerator;
 import com.eul4.model.craft.town.structure.CraftLikeGenerator;
 import com.eul4.model.craft.town.structure.CraftTownHall;
-import com.eul4.model.player.Attacker;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.RaidAnalyzer;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
+import com.eul4.model.player.spiritual.Attacker;
+import com.eul4.model.player.spiritual.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.TownTile;
@@ -1472,5 +1469,37 @@ public class CraftTown implements Town
 		}
 		
 		return holders;
+	}
+	
+	@Override
+	public List<TradePreview<BigDecimal, CapacitatedCrownHolder>> createTradePreviewSubtract
+	(
+		BigDecimal subtrahend
+	)
+	throws OverCapacityException
+	{
+		Preconditions.checkArgument(subtrahend.compareTo(BigDecimal.ZERO) > 0);
+		
+		List<TradePreview<BigDecimal, CapacitatedCrownHolder>> tradePreviewList = new ArrayList<>();
+		
+		Iterator<CapacitatedCrownHolder> iterator = getCapacitatedCrownHolders().iterator();
+		
+		while(iterator.hasNext() && subtrahend.compareTo(BigDecimal.ZERO) > 0)
+		{
+			CapacitatedCrownHolder holder = iterator.next();
+			
+			BigDecimal balance = holder.getBalance();
+			BigDecimal min = balance.compareTo(subtrahend) < 0 ? balance : subtrahend;
+			
+			subtrahend = subtrahend.subtract(min);
+			tradePreviewList.add(new TradePreview<>(holder, min));
+		}
+		
+		if(subtrahend.compareTo(BigDecimal.ZERO) > 0)
+		{
+			throw new OverCapacityException();
+		}
+		
+		return tradePreviewList;
 	}
 }

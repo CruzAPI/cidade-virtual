@@ -1,11 +1,13 @@
 package com.eul4.holder;
 
+import com.eul4.Main;
 import com.eul4.exception.NegativeBalanceException;
 import com.eul4.exception.OperationException;
 import com.eul4.exception.OverCapacityException;
 import com.eul4.model.town.Town;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
@@ -18,19 +20,21 @@ public class CapacitatedCrownHolder implements CrownHolder, CapacitatedHolder<Bi
 	
 	@Getter
 	private final UUID townUniqueId;
+	private final Main plugin;
 	
 	public CapacitatedCrownHolder(Town town)
 	{
-		this(town.getTownUniqueId());
+		this(town.getPlugin(), town.getTownUniqueId());
 	}
 	
-	public CapacitatedCrownHolder(UUID townUniqueId)
+	public CapacitatedCrownHolder(@NotNull Main plugin, UUID townUniqueId)
 	{
-		this(townUniqueId, BigDecimal.ZERO);
+		this(plugin, townUniqueId, BigDecimal.ZERO);
 	}
 	
-	public CapacitatedCrownHolder(@NotNull UUID townUniqueId, BigDecimal balance)
+	public CapacitatedCrownHolder(@NotNull Main plugin, @NotNull UUID townUniqueId, BigDecimal balance)
 	{
+		this.plugin = Preconditions.checkNotNull(plugin);
 		this.townUniqueId = Preconditions.checkNotNull(townUniqueId);
 		
 		this.balance = balance;
@@ -100,5 +104,20 @@ public class CapacitatedCrownHolder implements CrownHolder, CapacitatedHolder<Bi
 		}
 		
 		this.balance = newBalance;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "CapacitatedCrownHolder{owner=" + getOwnerName() + ", balance=" + balance + ", capacity=" + capacity + '}';
+	}
+	
+	private String getOwnerName()
+	{
+		return plugin.getTownManager()
+				.findTownByTownUniqueId(townUniqueId)
+				.map(Town::getOwner)
+				.map(OfflinePlayer::getName)
+				.orElse(null);
 	}
 }

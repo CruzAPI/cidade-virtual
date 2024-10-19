@@ -6,7 +6,7 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.enums.ItemBuilder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureShopGui;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;

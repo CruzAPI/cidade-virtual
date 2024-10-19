@@ -15,7 +15,7 @@ import com.eul4.event.StructureUpgradeEvent;
 import com.eul4.exception.*;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
-import com.eul4.model.player.Attacker;
+import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;

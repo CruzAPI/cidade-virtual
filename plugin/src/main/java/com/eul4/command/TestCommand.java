@@ -5,7 +5,7 @@ import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.i18n.Messageable;
 import com.eul4.item.ContaintmentPickaxe;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.type.PluginWorldType;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

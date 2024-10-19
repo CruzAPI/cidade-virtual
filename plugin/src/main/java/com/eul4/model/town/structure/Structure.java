@@ -6,7 +6,7 @@ import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.*;
 import com.eul4.model.inventory.StructureGui;
-import com.eul4.model.player.Attacker;
+import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;

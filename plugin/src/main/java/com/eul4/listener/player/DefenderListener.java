@@ -2,7 +2,7 @@ package com.eul4.listener.player;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.eul4.Main;
-import com.eul4.model.player.Defender;
+import com.eul4.model.player.spiritual.Defender;
 import com.eul4.type.player.SpiritualPlayerType;
 import com.eul4.wrapper.TownAttack;
 import lombok.RequiredArgsConstructor;

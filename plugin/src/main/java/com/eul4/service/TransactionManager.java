@@ -26,10 +26,10 @@ public class TransactionManager
 		H2 extends Holder<N>,
 		TP extends TradePreview<N, H1>
 	>
-	Transaction createTransaction(List<TP> tradePreviews, List<H2> holdersTo) throws OverCapacityException
+	Transaction<N> createTransaction(List<TP> tradePreviews, List<H2> holdersTo)
+			throws OverCapacityException
 	{
 		List<Transfer<N>> transferList = new ArrayList<>();
-		
 		Iterator<H2> holderIterator = holdersTo.iterator();
 		
 		if(!holderIterator.hasNext())
@@ -46,7 +46,8 @@ public class TransactionManager
 			
 			while(preview.compareTo(holder.getZeroSample()) > 0)
 			{
-				while(simulatedRemainingCapacity != null && simulatedRemainingCapacity.compareTo(holder.getZeroSample()) <= 0)
+				while(simulatedRemainingCapacity != null
+						&& simulatedRemainingCapacity.compareTo(holder.getZeroSample()) <= 0)
 				{
 					if(!holderIterator.hasNext())
 					{

@@ -1,7 +1,7 @@
 package com.eul4.scoreboard;
 
 import com.eul4.common.scoreboard.CraftCommonScoreboard;
-import com.eul4.model.player.RaidAnalyzer;
+import com.eul4.model.player.spiritual.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;

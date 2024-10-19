@@ -4,7 +4,7 @@ import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.RaidPerformer;
+import com.eul4.model.player.performer.RaidPerformer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

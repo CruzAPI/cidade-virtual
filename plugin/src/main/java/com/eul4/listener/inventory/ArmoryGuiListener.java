@@ -2,7 +2,7 @@ package com.eul4.listener.inventory;
 
 import com.eul4.Main;
 import com.eul4.model.inventory.ArmoryGui;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

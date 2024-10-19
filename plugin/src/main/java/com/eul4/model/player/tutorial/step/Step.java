@@ -1,6 +1,6 @@
 package com.eul4.model.player.tutorial.step;
 
-import com.eul4.model.player.TutorialTownPlayer;
+import com.eul4.model.player.physical.TutorialTownPlayer;
 import org.bukkit.entity.Villager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;

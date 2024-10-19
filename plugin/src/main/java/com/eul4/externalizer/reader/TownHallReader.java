@@ -54,7 +54,8 @@ public class TownHallReader extends StructureReader<TownHall>
 	{
 		super.getReader().readObject(townHall);
 		
-		townHall.setCapacitatedCrownHolder(readers.getReader(CapacitatedCrownHolderReader.class).readReference());
+		townHall.setCapacitatedCrownHolder(readers.getReader(CapacitatedCrownHolderReader.class)
+				.readReference(townHall.getTown().getPlugin()));
 	}
 	
 	private Readable<TownHall> parameterizedReadableVersion0(Town town)

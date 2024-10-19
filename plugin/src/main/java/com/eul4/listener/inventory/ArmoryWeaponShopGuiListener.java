@@ -2,17 +2,13 @@ package com.eul4.listener.inventory;
 
 import com.eul4.Main;
 import com.eul4.common.event.GuiClickEvent;
-import com.eul4.common.wrapper.Pitch;
-import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.ArmoryWeaponShopGui;
 import com.eul4.model.inventory.craft.CraftArmoryWeaponShopGui;
 import com.eul4.model.inventory.craft.CraftConfirmationGui;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.service.PurchaseV2;
 import com.eul4.util.SoundUtil;
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

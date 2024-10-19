@@ -3,7 +3,7 @@ package com.eul4.model.craft.town.structure;
 import com.eul4.common.wrapper.Pitch;
 import com.eul4.enums.Currency;
 import com.eul4.exception.CannotConstructException;
-import com.eul4.model.player.Attacker;
+import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.wrapper.Resource;

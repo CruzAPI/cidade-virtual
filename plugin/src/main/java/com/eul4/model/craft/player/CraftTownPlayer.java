@@ -4,7 +4,7 @@ import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.scoreboard.CraftTownScoreboard;
 import com.eul4.scoreboard.TownScoreboard;
 import com.eul4.type.player.PhysicalPlayerType;

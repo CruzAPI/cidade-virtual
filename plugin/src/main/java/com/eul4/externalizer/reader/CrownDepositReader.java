@@ -43,7 +43,8 @@ public class CrownDepositReader extends PhysicalDepositReader<BigDecimal, CrownD
 	{
 		super.getReader().readObject(crownDeposit);
 		
-		crownDeposit.setHolder(readers.getReader(CapacitatedCrownHolderReader.class).readReference());
+		crownDeposit.setHolder(readers.getReader(CapacitatedCrownHolderReader.class)
+				.readReference(crownDeposit.getTown().getPlugin()));
 	}
 	
 	private Readable<CrownDeposit> parameterizedReadableVersion0(Town town)

@@ -205,6 +205,11 @@ public class TownManager
 		return Optional.ofNullable(getTown(townUUID));
 	}
 	
+	public Optional<Town> findTownByTownUniqueId(UUID townUniqueId)
+	{
+		return Optional.ofNullable(getTownByTownUniqueId(townUniqueId));
+	}
+	
 	public Town getTownByTownUniqueId(UUID townUniqueId)
 	{
 		return townsByTownUniqueId.get(townUniqueId);

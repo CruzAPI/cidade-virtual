@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.Style;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.Style.style;
@@ -58,6 +59,18 @@ public enum Currency
 			
 			return decimalFormat;
 		}
+		
+		@Override
+		public DecimalFormat getAccurateDecimalFormat(Locale locale)
+		{
+			DecimalFormat decimalFormat = new DecimalFormat("0.00######");
+			
+			decimalFormat.setDecimalFormatSymbols(new DecimalFormatSymbols(locale));
+			decimalFormat.setGroupingSize(3);
+			decimalFormat.setGroupingUsed(true);
+			
+			return decimalFormat;
+		}
 	},
 	;
 	
@@ -71,4 +84,19 @@ public enum Currency
 	}
 	
 	public abstract DecimalFormat getDecimalFormat(Locale locale);
+	
+	public final DecimalFormat getAccurateDecimalFormat(ResourceBundle bundle)
+	{
+		return getAccurateDecimalFormat(bundle.getLocale());
+	}
+	
+	public DecimalFormat getAccurateDecimalFormat(Locale locale)
+	{
+		return getDecimalFormat(locale);
+	}
+	
+	public final DecimalFormat getDecimalFormat(ResourceBundle bundle)
+	{
+		return getDecimalFormat(bundle.getLocale());
+	}
 }

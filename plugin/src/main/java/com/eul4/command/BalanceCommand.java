@@ -12,9 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
-import static com.eul4.i18n.PluginMessage.COMMAND_BALANCE;
 import static com.eul4.i18n.PluginMessage.COMMAND_BALANCE_TRY_TOWN_COMMAND;
 
 @RequiredArgsConstructor

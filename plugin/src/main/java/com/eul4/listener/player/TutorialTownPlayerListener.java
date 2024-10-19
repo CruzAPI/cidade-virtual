@@ -10,7 +10,7 @@ import com.eul4.event.TileInteractEvent;
 import com.eul4.model.inventory.GeneratorGui;
 import com.eul4.model.inventory.TownHallGui;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.TutorialTownPlayer;
+import com.eul4.model.player.physical.TutorialTownPlayer;
 import com.eul4.util.SoundUtil;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import lombok.RequiredArgsConstructor;

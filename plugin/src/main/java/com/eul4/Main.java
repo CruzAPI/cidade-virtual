@@ -271,6 +271,7 @@ public class Main extends Common
 		registerCommand(new MacroidCommand(this), MacroidCommand.NAME_AND_ALIASES);
 		registerCommand(new MuteBroadcastCommand(this), MuteBroadcastCommand.NAME_AND_ALIASES);
 		registerCommand(new NewbieCommand(this), NewbieCommand.NAME_AND_ALIASES);
+		registerCommand(new PayCommand(this), PayCommand.NAME_AND_ALIASES);
 		registerCommand(new PriceCommand(this), PriceCommand.NAME_AND_ALIASES);
 		registerCommand(new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
 		registerCommand(new RawMaterialCommand(this), RawMaterialCommand.NAME_AND_ALIASES);

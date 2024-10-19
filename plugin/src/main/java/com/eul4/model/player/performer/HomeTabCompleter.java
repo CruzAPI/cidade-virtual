@@ -1,4 +1,6 @@
-package com.eul4.model.player;
+package com.eul4.model.player.performer;
+
+import com.eul4.model.player.PluginPlayer;
 
 import java.util.*;
 

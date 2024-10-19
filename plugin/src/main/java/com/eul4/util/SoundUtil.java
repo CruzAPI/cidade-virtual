@@ -1,6 +1,7 @@
 package com.eul4.util;
 
 import com.eul4.common.wrapper.Pitch;
+import com.eul4.model.player.PluginPlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -32,6 +33,11 @@ public class SoundUtil
 	public static void playPling(Player player)
 	{
 		player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, Pitch.max());
+	}
+	
+	public static void playPlingPlong(PluginPlayer pluginPlayer)
+	{
+		playPlingPlong(pluginPlayer.getPlayer(), pluginPlayer.getPlugin());
 	}
 	
 	public static void playPlingPlong(Player player, Plugin plugin)

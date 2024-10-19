@@ -2,7 +2,7 @@ package com.eul4.model.craft.player;
 
 import com.eul4.Main;
 import com.eul4.i18n.PluginMessage;
-import com.eul4.model.player.Defender;
+import com.eul4.model.player.spiritual.Defender;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.type.player.SpiritualPlayerType;

@@ -3,7 +3,7 @@ package com.eul4.listener.player;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.eul4.Main;
 import com.eul4.common.world.CommonWorld;
-import com.eul4.model.player.VanillaPlayer;
+import com.eul4.model.player.physical.VanillaPlayer;
 import com.eul4.type.PluginWorldType;
 import com.eul4.world.RaidLevel;
 import lombok.RequiredArgsConstructor;

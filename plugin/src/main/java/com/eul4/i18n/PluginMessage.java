@@ -13,7 +13,7 @@ import com.eul4.common.util.CommonWordUtil;
 import com.eul4.common.wrapper.TimerTranslator;
 import com.eul4.enums.Currency;
 import com.eul4.enums.Rarity;
-import com.eul4.model.player.SetHomePerformer;
+import com.eul4.model.player.performer.SetHomePerformer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Generator;
 import com.eul4.model.town.structure.PhysicalDeposit;
@@ -34,6 +34,7 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
@@ -46,7 +47,6 @@ import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
-import static net.kyori.adventure.text.format.TextDecoration.STRIKETHROUGH;
 
 @Getter
 public enum PluginMessage implements Message
@@ -64,6 +64,8 @@ public enum PluginMessage implements Message
 	RARITY("rarity"),
 	
 	ENCHANTMENT_STABILITY("enchantment.stability"),
+	
+	COMMAND_WRONG_SYNTAX("command-wrong-syntax", empty().color(RED)),
 	
 	TAG_OWNER("tag.owner", empty().color(DARK_RED)),
 	TAG_ADMIN("tag.admin", empty().color(RED)),
@@ -904,15 +906,11 @@ public enum PluginMessage implements Message
 			.color(RED)
 	)),
 
-	COMMAND_BALANCE_YOUR_RESOURCES("command.balance.your-resources", Component.empty().color(WHITE).decorate(BOLD)),
-	
 	COMMAND_BALANCE_TRY_TOWN_COMMAND("command.balance.try-town-command", (bundle, args) -> new Component[]
 	{
 		empty().color(RED),
 		TOWN_COMMAND_NAME.translate(bundle),
 	}),
-	
-	COMMAND_BALANCE_FOOTER("command.balance.footer", Component.empty().color(GRAY).decorate(STRIKETHROUGH)),
 	
 	COMMAND_MUTEBROADCAST_BROADCAST_MUTED("command.mutebroadcast.broadcast-muted", empty().color(GREEN)),
 	
@@ -971,26 +969,6 @@ public enum PluginMessage implements Message
 		components.add(footerComponent);
 		
 		return components;
-	}),
-	
-	COMMAND_BALANCE("command.balance", (bundle, args) ->
-	{
-		Town town = (Town) args[0];
-		
-		return new Component[]
-		{
-			empty().color(WHITE),
-			text(" ]   ").color(GRAY).decorate(STRIKETHROUGH),
-			COMMAND_BALANCE_YOUR_RESOURCES.translate(bundle),
-			text("   [ ").color(GRAY).decorate(STRIKETHROUGH),
-			LIKES.translate(bundle, String::toUpperCase).color(GREEN).decorate(BOLD).append(text(":")),
-			text(town.getLikes()),
-			text(town.getLikeCapacity()),
-			DISLIKES.translate(bundle, String::toUpperCase).color(RED).decorate(BOLD).append(text(":")),
-			text(town.getDislikes()),
-			text(town.getDislikeCapacity()),
-			COMMAND_BALANCE_FOOTER.translate(bundle),
-		};
 	}),
 	
 	INVENTORY_ARMORY_STORAGE_TITLE("inventory-armory-storage.title"),
@@ -1267,6 +1245,76 @@ public enum PluginMessage implements Message
 			valueAndCurrencyComponent
 		};
 	}),
+	
+	COMMAND_PAY_USAGE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+				.append(argToComponent(args[0]))
+				.appendSpace()
+				.append(usageRequiredArg(USER.translate(locale)))
+				.appendSpace()
+				.append(usageRequiredArg(VALUE.translate(locale)))
+				.color(RED))
+	),
+
+	COMMAND_PAY_EXAMPLE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		text("/")
+				.append(argToComponent(args[0]))
+				.appendSpace()
+				.append(text("CruzAPI"))
+				.appendSpace()
+				.append(text(Currency.CROWN.getDecimalFormat(locale).format(new BigDecimal("44.44"))))
+				.color(RED))
+	),
+	
+	COMMAND_PAY_USE_$ALIASES((locale, args) -> Collections.singletonList
+	(
+		COMMAND_WRONG_SYNTAX.translate(locale)
+				.appendNewline()
+				.appendNewline()
+				.append(USAGE.translate(locale, CommonWordUtil::capitalizeAndConcatColon))
+				.appendSpace()
+				.append(COMMAND_PAY_USAGE_$ALIASES.translate(locale, args[0]))
+				.appendNewline()
+				.append(EXAMPLE.translate(locale, CommonWordUtil::capitalizeAndConcatColon))
+				.appendSpace()
+				.append(COMMAND_PAY_EXAMPLE_$ALIASES.translate(locale, args[0]))
+				.color(RED)
+	)),
+	
+	COMMAND_PAY_YOURSELF("command.pay.yourself", empty().color(RED)),
+	COMMAND_PAY_YOUR_TOWN_UNDER_ATTACK("command.pay.your-town-under-attack", empty().color(RED)),
+	COMMAND_PAY_TARGET_TOWN_UNDER_ATTACK_$TARGET("command.pay.target-town-under-attack", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		argToComponent(args[0])
+	}),
+	COMMAND_PAY_MIN_VALUE("command.pay.min-value", empty().color(RED)),
+	COMMAND_PAY_SCALE_$LIMIT("command.pay.scale-limit", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		argToComponent(args[0])
+	}),
+	COMMAND_PAY_INTEGRAL_SCALE_$LIMIT("command.pay.integral-scale-limit", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		argToComponent(args[0])
+	}),
+	COMMAND_PAY_INDIGENT_$TARGET("command.pay.indigent-target", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		argToComponent(args[0])
+	}),
+	COMMAND_PAY_INSUFFICIENT_BALANCE("command.pay.insufficient-balance", empty().color(RED)),
+	COMMAND_PAY_TARGET_OVER_CAPACITY_$TARGET("command.pay.target-over-capacity", (bundle, args) -> new Component[]
+	{
+		empty().color(RED),
+		argToComponent(args[0])
+	}),
+	COMMAND_PAY_UNEXPECTED_ERROR("command.pay.unexpected-error", empty().color(RED)),
+	COMMAND_PAY_YOU_PAID_$PLAYER_$AMOUNT("command.pay.you-paid", getCommandPayBiFunction()),
+	COMMAND_PAY_YOU_RECEIVED_$PLAYER_$AMOUNT("command.pay.you-received", getCommandPayBiFunction()),
 	
 	COMMAND_SETHOME_MAX_HOME_REACHED("command.sethome.max-home-reached", empty().color(RED)),
 	COMMAND_SETHOME_NEED_TO_BE_IN_VANILLA("command.sethome.need-to-be-in-vanilla", empty().color(RED)),
@@ -1591,5 +1639,31 @@ public enum PluginMessage implements Message
 		this.bundleBaseName = null;
 		this.key = null;
 		this.componentBiFunction = null;
+	}
+	
+	private static BiFunction<ResourceBundle, Object[], Component[]> getCommandPayBiFunction()
+	{
+		return (bundle, args) ->
+		{
+			BigDecimal amount = (BigDecimal) args[1];
+			
+			Currency currency = Currency.CROWN;
+			DecimalFormat decimalFormat = currency.getDecimalFormat(bundle);
+			
+			Component amountComponent = text(decimalFormat.format(amount))
+					.style(currency.getStyle());
+			
+			Component arg0Component = empty()
+					.append(amountComponent)
+					.appendSpace()
+					.append(currency.getWordFor(amount).translate(bundle, String::toLowerCase));
+			
+			return new Component[]
+			{
+				empty().color(GRAY),
+				arg0Component,
+				displayName(args[0])
+			};
+		};
 	}
 }

@@ -41,7 +41,7 @@ public class TycoonManager
 			}
 		}
 		
-		if(this.tycoonTown != (this.tycoonTown = tycoonTown) && this.tycoonTown != null)
+		if(this.tycoonTown != null & this.tycoonTown != (this.tycoonTown = tycoonTown))
 		{
 			plugin.getMessageableService()
 					.broadcastMessage

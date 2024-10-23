@@ -2,12 +2,13 @@ package com.eul4.listener;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
 import com.eul4.Main;
-import com.eul4.model.craft.town.structure.ResourceStructure;
+import com.eul4.model.town.structure.ResourceStructure;
 import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.player.Fighter;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
+import com.eul4.model.town.structure.TransactionalResourceStructure;
 import com.eul4.wrapper.TownAttack;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.block.Block;
@@ -23,6 +24,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 //TODO: if server restart dropped items in attack will persist and can be "dupped"
 @RequiredArgsConstructor
@@ -172,6 +174,43 @@ public class TownAttackListener implements Listener
 		{
 			event.setCancelled(false);
 			resourceStructure.steal(resource);
+			event.setDropItems(false);
+		});
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onAttackerStealTransactionalResources(BlockBreakEvent event)
+	{
+		Block block = event.getBlock();
+		TownBlock townBlock = Town.getStaticTownBlock(block);
+		Town town = townBlock == null ? null : townBlock.getTown();
+		TownAttack townAttack = town == null ? null : town.getCurrentAttack();
+		
+		if(townAttack == null)
+		{
+			return;
+		}
+		
+		Player player = event.getPlayer();
+		
+		if(!(plugin.getPlayerManager().get(player) instanceof Attacker attacker)
+				|| attacker != townAttack.getAttacker()
+				|| !(townBlock.getStructure() instanceof TransactionalResourceStructure structure))
+		{
+			return;
+		}
+		
+		if(!structure.isDestroyed())
+		{
+			return;
+		}
+		
+		ItemStack tool = player.getInventory().getItemInMainHand();
+		
+		structure.findTransactionResource(block).ifPresent(resource ->
+		{
+			boolean stole = structure.steal(resource, tool);
+			event.setCancelled(!stole);
 			event.setDropItems(false);
 		});
 	}

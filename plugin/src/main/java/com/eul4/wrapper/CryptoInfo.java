@@ -4,6 +4,7 @@ import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.NegativeBalanceException;
 import com.eul4.exception.OperationException;
 import com.eul4.holder.CrownHolder;
+import com.google.common.base.Preconditions;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -24,6 +25,12 @@ public class CryptoInfo implements CrownHolder
 	@Setter
 	private BigDecimal circulatingSupply = BigDecimal.ZERO;
 	
+	public CryptoInfo(BigDecimal bigDecimal)
+	{
+		this.marketCap = bigDecimal;
+		this.circulatingSupply = bigDecimal;
+	}
+	
 	public CryptoInfo(double marketCap, double circulatingSupply)
 	{
 		this.marketCap = BigDecimal.valueOf(marketCap);
@@ -38,7 +45,8 @@ public class CryptoInfo implements CrownHolder
 	
 	public CryptoInfoTradePreview createTradePreview(BigDecimal amount) throws InvalidCryptoInfoException
 	{
-		return new CryptoInfoTradePreview(this, previewMarketCap(amount), amount);
+		Preconditions.checkArgument(amount.compareTo(BigDecimal.ZERO) > 0);
+		return new CryptoInfoTradePreview(this, previewMarketCapDiff(amount).negate(), amount);
 	}
 	
 	public BigDecimal previewCirculatingSupplyDiff(BigDecimal marketCapAugend)
@@ -63,6 +71,14 @@ public class CryptoInfo implements CrownHolder
 		return circulatingSupply.divide(ratio, MATH_CONTEXT);
 	}
 	
+	public BigDecimal previewMarketCapDiff(BigDecimal circulatingSupplyAugend) throws InvalidCryptoInfoException
+	{
+		BigDecimal marketCapPreview = previewMarketCap(circulatingSupplyAugend);
+		BigDecimal marketCapDiff = marketCapPreview.subtract(this.marketCap);
+		
+		return marketCapDiff;
+	}
+	
 	public BigDecimal previewMarketCap(BigDecimal circulatingSupplyAugend) throws InvalidCryptoInfoException
 	{
 		validate();
@@ -77,7 +93,7 @@ public class CryptoInfo implements CrownHolder
 		BigDecimal ratio = circulatingSupply.divide(this.circulatingSupply, MATH_CONTEXT);
 		BigDecimal marketCap = this.marketCap.divide(ratio, MATH_CONTEXT);
 		
-		return this.marketCap.subtract(marketCap);
+		return marketCap;
 	}
 	
 	public BigDecimal trade(BigDecimal amount) throws InvalidCryptoInfoException

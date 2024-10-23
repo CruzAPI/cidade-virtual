@@ -9,6 +9,16 @@ public class BigDecimalUtil
 {
 	public static BigDecimal ONE_CENT = new BigDecimal("0.01");
 	
+	public static BigDecimal max(BigDecimal a, BigDecimal b)
+	{
+		return a.compareTo(b) > 0 ? a : b;
+	}
+	
+	public static BigDecimal min(BigDecimal a, BigDecimal b)
+	{
+		return a.compareTo(b) < 0 ? a : b;
+	}
+	
 	public static BigDecimal newBigDecimal(String s)
 	{
 		return newBigDecimal(s, MathContext.UNLIMITED);

@@ -22,4 +22,10 @@ public interface BigDecimalHolder extends Holder<BigDecimal>
 	{
 		return minuend.subtract(subtrahend);
 	}
+	
+	@Override
+	default BigDecimal addSample(BigDecimal augend, BigDecimal addend)
+	{
+		return augend.add(addend);
+	}
 }

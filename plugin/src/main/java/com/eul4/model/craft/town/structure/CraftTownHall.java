@@ -1,6 +1,7 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.calculator.BigDecimalCalculator;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.holder.CapacitatedCrownHolder;
@@ -13,6 +14,7 @@ import com.eul4.rule.attribute.TownHallAttribute;
 import com.eul4.util.FaweUtil;
 import com.eul4.util.MessageUtil;
 import com.eul4.wrapper.Resource;
+import com.eul4.wrapper.TransactionalResource;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
@@ -31,6 +33,19 @@ import java.util.Set;
 @Getter
 public class CraftTownHall extends CraftResourceStructure implements TownHall
 {
+	private final Set<TransactionalResource<?>> transactionalResources = Set.of
+	(
+		new TransactionalResource<>
+		(
+			BlockVector3.at(0, 1, 0),
+			TransactionalResource.Type.CROWN,
+			this::createStoleCrownTransaction,
+			BigDecimalCalculator.INSTANCE,
+			() -> getCapacitatedCrownHolder().isEmpty(),
+			this::getAmountOfCrownsToSteal
+		)
+	);
+	
 	private int likeCapacity;
 	private int dislikeCapacity;
 	

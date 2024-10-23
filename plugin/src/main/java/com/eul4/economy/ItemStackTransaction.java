@@ -6,10 +6,10 @@ import lombok.Getter;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class ItemStackTransaction
+public class ItemStackTransaction<N extends Number & Comparable<N>>
 {
 	@Getter
-	private final Transaction<?> transaction;
+	private final Transaction<N> transaction;
 	
 	private final Inventory inventory;
 	private final int slot;
@@ -23,7 +23,7 @@ public class ItemStackTransaction
 	private boolean executed;
 	private boolean rollbacked;
 	
-	public ItemStackTransaction(Transaction<?> transaction, Inventory inventory, int slot, final int amountToConsume)
+	public ItemStackTransaction(Transaction<N> transaction, Inventory inventory, int slot, final int amountToConsume)
 	{
 		Preconditions.checkArgument(amountToConsume >= 0);
 		

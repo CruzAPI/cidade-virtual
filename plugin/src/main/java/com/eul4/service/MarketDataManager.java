@@ -147,7 +147,7 @@ public class MarketDataManager
 		throw new MaterialNotForSaleException();
 	}
 	
-	public ItemStackTransaction createItemStackTransaction(PluginPlayer pluginPlayer, int slot)
+	public ItemStackTransaction<BigDecimal> createItemStackTransaction(PluginPlayer pluginPlayer, int slot)
 			throws OverCapacityException, InvalidCryptoInfoException, MaterialNotForSaleException
 	{
 		Town town = pluginPlayer.getTown();
@@ -162,10 +162,10 @@ public class MarketDataManager
 		
 		int amountToConsume = itemStackTradePreview.getAmountToConsume();
 		
-		Transaction<?> transaction = plugin.getTransactionManager()
+		Transaction<BigDecimal> transaction = plugin.getTransactionManager()
 				.createTransaction(itemStackTradePreview.getPreviews(), holders);
 		
-		return new ItemStackTransaction(transaction, inventory, slot, amountToConsume);
+		return new ItemStackTransaction<>(transaction, inventory, slot, amountToConsume);
 	}
 	
 	private ItemStackTradePreview createTradePreviews

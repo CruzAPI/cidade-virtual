@@ -8,6 +8,7 @@ import com.eul4.common.util.ContainerUtil;
 import com.eul4.common.util.EntityUtil;
 import com.eul4.common.util.ThreadUtil;
 import com.eul4.common.wrapper.Pitch;
+import com.eul4.economy.Transaction;
 import com.eul4.event.*;
 import com.eul4.exception.*;
 import com.eul4.holder.CapacitatedCrownHolder;
@@ -1476,7 +1477,7 @@ public class CraftTown implements Town
 	(
 		BigDecimal subtrahend
 	)
-	throws OverCapacityException
+	throws NegativeBalanceException
 	{
 		Preconditions.checkArgument(subtrahend.compareTo(BigDecimal.ZERO) > 0);
 		
@@ -1497,9 +1498,17 @@ public class CraftTown implements Town
 		
 		if(subtrahend.compareTo(BigDecimal.ZERO) > 0)
 		{
-			throw new OverCapacityException();
+			throw new NegativeBalanceException();
 		}
 		
 		return tradePreviewList;
+	}
+	
+	@Override
+	public Transaction<BigDecimal> createTransaction(Town townTo, BigDecimal amount) throws
+			OverCapacityException,
+			NegativeBalanceException
+	{
+		return plugin.getTransactionManager().createTransaction(this, townTo, amount);
 	}
 }

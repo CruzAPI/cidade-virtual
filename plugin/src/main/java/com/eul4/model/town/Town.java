@@ -3,6 +3,7 @@ package com.eul4.model.town;
 import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
+import com.eul4.economy.Transaction;
 import com.eul4.exception.*;
 import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.model.craft.town.CraftTown;
@@ -246,5 +247,9 @@ public interface Town
 	List<CapacitatedCrownHolder> getCapacitatedCrownHolders();
 	
 	List<TradePreview<BigDecimal, CapacitatedCrownHolder>> createTradePreviewSubtract(BigDecimal subtrahend)
-			throws OverCapacityException;
+			throws NegativeBalanceException;
+	
+	Transaction<BigDecimal> createTransaction(Town townTo, BigDecimal amount) throws
+			OverCapacityException,
+			NegativeBalanceException;
 }

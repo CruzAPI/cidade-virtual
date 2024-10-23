@@ -56,7 +56,7 @@ public class CraftLikeDeposit extends CraftDeposit<Integer> implements LikeDepos
 	@Override
 	protected Integer subtract(Integer balance)
 	{
-		return null;
+		return null; //TODO is it a bug?
 	}
 	
 	@Override

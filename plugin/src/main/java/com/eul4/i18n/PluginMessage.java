@@ -10,6 +10,7 @@ import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.util.CommonMessageUtil;
 import com.eul4.common.util.CommonWordUtil;
+import com.eul4.common.util.DecimalFormatUtil;
 import com.eul4.common.wrapper.TimerTranslator;
 import com.eul4.enums.Currency;
 import com.eul4.enums.Rarity;
@@ -37,12 +38,14 @@ import org.bukkit.OfflinePlayer;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.eul4.common.i18n.CommonMessage.*;
 import static com.eul4.common.util.CommonMessageUtil.*;
+import static com.eul4.common.util.DecimalFormatUtil.parse;
 import static java.util.Collections.singletonList;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
@@ -1599,6 +1602,15 @@ public enum PluginMessage implements Message
 						.append(broadcast.translate(locale))
 		);
 	}),
+	
+	YOU_STOLE_FROM_OTHER_$AMOUNT_$CURRENCY_$PLAYER("you-stole-from-other",
+			PluginMessage::getStoleMessageComponentArray),
+	OTHER_STOLE_FROM_YOU_$AMOUNT_$CURRENCY_$PLAYER("other-stole-from-you",
+			PluginMessage::getStoleMessageComponentArray),
+	
+	UNEXPECTED_ERROR_WHILE_STEALING("unexpected-error-while-stealing", empty().color(RED)),
+	STEALING_CROWNS_DEPOSIT_FULL("stealing-crowns-deposit-full", empty().color(RED)),
+	
 	;
 	
 	private final String key;
@@ -1639,6 +1651,35 @@ public enum PluginMessage implements Message
 		this.bundleBaseName = null;
 		this.key = null;
 		this.componentBiFunction = null;
+	}
+	
+	private static Component[] getStoleMessageComponentArray(ResourceBundle bundle, Object... args)
+	{
+		Number amount = (Number) args[0];
+		Currency currency = (Currency) args[1];
+		
+		DecimalFormat decimalFormat = currency.getDecimalFormat(bundle);
+		String formattedAmount = decimalFormat.format(amount);
+		Number parsed = parse(decimalFormat, true, formattedAmount, amount);
+		
+		Component amountComponent = text(formattedAmount)
+				.style(currency.getStyle());
+		
+		Component currencyWordComponent = currency
+				.getWordFor(parsed)
+				.translate(bundle, String::toLowerCase);
+		
+		Component arg0Component = empty()
+				.append(amountComponent)
+				.appendSpace()
+				.append(currencyWordComponent);
+		
+		return new Component[]
+		{
+			empty().color(GRAY),
+			arg0Component,
+			displayName(args[2])
+		};
 	}
 	
 	private static BiFunction<ResourceBundle, Object[], Component[]> getCommandPayBiFunction()

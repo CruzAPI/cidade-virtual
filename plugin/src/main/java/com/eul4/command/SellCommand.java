@@ -1,8 +1,8 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.calculator.BigDecimalCalculator;
 import com.eul4.economy.ItemStackTransaction;
-import com.eul4.economy.Transaction;
 import com.eul4.exception.InvalidCryptoInfoException;
 import com.eul4.exception.MaterialNotForSaleException;
 import com.eul4.exception.OperationException;
@@ -11,7 +11,6 @@ import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.service.MarketDataManager;
 import com.eul4.util.RarityUtil;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -68,10 +67,10 @@ public class SellCommand implements TabExecutor
 			
 			try
 			{
-				ItemStackTransaction itemStackTransaction = marketDataManager
+				ItemStackTransaction<BigDecimal> itemStackTransaction = marketDataManager
 						.createItemStackTransaction(pluginPlayer, slot);
 				itemStackTransaction.execute();
-				BigDecimal total = itemStackTransaction.getTransaction().getTotal();
+				BigDecimal total = itemStackTransaction.getTransaction().calculateTotal(BigDecimalCalculator.INSTANCE);
 				
 				pluginPlayer.sendMessage
 				(

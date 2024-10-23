@@ -26,6 +26,7 @@ import com.eul4.listener.player.tutorial.step.*;
 import com.eul4.listener.scoreboard.AnalyzerScoreboardListener;
 import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
+import com.eul4.listener.structure.CapacitatedCrownTransactionResourceStructureListener;
 import com.eul4.listener.world.CommonLevelListener;
 import com.eul4.listener.world.RaidLevelListener;
 import com.eul4.listener.world.VanillaLevelListener;
@@ -508,6 +509,7 @@ public class Main extends Common
 	private void registerStructureListeners()
 	{
 		pluginManager.registerEvents(new ArmoryListener(this), this);
+		pluginManager.registerEvents(new CapacitatedCrownTransactionResourceStructureListener(this), this);
 	}
 	
 	private void registerWorldListeners()

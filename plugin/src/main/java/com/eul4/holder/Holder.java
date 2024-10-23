@@ -13,4 +13,5 @@ public interface Holder<N extends Number & Comparable<N>>
 	
 	N getZeroSample();
 	N subtractSample(N minuend, N subtrahend);
+	N addSample(N augend, N addend);
 }

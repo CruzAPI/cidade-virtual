@@ -135,7 +135,6 @@ public interface PayPerformer extends PluginPlayer
 							playerTown.createTradePreviewSubtract(subtrahend),
 							targetTown.getCapacitatedCrownHolders()
 						);
-				
 				transaction.tryExecute();
 				
 				MessageArgs paidMessage = COMMAND_PAY_YOU_PAID_$PLAYER_$AMOUNT

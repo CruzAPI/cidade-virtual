@@ -6,6 +6,7 @@ import com.eul4.exception.CannotConstructException;
 import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.ResourceStructure;
 import com.eul4.wrapper.Resource;
 import com.eul4.wrapper.TownAttack;
 import net.kyori.adventure.text.Component;
@@ -69,7 +70,6 @@ public abstract class CraftResourceStructure extends CraftStructure implements R
 		}
 	}
 	
-	@Override
 	public Optional<Resource> findResource(Block block)
 	{
 		for(Resource resource : getResources())

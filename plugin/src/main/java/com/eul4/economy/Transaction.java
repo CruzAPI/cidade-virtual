@@ -1,11 +1,11 @@
 package com.eul4.economy;
 
+import com.eul4.calculator.Calculator;
 import com.eul4.event.TransactionExecuteEvent;
 import com.eul4.exception.OperationException;
 import com.eul4.holder.Holder;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +23,20 @@ public class Transaction<N extends Number & Comparable<N>>
 		this.transferList = transferList;
 	}
 	
+	public boolean tryExecuteSilenty()
+	{
+		try
+		{
+			execute();
+			return true;
+		}
+		catch(Exception e)
+		{
+			tryRollback();
+			return false;
+		}
+	}
+	
 	public void tryExecute() throws OperationException
 	{
 		try
@@ -32,6 +46,11 @@ public class Transaction<N extends Number & Comparable<N>>
 		catch(Exception e)
 		{
 			tryRollback();
+			
+			if(e instanceof OperationException operationException)
+			{
+				throw operationException;
+			}
 		}
 	}
 	
@@ -44,7 +63,7 @@ public class Transaction<N extends Number & Comparable<N>>
 		
 		executed = true;
 		
-		for(Transfer<?> transfer : transferList)
+		for(Transfer<N> transfer : transferList)
 		{
 			transfer.execute();
 		}
@@ -92,9 +111,9 @@ public class Transaction<N extends Number & Comparable<N>>
 		return involvedHolders;
 	}
 	
-	//TODO melhorar esse codigo (gambiarra temporraria pra debug)
-	public BigDecimal getTotal()
+	public N calculateTotal(Calculator<N> calculator)
 	{
-		return transferList.stream().map(transfer -> (BigDecimal) transfer.getAmount()).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return transferList.stream().map(Transfer::getAmount)
+				.reduce(calculator.getZeroSample(), calculator::add);
 	}
 }

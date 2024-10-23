@@ -1,34 +1,43 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.calculator.BigDecimalCalculator;
 import com.eul4.enums.Currency;
-import com.eul4.enums.StructureStatus;
-import com.eul4.exception.CannotConstructException;
+import com.eul4.exception.*;
 import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.CrownDeposit;
+import com.eul4.model.town.structure.CapacitatedCrownTransactionResourceStructure;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.CrownDepositAttribute;
-import com.eul4.util.MessageUtil;
-import org.bukkit.block.BlockFace;
+import com.eul4.wrapper.TransactionalResource;
+import com.sk89q.worldedit.math.BlockVector3;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Set;
 
-import static com.eul4.util.MessageUtil.getPercentageProgressBar;
-
-public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implements CrownDeposit
+public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implements
+		CrownDeposit,
+		CapacitatedCrownTransactionResourceStructure
 {
-//	@Getter
-//	private final Set<Resource> resources = Set.of(Resource.builder()
-//			.type(Resource.Type.CROWN)
-//			.relativePosition(BlockVector3.at(0, 1, 0))
-//			.subtractOperation(this::subtract)
-//			.emptyChecker(this::isEmpty)
-//			.build());
-//
+	@Getter
+	private final Set<TransactionalResource<BigDecimal>> transactionalResources = Set.of
+	(
+		new TransactionalResource<>
+		(
+			BlockVector3.at(0, 1, 0),
+			TransactionalResource.Type.CROWN,
+			this::createStoleCrownTransaction,
+			BigDecimalCalculator.INSTANCE,
+			() -> getCapacitatedCrownHolder().isEmpty(),
+			this::getAmountOfCrownsToSteal
+		)
+	);
+	
 	private CapacitatedCrownHolder capacitatedCrownHolder;
 	private transient BigDecimal capacity;
 	

@@ -1,5 +1,6 @@
 package com.eul4.model.craft.town.structure;
 
+import com.eul4.common.i18n.MessageArgs;
 import com.eul4.enums.Currency;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
@@ -13,11 +14,13 @@ import com.eul4.util.MessageUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 
 import java.io.IOException;
 
 import static com.eul4.i18n.PluginMessage.STRUCTURE_PHYSICAL_DEPOSIT_BALANCE_HOLOGRAM;
+import static com.eul4.util.MessageUtil.getPercentageProgressBar;
 
 @Getter
 public abstract class CraftPhysicalDeposit<N extends Number & Comparable<N>> extends CraftStructure implements PhysicalDeposit<N>
@@ -59,17 +62,20 @@ public abstract class CraftPhysicalDeposit<N extends Number & Comparable<N>> ext
 				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
 						getStructureType(),
 						level);
-				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(),
-						getHolder().getBalance());
+				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack());
 			}
 			else
 			{
 				teleportHologramToDefaultLocation();
 				hologram.setSize(4);
-				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
-				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack(), getHolder().getBalance());
-				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS, getHealth(), getMaxHealth());
-				hologram.getLine(3).setCustomName(MessageUtil.getPercentageProgressBar(getHealthPercentage()));
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
+						getStructureType(),
+						level);
+				hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessageUnderAttack());
+				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS,
+						getHealth(),
+						getMaxHealth());
+				hologram.getLine(3).setCustomName(getPercentageProgressBar(getHealthPercentage()));
 			}
 		}
 		else
@@ -79,11 +85,12 @@ public abstract class CraftPhysicalDeposit<N extends Number & Comparable<N>> ext
 			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
 					getStructureType(),
 					level);
-			hologram.getLine(1).setMessageAndArgs(STRUCTURE_PHYSICAL_DEPOSIT_BALANCE_HOLOGRAM, this);
+			hologram.getLine(1).setMessageAndArgs(getStructureBalanceMessage());
 		}
 	}
 	
-	protected abstract PluginMessage getStructureBalanceMessageUnderAttack();
+	protected abstract MessageArgs getStructureBalanceMessageUnderAttack();
+	protected abstract MessageArgs getStructureBalanceMessage();
 	
 	public abstract Rule<? extends DepositAttribute<N>> getRule();
 	

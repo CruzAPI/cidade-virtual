@@ -54,12 +54,6 @@ public class CraftLikeDeposit extends CraftDeposit<Integer> implements LikeDepos
 	}
 	
 	@Override
-	protected Integer subtract(Integer balance)
-	{
-		return null; //TODO is it a bug?
-	}
-	
-	@Override
 	public boolean isEmpty()
 	{
 		return getVirtualBalance() <= 0;
@@ -81,7 +75,7 @@ public class CraftLikeDeposit extends CraftDeposit<Integer> implements LikeDepos
 	@Override
 	public Integer getVirtualBalance()
 	{
-		return null;
+		return Math.min(remainingCapacity, getTotalBalance());
 	}
 	
 	@Override
@@ -90,15 +84,15 @@ public class CraftLikeDeposit extends CraftDeposit<Integer> implements LikeDepos
 		return town.getLikes();
 	}
 	
-	//	@Override
-//	protected int subtract(int balance)
-//	{
-//		return subtractVirtualBalance(this::setRemainingCapacity,
-//				town::subtractLikes,
-//				this::getVirtualBalance,
-//				this::getRemainingCapacity,
-//				balance);
-//	}
+	@Override
+	protected Integer subtract(Integer balance)
+	{
+		return subtractVirtualBalance(this::setRemainingCapacity,
+				town::subtractLikes,
+				this::getVirtualBalance,
+				this::getRemainingCapacity,
+				balance);
+	}
 	
 	@Override
 	public void onTownLikeBalanceChange()

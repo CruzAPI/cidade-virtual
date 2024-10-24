@@ -3,6 +3,8 @@ package com.eul4.model.town.structure;
 import com.eul4.common.i18n.MessageArgs;
 import com.eul4.common.util.LoggerUtil;
 import com.eul4.economy.Transaction;
+import com.eul4.event.StructureDestroyEvent;
+import com.eul4.event.TransactionalResourceStructureStealEvent;
 import com.eul4.exception.OverCapacityException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.spiritual.Attacker;
@@ -100,6 +102,7 @@ public interface TransactionalResourceStructure extends Structure
 					});
 			
 			getTown().getPlugin().execute(this::placeTransactionalResources);
+			new TransactionalResourceStructureStealEvent(transactionalResource).callEvent();
 			return true;
 		}
 		catch(OverCapacityException e)
@@ -137,7 +140,7 @@ public interface TransactionalResourceStructure extends Structure
 	
 	default void placeTransactionalResources()
 	{
-		for(TransactionalResource transactionalResource : getTransactionalResources())
+		for(TransactionalResource<?> transactionalResource : getTransactionalResources())
 		{
 			placeTransactionalResource(transactionalResource);
 		}

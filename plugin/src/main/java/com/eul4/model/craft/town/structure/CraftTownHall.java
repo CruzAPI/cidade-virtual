@@ -2,6 +2,7 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
 import com.eul4.calculator.BigDecimalCalculator;
+import com.eul4.enums.Currency;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.holder.CapacitatedCrownHolder;
@@ -12,7 +13,6 @@ import com.eul4.model.town.structure.TownHall;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.TownHallAttribute;
 import com.eul4.util.FaweUtil;
-import com.eul4.util.MessageUtil;
 import com.eul4.wrapper.Resource;
 import com.eul4.wrapper.TransactionalResource;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -30,6 +30,8 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
 
+import static com.eul4.util.MessageUtil.getPercentageProgressBar;
+
 @Getter
 public class CraftTownHall extends CraftResourceStructure implements TownHall
 {
@@ -37,6 +39,7 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	(
 		new TransactionalResource<>
 		(
+			this,
 			BlockVector3.at(0, 1, 0),
 			TransactionalResource.Type.CROWN,
 			this::createStoleCrownTransaction,
@@ -143,25 +146,57 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 						.getRelative(BlockFace.UP)
 						.getLocation()
 						.toCenterLocation());
-				hologram.setSize(3);
-				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
-				hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_LIKES, getVirtualLikes());
-				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_DISLIKES, getVirtualDislikes());
+				hologram.setSize(4);
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
+						getStructureType(),
+						level);
+				hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_LIKES,
+						getVirtualLikes());
+				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_DISLIKES,
+						getVirtualDislikes());
+				hologram.getLine(3).setMessageAndArgs(PluginMessage.$CURRENCY_$BALANCE_$CAPACITY,
+						Currency.CROWN,
+						capacitatedCrownHolder.getBalance(),
+						capacitatedCrownHolder.getCapacity());
 			}
 			else
 			{
 				hologram.setSize(5);
-				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
-				hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_LIKES, getVirtualLikes());
-				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_DISLIKES, getVirtualDislikes());
-				hologram.getLine(3).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS, getHealth(), getMaxHealth());
-				hologram.getLine(4).setCustomName(MessageUtil.getPercentageProgressBar(getHealthPercentage()));
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
+						getStructureType(),
+						level);
+				hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_LIKES,
+						getVirtualLikes());
+				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_DISLIKES,
+						getVirtualDislikes());
+				hologram.getLine(3).setMessageAndArgs(PluginMessage.$CURRENCY_$BALANCE_$CAPACITY,
+						Currency.CROWN,
+						capacitatedCrownHolder.getBalance(),
+						capacitatedCrownHolder.getCapacity());
+				hologram.getLine(3).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS,
+						getHealth(),
+						getMaxHealth());
+				hologram.getLine(4).setCustomName(getPercentageProgressBar(getHealthPercentage()));
 				teleportHologramToDefaultLocation();
 			}
 		}
 		else
 		{
-			hologram.remove();
+			hologram.setSize(4);
+			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
+					getStructureType(),
+					level);
+			hologram.getLine(1).setMessageAndArgs(PluginMessage.CAPACITY_$BALANCE_$CURRENCY,
+					likeCapacity,
+					Currency.LIKE);
+			hologram.getLine(2).setMessageAndArgs(PluginMessage.CAPACITY_$BALANCE_$CURRENCY,
+					dislikeCapacity,
+					Currency.DISLIKE);
+			hologram.getLine(3).setMessageAndArgs(PluginMessage.$CURRENCY_$BALANCE_$CAPACITY,
+					Currency.CROWN,
+					capacitatedCrownHolder.getBalance(),
+					capacitatedCrownHolder.getCapacity());
+			teleportHologramToDefaultLocation();
 		}
 	}
 	

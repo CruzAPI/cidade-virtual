@@ -2,6 +2,7 @@ package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
 import com.eul4.calculator.BigDecimalCalculator;
+import com.eul4.common.i18n.MessageArgs;
 import com.eul4.enums.Currency;
 import com.eul4.exception.*;
 import com.eul4.holder.CapacitatedCrownHolder;
@@ -15,6 +16,7 @@ import com.eul4.rule.attribute.CrownDepositAttribute;
 import com.eul4.wrapper.TransactionalResource;
 import com.sk89q.worldedit.math.BlockVector3;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implemen
 	(
 		new TransactionalResource<>
 		(
+			this,
 			BlockVector3.at(0, 1, 0),
 			TransactionalResource.Type.CROWN,
 			this::createStoleCrownTransaction,
@@ -61,14 +64,14 @@ public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implemen
 	@Override
 	public void reloadAttributes()
 	{
-		super.reloadAttributes();
-		
 		capacity = getRule().getAttributeOrDefault(getBuiltLevel()).getCapacity();
 		
 		if(capacitatedCrownHolder != null)
 		{
 			capacitatedCrownHolder.setCapacity(capacity);
 		}
+		
+		super.reloadAttributes();
 	}
 	
 	@Override
@@ -91,9 +94,25 @@ public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implemen
 	}
 	
 	@Override
-	protected PluginMessage getStructureBalanceMessageUnderAttack()
+	protected MessageArgs getStructureBalanceMessageUnderAttack()
 	{
-		return PluginMessage.STRUCTURE_CROWN_DEPOSIT_BALANCE;
+		Bukkit.broadcastMessage("balance: " + capacitatedCrownHolder.getBalance());
+		return PluginMessage.$BALANCE_$CURRENCY.withArgs
+		(
+			capacitatedCrownHolder.getBalance(),
+			Currency.CROWN
+		);
+	}
+	
+	@Override
+	protected MessageArgs getStructureBalanceMessage()
+	{
+		return PluginMessage.$CURRENCY_$BALANCE_$CAPACITY.withArgs
+		(
+			Currency.CROWN,
+			capacitatedCrownHolder.getBalance(),
+			capacitatedCrownHolder.getCapacity()
+		);
 	}
 	
 	@Override

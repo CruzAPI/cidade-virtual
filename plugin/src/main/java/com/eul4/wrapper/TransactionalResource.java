@@ -5,6 +5,7 @@ import com.eul4.common.i18n.TranslatableMessage;
 import com.eul4.enums.Currency;
 import com.eul4.function.TransactionCreator;
 import com.eul4.i18n.PluginMessage;
+import com.eul4.model.town.structure.TransactionalResourceStructure;
 import com.sk89q.worldedit.math.BlockVector3;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class TransactionalResource<N extends Number & Comparable<N>>
 		private final TranslatableMessage overCapacityMessage;
 	}
 	
+	private final TransactionalResourceStructure structure;
 	private final BlockVector3 relativePosition;
 	private final Type type;
 	private final TransactionCreator<N> transactionCreator;

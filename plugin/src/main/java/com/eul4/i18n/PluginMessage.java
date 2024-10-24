@@ -10,7 +10,6 @@ import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
 import com.eul4.common.util.CommonMessageUtil;
 import com.eul4.common.util.CommonWordUtil;
-import com.eul4.common.util.DecimalFormatUtil;
 import com.eul4.common.wrapper.TimerTranslator;
 import com.eul4.enums.Currency;
 import com.eul4.enums.Rarity;
@@ -38,7 +37,6 @@ import org.bukkit.OfflinePlayer;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
@@ -65,6 +63,7 @@ public enum PluginMessage implements Message
 	RARE("rare"),
 	LEGENDARY("legendary"),
 	RARITY("rarity"),
+	CAPACITY("capacity"),
 	
 	ENCHANTMENT_STABILITY("enchantment.stability"),
 	
@@ -647,6 +646,33 @@ public enum PluginMessage implements Message
 		return Collections.singletonList(component);
 	}),
 	
+	$CURRENCY_$BALANCE_$CAPACITY((locale, args) ->
+	{
+		Currency currency = (Currency) args[0];
+		Number balance = (Number) args[1];
+		Number capacity = (Number) args[2];
+		
+		String formattedBalance = currency.format(balance, locale);
+		String formattedCapacity = currency.format(capacity, locale);
+		
+		return singletonList
+		(
+			empty().color(WHITE)
+					.append
+					(
+						currency.getPluralWord()
+								.translate(locale, CommonWordUtil::toUpperCaseAndConcatColon)
+								.style(currency.getStyle())
+								.decorate(BOLD)
+					)
+					.appendSpace()
+					.append(text(formattedBalance))
+					.append(text("/"))
+					.append(text(formattedCapacity))
+					.decorate(BOLD)
+		);
+	}),
+	
 	THIS_BLOCK_WILL_EXCEED_HARDNESS_LIMIT("this-block-will-exceed-hardness-limit", empty().color(RED)),
 	
 	TITLE_SEARCHING("title.searching", empty().color(GRAY)),
@@ -745,6 +771,25 @@ public enum PluginMessage implements Message
 	{
 		empty().color(WHITE).decorate(BOLD),
 		text((int) args[0]),
+	}),
+	
+	$BALANCE_$CURRENCY((locale, args) ->
+	{
+		Number balance = (Number) args[0];
+		Currency currency = (Currency) args[1];
+		
+		Component currencyWordComponent = currency
+				.getWordFor(balance, locale)
+				.translate(locale, String::toUpperCase);
+		
+		return singletonList
+		(
+			text(currency.format(balance, locale))
+					.appendSpace()
+					.append(currencyWordComponent)
+					.style(currency.getStyle())
+					.decorate(BOLD)
+		);
 	}),
 	
 	STRUCTURE_CROWN_DEPOSIT_BALANCE("structure.crown-deposit.balance", (bundle, args) -> new Component[]
@@ -1611,7 +1656,21 @@ public enum PluginMessage implements Message
 	UNEXPECTED_ERROR_WHILE_STEALING("unexpected-error-while-stealing", empty().color(RED)),
 	STEALING_CROWNS_DEPOSIT_FULL("stealing-crowns-deposit-full", empty().color(RED)),
 	
-	;
+	CAPACITY_$BALANCE_$CURRENCY((locale, args) ->
+	{
+		Component capacityWordComponent = CAPACITY
+				.translate(locale, CommonWordUtil::capitalizeAndConcatColon)
+				.color(WHITE)
+				.decorate(BOLD);
+		
+		return singletonList
+		(
+			empty()
+					.append(capacityWordComponent)
+					.appendSpace()
+					.append($BALANCE_$CURRENCY.translate(locale, args[0], args[1]))
+		);
+	});
 	
 	private final String key;
 	private final BundleBaseName bundleBaseName;

@@ -6,6 +6,11 @@ public class CommonWordUtil
 {
 	public static final String COLON = ":";
 	
+	public static String inParentheses(String word)
+	{
+		return "(" + word + ")";
+	}
+	
 	public static String toUpperCaseAndConcatColon(String word)
 	{
 		return word.toUpperCase().concat(COLON);

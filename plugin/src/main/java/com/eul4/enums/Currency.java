@@ -1,6 +1,7 @@
 package com.eul4.enums;
 
 import com.eul4.common.i18n.Message;
+import com.eul4.common.util.DecimalFormatUtil;
 import com.eul4.i18n.PluginMessage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +78,21 @@ public enum Currency
 	private final Message singularWord;
 	private final Message pluralWord;
 	private final Style style;
+	
+	public String format(Number number, Locale locale)
+	{
+		return getDecimalFormat(locale).format(number);
+	}
+	
+	public Message getWordFor(Number number, Locale locale)
+	{
+		return getWordFor(number, getDecimalFormat(locale));
+	}
+	
+	public Message getWordFor(Number number, DecimalFormat decimalFormat)
+	{
+		return getWordFor(DecimalFormatUtil.parse(decimalFormat, number));
+	}
 	
 	public Message getWordFor(Number number)
 	{

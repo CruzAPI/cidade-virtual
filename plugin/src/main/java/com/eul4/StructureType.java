@@ -160,7 +160,7 @@ public enum StructureType
 		CrownDepositReader.class,
 		CraftCrownDepositGui::new,
 		Main::getCrownDepositRule,
-		NamedTextColor.RED,
+		NamedTextColor.GOLD,
 		PluginMessage.STRUCTURE_CROWN_DEPOSIT_NAME,
 		PluginMessage.STRUCTURE_CROWN_DEPOSIT_UPGRADE_PREVIEW_LORE,
 		Material.GOLD_BLOCK

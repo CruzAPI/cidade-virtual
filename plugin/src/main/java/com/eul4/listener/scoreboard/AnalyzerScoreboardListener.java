@@ -12,6 +12,10 @@ import com.eul4.scoreboard.AnalyzerScoreboard;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 @RequiredArgsConstructor
 public class AnalyzerScoreboardListener implements Listener
@@ -19,35 +23,33 @@ public class AnalyzerScoreboardListener implements Listener
 	private final Main plugin;
 	
 	@EventHandler
-	public void on(DislikeChangeEvent event)
+	public void on(LikeChangeEvent event)
 	{
-		event.getTown().findAnalyzer()
-				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateDislikesTeam);
+		update(event, AnalyzerScoreboard::updateLikesTeam);
 	}
 	
 	@EventHandler
-	public void on(LikeChangeEvent event)
+	public void on(DislikeChangeEvent event)
 	{
-		event.getTown().findAnalyzer()
-				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateLikesTeam);
+		update(event, AnalyzerScoreboard::updateDislikesTeam);
+	}
+	
+	@EventHandler
+	public void on(CrownChangeEvent event)
+	{
+		update(event, AnalyzerScoreboard::updateCrownsTeam);
 	}
 	
 	@EventHandler
 	public void on(TownCapacityChangeEvent event)
 	{
-		event.getTown().findAnalyzer()
-				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateLikesAndDislikesTeams);
+		update(event, AnalyzerScoreboard::updateLikesAndDislikesTeams);
 	}
 	
 	@EventHandler
 	public void on(TownHardnessChangeEvent event)
 	{
-		event.getTown().findAnalyzer()
-				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateHardnessTeam);
+		update(event, AnalyzerScoreboard::updateHardnessTeam);
 	}
 	
 	@EventHandler
@@ -64,10 +66,7 @@ public class AnalyzerScoreboardListener implements Listener
 			return;
 		}
 		
-		townHall.getTown()
-				.findAnalyzer()
-				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateTownHallLevelTeam);
+		update(townHall.getTown(), AnalyzerScoreboard::updateTownHallLevelTeam);
 	}
 	
 	@EventHandler
@@ -75,10 +74,7 @@ public class AnalyzerScoreboardListener implements Listener
 	{
 		PluginPlayer pluginPlayer = (PluginPlayer) event.getCommonPlayer();
 		
-		pluginPlayer.findTown()
-				.flatMap(Town::findAnalyzer)
-				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updatePlayerStatusTeam);
+		update(pluginPlayer, AnalyzerScoreboard::updatePlayerStatusTeam);
 	}
 	
 	@EventHandler
@@ -86,36 +82,42 @@ public class AnalyzerScoreboardListener implements Listener
 	{
 		PluginPlayer pluginPlayer = (PluginPlayer) event.getCommonPlayer();
 		
-		pluginPlayer.findTown()
-				.flatMap(Town::findAnalyzer)
-				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updatePlayerStatusTeam);
+		update(pluginPlayer, AnalyzerScoreboard::updatePlayerStatusTeam);
 	}
 	
 	@EventHandler
 	public void on(GenerateLikeEvent event)
 	{
-		event.getTown()
-				.findAnalyzer()
-				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateLikesTeam);
+		update(event, AnalyzerScoreboard::updateLikesTeam);
 	}
 	
 	@EventHandler
 	public void on(GenerateDislikeEvent event)
 	{
-		event.getTown()
-				.findAnalyzer()
-				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateDislikesTeam);
+		update(event, AnalyzerScoreboard::updateDislikesTeam);
 	}
 	
 	@EventHandler
 	public void on(GeneratorsCapacityChangeEvent event)
 	{
-		event.getTown()
-				.findAnalyzer()
+		update(event, AnalyzerScoreboard::updateLikesAndDislikesTeams);
+	}
+	
+	private void update(PluginPlayer pluginPlayer, Consumer<? super AnalyzerScoreboard> action)
+	{
+		update(pluginPlayer.getTown(), action);
+	}
+	
+	private void update(TownEvent townEvent, Consumer<? super AnalyzerScoreboard> action)
+	{
+		update(townEvent.getTown(), action);
+	}
+	
+	private void update(@Nullable Town town, Consumer<? super AnalyzerScoreboard> action)
+	{
+		Optional.ofNullable(town)
+				.map(Town::getAnalyzer)
 				.map(RaidAnalyzer::getScoreboard)
-				.ifPresent(AnalyzerScoreboard::updateLikesAndDislikesTeams);
+				.ifPresent(action);
 	}
 }

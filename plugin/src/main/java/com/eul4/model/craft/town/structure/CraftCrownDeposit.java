@@ -4,19 +4,18 @@ import com.eul4.StructureType;
 import com.eul4.calculator.BigDecimalCalculator;
 import com.eul4.common.i18n.MessageArgs;
 import com.eul4.enums.Currency;
-import com.eul4.exception.*;
+import com.eul4.exception.CannotConstructException;
 import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
-import com.eul4.model.town.structure.CrownDeposit;
 import com.eul4.model.town.structure.CapacitatedCrownTransactionResourceStructure;
+import com.eul4.model.town.structure.CrownDeposit;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.CrownDepositAttribute;
 import com.eul4.wrapper.TransactionalResource;
 import com.sk89q.worldedit.math.BlockVector3;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -96,7 +95,6 @@ public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implemen
 	@Override
 	protected MessageArgs getStructureBalanceMessageUnderAttack()
 	{
-		Bukkit.broadcastMessage("balance: " + capacitatedCrownHolder.getBalance());
 		return PluginMessage.$BALANCE_$CURRENCY.withArgs
 		(
 			capacitatedCrownHolder.getBalance(),

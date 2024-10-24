@@ -33,7 +33,7 @@ public class CommonMessageUtil
 	
 	public static Component displayName(Object arg)
 	{
-		return arg instanceof OfflinePlayer offlinePlayer
+		return arg == null ? text(UNKNOWN) : arg instanceof OfflinePlayer offlinePlayer
 				? getOfflinePlayerDisplayName(offlinePlayer)
 				: argToComponent(arg);
 	}

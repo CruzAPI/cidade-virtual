@@ -9,8 +9,10 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,8 +35,28 @@ public class RawMaterialCommand implements TabExecutor
 	}
 	
 	@Override
-	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
+	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args)
 	{
+		if(!plugin.getPermissionService().hasPermission(commandSender, PERMISSION))
+		{
+			return Collections.emptyList();
+		}
+		
+		if(args.length == 1)
+		{
+			List<String> suggestions = new ArrayList<>();
+			
+			for(Material material : Material.values())
+			{
+				if(material.name().startsWith(args[0].toUpperCase()))
+				{
+					suggestions.add(material.name());
+				}
+			}
+			
+			return suggestions;
+		}
+		
 		return Collections.emptyList();
 	}
 	
@@ -119,7 +141,8 @@ public class RawMaterialCommand implements TabExecutor
 				}
 				else if(args[1].equalsIgnoreCase("supply"))
 				{
-					BigDecimal newCirculatingSupply = value.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO
+					BigDecimal newCirculatingSupply = value.compareTo(BigDecimal.ZERO) == 0
+							? BigDecimal.ZERO
 							: cryptoInfo.getCirculatingSupply().add(value);
 					
 					if(newCirculatingSupply.compareTo(BigDecimal.ZERO) < 0)

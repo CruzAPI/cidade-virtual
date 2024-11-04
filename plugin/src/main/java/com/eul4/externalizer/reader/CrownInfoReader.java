@@ -1,24 +1,25 @@
 package com.eul4.externalizer.reader;
 
+import com.eul4.Main;
 import com.eul4.common.exception.InvalidVersionException;
-import com.eul4.common.externalizer.reader.BigDecimalReader;
 import com.eul4.common.externalizer.reader.ObjectReader;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
+import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
+import com.eul4.holder.UnlimitedCrownHolder;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.wrapper.CrownInfo;
 import lombok.Getter;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 
 public class CrownInfoReader extends ObjectReader<CrownInfo>
 {
 	@Getter
 	private final Reader<CrownInfo> reader;
-	private final Readable<CrownInfo> readable;
+	private final ParameterizedReadable<CrownInfo, Main> parameterizedReadable;
 	
 	public CrownInfoReader(Readers readers) throws InvalidVersionException
 	{
@@ -31,27 +32,31 @@ public class CrownInfoReader extends ObjectReader<CrownInfo>
 		{
 		case 0:
 			this.reader = Reader.identity();
-			this.readable = this::readableVersion0;
+			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
 	}
 	
-	private CrownInfo readableVersion0() throws IOException, ClassNotFoundException
+	private Readable<CrownInfo> parameterizedReadableVersion0(Main plugin)
 	{
-		BigDecimalReader bigDecimalReader = readers.getReader(BigDecimalReader.class);
-		
-		BigDecimal serverTreasure = bigDecimalReader.readReference();
-		BigDecimal jackpot = bigDecimalReader.readReference();
-		BigDecimal townHallVault = bigDecimalReader.readReference();
-		BigDecimal eul4Insights = bigDecimalReader.readReference();
-		
-		return new CrownInfo(serverTreasure, jackpot, townHallVault, eul4Insights);
+		return () ->
+		{
+			UnlimitedCrownHolderReader unlimitedCrownHolderReader = readers
+					.getReader(UnlimitedCrownHolderReader.class);
+			
+			UnlimitedCrownHolder serverTreasure = unlimitedCrownHolderReader.readReference(plugin);
+			UnlimitedCrownHolder jackpot = unlimitedCrownHolderReader.readReference(plugin);
+			UnlimitedCrownHolder townHallVault = unlimitedCrownHolderReader.readReference(plugin);
+			UnlimitedCrownHolder eul4Insights = unlimitedCrownHolderReader.readReference(plugin);
+			
+			return new CrownInfo(serverTreasure, jackpot, townHallVault, eul4Insights);
+		};
 	}
 	
-	public CrownInfo readReference() throws IOException, ClassNotFoundException
+	public CrownInfo readReference(Main plugin) throws IOException, ClassNotFoundException
 	{
-		return super.readReference(readable);
+		return super.readReference(parameterizedReadable.getReadable(plugin));
 	}
 }

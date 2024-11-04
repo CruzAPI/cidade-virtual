@@ -11,7 +11,6 @@ import com.eul4.externalizer.reader.CrownInfoReader;
 import com.eul4.externalizer.writer.CrownInfoWriter;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.wrapper.CrownInfo;
-import com.google.common.io.ByteStreams;
 
 import java.io.*;
 import java.text.MessageFormat;
@@ -28,6 +27,7 @@ public class CrownInfoFiler extends PluginFiler
 		CommonObjectType.BIG_DECIMAL,
 		CommonObjectType.OBJECT,
 		PluginObjectType.CROWN_INFO,
+		PluginObjectType.UNLIMITED_CROWN_HOLDER,
 	};
 	
 	private CrownInfo crownInfo;
@@ -91,7 +91,7 @@ public class CrownInfoFiler extends PluginFiler
 		if(!file.exists() || file.length() == 0L)
 		{
 			plugin.getLogger().warning(MessageFormat.format("{0} file is empty or not exists! Loading empty CrownInfo!", file.getName()));
-			this.crownInfo = new CrownInfo();
+			this.crownInfo = new CrownInfo(plugin);
 			return;
 		}
 		
@@ -103,7 +103,7 @@ public class CrownInfoFiler extends PluginFiler
 		{
 			this.crownInfo = Readers.of(plugin, in, readVersions(in))
 					.getReader(CrownInfoReader.class)
-					.readReference();
+					.readReference(plugin);
 			plugin.getLogger().info(MessageFormat.format("CrownInfo data loaded! crownInfo={0}", crownInfo));
 		}
 		catch(Exception e)

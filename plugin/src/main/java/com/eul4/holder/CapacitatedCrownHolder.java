@@ -5,6 +5,7 @@ import com.eul4.exception.NegativeBalanceException;
 import com.eul4.exception.OperationException;
 import com.eul4.exception.OverCapacityException;
 import com.eul4.model.town.Town;
+import com.eul4.model.town.structure.Structure;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import org.bukkit.OfflinePlayer;
@@ -13,29 +14,51 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class CapacitatedCrownHolder implements CrownHolder, CapacitatedHolder<BigDecimal>, TownOwner
+public class CapacitatedCrownHolder implements CrownHolder,
+		CapacitatedHolder<BigDecimal>,
+		StructureOwner
 {
 	private BigDecimal balance;
 	private BigDecimal capacity;
 	
+	private final @NotNull Main plugin;
+	
 	@Getter
-	private final UUID townUniqueId;
-	private final Main plugin;
+	private final @NotNull UUID townUniqueId;
+	@Getter
+	private final @NotNull UUID structureUniqueId;
 	
-	public CapacitatedCrownHolder(Town town)
+	public CapacitatedCrownHolder(Structure structure)
 	{
-		this(town.getPlugin(), town.getTownUniqueId());
+		this
+		(
+			structure.getTown().getPlugin(),
+			structure.getTown().getTownUniqueId(),
+			structure.getUUID()
+		);
 	}
 	
-	public CapacitatedCrownHolder(@NotNull Main plugin, UUID townUniqueId)
+	public CapacitatedCrownHolder
+	(
+		@NotNull Main plugin,
+		@NotNull UUID townUniqueId,
+		@NotNull UUID structureUniqueId
+	)
 	{
-		this(plugin, townUniqueId, BigDecimal.ZERO);
+		this(plugin, townUniqueId, structureUniqueId, BigDecimal.ZERO);
 	}
 	
-	public CapacitatedCrownHolder(@NotNull Main plugin, @NotNull UUID townUniqueId, BigDecimal balance)
+	public CapacitatedCrownHolder
+	(
+		@NotNull Main plugin,
+		@NotNull UUID townUniqueId,
+		@NotNull UUID structureUniqueId,
+		BigDecimal balance
+	)
 	{
 		this.plugin = Preconditions.checkNotNull(plugin);
 		this.townUniqueId = Preconditions.checkNotNull(townUniqueId);
+		this.structureUniqueId = Preconditions.checkNotNull(structureUniqueId);
 		
 		this.balance = balance;
 		this.capacity = BigDecimal.ZERO;
@@ -109,7 +132,12 @@ public class CapacitatedCrownHolder implements CrownHolder, CapacitatedHolder<Bi
 	@Override
 	public String toString()
 	{
-		return "CapacitatedCrownHolder{owner=" + getOwnerName() + ", balance=" + balance + ", capacity=" + capacity + '}';
+		return "CapacitatedCrownHolder{owner="
+				+ getOwnerName()
+				+ ", structureUniqueId=" + structureUniqueId
+				+ ", balance=" + balance
+				+ ", capacity=" + capacity
+				+ '}';
 	}
 	
 	private String getOwnerName()

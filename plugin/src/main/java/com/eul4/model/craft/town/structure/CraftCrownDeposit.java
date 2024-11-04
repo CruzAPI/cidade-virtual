@@ -56,7 +56,7 @@ public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implemen
 	public CraftCrownDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
-		capacitatedCrownHolder = new CapacitatedCrownHolder(town);
+		capacitatedCrownHolder = new CapacitatedCrownHolder(this);
 		capacitatedCrownHolder.setCapacity(capacity);
 	}
 	

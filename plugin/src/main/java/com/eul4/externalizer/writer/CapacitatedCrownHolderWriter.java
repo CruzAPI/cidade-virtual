@@ -22,6 +22,7 @@ public class CapacitatedCrownHolderWriter extends ObjectWriter<CapacitatedCrownH
 		BigDecimalWriter bigDecimalWriter = writers.getWriter(BigDecimalWriter.class);
 		
 		uuidWriter.writeReferenceNotNull(capacitatedCrownHolder.getTownUniqueId());
+		uuidWriter.writeReferenceNotNull(capacitatedCrownHolder.getStructureUniqueId());
 		bigDecimalWriter.writeReferenceNotNull(capacitatedCrownHolder.getBalance());
 	}
 }

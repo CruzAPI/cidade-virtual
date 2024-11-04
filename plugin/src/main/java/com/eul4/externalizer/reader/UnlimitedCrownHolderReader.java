@@ -10,7 +10,7 @@ import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
-import com.eul4.holder.CapacitatedCrownHolder;
+import com.eul4.holder.UnlimitedCrownHolder;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
 
@@ -18,17 +18,17 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class CapacitatedCrownHolderReader extends ObjectReader<CapacitatedCrownHolder>
+public class UnlimitedCrownHolderReader extends ObjectReader<UnlimitedCrownHolder>
 {
 	@Getter
-	private final Reader<CapacitatedCrownHolder> reader;
-	private final ParameterizedReadable<CapacitatedCrownHolder, Main> parameterizedReadable;
+	private final Reader<UnlimitedCrownHolder> reader;
+	private final ParameterizedReadable<UnlimitedCrownHolder, Main> parameterizedReadable;
 	
-	public CapacitatedCrownHolderReader(Readers readers) throws InvalidVersionException
+	public UnlimitedCrownHolderReader(Readers readers) throws InvalidVersionException
 	{
-		super(readers, CapacitatedCrownHolder.class);
+		super(readers, UnlimitedCrownHolder.class);
 		
-		final ObjectType objectType = PluginObjectType.CAPACITATED_CROWN_HOLDER;
+		final ObjectType objectType = PluginObjectType.UNLIMITED_CROWN_HOLDER;
 		final byte version = readers.getVersions().get(objectType);
 		
 		switch(version)
@@ -42,19 +42,18 @@ public class CapacitatedCrownHolderReader extends ObjectReader<CapacitatedCrownH
 		}
 	}
 	
-	private Readable<CapacitatedCrownHolder> parameterizedReadableVersion0(Main plugin)
+	private Readable<UnlimitedCrownHolder> parameterizedReadableVersion0(Main plugin)
 	{
 		return () ->
 		{
-			UUID townUniqueId = readers.getReader(UUIDReader.class).readReference();
-			UUID structureUniqueId = readers.getReader(UUIDReader.class).readReference();
+			UUID uniqueId = readers.getReader(UUIDReader.class).readReference();
 			BigDecimal balance = readers.getReader(BigDecimalReader.class).readReference();
 			
-			return new CapacitatedCrownHolder(plugin, townUniqueId, structureUniqueId, balance);
+			return new UnlimitedCrownHolder(plugin, uniqueId, balance);
 		};
 	}
 	
-	public CapacitatedCrownHolder readReference(Main plugin) throws IOException, ClassNotFoundException
+	public UnlimitedCrownHolder readReference(Main plugin) throws IOException, ClassNotFoundException
 	{
 		return super.readReference(parameterizedReadable.getReadable(plugin));
 	}

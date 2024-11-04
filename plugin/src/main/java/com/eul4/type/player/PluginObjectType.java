@@ -64,6 +64,7 @@ public enum PluginObjectType implements ObjectType
 	TURRET((byte) 0, PluginExternalizerType.TURRET),
 	TUTORIAL_TOWN_PLAYER_DATA((byte) 0, PluginExternalizerType.TUTORIAL_TOWN_PLAYER_DATA),
 	TUTORIAL_TOWN_PLAYER((byte) 0, PluginExternalizerType.TUTORIAL_TOWN_PLAYER),
+	UNLIMITED_CROWN_HOLDER((byte) 0, PluginExternalizerType.UNLIMITED_CROWN_HOLDER),
 	VANILLA_PLAYER_DATA((byte) 0, PluginExternalizerType.VANILLA_PLAYER_DATA),
 	VANILLA_PLAYER((byte) 0, PluginExternalizerType.VANILLA_PLAYER),
 	VECTOR_3((byte) 0, PluginExternalizerType.VECTOR_3),

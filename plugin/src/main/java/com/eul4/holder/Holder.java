@@ -9,7 +9,11 @@ public interface Holder<N extends Number & Comparable<N>>
 	void setBalance(N balance) throws OperationException;
 	void add(N amount) throws OperationException;
 	void subtract(N amount) throws OperationException;
-	boolean isEmpty();
+	
+	default boolean isEmpty()
+	{
+		return getBalance().compareTo(getZeroSample()) <= 0;
+	}
 	
 	N getZeroSample();
 	N subtractSample(N minuend, N subtrahend);

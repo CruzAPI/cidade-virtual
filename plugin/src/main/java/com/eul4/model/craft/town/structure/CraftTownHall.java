@@ -87,7 +87,7 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	public CraftTownHall(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
-		capacitatedCrownHolder = new CapacitatedCrownHolder(town);
+		capacitatedCrownHolder = new CapacitatedCrownHolder(this);
 		capacitatedCrownHolder.setCapacity(crownCapacity);
 	}
 	
@@ -300,7 +300,7 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	@Override
 	public void setDefaultCapacitatedCrownHolder()
 	{
-		capacitatedCrownHolder = new CapacitatedCrownHolder(town);
+		capacitatedCrownHolder = new CapacitatedCrownHolder(this);
 		capacitatedCrownHolder.setCapacity(crownCapacity);
 	}
 }

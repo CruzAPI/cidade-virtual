@@ -18,11 +18,12 @@ public class CrownInfoWriter extends ObjectWriter<CrownInfo>
 	@Override
 	protected void writeObject(CrownInfo crownInfo) throws IOException
 	{
-		BigDecimalWriter bigDecimalWriter = writers.getWriter(BigDecimalWriter.class);
+		UnlimitedCrownHolderWriter unlimitedCrownHolderWriter = writers
+				.getWriter(UnlimitedCrownHolderWriter.class);
 		
-		bigDecimalWriter.writeReferenceNotNull(crownInfo.getServerTreasure());
-		bigDecimalWriter.writeReferenceNotNull(crownInfo.getJackpot());
-		bigDecimalWriter.writeReferenceNotNull(crownInfo.getTownHallVault());
-		bigDecimalWriter.writeReferenceNotNull(crownInfo.getEul4Insights());
+		unlimitedCrownHolderWriter.writeReferenceNotNull(crownInfo.getServerTreasure());
+		unlimitedCrownHolderWriter.writeReferenceNotNull(crownInfo.getJackpot());
+		unlimitedCrownHolderWriter.writeReferenceNotNull(crownInfo.getTownHallVault());
+		unlimitedCrownHolderWriter.writeReferenceNotNull(crownInfo.getEul4Insights());
 	}
 }

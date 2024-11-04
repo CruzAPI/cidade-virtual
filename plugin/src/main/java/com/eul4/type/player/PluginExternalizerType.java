@@ -60,6 +60,7 @@ public enum PluginExternalizerType implements ExternalizerType
 	TURRET(TurretReader::new, TurretReader.class, TurretWriter::new, TurretWriter.class),
 	TUTORIAL_TOWN_PLAYER_DATA(TutorialTownPlayerDataReader::new, TutorialTownPlayerDataReader.class, TutorialTownPlayerDataWriter::new, TutorialTownPlayerDataWriter.class),
 	TUTORIAL_TOWN_PLAYER(TutorialTownPlayerReader::new, TutorialTownPlayerReader.class, TutorialTownPlayerWriter::new, TutorialTownPlayerWriter.class),
+	UNLIMITED_CROWN_HOLDER(UnlimitedCrownHolderReader::new, UnlimitedCrownHolderReader.class, UnlimitedCrownHolderWriter::new, UnlimitedCrownHolderWriter.class),
 	VANILLA_PLAYER_DATA(VanillaPlayerDataReader::new, VanillaPlayerDataReader.class, VanillaPlayerDataWriter::new, VanillaPlayerDataWriter.class),
 	VANILLA_PLAYER(VanillaPlayerReader::new, VanillaPlayerReader.class, VanillaPlayerWriter::new, VanillaPlayerWriter.class),
 	VECTOR_3(Vector3Reader::new, Vector3Reader.class, Vector3Writer::new, Vector3Writer.class),

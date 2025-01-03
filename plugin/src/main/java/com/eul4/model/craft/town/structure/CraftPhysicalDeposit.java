@@ -3,23 +3,17 @@ package com.eul4.model.craft.town.structure;
 import com.eul4.common.i18n.MessageArgs;
 import com.eul4.enums.Currency;
 import com.eul4.enums.StructureStatus;
-import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.PhysicalDeposit;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.DepositAttribute;
-import com.eul4.util.MessageUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.block.BlockFace;
 
-import java.io.IOException;
-
-import static com.eul4.i18n.PluginMessage.STRUCTURE_PHYSICAL_DEPOSIT_BALANCE_HOLOGRAM;
 import static com.eul4.util.MessageUtil.getPercentageProgressBar;
 
 @Getter
@@ -35,7 +29,6 @@ public abstract class CraftPhysicalDeposit<N extends Number & Comparable<N>> ext
 	}
 	
 	public CraftPhysicalDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt)
-			throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
 	}

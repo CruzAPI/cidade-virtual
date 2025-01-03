@@ -43,6 +43,8 @@ public interface Structure
 	File getSchematicFile();
 	StructureType getStructureType();
 	
+	void register() throws CannotConstructException, IOException;
+	
 	void startMove() throws IOException;
 	
 	void cancelMoveBlindly();

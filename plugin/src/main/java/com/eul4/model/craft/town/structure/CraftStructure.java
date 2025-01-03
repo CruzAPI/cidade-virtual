@@ -114,17 +114,20 @@ public abstract class CraftStructure implements Structure
 	
 	private Vector3 centerPosition;
 	
+	private boolean registered;
+	
 	public CraftStructure(Town town)
 	{
 		this.town = town;
+		this.registered = true;
 	}
 	
-	public CraftStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftStructure(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftStructure(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftStructure(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		this(town);
 		
@@ -135,7 +138,11 @@ public abstract class CraftStructure implements Structure
 		this.status = isBuilt ? StructureStatus.BUILT : StructureStatus.UNREADY;
 		this.buildTicks = isBuilt ? 0 : getRule().getAttribute(1).getTotalBuildTicks();
 		this.totalBuildTicks = buildTicks;
-		
+	}
+	
+	@Override
+	public void register() throws CannotConstructException, IOException
+	{
 		resetAttributes();
 		construct(loadSchematic(), centerTownBlock, 0);
 		
@@ -473,7 +480,7 @@ public abstract class CraftStructure implements Structure
 	{
 		resetAttributes();
 		scheduleBuildTaskIfPossible();
-		reconstructBlindly();
+		constructSafely();
 		hologram.load();
 	}
 	
@@ -953,7 +960,7 @@ public abstract class CraftStructure implements Structure
 		this.uuid = UUID.randomUUID();
 	}
 	
-	private void reconstructBlindly()
+	private void constructSafely()
 	{
 		try
 		{

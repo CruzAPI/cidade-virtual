@@ -288,10 +288,13 @@ public class CraftTown implements Town
 		TownBlock likeGeneratorTownBlock = getTownBlock(centerBlock.getRelative(4, 0, -11));
 		TownBlock dislikeGeneratorTownBlock = getTownBlock(centerBlock.getRelative(-4, 0, -11));
 		
-		townHall = new CraftTownHall(this, centerTownBlock, true);
-		
+		this.townHall = new CraftTownHall(this, centerTownBlock, true);
 		LikeGenerator likeGenerator = new CraftLikeGenerator(this, likeGeneratorTownBlock, true);
 		DislikeGenerator dislikeGenerator = new CraftDislikeGenerator(this, dislikeGeneratorTownBlock, true);
+		
+		this.townHall.register();
+		likeGenerator.register();
+		dislikeGenerator.register();
 		
 		ThreadUtil.runSynchronouslyUntilTerminate(plugin, likeGenerator::full);
 		ThreadUtil.runSynchronouslyUntilTerminate(plugin, dislikeGenerator::full);
@@ -484,7 +487,7 @@ public class CraftTown implements Town
 		
 		Price price = structureType.getRule(plugin).getAttribute(1).getPrice();
 		checkIfAffordable(price);
-		structureType.getInstantiation().newInstance(this, townBlock);
+		structureType.getInstantiation().newInstance(this, townBlock).register();
 		subtract(price);
 		
 		return price;

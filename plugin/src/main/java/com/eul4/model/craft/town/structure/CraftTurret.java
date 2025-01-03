@@ -57,15 +57,21 @@ public class CraftTurret extends CraftStructure implements Turret
 	
 	private Evoker evoker;
 	
-	public CraftTurret(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftTurret(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftTurret(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftTurret(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
-		this.evoker = (Evoker) centerTownBlock.getBlock()
+	}
+	
+	@Override
+	public void register() throws CannotConstructException, IOException
+	{
+		super.register();
+		this.evoker = (Evoker) getCenterTownBlock().getBlock()
 				.getWorld()
 				.spawnEntity(getDefaultEvokerLocation(), EVOKER, CUSTOM, this::setupEvoker);
 		EVOKER_UUID_MAP.put(evoker.getUniqueId(), this);

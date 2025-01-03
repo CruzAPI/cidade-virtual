@@ -48,15 +48,21 @@ public class CraftCrownDeposit extends CraftPhysicalDeposit<BigDecimal> implemen
 		super(town);
 	}
 	
-	public CraftCrownDeposit(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftCrownDeposit(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftCrownDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftCrownDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
 		capacitatedCrownHolder = new CapacitatedCrownHolder(this);
+	}
+	
+	@Override
+	public void register() throws CannotConstructException, IOException
+	{
+		super.register();
 		capacitatedCrownHolder.setCapacity(capacity);
 	}
 	

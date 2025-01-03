@@ -31,12 +31,12 @@ public class CraftDislikeDeposit extends CraftDeposit<Integer> implements Dislik
 		super(town);
 	}
 	
-	public CraftDislikeDeposit(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftDislikeDeposit(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftDislikeDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftDislikeDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
 	}

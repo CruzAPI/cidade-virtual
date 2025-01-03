@@ -31,7 +31,7 @@ public class Transfer<N extends Number & Comparable<N>>
 		this.amount = amount;
 	}
 	
-	void ex	ecute() throws OperationException
+	void execute() throws OperationException
 	{
 		if(executed)
 		{

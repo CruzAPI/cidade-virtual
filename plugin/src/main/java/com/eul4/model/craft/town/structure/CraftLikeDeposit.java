@@ -31,12 +31,12 @@ public class CraftLikeDeposit extends CraftDeposit<Integer> implements LikeDepos
 		super(town);
 	}
 	
-	public CraftLikeDeposit(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftLikeDeposit(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftLikeDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftLikeDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
 	}

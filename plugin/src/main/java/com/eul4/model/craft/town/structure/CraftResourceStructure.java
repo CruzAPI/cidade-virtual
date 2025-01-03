@@ -29,13 +29,12 @@ public abstract class CraftResourceStructure extends CraftStructure implements R
 		super(town);
 	}
 	
-	public CraftResourceStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftResourceStructure(Town town, TownBlock centerTownBlock)
 	{
 		super(town, centerTownBlock);
 	}
 	
 	public CraftResourceStructure(Town town, TownBlock centerTownBlock, boolean isBuilt)
-			throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
 	}

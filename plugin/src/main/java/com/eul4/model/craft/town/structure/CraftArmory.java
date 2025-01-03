@@ -46,23 +46,30 @@ public class CraftArmory extends CraftStructure implements Armory
 	
 	private transient NPCWatcherTask npcWatcherTask;
 	
-	public CraftArmory(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftArmory(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftArmory(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftArmory(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
-		town.setArmory(this);
-		
-		spawnNPC();
-		scheduleNPCWatcherTaskIfPossible();
 	}
 	
 	public CraftArmory(Town town)
 	{
 		super(town);
+	}
+	
+	@Override
+	public void register() throws CannotConstructException, IOException
+	{
+		super.register();
+		
+		town.setArmory(this);
+		
+		spawnNPC();
+		scheduleNPCWatcherTaskIfPossible();
 	}
 	
 	private void spawnNPC()

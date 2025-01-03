@@ -26,6 +26,7 @@ public class CrownInfoFiler extends PluginFiler
 	{
 		CommonObjectType.BIG_DECIMAL,
 		CommonObjectType.OBJECT,
+		CommonObjectType.UUID,
 		PluginObjectType.CROWN_INFO,
 		PluginObjectType.UNLIMITED_CROWN_HOLDER,
 	};

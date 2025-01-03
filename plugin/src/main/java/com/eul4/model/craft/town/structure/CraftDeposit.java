@@ -30,7 +30,6 @@ public abstract class CraftDeposit<N extends Number> extends CraftResourceStruct
 	}
 	
 	public CraftDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt)
-			throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
 	}

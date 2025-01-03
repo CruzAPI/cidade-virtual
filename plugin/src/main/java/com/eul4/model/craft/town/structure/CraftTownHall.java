@@ -79,21 +79,27 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	
 	private final Set<Resource> resources = Set.of(likeResource, dislikeResource);
 	
-	public CraftTownHall(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftTownHall(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftTownHall(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftTownHall(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
 		capacitatedCrownHolder = new CapacitatedCrownHolder(this);
-		capacitatedCrownHolder.setCapacity(crownCapacity);
 	}
 	
 	public CraftTownHall(Town town)
 	{
 		super(town);
+	}
+	
+	@Override
+	public void register() throws CannotConstructException, IOException
+	{
+		super.register();
+		capacitatedCrownHolder.setCapacity(crownCapacity);
 	}
 	
 	@Override

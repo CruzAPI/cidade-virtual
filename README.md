@@ -16,4 +16,4 @@
 
 ## Tutorial
 
-To get a deeper understanding of the Cidade Virtual minigame, check out the [detailed tutorial video](#), where a Virtual Assistant guides you through the core mechanics and strategies of building and defending your city.
+To get a deeper understanding of the Cidade Virtual minigame, check out the [detailed tutorial video](https://youtu.be/8zfmy_QI93Q), where a Virtual Assistant guides you through the core mechanics and strategies of building and defending your city.

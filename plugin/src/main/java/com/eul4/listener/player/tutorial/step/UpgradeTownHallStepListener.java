@@ -3,7 +3,7 @@ package com.eul4.listener.player.tutorial.step;
 import com.eul4.Main;
 import com.eul4.event.StructureInteractEvent;
 import com.eul4.event.StructureUpgradeEvent;
-import com.eul4.model.player.TutorialTownPlayer;
+import com.eul4.model.player.physical.TutorialTownPlayer;
 import com.eul4.model.player.tutorial.step.UpgradeTownHallStep;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.model.town.structure.TownHall;

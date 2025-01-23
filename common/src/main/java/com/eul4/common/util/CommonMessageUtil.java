@@ -33,7 +33,7 @@ public class CommonMessageUtil
 	
 	public static Component displayName(Object arg)
 	{
-		return arg instanceof OfflinePlayer offlinePlayer
+		return arg == null ? text(UNKNOWN) : arg instanceof OfflinePlayer offlinePlayer
 				? getOfflinePlayerDisplayName(offlinePlayer)
 				: argToComponent(arg);
 	}
@@ -65,6 +65,13 @@ public class CommonMessageUtil
 				.append(text(")"));
 	}
 	
+	public static Component argToComponent(Object arg, String prefix, String suffix)
+	{
+		return text(prefix)
+				.append(argToComponent(arg))
+				.append(text(suffix));
+	}
+	
 	public static Optional<Object> getArgument(Object[] args, int index)
 	{
 		try
@@ -85,6 +92,16 @@ public class CommonMessageUtil
 		}
 		
 		return argToComponent(arg);
+	}
+	
+	public static Component decimalToComponent(Object decimal, DecimalFormat decimalFormat)
+	{
+		return text(decimalFormat.format(decimal));
+	}
+	
+	public static Component decimalToComponent(Object decimal, String pattern, Locale locale)
+	{
+		return decimalToComponent(decimal, new DecimalFormat(pattern, new DecimalFormatSymbols(locale)));
 	}
 	
 	public static Component argToComponent(Object arg)

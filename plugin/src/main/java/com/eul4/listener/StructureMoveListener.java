@@ -6,7 +6,7 @@ import com.eul4.common.event.CommonPlayerUnregisterEvent;
 import com.eul4.common.wrapper.Pitch;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.wrapper.StructureItemMove;

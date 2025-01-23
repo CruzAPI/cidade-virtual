@@ -36,6 +36,26 @@ public class DataFileManager
 		return createFileIfNotExists(getTownsFile());
 	}
 	
+	public File getRawMaterialMapFile()
+	{
+		return new File(plugin.getDataFolder(), "raw_material_map.dat");
+	}
+	
+	public File createCrownInfoFileIfNotExists() throws IOException
+	{
+		return createFileIfNotExists(getCrownInfoFile());
+	}
+	
+	public File getCrownInfoFile()
+	{
+		return new File(plugin.getDataFolder(), "crown_info.dat");
+	}
+	
+	public File createRawMaterialMapFileIfNotExists() throws IOException
+	{
+		return createFileIfNotExists(getRawMaterialMapFile());
+	}
+	
 	public File getLikeGeneratorRuleFile()
 	{
 		return new File(plugin.getDataFolder(), "like_generator_rule.yml");
@@ -73,7 +93,7 @@ public class DataFileManager
 	
 	public File getTownSchematicFile(Town town)
 	{
-		return getTownSchematicFile(town.getOwnerUUID());
+		return getTownSchematicFile(town.getOwnerUniqueId());
 	}
 	
 	public File getTownSchematicFile(UUID uuid)
@@ -83,7 +103,7 @@ public class DataFileManager
 	
 	public File createTownSchematicFile(Town town) throws IOException
 	{
-		return createTownSchematicFile(town.getOwnerUUID());
+		return createTownSchematicFile(town.getOwnerUniqueId());
 	}
 	
 	public File createTownSchematicFile(UUID uuid) throws IOException

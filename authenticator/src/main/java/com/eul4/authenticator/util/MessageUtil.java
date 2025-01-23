@@ -11,7 +11,7 @@ public class MessageUtil
 {
 	private static final String UNEXPECTED_ERROR = """
 			Ocorreu um erro inesperado!
-			Reporte isto para algum ADM no discord!""";
+			Reporte isto para algum admin no discord!""";
 	
 	public static void sendUnexpectedErrorMessage(CommandSender sender)
 	{

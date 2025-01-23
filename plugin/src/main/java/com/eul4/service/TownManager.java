@@ -29,13 +29,11 @@ import org.bukkit.util.BoundingBox;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class TownManager
@@ -44,6 +42,8 @@ public class TownManager
 	
 	@Getter
 	private TownMap towns;
+	
+	private transient Map<UUID, Town> townsByTownUniqueId = new HashMap<>();
 	
 	private final Set<UUID> waitingCreation = new HashSet<>();
 	
@@ -58,6 +58,9 @@ public class TownManager
 		}
 		
 		this.towns = plugin.getTownsFiler().loadTownsFromDisk();
+		this.townsByTownUniqueId = this.towns.values()
+				.stream()
+				.collect(Collectors.toMap(Town::getTownUniqueId, town -> town));
 		this.towns.values().forEach(Town::load);
 		
 		loaded = true;
@@ -138,6 +141,7 @@ public class TownManager
 			
 			Town town = new CraftTown(plugin.getServer().getOfflinePlayer(uuid), location.getBlock(), plugin);
 			
+			townsByTownUniqueId.put(town.getTownUniqueId(), town);
 			towns.put(uuid, town);
 			return town;
 		}
@@ -199,5 +203,15 @@ public class TownManager
 	public Optional<Town> findTown(UUID townUUID)
 	{
 		return Optional.ofNullable(getTown(townUUID));
+	}
+	
+	public Optional<Town> findTownByTownUniqueId(UUID townUniqueId)
+	{
+		return Optional.ofNullable(getTownByTownUniqueId(townUniqueId));
+	}
+	
+	public Town getTownByTownUniqueId(UUID townUniqueId)
+	{
+		return townsByTownUniqueId.get(townUniqueId);
 	}
 }

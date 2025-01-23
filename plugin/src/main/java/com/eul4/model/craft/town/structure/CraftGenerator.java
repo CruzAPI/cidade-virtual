@@ -5,7 +5,7 @@ import com.eul4.event.GeneratorCollectEvent;
 import com.eul4.exception.CannotConstructException;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Generator;
@@ -41,10 +41,14 @@ public abstract class CraftGenerator extends CraftResourceStructure implements G
 	}
 	
 	public CraftGenerator(Town town, TownBlock centerTownBlock, boolean isBuilt)
-			throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
-		
+	}
+	
+	@Override
+	public void register() throws CannotConstructException, IOException
+	{
+		super.register();
 		scheduleGenerationTaskIfPossible();
 	}
 	

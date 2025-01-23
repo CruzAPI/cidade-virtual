@@ -1,8 +1,7 @@
 package com.eul4.model.craft.player.tutorial.step;
 
-import com.eul4.model.player.TutorialTownPlayer;
+import com.eul4.model.player.physical.TutorialTownPlayer;
 import com.eul4.model.player.tutorial.step.CheckpointStepEnum;
-import com.eul4.model.player.tutorial.step.Step13;
 import com.eul4.model.player.tutorial.step.Step18;
 
 import static com.eul4.i18n.TutorialTownMessage.*;

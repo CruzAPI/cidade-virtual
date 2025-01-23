@@ -17,12 +17,12 @@ import java.io.IOException;
 @Setter
 public class CraftCannon extends CraftStructure implements Cannon
 {
-	public CraftCannon(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftCannon(Town town, TownBlock centerTownBlock)
 	{
 		super(town, centerTownBlock, false);
 	}
 	
-	public CraftCannon(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftCannon(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
 	}

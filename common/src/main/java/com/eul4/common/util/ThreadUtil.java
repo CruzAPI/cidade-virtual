@@ -64,4 +64,10 @@ public class ThreadUtil
 			plugin.getServer().getScheduler().runTask(plugin, runnable);
 		}
 	}
+	
+	@SneakyThrows
+	public static void sneakySleep(long millis)
+	{
+		Thread.sleep(millis);
+	}
 }

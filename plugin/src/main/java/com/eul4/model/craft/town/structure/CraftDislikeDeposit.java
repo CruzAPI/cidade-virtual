@@ -16,7 +16,7 @@ import lombok.Getter;
 import java.io.IOException;
 import java.util.Set;
 
-public class CraftDislikeDeposit extends CraftDeposit implements DislikeDeposit
+public class CraftDislikeDeposit extends CraftDeposit<Integer> implements DislikeDeposit
 {
 	@Getter
 	private final Set<Resource> resources = Set.of(Resource.builder()
@@ -31,12 +31,12 @@ public class CraftDislikeDeposit extends CraftDeposit implements DislikeDeposit
 		super(town);
 	}
 	
-	public CraftDislikeDeposit(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftDislikeDeposit(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftDislikeDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftDislikeDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
 	}
@@ -67,13 +67,25 @@ public class CraftDislikeDeposit extends CraftDeposit implements DislikeDeposit
 	}
 	
 	@Override
-	protected int getTotalTownBalance()
+	public Integer getTotalBalance()
 	{
 		return town.getDislikes();
 	}
 	
 	@Override
-	protected int subtract(int balance)
+	public Integer getVirtualBalance()
+	{
+		return Math.min(remainingCapacity, getTotalBalance());
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		return getVirtualBalance() <= 0;
+	}
+	
+	@Override
+	protected Integer subtract(Integer balance)
 	{
 		return subtractVirtualBalance(this::setRemainingCapacity,
 				town::subtractDislikes,

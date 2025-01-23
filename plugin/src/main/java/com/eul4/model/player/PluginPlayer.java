@@ -77,4 +77,6 @@ public interface PluginPlayer extends CommonPlayer
 	void showTag();
 	boolean hasAttackSpeed();
 	void setAttackSpeed(boolean attackSpeed);
+	
+	boolean isTycoon();
 }

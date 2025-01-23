@@ -9,12 +9,30 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class TurretAttribute extends GenericAttribute
 {
-	public static final TurretAttribute DEFAULT = new TurretAttribute();
+	public static final TurretAttribute DEFAULT = new TurretAttribute
+	(
+		GenericAttribute.Data.DEFAULT,
+		TurretAttribute.Data.DEFAULT
+	);
 	
-	private double attackDamage;
-	private int attackSpeed = Integer.MAX_VALUE;
-	private double missileSpeed;
-	private double range;
+	private final double attackDamage;
+	private final int attackSpeed;
+	private final double missileSpeed;
+	private final double range;
+	
+	public TurretAttribute
+	(
+		GenericAttribute.Data genericAttributeData,
+		TurretAttribute.Data turretAttributeData
+	)
+	{
+		super(genericAttributeData);
+		
+		this.attackDamage = turretAttributeData.attackDamage;
+		this.attackSpeed = turretAttributeData.attackSpeed;
+		this.missileSpeed = turretAttributeData.missileSpeed;
+		this.range = turretAttributeData.range;
+	}
 	
 	public double getAttackSpeedPerSecond()
 	{
@@ -24,5 +42,16 @@ public class TurretAttribute extends GenericAttribute
 	public double getMissileSpeedPerSecond()
 	{
 		return missileSpeed * 20.0D;
+	}
+	
+	@lombok.Data
+	public static class Data
+	{
+		public static final Data DEFAULT = new Data(0.0D, Integer.MAX_VALUE, 0.0D, 0.0D);
+		
+		private final double attackDamage;
+		private final int attackSpeed;
+		private final double missileSpeed;
+		private final double range;
 	}
 }

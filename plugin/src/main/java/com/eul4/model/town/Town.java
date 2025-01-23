@@ -3,11 +3,13 @@ package com.eul4.model.town;
 import com.eul4.Main;
 import com.eul4.Price;
 import com.eul4.StructureType;
+import com.eul4.economy.Transaction;
 import com.eul4.exception.*;
+import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.model.craft.town.CraftTown;
-import com.eul4.model.player.Attacker;
+import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.RaidAnalyzer;
+import com.eul4.model.player.spiritual.RaidAnalyzer;
 import com.eul4.model.town.structure.*;
 import com.eul4.wrapper.*;
 import net.kyori.adventure.text.Component;
@@ -21,10 +23,9 @@ import org.bukkit.util.BoundingBox;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -51,6 +52,8 @@ public interface Town
 	{
 		return Optional.ofNullable(getStaticTownBlock(block));
 	}
+	
+	UUID getTownUniqueId();
 	
 	TownBlock getTownBlock(Block block);
 	Optional<TownBlock> findTownBlock(Block block);
@@ -117,7 +120,7 @@ public interface Town
 	
 	boolean canBeAnalyzed();
 	
-	UUID getOwnerUUID();
+	UUID getOwnerUniqueId();
 	
 	TownTileMap getTownTileMap();
 	TownBlockMap getTownBlockMap();
@@ -234,4 +237,19 @@ public interface Town
 	void setAssistant(Villager villager);
 	
 	boolean hasReachedStructureLimit(StructureType structureType);
+	
+	BigDecimal calculateCrownCapacity();
+	BigDecimal calculateRemainingCrownCapacity();
+	
+	BigDecimal getCalculatedCrownBalance();
+	void updateCrownBalance();
+	
+	List<CapacitatedCrownHolder> getCapacitatedCrownHolders();
+	
+	List<TradePreview<BigDecimal, CapacitatedCrownHolder>> createTradePreviewSubtract(BigDecimal subtrahend)
+			throws NegativeBalanceException;
+	
+	Transaction<BigDecimal> createTransaction(Town townTo, BigDecimal amount) throws
+			OverCapacityException,
+			NegativeBalanceException;
 }

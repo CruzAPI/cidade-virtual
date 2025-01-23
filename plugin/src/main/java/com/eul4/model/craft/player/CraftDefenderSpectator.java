@@ -2,7 +2,7 @@ package com.eul4.model.craft.player;
 
 import com.eul4.Main;
 import com.eul4.hotbar.DefenderSpectatorHotbar;
-import com.eul4.model.player.DefenderSpectator;
+import com.eul4.model.player.spiritual.DefenderSpectator;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.type.player.SpiritualPlayerType;

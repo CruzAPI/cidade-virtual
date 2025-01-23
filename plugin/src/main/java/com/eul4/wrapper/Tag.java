@@ -28,6 +28,15 @@ public enum Tag
 	DEPUTY_MAYOR(TAG_DEPUTY_MAYOR, style(YELLOW), Set.of("deputy-mayor", "vice-prefeito")),
 	ALPHA(TAG_ALPHA, style(DARK_PURPLE), Set.of("alpha")),
 	
+	TYCOON(TAG_TYCOON, style(GOLD), Set.of("tycoon", "magnata"))
+	{
+		@Override
+		public boolean hasTag(PluginPlayer pluginPlayer)
+		{
+			return super.hasTag(pluginPlayer) || pluginPlayer.isTycoon();
+		}
+	},
+	
 	TOWNEE(TAG_TOWNEE, style(GRAY), Set.of("townee", "cidadão"))
 	{
 		@Override

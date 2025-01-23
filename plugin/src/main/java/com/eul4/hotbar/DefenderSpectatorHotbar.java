@@ -1,7 +1,7 @@
 package com.eul4.hotbar;
 
 import com.eul4.i18n.PluginMessage;
-import com.eul4.model.player.DefenderSpectator;
+import com.eul4.model.player.spiritual.DefenderSpectator;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

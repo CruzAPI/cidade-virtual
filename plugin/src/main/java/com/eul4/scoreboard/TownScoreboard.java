@@ -7,9 +7,12 @@ public interface TownScoreboard extends CommonScoreboard
 {
 	void registerScores();
 	
+	void updateTitle();
 	void updateLikesTeam();
 	void updateDislikesTeam();
+	void updateCrownsTeam();
 	void updateHardnessTeam();
+	void updateFooterTeam();
 	
 	default void updateLikesAndDislikesTeams()
 	{
@@ -19,9 +22,13 @@ public interface TownScoreboard extends CommonScoreboard
 	
 	default void updateAll()
 	{
+		updateTitle();
+		
 		updateLikesTeam();
 		updateDislikesTeam();
+		updateCrownsTeam();
 		updateHardnessTeam();
+		updateFooterTeam();
 	}
 	
 	@Override

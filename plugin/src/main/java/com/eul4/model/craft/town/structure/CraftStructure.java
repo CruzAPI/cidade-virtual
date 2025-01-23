@@ -8,14 +8,11 @@ import com.eul4.common.util.ThreadUtil;
 import com.eul4.common.wrapper.Pitch;
 import com.eul4.enums.PluginNamespacedKey;
 import com.eul4.enums.StructureStatus;
-import com.eul4.event.StructureConstructEvent;
-import com.eul4.event.StructureFinishEvent;
-import com.eul4.event.StructureReadyEvent;
-import com.eul4.event.StructureUpgradeEvent;
+import com.eul4.event.*;
 import com.eul4.exception.*;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.inventory.StructureGui;
-import com.eul4.model.player.Attacker;
+import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -117,17 +114,20 @@ public abstract class CraftStructure implements Structure
 	
 	private Vector3 centerPosition;
 	
+	private boolean registered;
+	
 	public CraftStructure(Town town)
 	{
 		this.town = town;
+		this.registered = true;
 	}
 	
-	public CraftStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftStructure(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftStructure(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftStructure(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		this(town);
 		
@@ -138,7 +138,11 @@ public abstract class CraftStructure implements Structure
 		this.status = isBuilt ? StructureStatus.BUILT : StructureStatus.UNREADY;
 		this.buildTicks = isBuilt ? 0 : getRule().getAttribute(1).getTotalBuildTicks();
 		this.totalBuildTicks = buildTicks;
-		
+	}
+	
+	@Override
+	public void register() throws CannotConstructException, IOException
+	{
 		resetAttributes();
 		construct(loadSchematic(), centerTownBlock, 0);
 		
@@ -205,7 +209,7 @@ public abstract class CraftStructure implements Structure
 					+ "owner={3}",
 					uuid,
 					town.getUUID(),
-					town.getOwnerUUID(),
+					town.getOwnerUniqueId(),
 					town.getOwner().getName());
 			
 			town.getPlugin().getLogger().log(Level.WARNING, msg, e);
@@ -476,7 +480,7 @@ public abstract class CraftStructure implements Structure
 	{
 		resetAttributes();
 		scheduleBuildTaskIfPossible();
-		reconstructBlindly();
+		constructSafely();
 		hologram.load();
 	}
 	
@@ -881,6 +885,7 @@ public abstract class CraftStructure implements Structure
 		health = 0.0D;
 		
 		onDestroy();
+		new StructureDestroyEvent(this).callEvent();
 		return true;
 	}
 	
@@ -955,7 +960,7 @@ public abstract class CraftStructure implements Structure
 		this.uuid = UUID.randomUUID();
 	}
 	
-	private void reconstructBlindly()
+	private void constructSafely()
 	{
 		try
 		{
@@ -972,7 +977,7 @@ public abstract class CraftStructure implements Structure
 			String msg = MessageFormat.format(pattern,
 					uuid,
 					town.getUUID(),
-					town.getOwnerUUID(),
+					town.getOwnerUniqueId(),
 					town.getOwner().getName(),
 					getStructureType());
 			
@@ -989,7 +994,7 @@ public abstract class CraftStructure implements Structure
 			String msg = MessageFormat.format(pattern,
 					uuid,
 					town.getUUID(),
-					town.getOwnerUUID(),
+					town.getOwnerUniqueId(),
 					town.getOwner().getName(),
 					getStructureType());
 			

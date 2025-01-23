@@ -3,7 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.SetHomePerformer;
+import com.eul4.model.player.performer.SetHomePerformer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

@@ -1,9 +1,9 @@
 package com.eul4.model.craft.player;
 
 import com.eul4.Main;
-import com.eul4.model.player.Attacker;
+import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.RaidAnalyzer;
+import com.eul4.model.player.spiritual.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.type.player.SpiritualPlayerType;

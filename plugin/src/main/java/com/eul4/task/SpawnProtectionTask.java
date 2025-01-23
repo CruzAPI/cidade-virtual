@@ -2,8 +2,7 @@ package com.eul4.task;
 
 import com.eul4.Main;
 import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.model.player.SpawnPlayer;
-import com.eul4.world.RaidWorld;
+import com.eul4.model.player.physical.SpawnPlayer;
 import com.eul4.world.SpawnProtectedLevel;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.scheduler.BukkitRunnable;

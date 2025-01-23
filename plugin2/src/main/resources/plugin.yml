@@ -1,9 +1,0 @@
-name: Plugin2
-main: com.eul4.plugin2.Main
-version: 1.0
-author: Eul4
-api-version: '1.21'
-depend: [ProtocolLib, Plugin]
-commands:
-  tpa:
-  aceitartpa:

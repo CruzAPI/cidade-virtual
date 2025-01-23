@@ -1,10 +1,8 @@
 package com.eul4.listener.hotbar;
 
 import com.eul4.Main;
-import com.eul4.hotbar.RaidAnalyzerHotbar;
 import com.eul4.hotbar.RaidSpectatorHotbar;
-import com.eul4.model.player.RaidAnalyzer;
-import com.eul4.model.player.RaidSpectator;
+import com.eul4.model.player.spiritual.RaidSpectator;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

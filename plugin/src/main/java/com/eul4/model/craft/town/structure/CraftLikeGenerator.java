@@ -33,12 +33,12 @@ public class CraftLikeGenerator extends CraftGenerator implements LikeGenerator
 		super(town);
 	}
 	
-	public CraftLikeGenerator(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftLikeGenerator(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftLikeGenerator(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftLikeGenerator(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
 	}

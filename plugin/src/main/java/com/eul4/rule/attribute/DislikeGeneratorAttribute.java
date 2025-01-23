@@ -9,5 +9,18 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class DislikeGeneratorAttribute extends GeneratorAttribute
 {
-	public static final DislikeGeneratorAttribute DEFAULT = new DislikeGeneratorAttribute();
+	public static final DislikeGeneratorAttribute DEFAULT = new DislikeGeneratorAttribute
+	(
+		GenericAttribute.Data.DEFAULT,
+		GeneratorAttribute.Data.DEFAULT
+	);
+	
+	public DislikeGeneratorAttribute
+	(
+		GenericAttribute.Data genericAttributeData,
+		GeneratorAttribute.Data generatorAttributeData
+	)
+	{
+		super(genericAttributeData, generatorAttributeData);
+	}
 }

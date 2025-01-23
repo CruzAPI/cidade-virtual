@@ -5,7 +5,7 @@ import com.eul4.event.AnalyzingTownEvent;
 import com.eul4.hotbar.RaidAnalyzerHotbar;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.RaidAnalyzer;
+import com.eul4.model.player.spiritual.RaidAnalyzer;
 import com.eul4.model.town.Town;
 import com.eul4.scoreboard.AnalyzerScoreboard;
 import com.eul4.scoreboard.CraftAnalyzerScoreboard;

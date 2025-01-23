@@ -1,0 +1,171 @@
+package com.eul4.wrapper;
+
+import com.eul4.exception.InvalidCryptoInfoException;
+import com.eul4.exception.NegativeBalanceException;
+import com.eul4.exception.OperationException;
+import com.eul4.holder.CrownHolder;
+import com.google.common.base.Preconditions;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@ToString
+public class CryptoInfo implements CrownHolder
+{
+	public static final MathContext MATH_CONTEXT = new MathContext(8, RoundingMode.HALF_EVEN);
+	
+	@Setter
+	private BigDecimal marketCap = BigDecimal.ZERO;
+	
+	@Setter
+	private BigDecimal circulatingSupply = BigDecimal.ZERO;
+	
+	public CryptoInfo(BigDecimal bigDecimal)
+	{
+		this.marketCap = bigDecimal;
+		this.circulatingSupply = bigDecimal;
+	}
+	
+	public CryptoInfo(double marketCap, double circulatingSupply)
+	{
+		this.marketCap = BigDecimal.valueOf(marketCap);
+		this.circulatingSupply = BigDecimal.valueOf(circulatingSupply);
+	}
+	
+	public BigDecimal calculatePrice() throws InvalidCryptoInfoException
+	{
+		validate();
+		return marketCap.divide(circulatingSupply, MATH_CONTEXT);
+	}
+	
+	public CryptoInfoTradePreview createTradePreview(BigDecimal amount) throws InvalidCryptoInfoException
+	{
+		Preconditions.checkArgument(amount.compareTo(BigDecimal.ZERO) > 0);
+		return new CryptoInfoTradePreview(this, previewMarketCapDiff(amount).negate(), amount);
+	}
+	
+	public BigDecimal previewCirculatingSupplyDiff(BigDecimal marketCapAugend)
+			throws NegativeBalanceException, InvalidCryptoInfoException
+	{
+		return previewCirculatingSupply(marketCapAugend).subtract(circulatingSupply);
+	}
+	
+	public BigDecimal previewCirculatingSupply(BigDecimal marketCapAugend)
+			throws InvalidCryptoInfoException, NegativeBalanceException
+	{
+		validate();
+
+		BigDecimal marketCap = this.marketCap.add(marketCapAugend);
+
+		if(marketCap.compareTo(BigDecimal.ZERO) < 0)
+		{
+			throw new NegativeBalanceException();
+		}
+
+		BigDecimal ratio = marketCap.divide(this.marketCap, MATH_CONTEXT);
+		return circulatingSupply.divide(ratio, MATH_CONTEXT);
+	}
+	
+	public BigDecimal previewMarketCapDiff(BigDecimal circulatingSupplyAugend) throws InvalidCryptoInfoException
+	{
+		BigDecimal marketCapPreview = previewMarketCap(circulatingSupplyAugend);
+		BigDecimal marketCapDiff = marketCapPreview.subtract(this.marketCap);
+		
+		return marketCapDiff;
+	}
+	
+	public BigDecimal previewMarketCap(BigDecimal circulatingSupplyAugend) throws InvalidCryptoInfoException
+	{
+		validate();
+		
+		BigDecimal circulatingSupply = this.circulatingSupply.add(circulatingSupplyAugend);
+		
+		if(circulatingSupply.compareTo(BigDecimal.ZERO) <= 0)
+		{
+			throw new InvalidCryptoInfoException();
+		}
+		
+		BigDecimal ratio = circulatingSupply.divide(this.circulatingSupply, MATH_CONTEXT);
+		BigDecimal marketCap = this.marketCap.divide(ratio, MATH_CONTEXT);
+		
+		return marketCap;
+	}
+	
+	public BigDecimal trade(BigDecimal amount) throws InvalidCryptoInfoException
+	{
+		validate();
+		
+		BigDecimal currentPrice = calculatePrice();
+		BigDecimal newPrice = marketCap
+				.subtract(currentPrice.multiply(amount))
+				.divide(circulatingSupply.add(amount), MATH_CONTEXT);
+		BigDecimal avaragePrice = currentPrice
+				.add(newPrice)
+				.divide(BigDecimal.valueOf(2.0D), MATH_CONTEXT);
+		BigDecimal trade = avaragePrice.multiply(amount, MATH_CONTEXT);
+		marketCap = marketCap.subtract(trade);
+		circulatingSupply = circulatingSupply.add(amount);
+		
+		return trade;
+	}
+	
+	public boolean isValid()
+	{
+		return marketCap.compareTo(BigDecimal.ZERO) > 0 && circulatingSupply.compareTo(BigDecimal.ZERO) > 0;
+	}
+	
+	private void validate() throws InvalidCryptoInfoException
+	{
+		if(!isValid())
+		{
+			throw new InvalidCryptoInfoException();
+		}
+	}
+	
+	@Override
+	public BigDecimal getBalance()
+	{
+		return marketCap;
+	}
+	
+	@Override
+	public void setBalance(BigDecimal balance) throws OperationException
+	{
+		updateMarketCap(balance);
+	}
+	
+	@Override
+	public void add(BigDecimal amount) throws NegativeBalanceException
+	{
+		updateMarketCap(marketCap.add(amount));
+	}
+	
+	@Override
+	public void subtract(BigDecimal amount) throws OperationException
+	{
+		updateMarketCap(marketCap.subtract(amount));
+	}
+	
+	@Override
+	public boolean isEmpty()
+	{
+		return marketCap.compareTo(BigDecimal.ZERO) <= 0;
+	}
+	
+	private void updateMarketCap(BigDecimal newMarketCap) throws NegativeBalanceException
+	{
+		if(newMarketCap.compareTo(BigDecimal.ZERO) < 0)
+		{
+			throw new NegativeBalanceException();
+		}
+		
+		BigDecimal ratio = newMarketCap.divide(marketCap, MATH_CONTEXT);
+		marketCap = newMarketCap;
+		circulatingSupply = circulatingSupply.divide(ratio, MATH_CONTEXT);
+	}
+}

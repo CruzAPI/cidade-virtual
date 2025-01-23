@@ -3,7 +3,7 @@ package com.eul4.listener.player;
 import com.eul4.Main;
 import com.eul4.common.event.GuiClickEvent;
 import com.eul4.common.event.GuiCloseEvent;
-import com.eul4.model.player.InventoryOrganizerPlayer;
+import com.eul4.model.player.spiritual.InventoryOrganizerPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

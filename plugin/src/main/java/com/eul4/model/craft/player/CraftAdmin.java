@@ -1,7 +1,7 @@
 package com.eul4.model.craft.player;
 
 import com.eul4.Main;
-import com.eul4.model.player.Admin;
+import com.eul4.model.player.physical.Admin;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.type.player.PhysicalPlayerType;
 import org.bukkit.GameMode;

@@ -2,139 +2,150 @@ package com.eul4.i18n;
 
 import com.eul4.common.i18n.BundleBaseName;
 import com.eul4.common.i18n.Message;
+import com.eul4.common.i18n.RichMessage;
+import com.eul4.common.util.CommonMessageUtil;
+import com.eul4.enums.Currency;
 import com.eul4.model.town.Town;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
-import org.bukkit.OfflinePlayer;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.Locale;
 import java.util.function.BiFunction;
 
 import static com.eul4.common.i18n.CommonMessage.OFFLINE;
 import static com.eul4.common.i18n.CommonMessage.ONLINE;
+import static com.eul4.common.util.CommonMessageUtil.displayName;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.text;
-import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
-import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.unparsed;
 
 @Getter
-public enum AnalyzerScoreboardMessage implements Message
+@RequiredArgsConstructor
+public enum AnalyzerScoreboardMessage implements RichMessage
 {
-	TITLE("title", (bundle, args) -> new Component[]
+	TITLE("title", (locale, args) -> new TagResolver[]
 	{
-		empty().color(WHITE).decorate(BOLD),
-		text(Optional.ofNullable((Town) args[0])
-				.map(Town::getOwner)
-				.map(OfflinePlayer::getName)
-				.map(String::toUpperCase)
-				.orElse("???")),
+		component("player", displayName(args[0])),
 	}),
 	
-	PLAYER_STATUS_PREFIX("player-status.prefix", (bundle, args) -> new Component[]
+	PLAYER_STATUS_PREFIX("player-status.prefix", (bundle, args) -> new TagResolver[]
 	{
-		empty(),
-		(Component) args[0],
+		component("player", displayName(args[0]))
 	}),
-	PLAYER_STATUS_ENTRY("player-status.entry"),
-	PLAYER_STATUS_SUFFIX("player-status.suffix", (bundle, args) ->
+	PLAYER_STATUS_SUFFIX("player-status.suffix", (locale, args) ->
 	{
 		boolean isOnline = (boolean) args[0];
 		Message message = isOnline ? ONLINE : OFFLINE;
 		
-		return new Component[]
+		return new TagResolver[]
 		{
-			empty(),
-			message.translate(bundle, String::toUpperCase),
+			component("status", message.translate(locale, String::toUpperCase)),
 		};
 	}),
 	
 	TOWN_HALL_LEVEL_PREFIX("town-hall-level.prefix"),
-	TOWN_HALL_LEVEL_ENTRY("town-hall-level.entry"),
-	TOWN_HALL_LEVEL_SUFFIX("town-hall-level.suffix", (bundle, args) -> new Component[]
+	TOWN_HALL_LEVEL_SUFFIX("town-hall-level.suffix", (bundle, args) -> new TagResolver[]
 	{
-		empty(),
-		text((int) args[0]),
+		unparsed("level", args[0].toString())
 	}),
 	
 	LIKES_PREFIX("likes.prefix"),
-	LIKES_ENTRY("likes.entry"),
-	LIKES_SUFFIX("likes.suffix", (bundle, args) ->
+	LIKES_SUFFIX("likes.suffix", (locale, args) ->
 	{
-		NumberFormat numberFormat = NumberFormat.getInstance(bundle.getLocale());
+		DecimalFormat decimalFormat = Currency.LIKE.getDecimalFormat(locale);
 		Town town = (Town) args[0];
 		
-		return new Component[]
+		String balance = town == null
+				? "?"
+				: decimalFormat.format(town.getLikesIncludingGenerators());
+		String capacity = town == null
+				? "?"
+				: decimalFormat.format(town.getLikeCapacityIncludingGenerators());
+		
+		return new TagResolver[]
 		{
-			empty(),
-			text(town == null ? "?" : numberFormat.format(town.getLikesIncludingGenerators())),
-			text(town == null ? "?" : numberFormat.format(town.getLikeCapacityIncludingGenerators())),
+			unparsed("like_balance", balance),
+			unparsed("like_capacity", capacity),
 		};
 	}),
 	
 	DISLIKES_PREFIX("dislikes.prefix"),
-	DISLIKES_ENTRY("dislikes.entry"),
-	DISLIKES_SUFFIX("dislikes.suffix", (bundle, args) ->
+	DISLIKES_SUFFIX("dislikes.suffix", (locale, args) ->
 	{
-		NumberFormat numberFormat = NumberFormat.getInstance(bundle.getLocale());
+		DecimalFormat decimalFormat = Currency.DISLIKE.getDecimalFormat(locale);
 		Town town = (Town) args[0];
 		
-		return new Component[]
+		String balance = town == null
+				? "?"
+				: decimalFormat.format(town.getDislikesIncludingGenerators());
+		String capacity = town == null
+				? "?"
+				: decimalFormat.format(town.getDislikeCapacityIncludingGenerators());
+		
+		return new TagResolver[]
 		{
-			empty(),
-			text(town == null ? "?" : numberFormat.format(town.getDislikesIncludingGenerators())),
-			text(town == null ? "?" : numberFormat.format(town.getDislikeCapacityIncludingGenerators())),
+			unparsed("dislike_balance", balance),
+			unparsed("dislike_capacity", capacity),
+		};
+	}),
+	
+	CROWNS_PREFIX("crowns.prefix"),
+	CROWNS_SUFFIX("crowns.suffix", (locale, args) ->
+	{
+		DecimalFormat decimalFormat = Currency.CROWN.getDecimalFormat(locale);
+		Town town = (Town) args[0];
+		
+		String balance = town == null
+				? "?"
+				: decimalFormat.format(town.getCalculatedCrownBalance());
+		String capacity = town == null
+				? "?"
+				: decimalFormat.format(town.calculateCrownCapacity());
+		
+		return new TagResolver[]
+		{
+			unparsed("crown_balance", balance),
+			unparsed("crown_capacity", capacity),
 		};
 	}),
 	
 	HARDNESS_PREFIX("hardness.prefix"),
-	HARDNESS_ENTRY("hardness.entry"),
-	HARDNESS_SUFFIX("hardness.suffix", (bundle, args) ->
+	HARDNESS_SUFFIX("hardness.suffix", (locale, args) ->
 	{
-		DecimalFormat decimalFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(bundle.getLocale()));
+		DecimalFormat decimalFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(locale));
 		Town town = (Town) args[0];
 		
-		return new Component[]
+		String hardness = town == null ? "?" : decimalFormat.format(town.getHardness());
+		String hardnessLimit = town == null ? "?" : decimalFormat.format(town.getHardnessLimit());
+		
+		return new TagResolver[]
 		{
-			empty(),
-			text(town == null ? "?" : decimalFormat.format(town.getHardness())),
-			text(town == null ? "?" : decimalFormat.format(town.getHardnessLimit())),
+			unparsed("hardness", hardness),
+			unparsed("hardness_limit", hardnessLimit)
 		};
 	}),
 	
 	FOOTER_PREFIX("footer.prefix"),
-	FOOTER_ENTRY("footer.entry"),
 	FOOTER_SUFFIX("footer.suffix"),
 	;
 	
 	private final String key;
-	private final BundleBaseName bundleBaseName;
-	private final BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction;
+	private final BiFunction<Locale, Object[], TagResolver[]> tagResolversFunction;
 	
 	AnalyzerScoreboardMessage(String key)
 	{
-		this(key, empty());
+		this(key, (locale, args) -> new TagResolver[0]);
 	}
 	
-	AnalyzerScoreboardMessage(String key, Component baseComponent)
+	@Override
+	public BundleBaseName getBundleBaseName()
 	{
-		this(key, (bundle, args) -> new Component[] { baseComponent });
-	}
-	
-	AnalyzerScoreboardMessage(String key, BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
-	{
-		this(PluginBundleBaseName.ANALYZER_SCOREBOARD, key, componentBiFunction);
-	}
-	
-	AnalyzerScoreboardMessage(BundleBaseName bundleBaseName,
-			String key,
-			BiFunction<ResourceBundle, Object[], Component[]> componentBiFunction)
-	{
-		this.bundleBaseName = bundleBaseName;
-		this.key = key;
-		this.componentBiFunction = componentBiFunction;
+		return PluginBundleBaseName.ANALYZER_SCOREBOARD;
 	}
 }

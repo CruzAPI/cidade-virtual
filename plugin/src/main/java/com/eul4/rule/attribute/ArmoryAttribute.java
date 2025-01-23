@@ -9,5 +9,10 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ArmoryAttribute extends GenericAttribute
 {
-	public static final ArmoryAttribute DEFAULT = new ArmoryAttribute();
+	public static final ArmoryAttribute DEFAULT = new ArmoryAttribute(GenericAttribute.Data.DEFAULT);
+	
+	public ArmoryAttribute(GenericAttribute.Data geneticAttributeData)
+	{
+		super(geneticAttributeData);
+	}
 }

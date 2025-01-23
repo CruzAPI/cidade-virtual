@@ -2,19 +2,22 @@ package com.eul4.event;
 
 import com.eul4.model.town.Town;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 @Getter
-@RequiredArgsConstructor
-public class DislikeChangeEvent extends Event
+public class DislikeChangeEvent extends TownEvent
 {
 	private static final HandlerList HANDLER = new HandlerList();
 	
-	private final Town town;
 	private final int oldDislikes;
 	private final int newDislikes;
+	
+	public DislikeChangeEvent(Town town, int oldDislikes, int newDislikes)
+	{
+		super(town);
+		this.oldDislikes = oldDislikes;
+		this.newDislikes = newDislikes;
+	}
 	
 	public static HandlerList getHandlerList()
 	{

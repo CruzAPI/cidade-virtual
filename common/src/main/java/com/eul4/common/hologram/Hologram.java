@@ -2,7 +2,9 @@ package com.eul4.common.hologram;
 
 import com.eul4.common.Common;
 import com.eul4.common.i18n.Message;
+import com.eul4.common.i18n.MessageArgs;
 import com.eul4.common.i18n.ResourceBundleHandler;
+import com.eul4.common.i18n.TranslatableMessage;
 import com.eul4.common.util.ThreadUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -154,34 +156,36 @@ public class Hologram
 		@Setter
 		private ArmorStand armorStand;
 		
-		private Message message;
-		private Object[] args;
+		private MessageArgs messageArgs;
 		
 		public TranslatedHologramLine(ArmorStand armorStand)
 		{
 			this.armorStand = Objects.requireNonNull(armorStand);
 		}
 		
-		public void setMessageAndArgs(Message message, Object... args)
+		public void setMessageAndArgs(TranslatableMessage translatableMessage, Object... args)
 		{
-			this.message = message;
-			this.args = args;
+			setMessageAndArgs(translatableMessage.withArgs(args));
+		}
+		
+		public void setMessageAndArgs(MessageArgs messageArgs)
+		{
+			this.messageArgs = messageArgs;
 			
-			this.armorStand.customName(message.translate(ResourceBundleHandler.DEFAULT_LOCALE, args));
+			this.armorStand.customName(messageArgs.translate(ResourceBundleHandler.DEFAULT_LOCALE));
 		}
 		
 		public void setCustomName(Component component)
 		{
-			this.message = null;
-			this.args = null;
+			this.messageArgs = null;
 			this.armorStand.customName(component);
 		}
 		
 		public String translate(Locale locale)
 		{
-			return LegacyComponentSerializer.legacySection().serialize(message == null
+			return LegacyComponentSerializer.legacySection().serialize(messageArgs == null
 					? this.armorStand.customName()
-					: message.translate(locale, args));
+					: messageArgs.translate(locale));
 		}
 		
 		public Common getPlugin()

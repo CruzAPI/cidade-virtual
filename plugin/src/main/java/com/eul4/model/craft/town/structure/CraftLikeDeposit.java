@@ -16,7 +16,7 @@ import lombok.Getter;
 import java.io.IOException;
 import java.util.Set;
 
-public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
+public class CraftLikeDeposit extends CraftDeposit<Integer> implements LikeDeposit
 {
 	@Getter
 	private final Set<Resource> resources = Set.of(Resource.builder()
@@ -31,12 +31,12 @@ public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
 		super(town);
 	}
 	
-	public CraftLikeDeposit(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftLikeDeposit(Town town, TownBlock centerTownBlock)
 	{
 		this(town, centerTownBlock, false);
 	}
 	
-	public CraftLikeDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftLikeDeposit(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
 	}
@@ -54,6 +54,12 @@ public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
 	}
 	
 	@Override
+	public boolean isEmpty()
+	{
+		return getVirtualBalance() <= 0;
+	}
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public Rule<LikeDepositAttribute> getRule()
 	{
@@ -67,13 +73,19 @@ public class CraftLikeDeposit extends CraftDeposit implements LikeDeposit
 	}
 	
 	@Override
-	protected int getTotalTownBalance()
+	public Integer getVirtualBalance()
+	{
+		return Math.min(remainingCapacity, getTotalBalance());
+	}
+	
+	@Override
+	public Integer getTotalBalance()
 	{
 		return town.getLikes();
 	}
 	
 	@Override
-	protected int subtract(int balance)
+	protected Integer subtract(Integer balance)
 	{
 		return subtractVirtualBalance(this::setRemainingCapacity,
 				town::subtractLikes,

@@ -9,5 +9,10 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class CannonAttribute extends GenericAttribute
 {
-	public static final CannonAttribute DEFAULT = new CannonAttribute();
+	public static final CannonAttribute DEFAULT = new CannonAttribute(Data.DEFAULT);
+	
+	public CannonAttribute(GenericAttribute.Data geneticAttributeData)
+	{
+		super(geneticAttributeData);
+	}
 }

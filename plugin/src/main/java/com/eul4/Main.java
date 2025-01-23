@@ -9,9 +9,7 @@ import com.eul4.common.i18n.ResourceBundleHandler;
 import com.eul4.common.type.player.CommonWorldType;
 import com.eul4.common.util.FileUtil;
 import com.eul4.enums.Rarity;
-import com.eul4.externalizer.filer.BlockDataFiler;
-import com.eul4.externalizer.filer.PlayerDataFiler;
-import com.eul4.externalizer.filer.TownsFiler;
+import com.eul4.externalizer.filer.*;
 import com.eul4.i18n.PluginBundleBaseName;
 import com.eul4.interceptor.HeartParticleInterceptor;
 import com.eul4.interceptor.HideEnchantInterceptor;
@@ -28,6 +26,7 @@ import com.eul4.listener.player.tutorial.step.*;
 import com.eul4.listener.scoreboard.AnalyzerScoreboardListener;
 import com.eul4.listener.scoreboard.TownScoreboardListener;
 import com.eul4.listener.structure.ArmoryListener;
+import com.eul4.listener.structure.TransactionResourceStructureListener;
 import com.eul4.listener.world.CommonLevelListener;
 import com.eul4.listener.world.RaidLevelListener;
 import com.eul4.listener.world.VanillaLevelListener;
@@ -35,7 +34,7 @@ import com.eul4.model.town.Town;
 import com.eul4.model.town.structure.Structure;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.*;
-import com.eul4.rule.serializer.*;
+import com.eul4.rule.serializer.rule.*;
 import com.eul4.service.*;
 import com.eul4.task.AutoBroadcastTask;
 import com.eul4.task.RarityBossBarTask;
@@ -47,7 +46,6 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.translation.GlobalTranslator;
 import net.kyori.adventure.translation.TranslationRegistry;
 import org.bukkit.NamespacedKey;
@@ -76,6 +74,7 @@ public class Main extends Common
 	private DislikeGeneratorRuleSerializer dislikeGeneratorRuleSerializer;
 	private LikeDepositRuleSerializer likeDepositRuleSerializer;
 	private DislikeDepositRuleSerializer dislikeDepositRuleSerializer;
+	private CrownDepositRuleSerializer crownDepositRuleSerializer;
 	private ArmoryRuleSerializer armoryRuleSerializer;
 	private CannonRuleSerializer cannonRuleSerializer;
 	private TurretRuleSerializer turretRuleSerializer;
@@ -85,6 +84,7 @@ public class Main extends Common
 	private Rule<DislikeGeneratorAttribute> dislikeGeneratorRule;
 	private Rule<LikeDepositAttribute> likeDepositRule;
 	private Rule<DislikeDepositAttribute> dislikeDepositRule;
+	private Rule<CrownDepositAttribute> crownDepositRule;
 	private Rule<ArmoryAttribute> armoryRule;
 	private Rule<CannonAttribute> cannonRule;
 	private Rule<TurretAttribute> turretRule;
@@ -98,10 +98,15 @@ public class Main extends Common
 	private OreMinedAlertListener oreMinedAlertListener;
 	
 	private BlockDataFiler blockDataFiler;
+	private CrownInfoFiler crownInfoFiler;
 	private PlayerDataFiler playerDataFiler;
+	private RawMaterialMapFiler rawMaterialMapFiler;
 	private TownsFiler townsFiler;
 	
 	private MacroidService macroidService;
+	private MarketDataManager marketDataManager;
+	private TransactionManager transactionManager;
+	private TycoonManager tycoonManager;
 	
 	private PluginManager pluginManager;
 	
@@ -147,6 +152,11 @@ public class Main extends Common
 		
 		reloadRules();
 		townManager.loadTowns();
+		rawMaterialMapFiler.load();
+		crownInfoFiler.load();
+		marketDataManager.registerDerivatives();
+		
+		tycoonManager.updateTycoon();
 		
 		pasteCorruptedTowns();
 		
@@ -169,6 +179,7 @@ public class Main extends Common
 		var dislikeGeneratorRule = dislikeGeneratorRuleSerializer.load();
 		var likeDepositRule = likeDepositRuleSerializer.load();
 		var dislikeDepositRule = dislikeDepositRuleSerializer.load();
+		var crownDepositRule = crownDepositRuleSerializer.load();
 		var armoryRule = armoryRuleSerializer.load();
 		var cannonRule = cannonRuleSerializer.load();
 		var turretRule = turretRuleSerializer.load();
@@ -178,6 +189,7 @@ public class Main extends Common
 		this.dislikeGeneratorRule = dislikeGeneratorRule;
 		this.likeDepositRule = likeDepositRule;
 		this.dislikeDepositRule = dislikeDepositRule;
+		this.crownDepositRule = crownDepositRule;
 		this.armoryRule = armoryRule;
 		this.cannonRule = cannonRule;
 		this.turretRule = turretRule;
@@ -187,7 +199,9 @@ public class Main extends Common
 	
 	private void registerFilers()
 	{
+		crownInfoFiler = new CrownInfoFiler(this);
 		playerDataFiler = new PlayerDataFiler(this);
+		rawMaterialMapFiler = new RawMaterialMapFiler(this);
 		townsFiler = new TownsFiler(this);
 	}
 	
@@ -202,6 +216,9 @@ public class Main extends Common
 		structureDamageCalculator = new StructureDamageCalculator(this);
 		
 		macroidService = new MacroidService(this);
+		marketDataManager = new MarketDataManager(this);
+		transactionManager = new TransactionManager(this);
+		tycoonManager = new TycoonManager(this);
 	}
 	
 	private void registerRuleSerializers()
@@ -211,6 +228,7 @@ public class Main extends Common
 		dislikeGeneratorRuleSerializer = new DislikeGeneratorRuleSerializer(this);
 		likeDepositRuleSerializer = new LikeDepositRuleSerializer(this);
 		dislikeDepositRuleSerializer = new DislikeDepositRuleSerializer(this);
+		crownDepositRuleSerializer = new CrownDepositRuleSerializer(this);
 		armoryRuleSerializer = new ArmoryRuleSerializer(this);
 		cannonRuleSerializer = new CannonRuleSerializer(this);
 		turretRuleSerializer = new TurretRuleSerializer(this);
@@ -245,6 +263,7 @@ public class Main extends Common
 		
 		registerCommand(new AdminCommand(this), AdminCommand.NAME_AND_ALIASES);
 		registerCommand(new BalanceCommand(this), BalanceCommand.NAME_AND_ALIASES);
+		registerCommand(new BaltopCommand(this), BaltopCommand.NAME_AND_ALIASES);
 		registerCommand(new DebugCommand(this), DebugCommand.NAME_AND_ALIASES);
 		registerCommand(buyStructureCommand = new BuyStructureCommand(this), BuyStructureCommand.NAME_AND_ALIASES);
 		registerCommand(new DelHomeCommand(this), DelHomeCommand.NAME_AND_ALIASES);
@@ -253,9 +272,13 @@ public class Main extends Common
 		registerCommand(new MacroidCommand(this), MacroidCommand.NAME_AND_ALIASES);
 		registerCommand(new MuteBroadcastCommand(this), MuteBroadcastCommand.NAME_AND_ALIASES);
 		registerCommand(new NewbieCommand(this), NewbieCommand.NAME_AND_ALIASES);
+		registerCommand(new PayCommand(this), PayCommand.NAME_AND_ALIASES);
+		registerCommand(new PriceCommand(this), PriceCommand.NAME_AND_ALIASES);
 		registerCommand(new RaidCommand(this), RaidCommand.NAME_AND_ALIASES);
+		registerCommand(new RawMaterialCommand(this), RawMaterialCommand.NAME_AND_ALIASES);
 		registerCommand(attackCommand = new AttackCommand(this), AttackCommand.NAME_AND_ALIASES);
 		registerCommand(new ReloadRuleCommand(this), ReloadRuleCommand.NAME_AND_ALIASES);
+		registerCommand(new SellCommand(this), SellCommand.NAME_AND_ALIASES);
 		registerCommand(new SetHomeCommand(this), SetHomeCommand.NAME_AND_ALIASES);
 		registerCommand(new SetRarityCommand(this), SetRarityCommand.NAME_AND_ALIASES);
 		registerCommand(new SpawnCommand(this), SpawnCommand.NAME_AND_ALIASES);
@@ -408,6 +431,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new TownAttackListener(this), this);
 		pluginManager.registerEvents(new TownListener(this), this);
 		pluginManager.registerEvents(new TownSaveListener(this), this);
+		pluginManager.registerEvents(new TycoonListener(this), this);
 		pluginManager.registerEvents(new VillagerRarityListener(this), this);
 		pluginManager.registerEvents(new ItemBuilderListener(this), this);
 		pluginManager.registerEvents(itemDamageAttributeListener = new ItemDamageAttributeListener(this), this);
@@ -417,6 +441,7 @@ public class Main extends Common
 		pluginManager.registerEvents(new PlayerConsumeItemRarityListener(this), this);
 		pluginManager.registerEvents(new PlayerLoaderListener(this), this);
 		pluginManager.registerEvents(new PlayerManagerListener(this), this);
+		pluginManager.registerEvents(new PluginFilerListener(this), this);
 		pluginManager.registerEvents(new SmithingRarityListener(this), this);
 		pluginManager.registerEvents(new SpawnProtectionListener(this), this);
 		pluginManager.registerEvents(new StructureGrowRarityListener(this), this);
@@ -484,6 +509,7 @@ public class Main extends Common
 	private void registerStructureListeners()
 	{
 		pluginManager.registerEvents(new ArmoryListener(this), this);
+		pluginManager.registerEvents(new TransactionResourceStructureListener(this), this);
 	}
 	
 	private void registerWorldListeners()
@@ -548,6 +574,8 @@ public class Main extends Common
 		
 		townsFiler.saveTowns();
 		playerDataFiler.saveMemoryPlayers();
+		rawMaterialMapFiler.save();
+		crownInfoFiler.save();
 		getServer().getWorlds().forEach(blockDataFiler::saveChunks);
 		
 		getLogger().info("Plugin disabled.");

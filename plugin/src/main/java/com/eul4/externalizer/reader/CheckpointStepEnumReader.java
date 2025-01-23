@@ -1,19 +1,14 @@
 package com.eul4.externalizer.reader;
 
-import com.eul4.Main;
-import com.eul4.common.Common;
 import com.eul4.common.exception.InvalidVersionException;
 import com.eul4.common.externalizer.reader.ObjectReader;
 import com.eul4.common.type.player.ObjectType;
 import com.eul4.common.type.player.Readers;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
-import com.eul4.model.craft.player.CraftTutorialTownPlayer;
-import com.eul4.model.player.TutorialTownPlayer;
 import com.eul4.model.player.tutorial.step.CheckpointStepEnum;
 import com.eul4.type.player.PluginObjectType;
 import lombok.Getter;
-import org.bukkit.entity.Player;
 
 import java.io.IOException;
 

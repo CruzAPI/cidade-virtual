@@ -3,6 +3,7 @@ package com.eul4.externalizer.writer;
 import com.eul4.common.externalizer.writer.BlockWriter;
 import com.eul4.common.externalizer.writer.EntityWriter;
 import com.eul4.common.externalizer.writer.ObjectWriter;
+import com.eul4.common.externalizer.writer.UUIDWriter;
 import com.eul4.common.type.player.Writers;
 import com.eul4.model.town.Town;
 
@@ -18,8 +19,10 @@ public class TownWriter extends ObjectWriter<Town>
 	@Override
 	protected void writeObject(Town town) throws IOException
 	{
-		out.writeLong(town.getOwnerUUID().getMostSignificantBits());
-		out.writeLong(town.getOwnerUUID().getLeastSignificantBits());
+		UUIDWriter uuidWriter = writers.getWriter(UUIDWriter.class);
+		
+		uuidWriter.writeReferenceNotNull(town.getTownUniqueId());
+		uuidWriter.writeReferenceNotNull(town.getOwnerUniqueId());
 		writers.getWriter(BlockWriter.class).writeReference(town.getBlock());
 		
 		writers.getWriter(TownBlockMapWriter.class).writeReference(town.getTownBlockMap());

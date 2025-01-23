@@ -4,7 +4,7 @@ import com.eul4.Main;
 import com.eul4.common.event.GuiClickEvent;
 import com.eul4.model.inventory.GeneratorGui;
 import com.eul4.model.inventory.StructureGui;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

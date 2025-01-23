@@ -3,7 +3,7 @@ package com.eul4.command;
 import com.eul4.Main;
 import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.model.player.TownPerformer;
+import com.eul4.model.player.performer.TownPerformer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

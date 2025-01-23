@@ -2,9 +2,7 @@ package com.eul4.listener.hotbar;
 
 import com.eul4.Main;
 import com.eul4.hotbar.DefenderSpectatorHotbar;
-import com.eul4.hotbar.RaidSpectatorHotbar;
-import com.eul4.model.player.DefenderSpectator;
-import com.eul4.model.player.RaidSpectator;
+import com.eul4.model.player.spiritual.DefenderSpectator;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

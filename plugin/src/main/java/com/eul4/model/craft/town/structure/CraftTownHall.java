@@ -1,8 +1,11 @@
 package com.eul4.model.craft.town.structure;
 
 import com.eul4.StructureType;
+import com.eul4.calculator.BigDecimalCalculator;
+import com.eul4.enums.Currency;
 import com.eul4.enums.StructureStatus;
 import com.eul4.exception.CannotConstructException;
+import com.eul4.holder.CapacitatedCrownHolder;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
@@ -10,8 +13,8 @@ import com.eul4.model.town.structure.TownHall;
 import com.eul4.rule.Rule;
 import com.eul4.rule.attribute.TownHallAttribute;
 import com.eul4.util.FaweUtil;
-import com.eul4.util.MessageUtil;
 import com.eul4.wrapper.Resource;
+import com.eul4.wrapper.TransactionalResource;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
@@ -23,14 +26,36 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
+
+import static com.eul4.util.MessageUtil.getPercentageProgressBar;
 
 @Getter
 public class CraftTownHall extends CraftResourceStructure implements TownHall
 {
+	private final Set<TransactionalResource<?>> transactionalResources = Set.of
+	(
+		new TransactionalResource<>
+		(
+			this,
+			BlockVector3.at(0, 1, 0),
+			TransactionalResource.Type.CROWN,
+			this::createStoleCrownTransaction,
+			BigDecimalCalculator.INSTANCE,
+			() -> getCapacitatedCrownHolder().isEmpty(),
+			this::getAmountOfCrownsToSteal
+		)
+	);
+	
 	private int likeCapacity;
 	private int dislikeCapacity;
+	
+	private transient BigDecimal crownCapacity;
+	
+	private CapacitatedCrownHolder capacitatedCrownHolder;
+	
 	private transient Vector3 relativeSpawnPosition;
 	
 	@Setter(AccessLevel.PRIVATE)
@@ -54,19 +79,27 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	
 	private final Set<Resource> resources = Set.of(likeResource, dislikeResource);
 	
-	public CraftTownHall(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftTownHall(Town town, TownBlock centerTownBlock)
 	{
-		super(town, centerTownBlock, false);
+		this(town, centerTownBlock, false);
 	}
 	
-	public CraftTownHall(Town town, TownBlock centerTownBlock, boolean isBuilt) throws CannotConstructException, IOException
+	public CraftTownHall(Town town, TownBlock centerTownBlock, boolean isBuilt)
 	{
 		super(town, centerTownBlock, isBuilt);
+		capacitatedCrownHolder = new CapacitatedCrownHolder(this);
 	}
 	
 	public CraftTownHall(Town town)
 	{
 		super(town);
+	}
+	
+	@Override
+	public void register() throws CannotConstructException, IOException
+	{
+		super.register();
+		capacitatedCrownHolder.setCapacity(crownCapacity);
 	}
 	
 	@Override
@@ -89,6 +122,13 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 		
 		likeCapacity = getRule().getAttribute(getBuiltLevel()).getLikeCapacity();
 		dislikeCapacity = getRule().getAttribute(getBuiltLevel()).getDislikeCapacity();
+		crownCapacity = getRule().getAttribute(getBuiltLevel()).getCrownCapacity();
+		
+		if(capacitatedCrownHolder != null)
+		{
+			capacitatedCrownHolder.setCapacity(crownCapacity);
+		}
+		
 		structureLimitMap = getRule().getAttribute(getBuiltLevel()).getStructureLimit();
 		relativeSpawnPosition = getRule().getAttributeOrDefault(getLevel()).getSpawnPosition();
 	}
@@ -112,25 +152,57 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 						.getRelative(BlockFace.UP)
 						.getLocation()
 						.toCenterLocation());
-				hologram.setSize(3);
-				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
-				hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_LIKES, getVirtualLikes());
-				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_DISLIKES, getVirtualDislikes());
+				hologram.setSize(4);
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
+						getStructureType(),
+						level);
+				hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_LIKES,
+						getVirtualLikes());
+				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_DISLIKES,
+						getVirtualDislikes());
+				hologram.getLine(3).setMessageAndArgs(PluginMessage.$CURRENCY_$BALANCE_$CAPACITY,
+						Currency.CROWN,
+						capacitatedCrownHolder.getBalance(),
+						capacitatedCrownHolder.getCapacity());
 			}
 			else
 			{
 				hologram.setSize(5);
-				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE, getStructureType(), level);
-				hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_LIKES, getVirtualLikes());
-				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_DISLIKES, getVirtualDislikes());
-				hologram.getLine(3).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS, getHealth(), getMaxHealth());
-				hologram.getLine(4).setCustomName(MessageUtil.getPercentageProgressBar(getHealthPercentage()));
+				hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
+						getStructureType(),
+						level);
+				hologram.getLine(1).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_LIKES,
+						getVirtualLikes());
+				hologram.getLine(2).setMessageAndArgs(PluginMessage.STRUCTURE_TOWN_HALL_VIRTUAL_DISLIKES,
+						getVirtualDislikes());
+				hologram.getLine(3).setMessageAndArgs(PluginMessage.$CURRENCY_$BALANCE_$CAPACITY,
+						Currency.CROWN,
+						capacitatedCrownHolder.getBalance(),
+						capacitatedCrownHolder.getCapacity());
+				hologram.getLine(3).setMessageAndArgs(PluginMessage.STRUCTURE_HEALTH_POINTS,
+						getHealth(),
+						getMaxHealth());
+				hologram.getLine(4).setCustomName(getPercentageProgressBar(getHealthPercentage()));
 				teleportHologramToDefaultLocation();
 			}
 		}
 		else
 		{
-			hologram.remove();
+			hologram.setSize(4);
+			hologram.getLine(0).setMessageAndArgs(PluginMessage.STRUCTURE_HOLOGRAM_TITLE,
+					getStructureType(),
+					level);
+			hologram.getLine(1).setMessageAndArgs(PluginMessage.CAPACITY_$BALANCE_$CURRENCY,
+					likeCapacity,
+					Currency.LIKE);
+			hologram.getLine(2).setMessageAndArgs(PluginMessage.CAPACITY_$BALANCE_$CURRENCY,
+					dislikeCapacity,
+					Currency.DISLIKE);
+			hologram.getLine(3).setMessageAndArgs(PluginMessage.$CURRENCY_$BALANCE_$CAPACITY,
+					Currency.CROWN,
+					capacitatedCrownHolder.getBalance(),
+					capacitatedCrownHolder.getCapacity());
+			teleportHologramToDefaultLocation();
 		}
 	}
 	
@@ -217,5 +289,24 @@ public class CraftTownHall extends CraftResourceStructure implements TownHall
 	public Vector3 getRotatedSpawnRelativePosition()
 	{
 		return new AffineTransform().rotateY(-getRotation()).apply(relativeSpawnPosition);
+	}
+	
+	@Override
+	public CapacitatedCrownHolder getCapacitatedCrownHolder()
+	{
+		return capacitatedCrownHolder;
+	}
+	
+	@Override
+	public void setCapacitatedCrownHolder(CapacitatedCrownHolder capacitatedCrownHolder)
+	{
+		this.capacitatedCrownHolder = capacitatedCrownHolder;
+	}
+	
+	@Override
+	public void setDefaultCapacitatedCrownHolder()
+	{
+		capacitatedCrownHolder = new CapacitatedCrownHolder(this);
+		capacitatedCrownHolder.setCapacity(crownCapacity);
 	}
 }

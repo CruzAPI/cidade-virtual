@@ -24,7 +24,9 @@ public class Resource
 	public enum Type
 	{
 		LIKE(Material.LIME_CONCRETE.createBlockData(), Town::addLikes, Currency.LIKE),
-		DISLIKE(Material.RED_CONCRETE.createBlockData(), Town::addDislikes, Currency.DISLIKE);
+		DISLIKE(Material.RED_CONCRETE.createBlockData(), Town::addDislikes, Currency.DISLIKE),
+		CROWN(Material.GOLD_BLOCK.createBlockData(), Town::addDislikes, Currency.CROWN), //FIXME fix addOperation
+		;
 		
 		private final BlockData blockData;
 		private final BiConsumer<Town, Integer> addOperation;

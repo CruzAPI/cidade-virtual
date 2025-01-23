@@ -34,6 +34,10 @@ public class TownHallReader extends StructureReader<TownHall>
 			this.reader = this::readerVersion0;
 			this.parameterizedReadable = this::parameterizedReadableVersion0;
 			break;
+		case 1:
+			this.reader = this::readerVersion1;
+			this.parameterizedReadable = this::parameterizedReadableVersion0;
+			break;
 		default:
 			throw new InvalidVersionException("Invalid " + objectType + " version: " + version);
 		}
@@ -42,6 +46,16 @@ public class TownHallReader extends StructureReader<TownHall>
 	private void readerVersion0(TownHall townHall) throws IOException, ClassNotFoundException
 	{
 		super.getReader().readObject(townHall);
+		
+		townHall.setDefaultCapacitatedCrownHolder();
+	}
+	
+	private void readerVersion1(TownHall townHall) throws IOException, ClassNotFoundException
+	{
+		super.getReader().readObject(townHall);
+		
+		townHall.setCapacitatedCrownHolder(readers.getReader(CapacitatedCrownHolderReader.class)
+				.readReference(townHall.getTown().getPlugin()));
 	}
 	
 	private Readable<TownHall> parameterizedReadableVersion0(Town town)

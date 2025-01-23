@@ -5,6 +5,10 @@ import com.eul4.event.AttackFinishEvent;
 import com.eul4.event.AttackStartEvent;
 import com.eul4.i18n.PluginMessage;
 import com.eul4.model.player.*;
+import com.eul4.model.player.spiritual.Attacker;
+import com.eul4.model.player.spiritual.Defender;
+import com.eul4.model.player.spiritual.DefenderSpectator;
+import com.eul4.model.player.spiritual.RaidSpectator;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;
@@ -236,7 +240,7 @@ public class TownAttack
 
 			attackerBossBar.progress((float) ticks / maxTicks);
 			bossBar.progress((float) ticks / maxTicks);
-			CommonPlayer commonPlayer = town.getPlugin().getPlayerManager().get(town.getOwnerUUID());
+			CommonPlayer commonPlayer = town.getPlugin().getPlayerManager().get(town.getOwnerUniqueId());
 
 			if(commonPlayer instanceof Defender
 					|| commonPlayer instanceof DefenderSpectator

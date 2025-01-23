@@ -27,6 +27,7 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 	private ItemStack dislikeGenerator;
 	private ItemStack likeDeposit;
 	private ItemStack dislikeDeposit;
+	private ItemStack crownDeposit;
 	private ItemStack armory;
 	private ItemStack cannon;
 	private ItemStack turret;
@@ -46,6 +47,12 @@ public class CraftStructureShopGui extends CraftGui implements StructureShopGui
 		
 		dislikeDeposit = new ItemStack(Material.RED_CONCRETE);
 		setDisplayNameAndPriceInLore(dislikeDeposit, ItemBuilder.DISLIKE_DEPOSIT);
+		
+		setDisplayNameAndPriceInLore
+		(
+			crownDeposit = ItemStack.of(Material.GOLD_BLOCK),
+			ItemBuilder.CROWN_DEPOSIT
+		);
 		
 		armory = new ItemStack(Material.IRON_BLOCK); //TODO: duplicated Material in ItemBuilder?? Probably one for icon and the other for be placed in ground.
 		setDisplayNameAndPriceInLore(armory, ItemBuilder.ARMORY);

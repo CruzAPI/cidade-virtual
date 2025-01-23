@@ -353,7 +353,7 @@ public class RarityBossBarTask extends BukkitRunnable
 			
 			if(townBlock != null)
 			{
-				return townBlock.getTown().getOwnerUUID().equals(pluginPlayer.getUniqueId())
+				return townBlock.getTown().getOwnerUniqueId().equals(pluginPlayer.getUniqueId())
 						&& townBlock.canBuild();
 			}
 			

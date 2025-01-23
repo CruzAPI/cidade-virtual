@@ -5,7 +5,6 @@ import com.eul4.common.event.CommonPlayerRegisterEvent;
 import com.eul4.event.AssistantRemoveEvent;
 import com.eul4.event.AssistantSpawnEvent;
 import com.eul4.model.player.PluginPlayer;
-import com.eul4.model.player.TownPlayer;
 import com.eul4.model.town.Town;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;

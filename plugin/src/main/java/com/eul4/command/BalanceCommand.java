@@ -1,6 +1,7 @@
 package com.eul4.command;
 
 import com.eul4.Main;
+import com.eul4.i18n.PluginRichMessage;
 import com.eul4.model.player.PluginPlayer;
 import com.eul4.model.town.Town;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
-import static com.eul4.i18n.PluginMessage.COMMAND_BALANCE;
 import static com.eul4.i18n.PluginMessage.COMMAND_BALANCE_TRY_TOWN_COMMAND;
 
 @RequiredArgsConstructor
@@ -47,7 +46,7 @@ public class BalanceCommand implements TabExecutor
 			return false;
 		}
 		
-		pluginPlayer.sendMessage(COMMAND_BALANCE, town);
+		pluginPlayer.sendMessage(PluginRichMessage.COMMAND_BALANCE_$TOWN, town);
 		return true;
 	}
 }

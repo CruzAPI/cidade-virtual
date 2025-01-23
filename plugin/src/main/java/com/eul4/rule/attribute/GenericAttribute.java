@@ -11,9 +11,30 @@ import org.bukkit.util.Vector;
 @ToString
 public abstract class GenericAttribute
 {
-	private Price price;
-	private double hp;
-	private int requiresTownHallLevel;
-	private int totalBuildTicks;
-	private Vector hologramVector;
+	private final Price price;
+	private final double hp;
+	private final int requiresTownHallLevel;
+	private final int totalBuildTicks;
+	private final Vector hologramVector;
+	
+	protected GenericAttribute(GenericAttribute.Data genericAttributeData)
+	{
+		this.price = genericAttributeData.price;
+		this.hp = genericAttributeData.hp;
+		this.requiresTownHallLevel = genericAttributeData.requiresTownHallLevel;
+		this.totalBuildTicks = genericAttributeData.totalBuildTicks;
+		this.hologramVector = genericAttributeData.hologramVector;
+	}
+	
+	@lombok.Data
+	public static class Data
+	{
+		public static final Data DEFAULT = new Data(null, 100.0D, Integer.MAX_VALUE, Integer.MAX_VALUE, new Vector());
+		
+		private final Price price;
+		private final double hp;
+		private final int requiresTownHallLevel;
+		private final int totalBuildTicks;
+		private final Vector hologramVector;
+	}
 }

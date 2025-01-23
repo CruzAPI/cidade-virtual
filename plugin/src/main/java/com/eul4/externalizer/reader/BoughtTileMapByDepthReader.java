@@ -8,7 +8,6 @@ import com.eul4.common.wrapper.ParameterizedReadable;
 import com.eul4.common.wrapper.Readable;
 import com.eul4.common.wrapper.Reader;
 import com.eul4.model.town.Town;
-import com.eul4.model.town.TownBlock;
 import com.eul4.type.player.PluginObjectType;
 import com.eul4.wrapper.BoughtTileMapByDepth;
 import lombok.Getter;
@@ -43,7 +42,7 @@ public class BoughtTileMapByDepthReader extends ObjectReader<BoughtTileMapByDept
 	{
 		return () ->
 		{
-			BoughtTileMapByDepth boughtTileMapByDepth = new BoughtTileMapByDepth(town.getOwnerUUID());
+			BoughtTileMapByDepth boughtTileMapByDepth = new BoughtTileMapByDepth(town.getOwnerUniqueId());
 			
 			int size = in.readInt();
 			

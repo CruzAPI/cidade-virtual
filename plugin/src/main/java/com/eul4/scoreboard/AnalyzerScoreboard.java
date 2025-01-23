@@ -5,11 +5,14 @@ import com.eul4.common.scoreboard.CommonScoreboard;
 public interface AnalyzerScoreboard extends CommonScoreboard
 {
 	void updateTitle();
+	
 	void updatePlayerStatusTeam();
 	void updateTownHallLevelTeam();
 	void updateLikesTeam();
 	void updateDislikesTeam();
+	void updateCrownsTeam();
 	void updateHardnessTeam();
+	void updateFooterTeam();
 	
 	default void updateLikesAndDislikesTeams()
 	{
@@ -20,10 +23,13 @@ public interface AnalyzerScoreboard extends CommonScoreboard
 	default void updateAll()
 	{
 		updateTitle();
+		
 		updatePlayerStatusTeam();
 		updateTownHallLevelTeam();
 		updateLikesTeam();
 		updateDislikesTeam();
+		updateCrownsTeam();
 		updateHardnessTeam();
+		updateFooterTeam();
 	}
 }

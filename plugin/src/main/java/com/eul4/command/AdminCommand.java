@@ -5,7 +5,7 @@ import com.eul4.common.i18n.CommonMessage;
 import com.eul4.common.model.player.CommonPlayer;
 import com.eul4.common.type.player.PlayerType;
 import com.eul4.i18n.PluginMessage;
-import com.eul4.model.player.Admin;
+import com.eul4.model.player.physical.Admin;
 import com.eul4.type.player.PhysicalPlayerType;
 import com.eul4.world.RaidWorld;
 import lombok.RequiredArgsConstructor;

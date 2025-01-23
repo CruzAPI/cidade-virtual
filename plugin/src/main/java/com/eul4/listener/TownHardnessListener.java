@@ -5,7 +5,7 @@ import com.eul4.Main;
 import com.eul4.event.StructureConstructEvent;
 import com.eul4.exception.TownHardnessLimitException;
 import com.eul4.i18n.PluginMessage;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
 import com.eul4.model.town.structure.Structure;

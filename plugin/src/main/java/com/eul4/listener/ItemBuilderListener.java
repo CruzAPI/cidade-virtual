@@ -4,7 +4,7 @@ import com.eul4.Main;
 import com.eul4.StructureType;
 import com.eul4.enums.ItemBuilder;
 import com.eul4.model.inventory.craft.CraftConfirmationGui;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

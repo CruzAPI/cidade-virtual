@@ -16,5 +16,7 @@ public class TownHallWriter extends StructureWriter<TownHall>
 	protected void writeObject(TownHall townHall) throws IOException
 	{
 		super.writeObject(townHall);
+		
+		writers.getWriter(CapacitatedCrownHolderWriter.class).writeReferenceNotNull(townHall.getCapacitatedCrownHolder());
 	}
 }

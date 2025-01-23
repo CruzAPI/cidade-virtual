@@ -2,19 +2,14 @@ package com.eul4.listener.inventory;
 
 import com.eul4.Main;
 import com.eul4.common.event.GuiClickEvent;
-import com.eul4.common.model.player.CommonPlayer;
-import com.eul4.model.inventory.AssistantGui;
 import com.eul4.model.inventory.TownHallGui;
 import com.eul4.model.inventory.craft.CraftAssistantGui;
-import com.eul4.model.inventory.craft.CraftStructureShopGui;
-import com.eul4.model.player.TownPlayer;
+import com.eul4.model.player.physical.TownPlayer;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 
 @RequiredArgsConstructor

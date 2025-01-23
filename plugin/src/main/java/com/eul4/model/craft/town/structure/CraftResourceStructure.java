@@ -3,9 +3,10 @@ package com.eul4.model.craft.town.structure;
 import com.eul4.common.wrapper.Pitch;
 import com.eul4.enums.Currency;
 import com.eul4.exception.CannotConstructException;
-import com.eul4.model.player.Attacker;
+import com.eul4.model.player.spiritual.Attacker;
 import com.eul4.model.town.Town;
 import com.eul4.model.town.TownBlock;
+import com.eul4.model.town.structure.ResourceStructure;
 import com.eul4.wrapper.Resource;
 import com.eul4.wrapper.TownAttack;
 import net.kyori.adventure.text.Component;
@@ -28,13 +29,12 @@ public abstract class CraftResourceStructure extends CraftStructure implements R
 		super(town);
 	}
 	
-	public CraftResourceStructure(Town town, TownBlock centerTownBlock) throws CannotConstructException, IOException
+	public CraftResourceStructure(Town town, TownBlock centerTownBlock)
 	{
 		super(town, centerTownBlock);
 	}
 	
 	public CraftResourceStructure(Town town, TownBlock centerTownBlock, boolean isBuilt)
-			throws CannotConstructException, IOException
 	{
 		super(town, centerTownBlock, isBuilt);
 	}
@@ -69,7 +69,6 @@ public abstract class CraftResourceStructure extends CraftStructure implements R
 		}
 	}
 	
-	@Override
 	public Optional<Resource> findResource(Block block)
 	{
 		for(Resource resource : getResources())
@@ -105,9 +104,9 @@ public abstract class CraftResourceStructure extends CraftStructure implements R
 						
 						Currency currency = resource.getType().getCurrency();
 						
-						pluginPlayer.getPlayer().sendMessage(currency.getBaseComponent()
-								.append(Component.text("+" + amountStolen + " "))
-								.append(currency.getPluralWord().translate(pluginPlayer, String::toUpperCase)));
+						pluginPlayer.getPlayer().sendMessage(Component.text("+" + amountStolen + " ")
+								.append(currency.getPluralWord().translate(pluginPlayer, String::toUpperCase))
+								.style(currency.getStyle()));
 					});
 				});
 		onSteal();
